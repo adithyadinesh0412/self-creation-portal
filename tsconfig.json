@@ -20,6 +20,9 @@
       "lib-project": [
         "./dist/lib-project"
       ],
+      "lib-shared-modules": [
+        "./dist/lib-shared-modules"
+      ],
       "lib-survey": [
         "./dist/lib-survey"
       ]
