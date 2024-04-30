@@ -1,3 +1,15 @@
-p {
-    background: red;
+header{
+    background-color: #0A4F9D;
+    height: 8px;
+    color: #FBFDFE;
+    font-size: 18px;
+    padding-bottom: 40px;
+    padding-top : 10px;
+    a {
+        margin-left: 2rem;
+    }
+    span{
+        font-size: 1.8rem;
+        cursor: pointer;
+    }
 }

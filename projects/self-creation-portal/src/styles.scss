@@ -52,3 +52,6 @@ $custom-theme: mat.define-light-theme((
 @include mat.all-component-themes($custom-theme);
 
 // Define any additional custom styles below
+body{
+  margin: 0 auto;
+}
