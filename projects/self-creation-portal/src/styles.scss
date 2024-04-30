@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+// Import Angular Material styles
+@use '@angular/material' as mat;
+
+// Define your custom palette
+$custom-primary-palette: (
+  50: #E3EAF0,
+  100: #B9CDDA,
+  200: #8AA7C1,
+  300: #5B81A8,
+  400: #38619A,
+  500: #0a4f9d,
+  600: #194881,
+  700: #084183,
+  800: #0C336D,
+  900: #062252,
+  A100: #86B8FF,
+  A200: #538FFF,
+  A400: #207CFF,
+  A700: #075CFF,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: black,
+    A700: white,
+  )
+);
+// Define your custom theme
+$custom-primary: mat.define-palette($custom-primary-palette);
+$custom-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$custom-warn: mat.define-palette(mat.$red-palette);
+
+// Create a custom theme using your defined palettes
+$custom-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-primary,
+    accent: $custom-accent,
+    warn:$custom-warn
+  )
+));
+
+// Apply the custom theme to the Angular Material components
+@include mat.all-component-themes($custom-theme);
+
+// Define any additional custom styles below
