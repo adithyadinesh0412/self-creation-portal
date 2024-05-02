@@ -1,6 +1,13 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
 
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 // Define your custom palette
 $custom-primary-palette: (
   50: #E3EAF0,
@@ -48,6 +55,7 @@ $custom-theme: mat.define-light-theme((
   )
 ));
 
+$one : red;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 

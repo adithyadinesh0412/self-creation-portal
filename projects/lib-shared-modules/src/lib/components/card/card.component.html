@@ -1,1 +1,26 @@
 <p>card works!</p>
+
+<mat-card>
+    <div *ngIf="list" class="bg-primary">
+        <mat-card-content  >
+            <div class="flex justify-between">
+                <div class="flex flex-col justify-center">
+                    <p class="text-[#0A4F9D] capitalize">{{list.title}}</p>
+                    <div class="flex gap-5">
+                        <div>
+                            {{list.organization.name}}
+                        </div>
+                        <div class="bg-[#A59EFB] rounded-lg px-5 capitalize">
+                           {{list.type}}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-5">
+                    <div *ngFor="let button of list.actionButton">
+                        <p class="underline">{{ button.label }}</p>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </div>
+</mat-card>
