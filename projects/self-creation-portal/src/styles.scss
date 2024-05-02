@@ -47,6 +47,8 @@ $custom-theme: mat.define-light-theme((
     warn:$custom-warn
   )
 ));
+$primary: #0a4f9d;
+$secondary: #FBFDFE;
 
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);

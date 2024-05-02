@@ -1,7 +1,8 @@
+@import  "../../../../../self-creation-portal/src/styles.scss";
 header{
-    background-color: #0A4F9D;
+    background-color:  $primary;
     height: 8px;
-    color: #FBFDFE;
+    color: $secondary;
     font-size: 18px;
     padding-bottom: 40px;
     padding-top : 10px;
