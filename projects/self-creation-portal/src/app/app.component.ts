@@ -4,11 +4,13 @@ import { HeaderComponent, CardComponent } from 'lib-shared-modules';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 // import { CommonModule } from '@angular/common'
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,HeaderComponent,MatCardModule,CardComponent,MatButtonModule],
+  imports: [RouterOutlet,HeaderComponent,MatCardModule,CardComponent,MatButtonModule,MatFormFieldModule,MatIconModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -1,16 +1,16 @@
 <p>card works!</p>
 
 <mat-card>
-    <div *ngIf="list" class="bg-primary">
+    <div *ngIf="list" class="bg-cardLightBlue">
         <mat-card-content  >
             <div class="flex justify-between">
                 <div class="flex flex-col justify-center">
-                    <p class="text-[#0A4F9D] capitalize">{{list.title}}</p>
+                    <p class="text-textBlue capitalize">{{list.title}}</p>
                     <div class="flex gap-5">
                         <div>
                             {{list.organization.name}}
                         </div>
-                        <div class="bg-[#A59EFB] rounded-lg px-5 capitalize">
+                        <div class="bg-chipPurple rounded-lg px-5 capitalize">
                            {{list.type}}
                         </div>
                     </div>

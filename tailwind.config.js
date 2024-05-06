@@ -7,6 +7,9 @@ module.exports = {
     extend: {
       colors: {
         'primary': '#0a4f9d', 
+        'cardLightBlue':'#f3f7fa',
+        'chipPurple':'#A59EFB',
+        'textBlue':'#0A4F9D'
       },
     },
   },
