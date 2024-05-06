@@ -1,1 +1,4 @@
-<p>search works!</p>
+<mat-form-field class="search-container" appearance="outline">
+    <input matInput #searchInput placeholder="Search" >
+    <mat-icon matPrefix (click)="search(searchInput.value)">search</mat-icon>
+</mat-form-field>

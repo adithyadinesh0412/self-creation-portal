@@ -1,16 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent, CardComponent } from 'lib-shared-modules';
+import { HeaderComponent, CardComponent , SearchComponent} from 'lib-shared-modules';
 import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
-// import { CommonModule } from '@angular/common'
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,HeaderComponent,MatCardModule,CardComponent,MatButtonModule,MatFormFieldModule,MatIconModule],
+  imports: [RouterOutlet,HeaderComponent,MatCardModule,CardComponent,SearchComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -32,9 +27,12 @@ export class AppComponent {
     trackByFn(index: number, item: any): any {
       return index;
     }
-    heroes:any = [
-      {name:"Suma"},
-      {name:"NN"}
-    ]
 
+    receiveSearchResults(event:any){
+      console.log(event)
+    }
+
+
+
+  
 }
