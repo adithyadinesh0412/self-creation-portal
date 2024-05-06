@@ -24,12 +24,8 @@ export class AppComponent {
         "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
     }
 
-    trackByFn(index: number, item: any): any {
-      return index;
-    }
-
     receiveSearchResults(event:any){
-      console.log(event)
+      
     }
 
 
