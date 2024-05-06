@@ -23,12 +23,5 @@ export class AppComponent {
         "status": "DRAFT",
         "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
     }
-
-    receiveSearchResults(event:any){
-      
-    }
-
-
-
   
 }

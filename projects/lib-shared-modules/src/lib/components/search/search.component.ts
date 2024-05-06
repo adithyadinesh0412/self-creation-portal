@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -12,6 +12,7 @@ import {MatInputModule} from '@angular/material/input';
   styleUrl: './search.component.scss'
 })
 export class SearchComponent {
+  @Input() maxLength: number = 250;
   @Output() searchEvent = new EventEmitter<string>();
  
   search(searchText:any){
