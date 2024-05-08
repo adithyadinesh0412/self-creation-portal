@@ -20,9 +20,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class SearchComponent {
    /**
    * Minimum length of search text required to trigger the search.
+   * Default value is 3.
    */
-  minLength = 3
-
+   @Input()  minLength:any = 3
   /**
    * Maximum length of the search text allowed.
    * Default value is 250.
