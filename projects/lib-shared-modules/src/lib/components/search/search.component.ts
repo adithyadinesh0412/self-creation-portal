@@ -18,20 +18,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './search.component.scss'
 })
 export class SearchComponent {
-   /**
-   * Minimum length of search text required to trigger the search.
-   * Default value is 3.
-   */
+  // Minimum length of search text required to trigger the search. Default value is 3.
    @Input()  minLength:any = 3
-  /**
-   * Maximum length of the search text allowed.
-   * Default value is 250.
-   * @maxLength
-   */
+  // Maximum length of the search text allowed.Default value is 250.
   @Input() maxLength: number = 250;
   /**
    * Event emitter for when a search is triggered.
-   * @searchEvent
+   * @EventEmitter
    */
   @Output() searchEvent = new EventEmitter<any>();
    /**
