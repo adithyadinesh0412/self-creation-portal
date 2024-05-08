@@ -7,9 +7,6 @@ import {MatInputModule} from '@angular/material/input';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-/**
- * Angular component for a search input field.
- */
 @Component({
   selector: 'lib-search',
   standalone: true,
@@ -18,35 +15,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './search.component.scss'
 })
 export class SearchComponent {
-  // Minimum length of search text required to trigger the search. Default value is 3.
-   @Input()  minLength:any = 3
-  // Maximum length of the search text allowed.Default value is 250.
+  @Input()  minLength:any = 3
   @Input() maxLength: number = 250;
-  /**
-   * Event emitter for when a search is triggered.
-   * @EventEmitter
-   */
   @Output() searchEvent = new EventEmitter<any>();
-   /**
-   * FormControl for the search input field.
-   * @FormControl
-   */
   searchControl = new FormControl('');
   constructor() {
+    // debounce timer for search 
     this.searchControl.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged()
       )
       .subscribe(newValue => {
-        this.search(newValue)
+        this.onSearch(newValue)
       });
   }
-   /**
-   * Perform a search when the search text meets the minimum length requirement.
-   * @param searchText The text to search for.
-   */
-  search(searchText:any){
+   onSearch(searchText:any){
     if(searchText?.length >= this.minLength){
       this.searchEvent.emit(searchText);
     }
