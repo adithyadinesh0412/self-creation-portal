@@ -10,9 +10,5 @@ import {MatCardModule} from '@angular/material/card';
   styleUrl: './card.component.scss'
 })
 export class CardComponent {
-  /**
-   * The list from parent component.
-   * @list
-   */
   @Input() list: any;
 }
