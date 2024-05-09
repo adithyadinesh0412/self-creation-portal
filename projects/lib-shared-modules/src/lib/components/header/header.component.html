@@ -1,3 +1,2 @@
-<header>
-    <a><span defaultHref="" *ngIf="backButton" (click)="backArrowButton()">&#8592;</span>Creation Portal</a>
-</header>
+<mat-toolbar><a><mat-icon *ngIf="backButton" (click)="backArrowButton()">keyboard_backspace</mat-icon></a><span class="aligned-with-icon">{{ title }}</span></mat-toolbar>
+<mat-toolbar class="sub-header">{{ headerData[0].title}}</mat-toolbar>

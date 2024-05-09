@@ -1,2 +1,12 @@
-<!-- <p>Self creation portal application</p> -->
-<lib-header></lib-header>
+<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData"></lib-header>
+<div class="main">
+    <lib-side-navbar [appPages]="appPages" (menuItemClick)="onMenuItemClick($event)"></lib-side-navbar>
+    <div class="content-container">
+      <mat-card class="custom-card" *ngFor="let cardItem of cardData" (click)="onCardClick(cardItem)">
+        <mat-card-content class="img-content">
+          <img src="{{ cardItem.image }}" alt="">
+          <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+      </mat-card-content>
+      </mat-card>
+    </div>
+</div>

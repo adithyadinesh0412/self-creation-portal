@@ -1,21 +1,25 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule} from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { LibSharedModulesService } from '../../lib-shared-modules.service';
 
 @Component({
   selector: 'lib-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatToolbarModule, MatIconModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  @Input() backButton : boolean = true
+  @Input() backButton : boolean = false ;
+  @Input() title!: string;
+  @Input() headerData : any[] = [];
 
-  constructor(private router : Router) {}
+  constructor( private libsharedservice : LibSharedModulesService) {}
 
   backArrowButton() {
-    this.router.navigate(['']);
-    console.log('onclickbackbutton')
+    this.libsharedservice.goBack()
   }
+  
 }
