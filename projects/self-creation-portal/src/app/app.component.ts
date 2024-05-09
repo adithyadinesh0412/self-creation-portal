@@ -19,6 +19,8 @@ import { CommonModule, Location } from '@angular/common';
 export class AppComponent {
   title = 'self-creation-portal';
   backButton : boolean = true;
+  subHeader : any;
+  headerData : any = {};
   selectedMenuItem: any;
   selctedCardItem : any;
   titleObj = {
@@ -59,14 +61,15 @@ export class AppComponent {
     ] }
   ];
 
-  headerData = [
-    { title :  'Workspace'},
-    { title : 'Project Name', button : [
-      {title : 'Save as draft'},
+  headerDataForProjects = {
+    "title":"Project Name",
+    "buttons":[
+      { title : 'Save as draft'},
       { title : 'Preview'},
       { title : 'Send for Review'}
-    ]}
-  ]
+    ]
+   }
+
   constructor( private _location : Location) {
 
   }
@@ -74,12 +77,18 @@ export class AppComponent {
 
   onMenuItemClick(item: any) {
    this.selectedMenuItem = item;
-   console.log(item)
   }
 
   onCardClick(cardItem: any) {
     this.appPages = cardItem.sidenav
     this.backButton = cardItem.showBackButton
+    this.subHeader = cardItem.subHeader;
+
+    if (cardItem.title === 'Project') {
+      this.headerData =  this.headerDataForProjects;
+    } else {
+        this.headerData = {};
+    }
   }
   
 }

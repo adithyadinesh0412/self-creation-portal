@@ -14,7 +14,7 @@ import { LibSharedModulesService } from '../../lib-shared-modules.service';
 export class HeaderComponent {
   @Input() backButton : boolean = false ;
   @Input() title!: string;
-  @Input() headerData : any[] = [];
+  @Input() headerData : any;
 
   constructor( private libsharedservice : LibSharedModulesService) {}
 
