@@ -1,12 +1,14 @@
 <lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData"></lib-header>
 <div class="main">
-    <lib-side-navbar [appPages]="appPages" (menuItemClick)="onMenuItemClick($event)"></lib-side-navbar>
+    <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
     <div class="content-container">
-      <mat-card class="custom-card" *ngFor="let cardItem of cardData" (click)="onCardClick(cardItem)">
-        <mat-card-content class="img-content">
-          <img src="{{ cardItem.image }}" alt="">
-          <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
-      </mat-card-content>
-      </mat-card>
+      @for (cardItem of resourceList; track cardItem) {
+        <mat-card class="custom-card" (click)="onCardClick(cardItem)">
+          <mat-card-content class="img-content">
+            <img src="{{ cardItem.image }}" alt="">
+            <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+        </mat-card-content>
+        </mat-card>
+      }
     </div>
 </div>

@@ -1,7 +1,18 @@
-<mat-toolbar><a><mat-icon *ngIf="backButton" (click)="backArrowButton()">keyboard_backspace</mat-icon></a><span class="aligned-with-icon">{{title }}</span></mat-toolbar>
+<mat-toolbar>
+  <a>
+    @if (backButton) {
+    <mat-icon (click)="backArrowButton()">keyboard_backspace</mat-icon>
+    }
+  </a>
+  <span class="aligned-with-icon">{{ title }}</span>
+</mat-toolbar>
 <mat-toolbar class="sub-header">
     <div class="title">{{ headerData?.title || 'Workspace' }}</div>
-    <div class="buttons-container" *ngIf="headerData.buttons">
-      <button mat-button *ngFor="let button of headerData.buttons">{{ button.title }}</button>
-    </div>
+    @if (headerData.buttons) {
+      <div class="buttons-container">
+        @for (button of headerData.buttons; track button) {
+          <button mat-button>{{ button.title }}</button>
+        }
+      </div>
+    }
 </mat-toolbar>
