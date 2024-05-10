@@ -1,1 +1,4 @@
-<p>pagination works!</p>
+<mat-paginator 
+[length]="totalCount" [pageSize]="pageSize"
+[pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
+</mat-paginator>

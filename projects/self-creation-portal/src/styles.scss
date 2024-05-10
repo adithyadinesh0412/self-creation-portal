@@ -1,5 +1,6 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // Define your custom palette
 $custom-primary-palette: (

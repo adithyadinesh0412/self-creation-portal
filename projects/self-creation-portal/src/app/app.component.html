@@ -5,3 +5,5 @@
 <lib-card [list]="list"></lib-card>
 
 <lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
+
+<lib-pagination totalCount="6" (paginatorChanged)="onPaginatorChange($event)"></lib-pagination>
