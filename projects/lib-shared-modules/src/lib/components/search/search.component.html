@@ -1,4 +1,4 @@
 <mat-form-field class="search-container" appearance="outline">
-    <input matInput #searchInput required [formControl]="searchControl" [attr.maxlength]="maxLength"  (keyup.enter)="onSearch(searchInput.value)" placeholder="Search" >
+    <input matInput #searchInput [formControl]="searchControl" [attr.maxlength]="maxLength"  (keyup.enter)="onSearch(searchInput.value)" placeholder="Search" >
     <mat-icon matPrefix (click)="onSearch(searchInput.value)">search</mat-icon>
 </mat-form-field>
