@@ -24,14 +24,4 @@ export class AppComponent {
         "status": "DRAFT",
         "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
     }
-  
-    receiveSearchResults(event:any){
-    }
-
-    onPaginatorChange(data:any){
-    //   this.setPaginatorToFirstpage= false;
-    // this.page = data.page;
-    // this.limit = data.pageSize
-    // this.fetchSessionList()
-    }
 }
