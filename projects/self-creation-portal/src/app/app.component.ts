@@ -107,7 +107,6 @@ export class AppComponent {
   }
 
   onButtonClick(buttonTitle: string) {
-    console.log(buttonTitle)
   }
   
 }
