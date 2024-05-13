@@ -51,6 +51,10 @@ $primary: #0a4f9d;
 $secondary: #FBFDFE;
 $tertiary: #34383C;
 
+$primary: #0a4f9d;
+$cardLightBlue:#f3f7fa;
+$chipPurple:#A59EFB;
+$textBlue:#0A4F9D;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 

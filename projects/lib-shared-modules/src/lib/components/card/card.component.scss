@@ -1,0 +1,40 @@
+@import "./../../../../../self-creation-portal/src/styles.scss";
+
+.card-container{
+    background-color: $cardLightBlue;
+}
+.card-container{
+    background-color: $cardLightBlue;
+}
+.flex-column{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.flex-row{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: space-between;
+}
+.chip-container{
+    background-color: $chipPurple;  
+    border-radius: 25px;
+    padding: 0 10px;
+}
+.text{
+    color: $textBlue;
+    margin: 0;
+    padding: 0;
+    
+}
+.capitalize{
+    text-transform: capitalize;
+}
+.flex-end{
+    display: flex;
+    align-self: flex-end;
+}
+.underline{
+    text-decoration: underline;
+}
