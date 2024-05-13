@@ -56,7 +56,7 @@ export class AppComponent {
         { title: 'Survey name'}
       ]
     },
-    { title: 'Programs',image: './../assets/images/survey.svg', 
+    { title: 'Program',image: './../assets/images/survey.svg', 
       sidenav : [
         { title: 'Program details'},
         { title: 'Resources'},
@@ -65,14 +65,26 @@ export class AppComponent {
     }
   ];
 
-  projectHeader = {
+  resourceHeader = {
     "title":"Project Name",
     "buttons":[
       { title : 'Save as draft'},
       { title : 'Preview'},
       { title : 'Send for Review'}
     ]
-   }
+  }
+
+  observationwithrubricsHeader = {
+    "title" : "Observation Form",
+    "buttons":[
+      { title : 'Pagination'},
+      { title : 'Progress Status'},
+      { title : 'Save as draft'},
+      { title : 'Preview'},
+      { title : 'Send for Review'}
+    ]
+  }
+
 
   constructor() {
 
@@ -83,11 +95,19 @@ export class AppComponent {
     this.backButton = cardItem.showBackButton
     this.subHeader = cardItem.subHeader;
 
-    if (cardItem.title === 'Project') {
-      this.headerData =  this.projectHeader;
-    } else {
+    if ((cardItem.title === 'Project') || (cardItem.title === 'Observation') || (cardItem.title === 'Survey') || (cardItem.title === 'Program')) {
+      this.headerData =  this.resourceHeader;
+    }
+    else if (cardItem.title === 'Observation with rubrics') {
+      this.headerData = this.observationwithrubricsHeader;
+    }
+    else {
         this.headerData = {};
     }
+  }
+
+  onButtonClick(buttonTitle: string) {
+    console.log(buttonTitle)
   }
   
 }

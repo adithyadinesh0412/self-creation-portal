@@ -11,7 +11,7 @@
     @if (headerData.buttons) {
       <div class="buttons-container">
         @for (button of headerData.buttons; track button) {
-          <button mat-button>{{ button.title }}</button>
+          <button mat-button (click)="onclick(button)">{{ button.title }}</button>
         }
       </div>
     }

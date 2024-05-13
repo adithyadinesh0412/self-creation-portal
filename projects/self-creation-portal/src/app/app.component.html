@@ -1,4 +1,4 @@
-<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData"></lib-header>
+<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
 <div class="main">
     <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
     <div class="content-container">
