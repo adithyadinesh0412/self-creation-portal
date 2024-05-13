@@ -18,7 +18,6 @@ export class LibSharedModulesService {
 
   public goBack(): void {
     if (this.previousUrl) {
-      // this.location.back();
       this.router.navigateByUrl(this.previousUrl);
     }
   }
