@@ -1,2 +1,7 @@
 <p>Self creation portal application</p>
 <lib-header></lib-header>
+
+
+<lib-card [list]="list"></lib-card>
+
+<lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
