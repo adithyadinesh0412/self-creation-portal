@@ -22,7 +22,7 @@ export class HeaderComponent {
     this.libsharedservice.goBack()
   }
 
-  onclick(button : any) {
+  onButtonClick(button : any) {
     this.buttonClick.emit(button.title)
   }
   
