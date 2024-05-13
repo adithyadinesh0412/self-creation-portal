@@ -22,7 +22,6 @@ export class PaginationComponent {
       page: event.pageIndex + 1,
       pageSize: this.paginator.pageSize
     }
-    console.log(data)
     this.paginatorChanged.emit(data);
   }
 }
