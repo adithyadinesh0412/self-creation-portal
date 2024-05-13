@@ -14,8 +14,8 @@ export class PaginationComponent {
   @Input() totalCount:any;
   @Input() setPaginatorToFirstpage:any
   @Output() paginatorChanged = new EventEmitter();
-  pageSize = 5;
-  pageSizeOptions = [5,10,20,100];
+  @Input() pageSize:any = 5
+  @Input() pageSizeOptions:Array<number>= [5,10,20,100]
  
   onPageChange(event: any) {
     let data = {
