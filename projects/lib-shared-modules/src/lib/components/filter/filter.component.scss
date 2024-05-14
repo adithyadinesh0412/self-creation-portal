@@ -1,0 +1,24 @@
+@import "./../../../../../self-creation-portal/src/styles.scss";
+
+.container{
+    display: flex;
+    gap: 10px;
+}
+
+.filter-container{
+    border-radius: 10px;
+    border:1px solid $primary;
+    padding:5px;
+    min-width: 180px;
+    display: inline-block;
+}
+::ng-deep  .mat-mdc-select-value .mat-mdc-select-placeholder {
+     text-align:center;
+     color: $primary; 
+}
+::ng-deep .mat-mdc-select-value-text .mat-mdc-select-arrow svg{
+    color:$primary;
+}
+
+
+

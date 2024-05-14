@@ -1,12 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'lib-pagination',
   standalone: true,
-  imports: [],
+  imports: [MatPaginatorModule],
   templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.css'
+  styleUrl: './pagination.component.scss'
 })
 export class PaginationComponent {
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @Input() totalCount:any;
+  @Input() setPaginatorToFirstpage:any
+  @Output() paginatorChanged = new EventEmitter();
+  @Input() pageSize:any = 5
+  @Input() pageSizeOptions:Array<number>= [5,10,20,100]
+ 
+  onPageChange(event: any) {
+    let data = {
+      page: event.pageIndex + 1,
+      pageSize: this.paginator.pageSize
+    }
+    this.paginatorChanged.emit(data);
+  }
 }
