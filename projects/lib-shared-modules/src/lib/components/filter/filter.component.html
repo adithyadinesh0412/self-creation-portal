@@ -1,1 +1,13 @@
-<p>filter works!</p>
+@if(filterData){
+  <div class="container">
+    @for(filter of filterData;track filter){
+      <div class="filter-container">
+            <mat-select [placeholder]="filter.label" >
+                @for(option of filter.option;track option){
+              <mat-option (click)="OnClickfilter(option)" [value]="option">{{option}}</mat-option>
+                }
+            </mat-select>
+          </div>
+    }
+  </div>
+}
