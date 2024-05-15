@@ -1,4 +1,4 @@
-<p>Self creation portal application</p>
+<!-- <p>Self creation portal application</p>
 <lib-header></lib-header>
 
 <div>
@@ -7,4 +7,18 @@
   
     <button (click)="onClick('en')">English</button>
     <button (click)="onClick('hi')">Français</button>
-  </div>
+  </div> -->
+<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
+<div class="main">
+    <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
+    <div class="content-container">
+      @for (cardItem of resourceList; track cardItem) {
+        <mat-card class="custom-card" (click)="onCardClick(cardItem)">
+          <mat-card-content class="img-content">
+            <img src="{{ cardItem.image }}" alt="">
+            <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+        </mat-card-content>
+        </mat-card>
+      }
+    </div>
+</div>
