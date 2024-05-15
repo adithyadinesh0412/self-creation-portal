@@ -1,9 +1,10 @@
 <p>Self creation portal application</p>
 <lib-header></lib-header>
 
-
-<lib-card [list]="list"></lib-card>
-
-<lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
-
-<lib-pagination totalCount="6" (paginatorChanged)="onPaginatorChange($event)"></lib-pagination>
+<div>
+    <h1>{{ 'HELLO' | translate }}</h1>
+    <p>{{ 'WELCOME' | translate }}</p>
+  
+    <button (click)="onClick('en')">English</button>
+    <button (click)="onClick('hi')">Français</button>
+  </div>
