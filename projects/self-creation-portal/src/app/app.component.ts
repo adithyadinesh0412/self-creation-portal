@@ -87,7 +87,7 @@ export class AppComponent {
   }
 
 
-  constructor(private translate: TranslateService,private router: Router) {
+  constructor(private translate: TranslateService) {
     this.initializeTranslation();
   }
   
