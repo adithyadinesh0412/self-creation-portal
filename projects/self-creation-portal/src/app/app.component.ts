@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list'; 
 import { MatCardModule } from '@angular/material/card';
+import { TranslateModule,TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -86,8 +87,12 @@ export class AppComponent {
   }
 
 
-  constructor() {
-
+  constructor(private translate: TranslateService) {
+    this.initializeTranslation();
+  }
+  
+  private initializeTranslation(): void {
+    this.translate.setDefaultLang('en');
   }
 
   onCardClick(cardItem: any) {
