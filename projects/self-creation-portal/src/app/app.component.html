@@ -1,9 +1,14 @@
-<p>Self creation portal application</p>
-<lib-header></lib-header>
-
-
-<lib-card [list]="list"></lib-card>
-
-<lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
-
-<lib-pagination totalCount="6" (paginatorChanged)="onPaginatorChange($event)"></lib-pagination>
+<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
+<div class="main">
+    <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
+    <div class="content-container">
+      @for (cardItem of resourceList; track cardItem) {
+        <mat-card class="custom-card" (click)="onCardClick(cardItem)">
+          <mat-card-content class="img-content">
+            <img src="{{ cardItem.image }}" alt="">
+            <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+        </mat-card-content>
+        </mat-card>
+      }
+    </div>
+</div>

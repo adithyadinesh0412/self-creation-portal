@@ -47,6 +47,9 @@ $custom-theme: mat.define-light-theme((
     warn:$custom-warn
   )
 ));
+$primary: #0a4f9d;
+$secondary: #FBFDFE;
+$tertiary: #34383C;
 
 $primary: #0a4f9d;
 $cardLightBlue:#f3f7fa;
@@ -56,3 +59,6 @@ $textBlue:#0A4F9D;
 @include mat.all-component-themes($custom-theme);
 
 // Define any additional custom styles below
+body{
+  margin: 0 auto;
+}
