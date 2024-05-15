@@ -1,13 +1,3 @@
-<!-- <p>Self creation portal application</p>
-<lib-header></lib-header>
-
-<div>
-    <h1>{{ 'HELLO' | translate }}</h1>
-    <p>{{ 'WELCOME' | translate }}</p>
-  
-    <button (click)="onClick('en')">English</button>
-    <button (click)="onClick('hi')">Français</button>
-  </div> -->
 <lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
 <div class="main">
     <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
