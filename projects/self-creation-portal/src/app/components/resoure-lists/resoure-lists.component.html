@@ -1,0 +1,10 @@
+<div class="content-container">
+    @for (cardItem of resourceList; track cardItem) {
+      <mat-card class="custom-card" (click)="onCardClick(cardItem)">
+        <mat-card-content class="img-content">
+          <img src="{{ cardItem.image }}" alt="">
+          <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+      </mat-card-content>
+      </mat-card>
+    }
+</div>

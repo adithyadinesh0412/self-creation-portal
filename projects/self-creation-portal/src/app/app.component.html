@@ -1,14 +1,1 @@
-<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
-<div class="main">
-    <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
-    <div class="content-container">
-      @for (cardItem of resourceList; track cardItem) {
-        <mat-card class="custom-card" (click)="onCardClick(cardItem)">
-          <mat-card-content class="img-content">
-            <img src="{{ cardItem.image }}" alt="">
-            <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
-        </mat-card-content>
-        </mat-card>
-      }
-    </div>
-</div>
+<router-outlet></router-outlet>

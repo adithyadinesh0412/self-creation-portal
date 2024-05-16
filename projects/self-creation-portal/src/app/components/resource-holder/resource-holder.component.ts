@@ -1,22 +1,21 @@
 import { Component } from '@angular/core';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { TranslateModule,TranslateService } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-resource-holder',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,RouterModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [HeaderComponent,SideNavbarComponent,MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule],
+  templateUrl: './resource-holder.component.html',
+  styleUrl: './resource-holder.component.scss',
 })
-export class AppComponent {
+export class ResourceHolderComponent {
   backButton : boolean = true;
   subHeader : any;
   headerData : any = {};
@@ -26,7 +25,7 @@ export class AppComponent {
   }
 
   public sidenavData = [
-    { title: 'Create New', action: "", icon: 'add', url: '',},
+    { title: 'Project Details', action: "", icon: 'add', url: '',},
     { title: 'Browse Existing', action: "", icon: 'search', url: ''},
     { title: 'Drafts', action: "", icon: 'drafts', url: '' },
     { title: 'Submitted for Review', action: "", icon: 'send', url: ''},
@@ -114,5 +113,4 @@ export class AppComponent {
 
   onButtonClick(buttonTitle: string) {
   }
-
 }

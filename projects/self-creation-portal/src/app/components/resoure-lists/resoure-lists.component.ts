@@ -1,22 +1,19 @@
 import { Component } from '@angular/core';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { TranslateModule,TranslateService } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-resoure-lists',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,RouterModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule],
+  templateUrl: './resoure-lists.component.html',
+  styleUrl: './resoure-lists.component.scss'
 })
-export class AppComponent {
+export class ResoureListsComponent {
   backButton : boolean = true;
   subHeader : any;
   headerData : any = {};

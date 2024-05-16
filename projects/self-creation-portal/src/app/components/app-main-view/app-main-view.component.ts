@@ -1,22 +1,36 @@
 import { Component } from '@angular/core';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
-import { TranslateModule,TranslateService } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterModule, Routes } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { ResoureListsComponent } from '../resoure-lists/resoure-lists.component';
+import { ResourceHolderComponent } from '../resource-holder/resource-holder.component';
+
+// export const appMainRoute: Routes = [
+//   {
+//       path:'resources',
+//       component:ResoureListsComponent
+//   },
+//   {
+//       path:'browse-existing',
+//       component:ResourceHolderComponent
+//   }
+// ];
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-main-view',
   standalone: true,
   imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,RouterModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  templateUrl: './app-main-view.component.html',
+  styleUrl: './app-main-view.component.scss'
 })
-export class AppComponent {
+export class AppMainViewComponent {
+
   backButton : boolean = true;
   subHeader : any;
   headerData : any = {};
