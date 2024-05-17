@@ -1,5 +1,34 @@
 {
     "HELLO": "Hello",
     "WELCOME": "Welcome to our application",
-    "HEADER":"header works"
-  }
+    "HEADER":"header works",
+    "CREATE_NEW": "Create New",
+    "BROWSE_EXISTING": "Browse Existing",
+    "DRAFTS": "DraftS",
+    "SUBMITTED_FOR_REVIEW": "Submitted for Review",
+    "PUBLISHED": "Published",
+    "UP_FOR_REVIEW": "Up for review",
+    "PROJECT": "Project",
+    "OBSERVATION": "Observation",
+    "OBSERVATION_WITH_RUBRIC": "Observation with rubric",
+    "SURVEY": "Survey",
+    "PROGRAM": "Program",
+    "PROJECT_DETAILS": "Project details",
+    "TASKS": "Tasks",
+    "SUBTASKS_AND_RESOURCES": "Subtasks and Resources",
+    "CERTIFICATE": "Certificate",
+    "OBSERVATION_NAME":"Observation name",
+    "SURVEY_NAME":"Survey name",
+    "PROGRAM_DETAILS":"Program details",
+    "RESOURCES":"Resources",
+    "RESOURCE_LEVEL_TARGETING":"Resource level targeting",
+    "PROJECT_NAME":"Project Name",
+    "SAVE_AS_DRAFT": "Save as draft",
+    "PREVIEW": "Preview",
+    "SEND_FOR_REVIEW": "Send for Review",
+    "OBSERVATION_FORM": "Observation Form",
+    "PAGINATION": "Pagination",
+    "PROGRESS_STATUS": "Progress Status"
+
+    
+}

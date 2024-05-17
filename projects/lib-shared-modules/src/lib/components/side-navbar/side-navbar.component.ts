@@ -3,15 +3,23 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list'; 
 import { MatCardModule } from '@angular/material/card';
+import { TranslateModule,TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'lib-side-navbar',
   standalone: true,
-  imports: [MatSidenavModule, MatIconModule, MatListModule, MatCardModule],
+  imports: [MatSidenavModule, MatIconModule, MatListModule, MatCardModule, TranslateModule],
   templateUrl: './side-navbar.component.html',
   styleUrl: './side-navbar.component.scss'
 })
 export class SideNavbarComponent {
   @Input() sidenavData : any[] = [];
 
+  constructor(private translate: TranslateService) {
+    this.initializeTranslation();
+  }
+  
+  private initializeTranslation(): void {
+    this.translate.setDefaultLang('en');
+  }
 }

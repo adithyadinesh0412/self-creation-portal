@@ -6,9 +6,13 @@
         <mat-card class="custom-card" (click)="onCardClick(cardItem)">
           <mat-card-content class="img-content">
             <img src="{{ cardItem.image }}" alt="">
-            <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+            <mat-card-title class="img-title">{{ cardItem.title | translate }}</mat-card-title>
         </mat-card-content>
         </mat-card>
       }
     </div>
+    <div>
+      <button mat-button color="primary" (click)="openDialog()">open dialogue</button>
+    </div>
 </div>
+

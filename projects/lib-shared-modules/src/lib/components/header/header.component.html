@@ -7,11 +7,12 @@
   <span class="aligned-with-icon">{{ title }}</span>
 </mat-toolbar>
 <mat-toolbar class="sub-header">
-    <div class="title">{{ headerData?.title || 'Workspace' }}</div>
+  <!-- add this css for header -->
+    <div class="title">{{ headerData?.title || 'Workspace'  | translate}}</div> 
     @if (headerData.buttons) {
       <div class="buttons-container">
         @for (button of headerData.buttons; track button) {
-          <button mat-button (click)="onButtonClick(button)">{{ button.title }}</button>
+          <button mat-button (click)="onButtonClick(button)">{{ button.title | translate }}</button>
         }
       </div>
     }

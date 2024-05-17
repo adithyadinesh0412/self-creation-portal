@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent } from 'lib-shared-modules';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list'; 
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogConfig} from '@angular/material/dialog'; 
 import { TranslateModule,TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule],
+  imports: [HeaderComponent, SideNavbarComponent, DialogModelComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -25,69 +26,69 @@ export class AppComponent {
   }
 
   public sidenavData = [
-    { title: 'Create New', action: "", icon: 'add', url: '',},
-    { title: 'Browse Existing', action: "", icon: 'search', url: ''},
-    { title: 'Drafts', action: "", icon: 'drafts', url: '' },
-    { title: 'Submitted for Review', action: "", icon: 'send', url: ''},
-    { title: 'Published', action: "", icon: 'published', url: ''},
-    { title: 'Up for review', action: "", icon: 'pending', url: '' }
+    { title: 'CREATE_NEW', action: "", icon: 'add', url: '',},
+    { title: 'BROWSE_EXISTING', action: "", icon: 'search', url: ''},
+    { title: 'DRAFTS', action: "", icon: 'drafts', url: '' },
+    { title: 'SUBMITTED_FOR_REVIEW', action: "", icon: 'send', url: ''},
+    { title: 'PUBLISHED', action: "", icon: 'published', url: ''},
+    { title: 'UP_FOR_REVIEW', action: "", icon: 'pending', url: '' }
   ];
 
   resourceList = [
-    { title: 'Project', image:'./../assets/images/observation.svg', 
+    { title: 'PROJECT', image:'./../assets/images/observation.svg', 
       sidenav : [
-        { title: 'Project details', action: "", icon: 'add',  url: ''},
-        { title: 'Tasks', action: "", icon: 'search',  url: ''},
-        { title: 'Subtask and resources', action: "", icon: 'search',  url: ''},
-        { title: 'Certificate', action: "", icon: 'search',  url: ''},
+        { title: 'PROJECT_DETAILS', action: "", icon: 'add',  url: ''},
+        { title: 'TASKS', action: "", icon: 'search',  url: ''},
+        { title: 'SUBTASKS_AND_RESOURCES', action: "", icon: 'search',  url: ''},
+        { title: 'CERTIFICATE', action: "", icon: 'search',  url: ''},
       ], showBackButton : true
     },
-    { title: 'Observation', image:'./../assets/images/observation.svg', 
+    { title: 'OBSERVATION', image:'./../assets/images/observation.svg', 
       sidenav : [
-        { title: 'Observation name'}
+        { title: 'OBSERVATION_NAME'}
       ], showBackButton : true 
     },
-    { title: 'Observation with rubrics',image:'./../assets/images/observation.svg', 
+    { title: 'OBSERVATION_WITH_RUBRIC',image:'./../assets/images/observation.svg', 
       sidenav : [
-        { title: 'Observation name'}
+        { title: 'OBSERVATION_NAME'}
       ] 
     },
-    { title: 'Survey', image: './../assets/images/survey.svg', 
+    { title: 'SURVEY', image: './../assets/images/survey.svg', 
       sidenav : [
-        { title: 'Survey name'}
+        { title: 'SURVEY_NAME'}
       ]
     },
-    { title: 'Program',image: './../assets/images/survey.svg', 
+    { title: 'PROGRAM',image: './../assets/images/survey.svg', 
       sidenav : [
-        { title: 'Program details'},
-        { title: 'Resources'},
-        { title: 'Resource level targeting'}
+        { title: 'PROGRAM_DETAILS'},
+        { title: 'RESOURCES'},
+        { title: 'RESOURCE_LEVEL_TARGETING'}
       ] 
     }
   ];
 
   resourceHeader = {
-    "title":"Project Name",
+    "title":"PROJECT_NAME",
     "buttons":[
-      { title : 'Save as draft'},
-      { title : 'Preview'},
-      { title : 'Send for Review'}
+      { title: 'SAVE_AS_DRAFT'},
+      { title: 'PREVIEW'},
+      { title: 'SEND_FOR_REVIEW'}
     ]
   }
 
   observationwithrubricsHeader = {
-    "title" : "Observation Form",
+    "title" : "OBSERVATION_FORM",
     "buttons":[
-      { title : 'Pagination'},
-      { title : 'Progress Status'},
-      { title : 'Save as draft'},
-      { title : 'Preview'},
-      { title : 'Send for Review'}
+      { title: 'PAGINATION'},
+      { title: 'PROGRESS_STATUS'},
+      { title: 'SAVE_AS_DRAFT'},
+      { title: 'PREVIEW'},
+      { title: 'SEND_FOR_REVIEW'}
     ]
   }
 
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private dialog : MatDialog) {
     this.initializeTranslation();
   }
   
@@ -100,10 +101,10 @@ export class AppComponent {
     this.backButton = cardItem.showBackButton
     this.subHeader = cardItem.subHeader;
 
-    if ((cardItem.title === 'Project') || (cardItem.title === 'Observation') || (cardItem.title === 'Survey') || (cardItem.title === 'Program')) {
+    if ((cardItem.title === 'PROJECT') || (cardItem.title === 'OBSERVATION') || (cardItem.title === 'SURVEY') || (cardItem.title === 'PROGRAM')) {
       this.headerData =  this.resourceHeader;
     }
-    else if (cardItem.title === 'Observation with rubrics') {
+    else if (cardItem.title === 'OBSERVATION_WITH_RUBRIC') {
       this.headerData = this.observationwithrubricsHeader;
     }
     else {
@@ -114,4 +115,94 @@ export class AppComponent {
   onButtonClick(buttonTitle: string) {
   }
   
+  dialogData = [
+    {
+      "header": '',
+      "content": 'Changes will not be saved, do you want to go back?',
+      "buttons": [
+        { title: 'Yes'},
+        { title: 'No' }
+      ]
+    },
+    {
+      "header": 'Exit review?',
+      "content": 'Exiting the review will delete any comments or progress made on this resource. Are you sure you want to exit the review?',
+      "buttons": [
+        { title: 'Cancel'},
+        { title: 'Exit' }
+      ]
+    },
+    {
+      "header": 'Delete resource?',
+      "content": 'Exiting the review will delete any comments or progress made on this resource. Are you sure you want to exit the reviewing?',
+      "buttons": [
+        { title: 'Cancel'},
+        { title: 'Delete' }
+      ]
+    },
+    {
+      "header": 'Delete resource?',
+      "content": 'Would you like to delete the selected resources?',
+      "buttons": [
+        { title: 'Cancel'},
+        { title: 'Delete' }
+      ]
+    }
+  ]
+  
+  modalData = [
+    {
+      "header": 'Add learning resources?',
+      "content": [
+        { title: 'Name of the resource', input : ''},
+        { title: 'Link to the resource', input : ''},
+        { button: 'Add learning resource'}
+      ],
+      "buttons": [
+        { title: 'Cancel'},
+        { title: 'Save' }
+      ]
+    },
+    {
+      "header": 'Attach logo',
+      "content": [
+        { title: 'Attach logos'},
+        { title: 'Make sure your file:'}
+      ],
+      'files': [
+        { title: 1, content: 'Is 80px X 80px in dimension'},
+        { title: 2, content: 'Size <= 50kb'},
+        { title: 3, content: 'File type - PNG only'}
+      ],
+      'card': 'Select file to upload',
+      "buttons": 'Attach'
+    },
+    {
+      "header": 'Attach Signature',
+      "subheader": 'Add Signature details',
+      "content": [
+        { title: 'Signature Name', input: ''},
+        { title: 'Signature Designation', input: ''}
+      ],
+      'files': [
+        { title: 1, content: '112px height X 46px base'},
+        { title: 2, content: 'Size <= 50kb'},
+        { title: 3, content: 'File type - PNG only'}
+      ],
+      'card': 'Select file to upload',
+      "buttons": 'Attach'
+    }
+  ]
+
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = "280px";
+    dialogConfig.height = "150px";
+    dialogConfig.data = this.dialogData;
+    const dialogRef = this.dialog.open(DialogModelComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 }
