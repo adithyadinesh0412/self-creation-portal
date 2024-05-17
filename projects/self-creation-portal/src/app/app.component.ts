@@ -4,15 +4,16 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list'; 
+import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogConfig} from '@angular/material/dialog'; 
 import { TranslateModule,TranslateService } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, SideNavbarComponent, DialogModelComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule],
+  imports: [HeaderComponent, SideNavbarComponent, DialogModelComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -91,7 +92,7 @@ export class AppComponent {
   constructor(private translate: TranslateService, private dialog : MatDialog) {
     this.initializeTranslation();
   }
-  
+
   private initializeTranslation(): void {
     this.translate.setDefaultLang('en');
   }
@@ -205,4 +206,5 @@ export class AppComponent {
       console.log(`Dialog result: ${result}`);
     });
   }
+
 }
