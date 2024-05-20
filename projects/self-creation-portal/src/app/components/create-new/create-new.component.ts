@@ -116,12 +116,11 @@ export class CreateNewComponent {
   
   openPopup() {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.backdropClass = 'cdk-overlay-dark-backdrop',
-    dialogConfig.width = "500px";
+    dialogConfig.width = "40%";
     dialogConfig.height = "auto";
     dialogConfig.data = {
-      "header": 'Back',
-      "content": 'Changes will not be saved, do you want to go back?',
+      "header": 'BACK',
+      "content": 'CHANGE_UNSAVED_MESSAGE',
       "cancelButton": "CANCEL",
       "exitButton": "EXIT"
     }
@@ -133,10 +132,10 @@ export class CreateNewComponent {
 
   openDialog() {
     const dialog = new MatDialogConfig();
-    dialog.width = "400px";
-    dialog.height = "auto";
+    dialog.width = '40%';
+    dialog.height = 'auto';
     dialog.data = {
-      "header": 'Add learning resource(s)',
+      "header": 'ADD_LEARNING_RESOURCE',
       "labelname": 'RESOURCE_NAME',
       "resourceName":'Name',
       "labellink": 'RESOURCE_LINK',
@@ -152,5 +151,4 @@ export class CreateNewComponent {
 
   onButtonClick(buttonTitle: string) {
   }
-
 }

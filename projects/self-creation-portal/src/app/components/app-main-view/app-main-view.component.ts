@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,14 +29,14 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './app-main-view.component.html',
   styleUrl: './app-main-view.component.scss'
 })
-export class AppMainViewComponent implements OnInit{
+export class AppMainViewComponent {
 
   backButton : boolean = true;
   subHeader : any;
   headerData : any = {};
   selctedCardItem : any;
   titleObj = {
-    "title" : "Creation Portal"
+    "title" : "CREATION_PORTAL"
   }
 
   public sidenavData = [
@@ -52,15 +52,10 @@ export class AppMainViewComponent implements OnInit{
     this.initializeTranslation();
   }
 
-  ngOnInit() {
-    
-  }
-
   private initializeTranslation(): void {
     this.translate.setDefaultLang('en');
   }
 
   onButtonClick(buttonTitle: string) {
   }
-
 }

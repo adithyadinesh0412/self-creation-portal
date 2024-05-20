@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class DialogModelComponent {
   
+  data : any
   constructor(
     public dialogRef: MatDialogRef<DialogModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any, private translate: TranslateService

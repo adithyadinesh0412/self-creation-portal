@@ -1,0 +1,12 @@
+<div class="flex flex-row justify-between items-center bg-primary h-10">
+    <mat-label mat-dialog-title class="text-white">{{dialogueData?.header |translate}}</mat-label>
+    <img class="cursor-pointer pr-2" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
+</div>
+<div mat-dialog-content class="text-secondary p-4">
+    <h3>{{dialogueData?.content |translate}}</h3>
+</div>
+<div class="border-t"></div> 
+<div mat-dialog-actions class="flex flex-row justify-end items-center space-x-4 py-0">
+  <button  class="btn text-primary w-24 min-w-24" [mat-dialog-close]="false">{{dialogueData.cancelButton |translate}}</button>
+  <button  class="btn bg-primary text-white w-24 min-w-24" [mat-dialog-close]="true" cdkFocusInitial>{{dialogueData.exitButton |translate}}</button>
+</div>

@@ -1,0 +1,11 @@
+@import "../../../../../../self-creation-portal/src/styles.scss";
+mat-label{
+    padding-bottom: 18px;
+}
+.btn {
+    border: 1px solid $primary;
+    border-radius: 2px !important;
+    padding: 0 15px !important;
+    margin: 0 5px 15px 0 !important; 
+    box-sizing: border-box;
+}
