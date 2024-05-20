@@ -4,7 +4,7 @@
     "HEADER":"header works",
     "CREATE_NEW": "Create New",
     "BROWSE_EXISTING": "Browse Existing",
-    "DRAFTS": "DraftS",
+    "DRAFTS": "Drafts",
     "SUBMITTED_FOR_REVIEW": "Submitted for Review",
     "PUBLISHED": "Published",
     "UP_FOR_REVIEW": "Up for review",
@@ -28,7 +28,14 @@
     "SEND_FOR_REVIEW": "Send for Review",
     "OBSERVATION_FORM": "Observation Form",
     "PAGINATION": "Pagination",
-    "PROGRESS_STATUS": "Progress Status"
-
+    "PROGRESS_STATUS": "Progress Status",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "EXIT": "Exit",
+    "YES": "Yes",
+    "NO": "No",
+    "DELETE": "Delete",
+    "RESOURCE_NAME": "Name of the resource",
+    "RESOURCE_LINK": "Link to the resource"
     
 }

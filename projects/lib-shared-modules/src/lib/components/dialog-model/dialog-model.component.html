@@ -1,6 +1,19 @@
-<p>dialogue-model works!</p>
-<h2 mat-dialog-title>{{ data.header }}</h2>
-<mat-dialog-actions>
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{ data.buttons[0].title }}</button>
-</mat-dialog-actions>
+<div class="flex flex-row justify-between items-center bg-primary h-10">
+  <mat-label mat-dialog-title class="text-white">{{dialogueData?.header}}</mat-label>
+  <img class="cursor-pointer pr-2" [mat-dialog-close]="false" src="./../assets/icons/cross-icon.png" alt="">
+</div>
+<div mat-dialog-content class="flex flex-row items-center space-x-4 py-0 text-secondary p-4">
+  <mat-form-field class="w-full mt-4">
+    <mat-label class="text-secondary">{{ dialogueData?.labelname | translate}}</mat-label>
+    <input matInput [(ngModel)]="dialogueData.resourceName">
+  </mat-form-field>
+  <mat-form-field class="w-full mt-4">
+    <mat-label class="text-secondary">{{ dialogueData?.labellink | translate}}</mat-label>
+    <input matInput [(ngModel)]="dialogueData.resourceLink">
+  </mat-form-field>
+</div>
+<div class="border-t"></div> 
+<div mat-dialog-actions class="flex flex-row justify-end items-center space-x-4 py-0">
+<button  class="btn text-primary" [mat-dialog-close]="false">{{dialogueData.cancelButton |translate}}</button>
+<button  class="btn bg-primary text-white" [mat-dialog-close]="true" cdkFocusInitial>{{dialogueData.saveButton |translate}}</button>
+</div>

@@ -1,22 +1,18 @@
 import { Component, Inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
-
 @Component({
-  selector: 'lib-dialogue-model',
+  selector: 'lib-dialog-popup',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, MatInputModule, MatIconModule, TranslateModule, FormsModule],
-  templateUrl: './dialog-model.component.html',
-  styleUrl: './dialog-model.component.scss'
+  imports: [MatDialogModule,MatButtonModule, MatIconModule, TranslateModule],
+  templateUrl: './dialog-popup.component.html',
+  styleUrl: './dialog-popup.component.scss'
 })
-export class DialogModelComponent {
-  
+export class DialogPopupComponent {
   constructor(
-    public dialogRef: MatDialogRef<DialogModelComponent>,
+    public dialogRef: MatDialogRef<DialogPopupComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any, private translate: TranslateService
   ) { 
     this.initializeTranslation();

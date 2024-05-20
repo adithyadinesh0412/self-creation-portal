@@ -3,8 +3,10 @@
       <mat-card class="custom-card" (click)="onCardClick(cardItem)">
         <mat-card-content class="img-content">
           <img src="{{ cardItem.image }}" alt="">
-          <mat-card-title class="img-title">{{ cardItem.title }}</mat-card-title>
+          <mat-card-title class="img-title">{{ cardItem.title | translate}}</mat-card-title>
       </mat-card-content>
       </mat-card>
     }
+    <button mat-button (click)="openPopup()">openPopup</button>
+    <button mat-raised-button (click)="openDialog()">openDialog</button>
 </div>

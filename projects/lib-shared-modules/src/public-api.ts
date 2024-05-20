@@ -7,3 +7,4 @@ export * from './lib/components/pagination/pagination.component';
 export * from './lib/components/search/search.component';
 export * from './lib/components/side-navbar/side-navbar.component';
 export * from './lib/components/dialog-model/dialog-model.component';
+export * from './lib/components/dialog-popup/dialog-popup.component';
