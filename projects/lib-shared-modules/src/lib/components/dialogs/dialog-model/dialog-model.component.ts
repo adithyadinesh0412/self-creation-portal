@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -14,16 +14,22 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './dialog-model.component.scss'
 })
 export class DialogModelComponent {
-  
+  resources: Array<{ resourceName: string, resourceLink: string }> = [];
   data : any
   constructor(
     public dialogRef: MatDialogRef<DialogModelComponent>,
-    @Inject(MAT_DIALOG_DATA)  public dialogueData: any, private translate: TranslateService
-  ) { 
-    this.initializeTranslation();
+    @Inject(MAT_DIALOG_DATA)  public dialogueData: any,) { 
   }
-  
-  private initializeTranslation(): void {
-    this.translate.setDefaultLang('en');
+
+  onAddResource(): void {
+    this.resources.push({ resourceName: 'Name', resourceLink: 'Link' });
+  }
+
+  onSave(): void {
+    this.dialogRef.close(this.dialogueData);
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
   }
 }

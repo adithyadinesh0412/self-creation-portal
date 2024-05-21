@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'lib-dialog-popup',
   standalone: true,
@@ -13,12 +13,6 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
 export class DialogPopupComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogPopupComponent>,
-    @Inject(MAT_DIALOG_DATA)  public dialogueData: any, private translate: TranslateService
-  ) { 
-    this.initializeTranslation();
-  }
-  
-  private initializeTranslation(): void {
-    this.translate.setDefaultLang('en');
+    @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
   }
 }

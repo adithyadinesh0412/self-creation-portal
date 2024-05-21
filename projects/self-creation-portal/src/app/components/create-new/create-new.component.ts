@@ -4,8 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { LibSharedModulesService, DialogModelComponent, DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { TranslateModule } from '@ngx-translate/core';
+import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
 
 @Component({
@@ -86,12 +86,7 @@ export class CreateNewComponent {
     ]
   }
 
-  constructor(private translate: TranslateService, private libsharedService:LibSharedModulesService, private dialog : MatDialog,) {
-    this.initializeTranslation();
-  }
-
-  private initializeTranslation(): void {
-    this.translate.setDefaultLang('en');
+  constructor(private dialog : MatDialog,) {
   }
 
   ngOnInit() {
@@ -115,35 +110,32 @@ export class CreateNewComponent {
   }
   
   openPopup() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = "40%";
-    dialogConfig.height = "auto";
-    dialogConfig.data = {
-      "header": 'BACK',
-      "content": 'CHANGE_UNSAVED_MESSAGE',
-      "cancelButton": "CANCEL",
-      "exitButton": "EXIT"
+    const dialogRef = this.dialog.open(DialogPopupComponent, { height: 'auto', width: '40%', 
+    data : {
+      header: 'BACK',
+      content: 'CHANGE_UNSAVED_MESSAGE',
+      cancelButton:'CANCEL',
+      exitButton: 'EXIT'
     }
-    const dialogRef = this.dialog.open(DialogPopupComponent, dialogConfig);
+    });
 
     dialogRef.afterClosed().subscribe(result => {
     });
   }
 
   openDialog() {
-    const dialog = new MatDialogConfig();
-    dialog.width = '40%';
-    dialog.height = 'auto';
-    dialog.data = {
-      "header": 'ADD_LEARNING_RESOURCE',
-      "labelname": 'RESOURCE_NAME',
-      "resourceName":'Name',
-      "labellink": 'RESOURCE_LINK',
-      "resourceLink":'Link',
-      "cancelButton": 'CANCEL',
-      "saveButton": 'SAVE'
+    const dialogRef = this.dialog.open(DialogModelComponent, { height: 'auto', width: '40%', 
+    data : {
+    header: 'ADD_LEARNING_RESOURCE',
+    labelname: 'RESOURCE_NAME',
+    resourceName:'Name',
+    labellink: 'RESOURCE_LINK',
+    resourceLink:'Link',
+    cancelButton: 'CANCEL',
+    saveButton: 'SAVE',
+    addResource: 'ADD_LEARNING_RESOURCE'
     }
-    const dialogRef = this.dialog.open(DialogModelComponent, dialog);
+    });
 
     dialogRef.afterClosed().subscribe(result => {
     });
