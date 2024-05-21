@@ -9,11 +9,5 @@ export class AuthenticationService {
 
   constructor(private config:ConfigService, private httpProvider:HttpProviderService) { }
 
-  login(payload:any) {
-    let header:any = { 'Content-Type':'application/x-www-form-urlencoded'}
-    let body = new URLSearchParams();
-    body.append('email',payload.email);
-    body.append('password',payload.password)
-    return this.httpProvider.post(this.config.urlConFig.USER_URLS.USER_LOGIN,body,{ headers: header});
-  }
+  // API functions should be called from here
 }

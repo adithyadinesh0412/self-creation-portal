@@ -25,29 +25,8 @@ const corsOpts = {
 
   app.use(cors(corsOpts));
 
-
-// app.all([
-//   '/projects/*','/form/*','/resource/*','/review/*','/comment/*','/certificate/*','/role-permission-mapping'
-// ]);
-
 // to read the URL encoded form data
 app.use(express.urlencoded({ extended: true }));
-
-
-// app.post('/user/*', (req, res) => {
-//   console.log(req.body);
-//   axios.post(baseUrl+req.originalUrl, req.body)
-//   .then(response => {
-//     console.log(response)
-//     res.send(response.data);
-//   })
-//   .catch(error => {
-//     console.log(error)
-//     res.statusCode = 400
-//     res.statusMessage = "wrong Input"
-//     res.send(error.data);
-//   });
-// });
 
 app.all('*', async (req, res) => {
   try {
