@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
 import { ResoureListsComponent } from '../resoure-lists/resoure-lists.component';
 import { ResourceHolderComponent } from '../resource-holder/resource-holder.component';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 // export const appMainRoute: Routes = [
 //   {
@@ -102,7 +103,7 @@ export class AppMainViewComponent {
   }
 
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private authService:AuthenticationService) {
     this.initializeTranslation();
   }
 
@@ -127,6 +128,12 @@ export class AppMainViewComponent {
   }
 
   onButtonClick(buttonTitle: string) {
+  }
+
+  login() {
+    this.authService.login({email:"migepon248@aseall.com",password:"password"}).subscribe((res:any) => {
+      console.log(res);
+    })
   }
 
 }

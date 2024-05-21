@@ -8,11 +8,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule,TranslateService } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { LIBRARY_CONFIG, SlAuthLibModule } from 'authentication_frontend_library';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,RouterModule],
+  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,RouterModule,HttpClientModule, SlAuthLibModule ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
