@@ -124,7 +124,7 @@ export class CreateNewComponent {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(DialogModelComponent, { height: 'auto', width: '40%', 
+    const dialogRef = this.dialog.open(DialogModelComponent, { minHeight:'50vh',maxHeight:'80vh',height: 'auto', width: '40%',
     data : {
     header: 'ADD_LEARNING_RESOURCE',
     labelname: 'RESOURCE_NAME',
