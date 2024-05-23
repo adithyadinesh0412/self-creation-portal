@@ -8,6 +8,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule,TranslateService } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { LIBRARY_CONFIG, SlAuthLibModule } from 'authentication_frontend_library';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',

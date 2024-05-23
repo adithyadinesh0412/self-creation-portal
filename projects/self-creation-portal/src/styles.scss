@@ -1,5 +1,12 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+.mdc-text-field--filled { background-color: white !important; }
+
+.mat-mdc-form-field-focus-overlay{ opacity: 0 !important; }
 
 //@tailwind directives
 @tailwind base;
@@ -67,4 +74,11 @@ $textBlue:#0A4F9D;
 // Define any additional custom styles below
 body{
   margin: 0;
+}
+.btn {
+  border: 1px solid $primary;
+  border-radius: 2px !important;
+  padding: 0 15px !important;
+  margin: 0 5px 15px 0 !important; 
+  box-sizing: border-box;
 }

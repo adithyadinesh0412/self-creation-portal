@@ -7,11 +7,6 @@ import { CreateNewComponent } from './components/create-new/create-new.component
 
 export const routes: Routes = [
     {
-        path:'',
-        redirectTo:'home',
-        pathMatch:'full'
-    },
-    {
         path:'home',
         component:AppMainViewComponent,
         children:[
@@ -45,5 +40,6 @@ export const routes: Routes = [
     {
         path:"solution",
         component:SolutionsLibHolderComponent
-    }
+    },
+    { path: '', loadChildren: () => import('authentication_frontend_library').then(m => m.SlRoutingRoutingModule) }
 ];
