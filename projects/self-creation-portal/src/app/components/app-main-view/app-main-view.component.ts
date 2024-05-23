@@ -7,18 +7,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent} from '../../../../../lib-shared-modules/src/public-api';
-import { ResourceHolderComponent } from '../resource-holder/resource-holder.component';
 
-// export const appMainRoute: Routes = [
-//   {
-//       path:'resources',
-//       component:ResoureListsComponent
-//   },
-//   {
-//       path:'browse-existing',
-//       component:ResourceHolderComponent
-//   }
-// ];
+
 
 @Component({
   selector: 'app-main-view',
