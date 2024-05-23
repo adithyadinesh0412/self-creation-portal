@@ -1,6 +1,12 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
 
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+.mdc-text-field--filled { background-color: white !important; }
+
+.mat-mdc-form-field-focus-overlay{ opacity: 0 !important; }
+
 //@tailwind directives
 @tailwind base;
 @tailwind components;

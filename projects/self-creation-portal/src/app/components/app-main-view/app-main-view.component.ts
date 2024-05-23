@@ -8,8 +8,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
-import { ResoureListsComponent } from '../resoure-lists/resoure-lists.component';
-import { ResourceHolderComponent } from '../resource-holder/resource-holder.component';
 
 // export const appMainRoute: Routes = [
 //   {

@@ -1,0 +1,10 @@
+{
+    "projectName": "Self Creation Portal",
+    "baseUrl": "https://dev.elevate-apis.shikshalokam.org",
+    "redirectRouteOnLoginSuccess": "home",
+    "loginApiPath": "/user/v1/account/login",
+    "signUpApiPath": "/user/v1/account/signup",
+    "supportEmail": "test@yopmail.com",
+    "privacyPolicyUrl": "www.privacyploicy.com",
+    "termOfUseUrl": "www.termsofuse.com"
+}
