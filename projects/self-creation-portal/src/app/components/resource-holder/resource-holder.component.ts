@@ -5,12 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { HeaderComponent, SideNavbarComponent, CardComponent, SearchComponent } from '../../../../../lib-shared-modules/src/public-api';
 
 @Component({
   selector: 'app-resource-holder',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent,MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule],
+  imports: [HeaderComponent,SideNavbarComponent, CardComponent, SearchComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule],
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
 })
@@ -106,5 +106,81 @@ export class ResourceHolderComponent {
   }
 
   onButtonClick(buttonTitle: string) {
+  }
+
+  list:any = 
+    {
+        "id": 4,
+        "title": "sample project",
+        "type": "project",
+        "organization": {
+            "id": 24,
+            "name": "Tunerlabs",
+            "code": "tl"
+        },
+        "status": "DRAFT",
+        "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
+    }
+  lists:any = [
+    {
+      "id": 4,
+      "title": "sample project",
+      "type": "project",
+      "organization": {
+          "id": 24,
+          "name": "Tunerlabs",
+          "code": "tl"
+      },
+      "status": "DRAFT",
+      "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
+    },
+    {
+    "id": 4,
+    "title": "sample project",
+    "type": "project",
+    "organization": {
+        "id": 24,
+        "name": "Tunerlabs",
+        "code": "tl"
+    },
+    "status": "DRAFT",
+    "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
+    },
+    {
+    "id": 4,
+    "title": "sample project",
+    "type": "project",
+    "organization": {
+        "id": 24,
+        "name": "Tunerlabs",
+        "code": "tl"
+    },
+    "status": "DRAFT",
+    "actionButton":[{action:'VIEW',label:'View'},{ action:'EDIT',label:'Edit'}]
+    }
+  ]
+
+  filterData : any = [
+    {
+      label:'',
+      option: [],
+    },
+    {
+      label:'',
+      option: [],
+    },
+    {
+      label:'',
+      option: [],
+    },
+    {
+      label:'',
+      option: [],
+    }
+
+  ]
+
+  receiveSearchResults(searchResult: string) {
+
   }
 }

@@ -1,1 +1,10 @@
-<p>Browse Existing, Reviews, Publishing list here</p>
+<!-- <p>Browse Existing, Reviews, Publishing list here</p>
+<div class="w-full bg-primary">arti</div> -->
+
+<div class="w-full p-6">
+    <lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
+    @for (list of lists; track list) {
+        <lib-card [list]="list" class="p-6"></lib-card>
+    }
+</div>
+
