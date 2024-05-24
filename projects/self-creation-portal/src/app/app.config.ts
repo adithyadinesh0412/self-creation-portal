@@ -1,7 +1,6 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -15,12 +14,11 @@ import {
 import { provideTranslations } from './translation.providers';
 import { LIBRARY_CONFIG } from 'authentication_frontend_library';
 import { authInterceptor } from './services/interceptor/auth.interceptor';
-
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 // Create a loader for translation files
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -29,9 +27,16 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     importProvidersFrom(BrowserAnimationsModule),
     provideHttpClient(withInterceptors([authInterceptor])),
-    { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] }
+    { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] },
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }
   ],
 };
 export function configFactory(http: HttpClient): any {
   return http.get('assets/library.config.json');
 }
+
+
+
+
+
+

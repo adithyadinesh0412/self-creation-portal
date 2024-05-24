@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResoureListsComponent } from './resoure-lists.component';
+import { DialogModelComponent } from './dialog-model.component';
 
-describe('ResoureListsComponent', () => {
-  let component: ResoureListsComponent;
-  let fixture: ComponentFixture<ResoureListsComponent>;
+describe('DialogModelComponent', () => {
+  let component: DialogModelComponent;
+  let fixture: ComponentFixture<DialogModelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResoureListsComponent]
+      imports: [DialogModelComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ResoureListsComponent);
+    fixture = TestBed.createComponent(DialogModelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,14 +4,14 @@
     <mat-icon (click)="backArrowButton()">keyboard_backspace</mat-icon>
     }
   </a>
-  <span class="aligned-with-icon">{{ title }}</span>
+  <span class="aligned-with-icon">{{ title | translate }}</span>
 </mat-toolbar>
 <mat-toolbar class="sub-header">
-    <div class="title">{{ headerData?.title || 'Workspace' }}</div>
+    <div class="title">{{ headerData?.title || 'Workspace'  | translate}}</div> 
     @if (headerData.buttons) {
       <div class="buttons-container">
         @for (button of headerData.buttons; track button) {
-          <button mat-button (click)="onButtonClick(button)">{{ button.title }}</button>
+          <button mat-button (click)="onButtonClick(button)">{{ button.title | translate }}</button>
         }
       </div>
     }

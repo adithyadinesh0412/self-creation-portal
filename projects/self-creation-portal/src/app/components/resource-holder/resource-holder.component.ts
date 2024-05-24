@@ -6,7 +6,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-resource-holder',
@@ -87,12 +86,7 @@ export class ResourceHolderComponent {
   }
 
 
-  constructor(private translate: TranslateService) {
-    this.initializeTranslation();
-  }
-
-  private initializeTranslation(): void {
-    this.translate.setDefaultLang('en');
+  constructor() {
   }
 
   onCardClick(cardItem: any) {
