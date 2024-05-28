@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { HeaderComponent, SideNavbarComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 
 @Component({
   selector: 'app-resource-holder',

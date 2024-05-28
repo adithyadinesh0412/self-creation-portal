@@ -39,7 +39,8 @@ export const routes: Routes = [
     },
     {
         path:"solution",
-        component:SolutionsLibHolderComponent
+        component:SolutionsLibHolderComponent,
+        loadChildren:() => import('lib-project').then(m => m.ViewModuleModule)
     },
     { path: '', loadChildren: () => import('authentication_frontend_library').then(m => m.SlRoutingRoutingModule) }
 ];
