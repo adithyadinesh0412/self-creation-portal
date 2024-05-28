@@ -7,8 +7,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 
-
-
 @Component({
   selector: 'app-resource-holder',
   standalone: true,
