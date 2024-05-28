@@ -31,7 +31,7 @@ export class SearchComponent {
       });
   }
    onSearch(searchText:any){
-    if (searchText.length >= this.minLength || searchText.length === 0) {
+    if (searchText?.length >= this.minLength || !searchText) {
       this.searchEvent.emit(searchText);
     }
   }

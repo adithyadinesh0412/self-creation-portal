@@ -27,8 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     importProvidersFrom(BrowserAnimationsModule),
     provideHttpClient(withInterceptors([authInterceptor])),
-    { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] },
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }
+    { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] }
   ],
 };
 export function configFactory(http: HttpClient): any {
