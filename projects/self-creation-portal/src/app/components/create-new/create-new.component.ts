@@ -110,7 +110,7 @@ export class CreateNewComponent {
   }
   
   openPopup() {
-    const dialogRef = this.dialog.open(DialogPopupComponent, { height: 'auto', width: '40%', 
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
     data : {
       header: 'BACK',
       content: 'CHANGE_UNSAVED_MESSAGE',
