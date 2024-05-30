@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,7 +6,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HeaderComponent, SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent } from '../../../../../lib-shared-modules/src/public-api';
-import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -17,6 +16,8 @@ import { FormControl } from '@angular/forms';
   styleUrl: './resource-holder.component.scss',
 })
 export class ResourceHolderComponent implements OnInit{
+
+  @ViewChild(PaginationComponent) paginationComponent!: PaginationComponent;
   backButton : boolean = true;
   subHeader : any;
   headerData : any = {};
@@ -24,16 +25,19 @@ export class ResourceHolderComponent implements OnInit{
   titleObj = {
     "title" : "Creation Portal"
   }
-  totalCount = 0;
-  pageSize = 5;
-  pageSizeOptions = [5, 10, 20, 100];
-  currentPage = 0;
-  currentSearch = '';
-  filteredLists: any[] = [];
-  currentFilters: any = {};
-  searchControl = new FormControl();
-  currentList: any[] = [];
-  setPaginatorToFirstpage: boolean = false;
+
+  pagination = {
+    totalCount: 0,
+    pageSize: 5,
+    pageSizeOptions: [5, 10, 20, 100],
+    currentPage: 0
+  };
+  filters = {
+    search: '',
+    current: {}  as { type : string},
+    filteredLists: [] as any[],
+    currentList: [] as any[]
+  };
 
   public sidenavData = [
     { title: 'Project Details', action: "", icon: 'add', url: '',},
@@ -187,11 +191,13 @@ export class ResourceHolderComponent implements OnInit{
   filterData  = [
     {
       label:'Type',
-      option: ['Project', 'Observation', 'Observation with rubrics', 'Survey', 'Programs']
+      option: ['Project', 'Observation', 'Observation with rubrics', 'Survey', 'Programs'],
+      isMultiple: true 
     },
     {
       label:'Sort by',
-      option: ['A to Z', 'Z to A', 'Latest first', 'Oldest first']
+      option: ['A to Z', 'Z to A', 'Latest first', 'Oldest first'],
+      isMultiple: false 
     }
   ]
 
@@ -199,8 +205,8 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.filteredLists = this.lists;
-    this.totalCount = this.lists.length;
+    this.filters.filteredLists = this.lists;
+    this.pagination.totalCount = this.lists.length;
     this.updateCurrentList();
   }
   onCardClick(cardItem: any) {
@@ -223,44 +229,44 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   onPageChange(event: any) {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.page - 1; 
+    this.pagination.pageSize = event.pageSize;
+    this.pagination.currentPage = event.page - 1; 
     this.updateCurrentList();
   }
 
   receiveSearchResults(event: string) {
-    this.currentSearch = event.trim().toLowerCase();
-    this.currentPage = 0;
-    this.setPaginatorToFirstpage = true
+    this.filters.search = event.trim().toLowerCase();
+    this.pagination.currentPage = 0;
     this.applyFiltersAndSearch();
+    this.paginationComponent.resetToFirstPage();
   }
 
   onFilterChange(event: any) {
-    this.currentFilters.type = event;
-    this.currentPage = 0;
-    this.setPaginatorToFirstpage = true
+    this.filters.current.type = event;
+    this.pagination.currentPage = 0;
     this.applyFiltersAndSearch();
+    this.paginationComponent.resetToFirstPage();
   }
 
   applyFiltersAndSearch() {
     let filteredLists = this.lists;
-    if (this.currentFilters.type) {
-      filteredLists = filteredLists.filter((item: any) => item.type.toLowerCase() === this.currentFilters.type.toLowerCase());
+    if (this.filters.current.type) {
+      filteredLists = filteredLists.filter((item: any) => item.type.toLowerCase() === this.filters.current.type.toLowerCase());
     }
 
-    if (this.currentSearch) {
-      filteredLists = filteredLists.filter((item: any) => item.title.toLowerCase().includes(this.currentSearch));
+    if (this.filters.search) {
+      filteredLists = filteredLists.filter((item: any) => item.title.toLowerCase().includes(this.filters.search));
     }
 
-    this.filteredLists = filteredLists;
-    this.totalCount = filteredLists.length;
+    this.filters.filteredLists = filteredLists;
+    this.pagination.totalCount = filteredLists.length;
     this.updateCurrentList();
   }
 
   updateCurrentList() {
-    const start = this.currentPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.currentList = this.filteredLists.slice(start, end);
+    const start = this.pagination.currentPage * this.pagination.pageSize;
+    const end = start + this.pagination.pageSize;
+    this.filters.currentList = this.filters.filteredLists.slice(start, end);
   }
 
 }

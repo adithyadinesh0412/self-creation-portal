@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
@@ -8,26 +8,30 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss'
 })
-export class PaginationComponent implements OnChanges{
+export class PaginationComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Input() totalCount:any;
-  @Input() setPaginatorToFirstpage:boolean = false;
   @Output() paginatorChanged = new EventEmitter();
   @Input() pageSize:any = 5
   @Input() pageSizeOptions:Array<number>= [5,10,20,100]
 
-  ngOnChanges() {
-    if(this.setPaginatorToFirstpage){
-      this.paginator.firstPage();
-    }
-  }
-  
   onPageChange(event: any) {
+    this.emitPageChange(event.pageIndex);
+  }
+
+  emitPageChange(pageIndex: number) {
     let data = {
-      page: event.pageIndex + 1,
+      page: pageIndex + 1,
       pageSize: this.paginator.pageSize
-    }
+    };
     this.paginatorChanged.emit(data);
+  }
+
+  resetToFirstPage() {
+    if (this.paginator) {
+      this.paginator.firstPage();
+      this.emitPageChange(0);
+    }
   }
 }

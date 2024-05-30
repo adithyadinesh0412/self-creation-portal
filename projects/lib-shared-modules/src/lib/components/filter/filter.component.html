@@ -2,7 +2,7 @@
   <div class="container">
     @for(filter of filterData;track filter){
       <div class="filter-container">
-            <mat-select [placeholder]="filter.label" multiple>
+            <mat-select [placeholder]="filter.label" [multiple]="filter.isMultiple">
                 @for(option of filter.option;track option){
               <mat-option (click)="OnClickfilter(option)" [value]="option">{{option}}</mat-option>
                 }
