@@ -1,39 +1,45 @@
-<div class="flex flex-row justify-between items-center bg-primary h-10">
-  <mat-label mat-dialog-title class="text-white pt-0 py-4">{{dialogueData.header | translate}}</mat-label>
-  <img class="cursor-pointer pr-2" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
-</div>
-<div mat-dialog-content class="flex flex-row items-center space-x-4 py-0 text-secondary">
-  <mat-form-field class="w-full mt-4">
-    <mat-label class="text-secondary">{{ dialogueData.labelname | translate}}</mat-label>
-    <input matInput [(ngModel)]="dialogueData.resourceName">
-  </mat-form-field>
-  <mat-form-field class="w-full mt-4">
-    <mat-label class="text-secondary">{{ dialogueData.labellink | translate}}</mat-label>
-    <input matInput type="text" [(ngModel)]="dialogueData.resourceLink">
-  </mat-form-field>
-</div>
-@for (resource of resources; track resource) {
-<div mat-dialog-content class="flex flex-col space-y-4 py-0 text-secondary">
-    <div class="flex flex-row items-center space-x-4">
-      <mat-form-field class="w-full">
-        <mat-label class="text-secondary">{{ dialogueData.labelname | translate }}</mat-label>
-        <input matInput [(ngModel)]="resource.resourceName">
+<div class="flex justify-between items-center bg-primary sticky z-40 top-0 sm:h-10 h-14">
+  <mat-label mat-dialog-title class="text-white ">{{dialogueData.header | translate}}</mat-label>
+  <img class="cursor-pointer w-5 h-4 pr-2" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
+</div> 
+<div class="h-full flex flex-col">
+  <div class="overflow-y-auto min-h-[22rem] max-h-[22rem]"> 
+    <div mat-dialog-content class="flex flex-row items-center space-x-4 py-0 text-secondary">
+      <mat-form-field class="w-full mt-4">
+        <mat-label class="text-secondary">{{ dialogueData.labelname | translate}}</mat-label>
+        <input matInput [(ngModel)]="dialogueData.resourceName">
       </mat-form-field>
-      <mat-form-field class="w-full">
-        <mat-label class="text-secondary">{{ dialogueData.labellink | translate }}</mat-label>
-        <input matInput type="text" [(ngModel)]="resource.resourceLink">
+      <mat-form-field class="w-full mt-4">
+        <mat-label class="text-secondary">{{ dialogueData.labellink | translate}}</mat-label>
+        <input matInput [(ngModel)]="dialogueData.resourceLink">
       </mat-form-field>
     </div>
+    @for (resource of resources; track resource) {
+    <div mat-dialog-content class="flex flex-col space-y-4 py-0 text-secondary">
+        <div class="flex flex-row items-center space-x-4">
+          <mat-form-field class="w-full">
+            <mat-label class="text-secondary">{{ dialogueData.labelname | translate }}</mat-label>
+            <input matInput [(ngModel)]="resource.resourceName">
+          </mat-form-field>
+          <mat-form-field class="w-full">
+            <mat-label class="text-secondary">{{ dialogueData.labellink | translate }}</mat-label>
+            <input matInput [(ngModel)]="resource.resourceLink">
+          </mat-form-field>
+        </div>
+    </div>
+    }
+    <div class="flex space-x-4 px-6 py-4">
+      <button class="inline-flex items-center px-4 py-2 rounded-lg shadow-md" (click)="onAddResource()">
+        <img src="./../assets/icons/add-icon.png" alt="" class="w-6 h-6 mr-2">
+        <span class="text-sm">{{dialogueData.addResource | translate}}</span>
+      </button>
+    </div>
+  </div>
 </div>
-}
-<div class="flex space-x-4 px-6 py-4">
-  <button class="inline-flex items-center px-4 py-2 rounded-lg shadow-md" (click)="onAddResource()">
-    <img src="./../assets/icons/add-icon.png" alt="" class="w-6 h-6 mr-2">
-    <span class="text-sm">{{dialogueData.addResource | translate}}</span>
-  </button>
-</div>
-<div class="border-t"></div> 
-<div mat-dialog-actions class="flex flex-row justify-end items-center space-x-4 py-0">
-  <button class="btn text-primary w-24 min-w-24" (click)="onCancel()">{{dialogueData.cancelButton | translate}}</button>
-  <button class="btn bg-primary text-white w-24 min-w-24" (click)="onSave()" cdkFocusInitial>{{dialogueData.saveButton | translate}}</button>
+<div class="sticky bottom-0  bg-white">
+  <div class="border-t"></div> 
+  <div mat-dialog-actions class="flex flex-row justify-end items-center space-x-4 py-0 md:flex-row sm:flex-row lg:flex-row" >
+    <button class="btn text-primary w-24 min-w-24" (click)="onCancel()">{{dialogueData.cancelButton | translate}}</button>
+    <button class="btn bg-primary text-white w-24 min-w-24" (click)="onSave()" cdkFocusInitial>{{dialogueData.saveButton | translate}}</button>
+  </div>
 </div>
