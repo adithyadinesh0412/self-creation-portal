@@ -12,16 +12,26 @@ export class PaginationComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Input() totalCount:any;
-  @Input() setPaginatorToFirstpage:any
   @Output() paginatorChanged = new EventEmitter();
   @Input() pageSize:any = 5
   @Input() pageSizeOptions:Array<number>= [5,10,20,100]
- 
+
   onPageChange(event: any) {
+    this.emitPageChange(event.pageIndex);
+  }
+
+  emitPageChange(pageIndex: number) {
     let data = {
-      page: event.pageIndex + 1,
+      page: pageIndex + 1,
       pageSize: this.paginator.pageSize
-    }
+    };
     this.paginatorChanged.emit(data);
+  }
+
+  resetToFirstPage() {
+    if (this.paginator) {
+      this.paginator.firstPage();
+      this.emitPageChange(0);
+    }
   }
 }
