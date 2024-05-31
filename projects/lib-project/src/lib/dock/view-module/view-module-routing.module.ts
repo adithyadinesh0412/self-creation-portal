@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { SubTasksResourcesComponent } from '../components/sub-tasks-resources/sub-tasks-resources.component';
 import { ProjectDetailsComponent } from '../components/project-details/project-details.component';
+import { TasksComponent } from '../components/tasks/tasks.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,11 @@ const routes: Routes = [
       {
         path:'project-details',
         component:ProjectDetailsComponent
-    }
+      },
+      {
+        path:'tasks',
+        component:TasksComponent
+      }
     ]
   }
 ];
