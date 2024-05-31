@@ -7,6 +7,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
+import { Router } from '@angular/router';
+import { FormService } from '../../services/form/form.service';
+import { PROJECT_DETAILS } from '../../constants/formConstant';
+
 
 @Component({
   selector: 'app-create-new',
@@ -86,27 +90,29 @@ export class CreateNewComponent {
     ]
   }
 
-  constructor(private dialog : MatDialog,) {
+  constructor(private dialog : MatDialog,private router:Router,private formService:FormService) {
   }
 
   ngOnInit() {
 
   }
 
-  onCardClick(cardItem: any) {
-    this.sidenavData = cardItem.sidenav
-    this.backButton = cardItem.showBackButton
-    this.subHeader = cardItem.subHeader;
+ async onCardClick(cardItem: any) {
+    // this.sidenavData = cardItem.sidenav
+    // this.backButton = cardItem.showBackButton
+    // this.subHeader = cardItem.subHeader;
 
-    if ((cardItem.title === 'PROJECT') || (cardItem.title === 'OBSERVATION') || (cardItem.title === 'SURVEY') || (cardItem.title === 'PROGRAM')) {
-      this.headerData =  this.resourceHeader;
-    }
-    else if (cardItem.title === 'OBSERVATION_WITH_RUBRIC') {
-      this.headerData = this.observationwithrubricsHeader;
-    }
-    else {
-        this.headerData = {};
-    }
+    // if ((cardItem.title === 'PROJECT') || (cardItem.title === 'OBSERVATION') || (cardItem.title === 'SURVEY') || (cardItem.title === 'PROGRAM')) {
+    //   this.headerData =  this.resourceHeader;
+    // }
+    // else if (cardItem.title === 'OBSERVATION_WITH_RUBRIC') {
+    //   this.headerData = this.observationwithrubricsHeader;
+    // }
+    // else {
+    //     this.headerData = {};
+    // }
+    let formData = await this.formService.getForm(PROJECT_DETAILS)
+    // this.router.navigate(["solution/project/project-details"])
   }
   
   openPopup() {
