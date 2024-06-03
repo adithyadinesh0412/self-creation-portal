@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser');
 const session = require('express-session');
 const { getKeycloak, memoryStore} = require('./keycloak-config');
 const axios = require('axios')
@@ -25,38 +26,36 @@ const corsOpts = {
 
   app.use(cors(corsOpts));
 
-// to read the URL encoded form data
-app.use(express.urlencoded({ extended: true }));
 
-app.all('*', async (req, res) => {
+  app.use(bodyParser.json());
+
+// to read the URL encoded form data
+// app.use(express.urlencoded({ extended: true }));
+
+app.all('*', async function (req, res) {
   try {
       // Extract the original URL
       const originalUrl = req.originalUrl;
+      console.log("response ", req.headers)
 
       // Modify the base URL as needed
       const newUrl = `${baseUrl}${originalUrl}`;
+      const response = await axios({
+        method: 'post',
+        url: newUrl,
+        headers: {
+          'X-auth-token': req.headers['x-auth-token']
+        },
+        data: req.body
+    });
 
-      // Prepare the options for the axios request
-      const options = {
-          method: req.method,
-          url: newUrl,
-          headers: {
-              ...req.headers,
-              host: new URL(baseUrl).host
-          },
-          data: req.body
-      };
-      console.log(newUrl,originalUrl,options)
-      // Make the API call
-      const response = await axios(options);
-
-      // Send the response back to the client
-      res.status(response.status).json(response.data);
+    // Send the response back to the client
+    res.status(response.status).json(response.data);
   } catch (error) {
-    console.log(error)
+    console.log("error --->",error.response)
       if (error.response) {
           // The request was made and the server responded with a status code
-          res.status(error.response.status).json(error.response.data);
+          res.status(error.response.status).json(error.response.config.data);
       } else if (error.request) {
           // The request was made but no response was received
           res.status(500).json({ error: 'No response received from the server.' });
