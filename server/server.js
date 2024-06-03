@@ -2,12 +2,7 @@ require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const { getKeycloak, memoryStore} = require('./keycloak-config');
 const axios = require('axios')
-
-
-
 
 const app = express();
 const baseUrl = process.env.BASE_URL;
@@ -25,12 +20,7 @@ const corsOpts = {
   };
 
   app.use(cors(corsOpts));
-
-
   app.use(bodyParser.json());
-
-// to read the URL encoded form data
-// app.use(express.urlencoded({ extended: true }));
 
 app.all('*', async function (req, res) {
   try {
@@ -48,11 +38,9 @@ app.all('*', async function (req, res) {
         },
         data: req.body
     });
-
     // Send the response back to the client
     res.status(response.status).json(response.data);
   } catch (error) {
-    console.log("error --->",error.response)
       if (error.response) {
           // The request was made and the server responded with a status code
           res.status(error.response.status).json(error.response.config.data);
