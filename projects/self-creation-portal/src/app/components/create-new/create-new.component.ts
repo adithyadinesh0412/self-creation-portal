@@ -112,7 +112,7 @@ export class CreateNewComponent {
     //     this.headerData = {};
     // }
     // let formData = await this.formService.getForm(PROJECT_DETAILS)
-    this.router.navigate(["solution/project/tasks"])
+    this.router.navigate(["solution/project/project-details"])
   }
   
   openPopup() {
