@@ -12,7 +12,7 @@ export class FormService {
   constructor(private httpService:HttpProviderService) { }
 
   // Getting form from api
-  async getForm(formBody: any) {
+  async getForm(formBody: any): Promise<any> {
     const config = {
       url: "scp/v1/form/read",
       payload: formBody,
@@ -22,10 +22,11 @@ export class FormService {
       map((result: any) => {
         let formData = _.pick(result, ['meta.formsVersion', 'result']);
         // this.addFormToLocal(formBody.type, formData);
-        return result;
+        return result.result.data.fields.controls;
       })
     )
   );
+  return result;
   }
 
 }

@@ -9,7 +9,7 @@ import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-s
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
-import { PROJECT_DETAILS } from '../../constants/formConstant';
+import { PROJECT_DETAILS, SOLUTION_LIST } from '../../constants/formConstant';
 
 
 @Component({
@@ -28,61 +28,7 @@ export class CreateNewComponent {
     "title" : "Creation Portal"
   }
 
-  public sidenavData = [
-    { "title": "CREATE_NEW", "action": "", "icon": "add", "url": "create-new",},
-    { "title": "BROWSE_EXISTING", "action": "", "icon": "search", "url": "browse-existing"},
-    { "title": "DRAFTS", "action": "", "icon": "drafts", "url": "drafts" },
-    { "title": "SUBMITTED_FOR_REVIEW", "action": "", "icon": "send", "url": "submit-for-review"},
-    { "title": "PUBLISHED", "action": "", "icon": "published", "url": "published"},
-    { "title": "UP_FOR_REVIEW", "action": "", "icon": "pending", "url": "up-for-review"}
-  ];
-
-  resourceList = [
-    { 
-      "title": "PROJECT", 
-      "image":"./../assets/images/observation.svg", 
-      "sidenav" : [
-        { "title": "PROJECT_DETAILS", "action": "", "icon": "add",  "url": ""},
-        { "title": "TASKS", "action": "", "icon": "search",  "url": ""},
-        { "title": "SUBTASKS_AND_RESOURCES", "action": "", "icon": "search",  "url": ""},
-        { "title": "CERTIFICATE", "action": "", "icon": "search",  "url": ""},
-      ], 
-      "showBackButton" : true,
-      "url": "solution/project/project-details"
-
-    },
-    { "title": "OBSERVATION", 
-      "image":"./../assets/images/observation.svg", 
-      "sidenav" : [
-        { "title": "OBSERVATION_NAME"}
-      ], 
-      "showBackButton" : true,
-      "url": "" 
-    },
-    { "title": "OBSERVATION_WITH_RUBRIC",
-      "image":"./../assets/images/observation.svg", 
-      "sidenav" : [
-        { "title": "OBSERVATION_NAME"}
-      ],
-      "url": "" 
-    },
-    { "title": "SURVEY", 
-      "image": "./../assets/images/survey.svg", 
-      "sidenav" : [
-        { "title": "SURVEY_NAME"}
-      ],
-      "url": ""
-    },
-    { "title": "PROGRAM",
-      "image": "./../assets/images/survey.svg", 
-      "sidenav" : [
-        { "title": "PROGRAM_DETAILS"},
-        { "title": "RESOURCES"},
-        { "title": "RESOURCE_LEVEL_TARGETING"}
-      ],
-      "url": "" 
-    }
-  ];
+  resourceList : any
   
   resourceHeader = {
     "title":"PROJECT_NAME",
@@ -108,25 +54,15 @@ export class CreateNewComponent {
   }
 
   ngOnInit() {
-
+    this.getsolutionList()
   }
 
- async onCardClick(cardItem: any) {
-    // this.sidenavData = cardItem.sidenav
-    // this.backButton = cardItem.showBackButton
-    // this.subHeader = cardItem.subHeader;
+  onCardClick(cardItem: any) {
+    
+  }
 
-    // if ((cardItem.title === 'PROJECT') || (cardItem.title === 'OBSERVATION') || (cardItem.title === 'SURVEY') || (cardItem.title === 'PROGRAM')) {
-    //   this.headerData =  this.resourceHeader;
-    // }
-    // else if (cardItem.title === 'OBSERVATION_WITH_RUBRIC') {
-    //   this.headerData = this.observationwithrubricsHeader;
-    // }
-    // else {
-    //     this.headerData = {};
-    // }
-    let formData = await this.formService.getForm(PROJECT_DETAILS)
-    // this.router.navigate(["solution/project/project-details"])
+  async getsolutionList() {
+    this.resourceList = await this.formService.getForm(SOLUTION_LIST)
   }
   
   openPopup() {
