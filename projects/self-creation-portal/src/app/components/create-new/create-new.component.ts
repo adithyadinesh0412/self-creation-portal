@@ -9,7 +9,7 @@ import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-s
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
-import { PROJECT_DETAILS, SOLUTION_LIST } from '../../constants/formConstant';
+import { SOLUTION_LIST } from '../../constants/formConstant';
 
 
 @Component({
@@ -61,8 +61,10 @@ export class CreateNewComponent {
     
   }
 
-  async getsolutionList() {
-    this.resourceList = await this.formService.getForm(SOLUTION_LIST)
+  getsolutionList() {
+    this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
+      this.resourceList = form
+    })
   }
   
   openPopup() {

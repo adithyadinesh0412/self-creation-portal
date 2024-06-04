@@ -28,7 +28,7 @@ export class AppMainViewComponent {
     "title" : "CREATION_PORTAL"
   }
 
-  public sidenavData: any[] = [];
+  public sidenavData: any;
 
   constructor(private formService:FormService) {
   }
@@ -39,7 +39,9 @@ export class AppMainViewComponent {
   onButtonClick(buttonTitle: string) {
   }
 
-  async getnavData(){
-    this.sidenavData = await this.formService.getForm(SIDE_NAV_DATA);
+  getnavData(){
+    this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
+      this.sidenavData = form
+    })
   }
 }
