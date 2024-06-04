@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { SubTasksResourcesComponent } from '../components/sub-tasks-resources/sub-tasks-resources.component';
-import { ProjectDetailsComponent } from '../components/project-details/project-details.component';
 
 const routes: Routes = [
   {
@@ -17,11 +16,7 @@ const routes: Routes = [
       {
           path:'sub-tasks',
           component:SubTasksResourcesComponent
-      },
-      {
-        path:'project-details',
-        component:ProjectDetailsComponent
-    }
+      }
     ]
   }
 ];
