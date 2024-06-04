@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import {HttpProviderService } from "../http-provider/http-provider.service"
-import * as _ from 'lodash';
+import { FORM_URLS } from '../configs/url.config.json';
 
 
 @Injectable({
@@ -14,12 +14,11 @@ export class FormService {
   // Getting form from api
   getForm(formBody: any) {
     const config = {
-      url: "scp/v1/form/read",
+      url: FORM_URLS.READ_FORM,
       payload: formBody,
   };
   return this.httpService.post(config.url, formBody).pipe(
     map((result: any) => {
-      let formData = _.pick(result, ['meta.formsVersion', 'result.result']);
       return result.result.data.fields.controls;
     })
   )
