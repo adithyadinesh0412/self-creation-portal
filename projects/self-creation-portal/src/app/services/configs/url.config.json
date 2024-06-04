@@ -4,5 +4,8 @@
     },
     "PROJECT_URLS": {
         "CREATE_PROJECT":"/scp/v1/project/create"
+    },
+    "FORM_URLS":{
+           "READ_FORM":"scp/v1/form/read"
     }
 }

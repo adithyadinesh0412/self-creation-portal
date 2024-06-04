@@ -7,7 +7,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent} from '../../../../../lib-shared-modules/src/public-api';
-
+import { FormService } from '../../services/form/form.service';
+import { SIDE_NAV_DATA } from '../../constants/formConstant';
 
 
 @Component({
@@ -27,18 +28,20 @@ export class AppMainViewComponent {
     "title" : "CREATION_PORTAL"
   }
 
-  public sidenavData = [
-    { title: 'CREATE_NEW', action: "", icon: 'add', url: 'create-new',},
-    { title: 'BROWSE_EXISTING', action: "", icon: 'search', url: 'browse-existing'},
-    { title: 'DRAFTS', action: "", icon: 'drafts', url: 'drafts' },
-    { title: 'SUBMITTED_FOR_REVIEW', action: "", icon: 'send', url: 'submit-for-review'},
-    { title: 'PUBLISHED', action: "", icon: 'published', url: 'published'},
-    { title: 'UP_FOR_REVIEW', action: "", icon: 'pending', url: 'up-for-review' }
-  ];
+  public sidenavData: any;
 
-  constructor() {
+  constructor(private formService:FormService) {
   }
 
+  ngOnInit(){
+    this.getnavData()
+  }
   onButtonClick(buttonTitle: string) {
+  }
+
+  getnavData(){
+    this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
+      this.sidenavData = form
+    })
   }
 }
