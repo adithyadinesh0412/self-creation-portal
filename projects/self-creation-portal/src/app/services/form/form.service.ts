@@ -53,14 +53,14 @@ export class FormService {
   }
 
   async populateEntity(formData: any, entityList: any) {
-    _.forEach(formData.controls, (control) => {
-      let entity = _.find(entityList, (entityData) => control.name === entityData.value);
+    _.forEach(formData.controls, (control: { name: any; options: any; subfields: any; }) => {
+      let entity = _.find(entityList, (entityData: { value: any; }) => control.name === entityData.value);
       if (entity) {
         control.options = entity.entities.map((entityItem: { label: any; value: any; }) => ({ label: entityItem.label, value: entityItem.value }));
       }
     
-      _.forEach(control.subfields, (subfield) => {
-        let subfieldEntity = _.find(entityList, (entityData) => subfield.name === entityData.value);
+      _.forEach(control.subfields, (subfield: { name: any; options: any; }) => {
+        let subfieldEntity = _.find(entityList, (entityData: { value: any; }) => subfield.name === entityData.value);
         if (subfieldEntity) {
           subfield.options = subfieldEntity.entities.map((entityItem: { label: any; value: any; }) => ({ label: entityItem.label, value: entityItem.value }));
         }

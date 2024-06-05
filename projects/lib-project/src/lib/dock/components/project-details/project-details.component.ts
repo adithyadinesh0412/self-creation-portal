@@ -14,7 +14,7 @@ interface State {
   selector: 'lib-project-details',
   standalone: true,
   imports: [
-    HeaderComponent,
+    HeaderComponent,DynamicFormModule
   ],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.css'
