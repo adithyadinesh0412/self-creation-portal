@@ -59,18 +59,16 @@ export class CreateNewComponent {
     this.getsolutionList()
   }
 
- async onCardClick(cardItem: any) {
+ onCardClick(cardItem: any) {
 
-    (await this.formService.getForm(PROJECT_DETAILS)).subscribe(async (form) =>{
-      let formData = _.get(form.result, 'data.fields');
-    let entityNames = this.formService.getEntityNames(formData);
-   
-    (await this.formService.getEntities(entityNames)).subscribe(async (entities) =>{
-      let data = await this.formService.populateEntity(formData,entities)
-      const stateData = { data : data};
-      this.router.navigate(["solution/project/project-details"],{ state: stateData})
-     })
-    })
+   this.formService.getFormWithEntities(cardItem.formName)
+  .then((result) => {
+    const stateData = { data : result};
+    this.router.navigate([cardItem.url],{ state: stateData})
+  })
+  .catch((error) => {
+    console.error(error);
+  });
   }
  
   getsolutionList() {

@@ -6,6 +6,7 @@
         "CREATE_PROJECT":"/scp/v1/project/create"
     },
     "FORM_URLS":{
-           "READ_FORM":"scp/v1/form/read"
+           "READ_FORM":"scp/v1/form/read",
+           "READ_ENTITY_TYPE":"scp/v1/entity-types/read"
     }
 }

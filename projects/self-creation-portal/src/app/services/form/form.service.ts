@@ -19,7 +19,7 @@ export class FormService {
       url: FORM_URLS.READ_FORM,
       payload: formBody,
     };
-    return this.httpService.post(config.url, formBody).pipe(
+    return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
         return result;
       })
@@ -28,7 +28,7 @@ export class FormService {
 
    getEntities(entityTypes: any) {
     const config = {
-      url: "scp/v1/entity-types/read",
+      url: FORM_URLS.READ_ENTITY_TYPE,
       payload: entityTypes.length ? { value: entityTypes } : {}
     };
     return this.httpService.post(config.url, config.payload).pipe(
@@ -37,7 +37,6 @@ export class FormService {
         return data;
       })
     )
-
   }
 
   getEntityNames(formData: any) {
@@ -69,4 +68,24 @@ export class FormService {
     });
     return formData;
   }
+
+
+   getFormWithEntities(form: any): Promise<any> {
+    return new Promise( (resolve, reject) => {
+      try {
+        ( this.getForm(PROJECT_DETAILS)).subscribe( (form) =>{
+          let formData = _.get(form.result, 'data.fields');
+        let entityNames = this.getEntityNames(formData);
+        ( this.getEntities(entityNames)).subscribe( (entities) =>{
+          let data =  this.populateEntity(formData,entities)
+          resolve(data);
+         })
+        })
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  
+
 }
