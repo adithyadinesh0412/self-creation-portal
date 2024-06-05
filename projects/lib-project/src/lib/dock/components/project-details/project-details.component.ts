@@ -37,4 +37,11 @@ export class ProjectDetailsComponent {
   });
   }
 
+  ngOnDestroy() {
+    // Unsubscribe from the state$ observable to avoid memory leaks
+    if (this.stateSubscription) {
+      this.stateSubscription.unsubscribe();
+    }
+  }
+
 }

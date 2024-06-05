@@ -16,17 +16,18 @@ const routes: Routes = [
     component:LayoutComponent,
     children:[
       {
-          path:'sub-tasks',
-          component:SubTasksResourcesComponent
-      },
-      {
         path:'project-details',
         component:ProjectDetailsComponent
       },
       {
         path:'tasks',
         component:TasksComponent
-      }
+      },
+      {
+          path:'sub-tasks',
+          component:SubTasksResourcesComponent
+      },
+      
     ]
   }
 ];
