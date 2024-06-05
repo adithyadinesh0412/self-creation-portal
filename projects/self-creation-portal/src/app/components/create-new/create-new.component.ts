@@ -10,6 +10,7 @@ import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/di
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -98,21 +99,17 @@ export class CreateNewComponent {
   }
 
  async onCardClick(cardItem: any) {
-    // this.sidenavData = cardItem.sidenav
-    // this.backButton = cardItem.showBackButton
-    // this.subHeader = cardItem.subHeader;
 
-    // if ((cardItem.title === 'PROJECT') || (cardItem.title === 'OBSERVATION') || (cardItem.title === 'SURVEY') || (cardItem.title === 'PROGRAM')) {
-    //   this.headerData =  this.resourceHeader;
-    // }
-    // else if (cardItem.title === 'OBSERVATION_WITH_RUBRIC') {
-    //   this.headerData = this.observationwithrubricsHeader;
-    // }
-    // else {
-    //     this.headerData = {};
-    // }
-    // let formData = await this.formService.getForm(PROJECT_DETAILS)
-    this.router.navigate(["solution/project/project-details"])
+    (await this.formService.getForm(PROJECT_DETAILS)).subscribe(async (form) =>{
+      let formData = _.get(form.result, 'data.fields');
+    let entityNames = this.formService.getEntityNames(formData);
+   
+    (await this.formService.getEntities(entityNames)).subscribe(async (entities) =>{
+      let data = await this.formService.populateEntity(formData,entities)
+      const stateData = { data : data};
+      this.router.navigate(["solution/project/project-details"],{ state: stateData})
+     })
+    })
   }
   
   openPopup() {

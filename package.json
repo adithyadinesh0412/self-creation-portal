@@ -21,7 +21,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "@elevate/dynamic-form": "file:../dynamic-form/dist/dynamic-form/elevate-dynamic-form-0.0.1.tgz",
+    "@elevate/dynamic-form": "file:../frontend-utils-library/dist/dynamic-form/elevate-dynamic-form-0.0.1.tgz",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "authentication_frontend_library": "^0.0.13",

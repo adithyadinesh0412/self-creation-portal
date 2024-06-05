@@ -1,8 +1,5 @@
-<lib-header [title]="titleObj.title" [backButton]="backButton" [headerData]="headerData" (buttonClick)="onButtonClick($event)"></lib-header>
-<div class="main flex">
-    <lib-side-navbar [sidenavData]="sidenavData"></lib-side-navbar>
-    <div style="margin: 30px;padding: 0px 30px; " class="items-center w-full">
-      <dynamic-form [formJson]="data"  classFlex="flex-column-class" #formLib></dynamic-form>
-    </div>
-    
+@if(data){
+<div style="margin: 30px;padding: 0px 30px; " class="items-center">
+  <dynamic-form [formJson]="data" classFlex="flex-column-class" #formLib></dynamic-form>
 </div>
+}
