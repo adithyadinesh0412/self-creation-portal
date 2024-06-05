@@ -3,6 +3,7 @@ import {  map} from 'rxjs';
 import { HttpProviderService } from "../http-provider/http-provider.service"
 import * as _ from 'lodash';
 import { FORM_URLS } from '../configs/url.config.json';
+import { PROJECT_DETAILS } from '../../constants/formConstant';
 
 
 @Injectable({
@@ -13,24 +14,24 @@ export class FormService {
   constructor(private httpService: HttpProviderService) { }
 
   // Getting form from api
- async getForm(formBody: any) {
+ getForm(formBody: any) {
     const config = {
       url: FORM_URLS.READ_FORM,
       payload: formBody,
     };
-    return await this.httpService.post(config.url, formBody).pipe(
+    return this.httpService.post(config.url, formBody).pipe(
       map((result: any) => {
         return result;
       })
     )
   }
 
-  async getEntities(entityTypes: any) {
+   getEntities(entityTypes: any) {
     const config = {
       url: "scp/v1/entity-types/read",
       payload: entityTypes.length ? { value: entityTypes } : {}
     };
-    return await this.httpService.post(config.url, config.payload).pipe(
+    return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
         let data = _.get(result, 'result.entity_types');
         return data;
@@ -52,7 +53,7 @@ export class FormService {
     return [...arr1, ...arr2];
   }
 
-  async populateEntity(formData: any, entityList: any) {
+   populateEntity(formData: any, entityList: any) {
     _.forEach(formData.controls, (control: { name: any; options: any; subfields: any; }) => {
       let entity = _.find(entityList, (entityData: { value: any; }) => control.name === entityData.value);
       if (entity) {

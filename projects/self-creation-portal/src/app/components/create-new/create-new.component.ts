@@ -75,7 +75,7 @@ export class CreateNewComponent {
  
   getsolutionList() {
     this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
-      this.resourceList = form
+      this.resourceList = form?.result?.data?.fields?.controls
     })
   }
   

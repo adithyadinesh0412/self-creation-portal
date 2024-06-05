@@ -40,8 +40,8 @@ export class AppMainViewComponent {
   }
 
   getnavData(){
-    this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
-      this.sidenavData = form
+     this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
+      this.sidenavData = form?.result?.data?.fields?.controls
     })
   }
 }
