@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { lastValueFrom, map, } from 'rxjs';
+import {  map} from 'rxjs';
 import { HttpProviderService } from "../http-provider/http-provider.service"
 import * as _ from 'lodash';
+import { FORM_URLS } from '../configs/url.config.json';
 
 
 @Injectable({
@@ -12,9 +13,9 @@ export class FormService {
   constructor(private httpService: HttpProviderService) { }
 
   // Getting form from api
-  async getForm(formBody: any) {
+ async getForm(formBody: any) {
     const config = {
-      url: "scp/v1/form/read",
+      url: FORM_URLS.READ_FORM,
       payload: formBody,
     };
     return await this.httpService.post(config.url, formBody).pipe(
@@ -67,5 +68,4 @@ export class FormService {
     });
     return formData;
   }
-
 }

@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DynamicFormModule } from '@elevate/dynamic-form';
@@ -16,8 +15,6 @@ interface State {
   standalone: true,
   imports: [
     HeaderComponent,
-    SideNavbarComponent,
-    DynamicFormModule
   ],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.css'
