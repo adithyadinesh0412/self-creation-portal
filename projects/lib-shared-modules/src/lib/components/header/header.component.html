@@ -1,12 +1,17 @@
-<mat-toolbar>
-  <a>
-    @if (backButton) {
-    <mat-icon (click)="backArrowButton()">keyboard_backspace</mat-icon>
-    }
-  </a>
-  <span class="aligned-with-icon">{{ title | translate }}</span>
+<mat-toolbar class="flex justify-between items-center px-4 bg-primary text-tertiary sticky top-0 z-50 ">
+  <div class="flex items-center space-x-2">
+    <a>
+      @if (backButton) {
+        <mat-icon (click)="backArrowButton()" class="cursor-pointer py-1">keyboard_backspace</mat-icon>
+      }
+    </a>
+    <span class="px-0">{{ title | translate }}</span>
+  </div>
+  <div title="logout">
+    <mat-icon class="cursor-pointer" (click)="logout()">power_settings_new</mat-icon>
+  </div>
 </mat-toolbar>
-<mat-toolbar class="sub-header">
+<mat-toolbar class="sub-header border-b">
     <div class="title">{{ headerData?.title || 'Workspace'  | translate}}</div> 
     @if (headerData.buttons) {
       <div class="buttons-container">

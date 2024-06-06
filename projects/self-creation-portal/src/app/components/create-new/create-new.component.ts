@@ -20,14 +20,6 @@ import { SOLUTION_LIST } from '../../constants/formConstant';
   styleUrl: './create-new.component.scss'
 })
 export class CreateNewComponent {
-  backButton : boolean = true;
-  subHeader : any;
-  headerData : any = {};
-  selctedCardItem : any;
-  titleObj = {
-    "title" : "Creation Portal"
-  }
-
   resourceList : any
   
   resourceHeader = {
@@ -58,7 +50,6 @@ export class CreateNewComponent {
   }
 
   onCardClick(cardItem: any) {
-    
   }
 
   getsolutionList() {
@@ -99,6 +90,4 @@ export class CreateNewComponent {
     });
   }
 
-  onButtonClick(buttonTitle: string) {
-  }
 }
