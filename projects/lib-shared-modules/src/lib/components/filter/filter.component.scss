@@ -8,9 +8,10 @@
 .filter-container{
     border-radius: 10px;
     border:1px solid $primary;
-    padding:5px;
-    min-width: 180px;
+    padding:2px 10px;
+    min-width: 160px;
     display: inline-block;
+    box-shadow: 0 4px 10px -6px $tertiary;
 }
 ::ng-deep  .mat-mdc-select-value .mat-mdc-select-placeholder {
      text-align:center;

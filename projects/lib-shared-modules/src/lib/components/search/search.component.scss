@@ -1,3 +1,14 @@
+@import "./../../../../../self-creation-portal/src/styles.scss";
 .search-container{
     width: 100%;
+    border:1px solid $borderGray;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.search-icon{
+    color: $borderGray;
 }
