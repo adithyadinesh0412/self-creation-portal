@@ -10,7 +10,6 @@ import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/di
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
-import * as _ from 'lodash';
 import { SOLUTION_LIST } from '../../constants/formConstant';
 import { LibProjectService } from 'lib-project';
 

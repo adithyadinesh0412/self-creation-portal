@@ -1,10 +1,10 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DynamicFormModule } from '@elevate/dynamic-form';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service'
+import { DynamicFormModule } from 'elevate-dynamic-form';
 
 
 @Component({
