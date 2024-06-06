@@ -12,6 +12,7 @@ import { FormService } from '../../services/form/form.service';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
 import * as _ from 'lodash';
 import { SOLUTION_LIST } from '../../constants/formConstant';
+import { LibProjectService } from 'lib-project';
 
 
 @Component({
@@ -52,7 +53,7 @@ export class CreateNewComponent {
     ]
   }
 
-  constructor(private dialog : MatDialog,private router:Router,private formService:FormService) {
+  constructor(private dialog : MatDialog,private router:Router,private formService:FormService,private libProjectService:LibProjectService) {
   }
 
   ngOnInit() {
@@ -60,15 +61,17 @@ export class CreateNewComponent {
   }
 
  onCardClick(cardItem: any) {
-
-   this.formService.getFormWithEntities(cardItem.formName)
-  .then((result) => {
-    const stateData = { data : result};
-    this.router.navigate([cardItem.url],{ state: stateData})
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+    this.formService.getFormWithEntities(cardItem.formName)
+      .then((result) => {
+        this.libProjectService.setData( {
+          "res" : result,
+          "sidenavData": cardItem
+        }); 
+        this.router.navigate([cardItem.url])
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
  
   getsolutionList() {

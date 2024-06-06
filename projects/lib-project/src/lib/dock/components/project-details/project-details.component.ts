@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DynamicFormModule } from '@elevate/dynamic-form';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
+import { LibProjectService } from '../../../lib-project.service'
 
-
-interface State {
-    [key: string]: any;
-  }
 
 @Component({
   selector: 'lib-project-details',
@@ -20,28 +17,11 @@ interface State {
   styleUrl: './project-details.component.css'
 })
 export class ProjectDetailsComponent {
-  state$: Observable<State> | undefined;
-  data:any;
-  stateSubscription: any;
-
-  constructor(private activatedRoute: ActivatedRoute) {
-  }
-
-  ngOnInit(){
-    this.state$ = this.activatedRoute.paramMap
-    .pipe(map(() => window.history.state));
-
-  // Subscribe to the state$ observable to log the state to the console
-  this.stateSubscription = this.state$.subscribe(state => {
-    this.data = state['data'].controls
-  });
-  }
-
-  ngOnDestroy() {
-    // Unsubscribe from the state$ observable to avoid memory leaks
-    if (this.stateSubscription) {
-      this.stateSubscription.unsubscribe();
-    }
-  }
-
+ data:any;
+  constructor(private libProjectService:LibProjectService) {}
+  ngOnInit() {
+    this.libProjectService.currentData.subscribe(data => {
+      this.data= data.res.controls
+    });
+}
 }

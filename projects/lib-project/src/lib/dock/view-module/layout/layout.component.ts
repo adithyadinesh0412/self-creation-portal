@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LibProjectService } from '../../../lib-project.service';
 
 @Component({
   selector: 'lib-layout',
@@ -14,15 +15,13 @@ export class LayoutComponent {
     "title" : "Project name"
   }
 
-  public sidenavData = [
-    { title: 'PROJECT_DETAILS', action: "", icon: 'add',  url: 'project-details'},
-        { title: 'TASKS', action: "", icon: 'search',  url: 'tasks'},
-        { title: 'SUBTASKS_AND_RESOURCES', action: "", icon: 'search',  url: 'sub-tasks'},
-        { title: 'CERTIFICATE', action: "", icon: 'search',  url: 'project-details'},
-  ];
-
-
-  constructor() {
+  sidenavData:any
+  constructor(private libProjectService:LibProjectService) {
+  }
+  ngOnInit(){
+    this.libProjectService.currentData.subscribe(data => {
+      this.sidenavData= data.sidenavData.sidenav
+    });
   }
 
   onButtonClick(buttonTitle: string) {
