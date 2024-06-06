@@ -2,9 +2,6 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ViewModuleModule } from 'lib-project';
 
-import { RouterModule } from '@angular/router';
-
-
 @Component({
   selector: 'app-solutions-lib-holder',
   standalone: true,

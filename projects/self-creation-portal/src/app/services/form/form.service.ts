@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {  map} from 'rxjs';
 import { HttpProviderService } from "../http-provider/http-provider.service"
-import * as _ from 'lodash';
 import { FORM_URLS } from '../configs/url.config.json';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
 
@@ -26,17 +25,17 @@ export class FormService {
     )
   }
 
-   getEntities(entityTypes: any) {
+  getEntities(entityTypes: any) {
     const config = {
       url: FORM_URLS.READ_ENTITY_TYPE,
       payload: entityTypes.length ? { value: entityTypes } : {}
     };
     return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
-        let data = _.get(result, 'result.entity_types');
+        let data = result?.result?.entity_types || [];
         return data;
       })
-    )
+    );
   }
 
   getEntityNames(formData: any) {
@@ -51,41 +50,46 @@ export class FormService {
 
     return [...arr1, ...arr2];
   }
-
-   populateEntity(formData: any, entityList: any) {
-    _.forEach(formData.controls, (control: { name: any; options: any; subfields: any; }) => {
-      let entity = _.find(entityList, (entityData: { value: any; }) => control.name === entityData.value);
+  
+  populateEntity(formData: any, entityList: any) {
+    formData.controls.forEach((control: { name: any; options: any; subfields: any; }) => {
+      let entity = entityList.find((entityData: { value: any; }) => control.name === entityData.value);
       if (entity) {
         control.options = entity.entities.map((entityItem: { label: any; value: any; }) => ({ label: entityItem.label, value: entityItem.value }));
       }
-    
-      _.forEach(control.subfields, (subfield: { name: any; options: any; }) => {
-        let subfieldEntity = _.find(entityList, (entityData: { value: any; }) => subfield.name === entityData.value);
-        if (subfieldEntity) {
-          subfield.options = subfieldEntity.entities.map((entityItem: { label: any; value: any; }) => ({ label: entityItem.label, value: entityItem.value }));
-        }
-      });
+      if (control.subfields) {
+        control.subfields.forEach((subfield: { name: any; options: any; }) => {
+          let subfieldEntity = entityList.find((entityData: { value: any; }) => subfield.name === entityData.value);
+          if (subfieldEntity) {
+            subfield.options = subfieldEntity.entities.map((entityItem: { label: any; value: any; }) => ({ label: entityItem.label, value: entityItem.value }));
+          }
+        });
+      }
     });
     return formData;
   }
 
 
-   getFormWithEntities(form: any): Promise<any> {
-    return new Promise( (resolve, reject) => {
+  getFormWithEntities(form: any): Promise<any> {
+    return new Promise((resolve, reject) => {
       try {
-        ( this.getForm(PROJECT_DETAILS)).subscribe( (form) =>{
-          let formData = _.get(form.result, 'data.fields');
-        let entityNames = this.getEntityNames(formData);
-        ( this.getEntities(entityNames)).subscribe( (entities) =>{
-          let data =  this.populateEntity(formData,entities)
-          resolve(data);
-         })
-        })
+        this.getForm(PROJECT_DETAILS).subscribe((formResponse) => {
+          let formData = formResponse?.result?.data?.fields || [];
+          let entityNames = this.getEntityNames(formData);
+          this.getEntities(entityNames).subscribe((entities) => {
+            let data = this.populateEntity(formData, entities);
+            resolve(data);
+          }, (error) => {
+            reject(error);
+          });
+        }, (error) => {
+          reject(error);
+        });
       } catch (error) {
         reject(error);
       }
     });
-  }
   
+}
 
 }
