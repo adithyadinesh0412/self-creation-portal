@@ -22,9 +22,9 @@
     - name: Update npm
       shell: cd {{project_path}} && npm i --force
     - name: Set permission
-      shell: chmod 744 {{ project_path }}projects/self-creation-portal/src/scripts/json2env.sh
+      shell: chmod 744 {{ project_path }}/projects/self-creation-portal/src/scripts/json2env.sh
     - name: Generate .env
-      shell: cat {{root_path}}/data2.json | jq '.data' > {{ project_path }}projects/self-creation-portal/src/environments/environment.ts && sed -i '1s/^/export const environment = \n/' {{ project_path }}projects/self-creation-portal/src/environments/environment.ts
+      shell: cat {{root_path}}/data2.json | jq '.data' > {{ project_path }}/projects/self-creation-portal/src/environments/environment.ts && sed -i '1s/^/export const environment = \n/' {{ project_path }}/projects/self-creation-portal/src/environments/environment.ts
       register: envConfig
     - debug: msg=" cred {{ envConfig }} "
     - name: Change directory
@@ -37,6 +37,6 @@
     - name: Remove dist folder
       shell: rm -rf dist
     - name: Build angular app
-      shell: cd {{project_path}} && ng build --configuration production
+      shell: cd {{project_path}} && ng build lib-shared-modules && ng build lib-project && ng build self-creation-portal --configuration production
     - name: Start pm2
       shell: cd {{project_path}} && pm2 start pm2.config.json

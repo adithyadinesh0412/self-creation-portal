@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { ViewModuleModule } from 'lib-project';
 
 import { RouterModule } from '@angular/router';
