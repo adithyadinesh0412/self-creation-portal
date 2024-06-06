@@ -9,7 +9,10 @@ import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-s
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
+import { PROJECT_DETAILS } from '../../constants/formConstant';
+import * as _ from 'lodash';
 import { SOLUTION_LIST } from '../../constants/formConstant';
+import { LibProjectService } from 'lib-project';
 
 
 @Component({
@@ -50,20 +53,30 @@ export class CreateNewComponent {
     ]
   }
 
-  constructor(private dialog : MatDialog,private router:Router,private formService:FormService) {
+  constructor(private dialog : MatDialog,private router:Router,private formService:FormService,private libProjectService:LibProjectService) {
   }
 
   ngOnInit() {
     this.getsolutionList()
   }
 
-  onCardClick(cardItem: any) {
-    
+ onCardClick(cardItem: any) {
+    this.formService.getFormWithEntities(cardItem.formName)
+      .then((result) => {
+        this.libProjectService.setData( {
+          "res" : result,
+          "sidenavData": cardItem
+        }); 
+        this.router.navigate([cardItem.url])
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
-
+ 
   getsolutionList() {
     this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
-      this.resourceList = form
+      this.resourceList = form?.result?.data?.fields?.controls
     })
   }
   

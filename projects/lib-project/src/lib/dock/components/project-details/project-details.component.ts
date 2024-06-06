@@ -1,27 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DynamicFormModule } from '@elevate/dynamic-form';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { Observable } from 'rxjs';
+import { map} from 'rxjs/operators';
+import { LibProjectService } from '../../../lib-project.service'
+
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
   imports: [
-    HeaderComponent,
+    HeaderComponent,DynamicFormModule
   ],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.css'
 })
 export class ProjectDetailsComponent {
-  backButton : boolean = true;
-  subHeader : any;
-  headerData : any = {};
-  selctedCardItem : any;
-  titleObj = {
-    "title" : "Project name"
-  }
-
-  constructor() {
-  }
-
-  onButtonClick(buttonTitle: string) {
-  }
+ data:any;
+  constructor(private libProjectService:LibProjectService) {}
+  ngOnInit() {
+    this.libProjectService.currentData.subscribe(data => {
+      this.data= data.res.controls
+    });
+}
 }
