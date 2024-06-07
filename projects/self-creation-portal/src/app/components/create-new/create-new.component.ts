@@ -10,7 +10,6 @@ import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/di
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
-import * as _ from 'lodash';
 import { SOLUTION_LIST } from '../../constants/formConstant';
 import { LibProjectService } from 'lib-project';
 
@@ -23,14 +22,6 @@ import { LibProjectService } from 'lib-project';
   styleUrl: './create-new.component.scss'
 })
 export class CreateNewComponent {
-  backButton : boolean = true;
-  subHeader : any;
-  headerData : any = {};
-  selctedCardItem : any;
-  titleObj = {
-    "title" : "Creation Portal"
-  }
-
   resourceList : any
   
   resourceHeader = {
@@ -80,38 +71,4 @@ export class CreateNewComponent {
     })
   }
   
-  openPopup() {
-    const dialogRef = this.dialog.open(DialogPopupComponent, {
-    data : {
-      header: 'BACK',
-      content: 'CHANGE_UNSAVED_MESSAGE',
-      cancelButton:'CANCEL',
-      exitButton: 'EXIT'
-    }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(DialogModelComponent, { 
-    data : {
-    header: 'ADD_LEARNING_RESOURCE',
-    labelname: 'RESOURCE_NAME',
-    resourceName:'Name',
-    labellink: 'RESOURCE_LINK',
-    resourceLink:'Link',
-    cancelButton: 'CANCEL',
-    saveButton: 'SAVE',
-    addResource: 'ADD_LEARNING_RESOURCE'
-    }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
-  onButtonClick(buttonTitle: string) {
-  }
 }

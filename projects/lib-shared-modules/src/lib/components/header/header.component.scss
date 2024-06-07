@@ -1,23 +1,5 @@
 @import  "../../../../../self-creation-portal/src/styles.scss";
 
-mat-toolbar {
-    position:sticky;
-    top:0;
-    z-index: 2;
-    background-color:  $primary;
-    color: $secondary;
-    font-size: 18px;
-    
-    a {
-        margin-left: 2rem;
-
-        mat-icon{
-            margin-right: 8px;
-            cursor: pointer;
-        }
-    }
- 
-}
 .sub-header{
     background-color: $secondary;
     color: $tertiary;

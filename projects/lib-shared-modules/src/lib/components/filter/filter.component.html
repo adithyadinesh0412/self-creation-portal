@@ -9,5 +9,13 @@
             </mat-select>
           </div>
     }
+    @if(showChangesButton){
+    <div class="filter-container">
+      <div>
+        <button class="inline-flex items-center text-primary px-2">{{ changeButton }}<mat-icon>looks_one</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
   </div>
 }
