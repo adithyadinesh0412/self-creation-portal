@@ -40,5 +40,7 @@
     "RESOURCE_LINK": "Link to the resource",
     "ADD_LEARNING_RESOURCE":"Add learning resource(s)",
     "BACK": "Back",
-    "CHANGE_UNSAVED_MESSAGE":"Changes will not be saved, do you want to go back?"
+    "CHANGE_UNSAVED_MESSAGE":"Changes will not be saved, do you want to go back?",
+    "SHOWING":"Showing",
+    "RESULTS":"Results"
 }

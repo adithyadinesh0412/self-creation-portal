@@ -71,36 +71,4 @@ export class CreateNewComponent {
     })
   }
   
-  openPopup() {
-    const dialogRef = this.dialog.open(DialogPopupComponent, {
-    data : {
-      header: 'BACK',
-      content: 'CHANGE_UNSAVED_MESSAGE',
-      cancelButton:'CANCEL',
-      exitButton: 'EXIT'
-    }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(DialogModelComponent, { 
-    data : {
-    header: 'ADD_LEARNING_RESOURCE',
-    labelname: 'RESOURCE_NAME',
-    resourceName:'Name',
-    labellink: 'RESOURCE_LINK',
-    resourceLink:'Link',
-    cancelButton: 'CANCEL',
-    saveButton: 'SAVE',
-    addResource: 'ADD_LEARNING_RESOURCE'
-    }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
 }

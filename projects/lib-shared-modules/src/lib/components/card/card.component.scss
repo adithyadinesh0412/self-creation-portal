@@ -1,7 +1,9 @@
 @import "./../../../../../self-creation-portal/src/styles.scss";
 
 .card-container{
+    border: 1px solid $borderGray;
     background-color: $cardLightBlue;
+    border-radius: 0.125rem;
 }
 .card-container{
     background-color: $cardLightBlue;
@@ -9,24 +11,32 @@
 .flex-column{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.3125rem;
 }
 .flex-row{
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 0.3125rem;
     justify-content: space-between;
 }
 .chip-container{
-    background-color: $chipPurple;  
-    border-radius: 25px;
-    padding: 0 10px;
+    background-color: $chipPurple;
+    border-radius: 1.25rem;
+    padding: 0 0.625rem;
 }
 .text{
     color: $textBlue;
     margin: 0;
     padding: 0;
-    
+}
+.overflow-ellipsis{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    white-space: pre-line;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 .capitalize{
     text-transform: capitalize;
@@ -37,4 +47,9 @@
 }
 .underline{
     text-decoration: underline;
+}
+
+.info-icon {
+    color: $tertiary;
+    font-size: 1.375rem;
 }
