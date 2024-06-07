@@ -22,14 +22,6 @@ import { LibProjectService } from 'lib-project';
   styleUrl: './create-new.component.scss'
 })
 export class CreateNewComponent {
-  backButton : boolean = true;
-  subHeader : any;
-  headerData : any = {};
-  selctedCardItem : any;
-  titleObj = {
-    "title" : "Creation Portal"
-  }
-
   resourceList : any
   
   resourceHeader = {
@@ -111,6 +103,4 @@ export class CreateNewComponent {
   //   });
   // }
 
-  onButtonClick(buttonTitle: string) {
-  }
 }

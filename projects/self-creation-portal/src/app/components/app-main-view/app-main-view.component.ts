@@ -21,9 +21,7 @@ import { SIDE_NAV_DATA } from '../../constants/formConstant';
 export class AppMainViewComponent {
 
   backButton : boolean = true;
-  subHeader : any;
   headerData : any = {};
-  selctedCardItem : any;
   titleObj = {
     "title" : "CREATION_PORTAL"
   }
@@ -36,6 +34,7 @@ export class AppMainViewComponent {
   ngOnInit(){
     this.getnavData()
   }
+  
   onButtonClick(buttonTitle: string) {
   }
 
