@@ -4,11 +4,13 @@ import { ResourceHolderComponent } from './components/resource-holder/resource-h
 import { AppMainViewComponent } from './components/app-main-view/app-main-view.component';
 import { SolutionsLibHolderComponent } from './components/solutions-lib-holder/solutions-lib-holder.component';
 import { CreateNewComponent } from './components/create-new/create-new.component';
+import { AuthGuard } from 'authentication_frontend_library';
 
 export const routes: Routes = [
     {
         path:'home',
         component:AppMainViewComponent,
+        canActivate:[AuthGuard],
         children:[
             {
                 path:'create-new',
@@ -40,7 +42,8 @@ export const routes: Routes = [
     {
         path:"solution",
         component:SolutionsLibHolderComponent,
-        loadChildren:() => import('lib-project').then(m => m.ViewModuleModule)
+        canActivate:[AuthGuard],
+        loadChildren:() => import('lib-project').then(m => m.ViewModuleModule),
     },
     { path: '', loadChildren: () => import('authentication_frontend_library').then(m => m.SlRoutingRoutingModule) }
 ];

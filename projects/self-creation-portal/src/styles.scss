@@ -1,6 +1,6 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
@@ -63,8 +63,6 @@ $custom-theme: mat.define-light-theme((
 $primary: #0a4f9d;
 $secondary: #FBFDFE;
 $tertiary: #34383C;
-
-$primary: #0a4f9d;
 $cardLightBlue:#f3f7fa;
 $chipPurple:#A59EFB;
 $textBlue:#0A4F9D;
@@ -79,6 +77,6 @@ body{
   border: 1px solid $primary;
   border-radius: 2px !important;
   padding: 0 15px !important;
-  margin: 0 5px 15px 0 !important; 
+  margin: 0 5px 15px 0 !important;
   box-sizing: border-box;
 }
