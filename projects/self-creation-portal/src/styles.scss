@@ -1,6 +1,6 @@
 // Import Angular Material styles
 @use '@angular/material' as mat;
-// @import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 // @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
@@ -66,6 +66,7 @@ $tertiary: #34383C;
 $cardLightBlue:#f3f7fa;
 $chipPurple:#A59EFB;
 $textBlue:#0A4F9D;
+$borderGray:#d1d3d5;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 

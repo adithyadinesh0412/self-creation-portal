@@ -1,4 +1,6 @@
-<mat-form-field class="search-container" appearance="outline">
+<div class="search-container flex flex-row p-1 gap-2" >
+    <div class="flex text-center">
+        <mat-icon class="search-icon" matPrefix (click)="onSearch(searchInput.value)">search</mat-icon>
+    </div>
     <input matInput #searchInput [formControl]="searchControl" [attr.maxlength]="maxLength"  (keyup.enter)="onSearch(searchInput.value)" placeholder="Search" >
-    <mat-icon matPrefix (click)="onSearch(searchInput.value)">search</mat-icon>
-</mat-form-field>
+</div>

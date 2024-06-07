@@ -1,29 +1,34 @@
-<mat-card>
+<div >
     @if(list){
-    <div class="card-container">
-        <mat-card-content  >
-            <div class="flex-row">
-                <div class=" flex-column">
-                    <p class="text capitalize">{{list.title}}</p>
+    <div class="card-container p-2 pl-5">
+        <mat-card-content>
+            <div class="flex-row mr-10">
+                <div class="flex-column">
                     <div  class="flex-row">
-                        <div>
-                            {{list.organization.name}}
-                        </div>
-                        <div class="chip-container capitalize">
-                           {{list.type}}
+                        <div class="chip-container capitalize item-center text-center">
+                            {{list.type}}
                         </div>
                     </div>
-                </div>
-                <div  class="flex-row flex-end">
-                    @for (button of list.actionButton; track button){
-                        <div>
-                            <p class="underline">{{ button.label }}</p>
+                    <div class="flex-column">
+                        <p class="text capitalize overflow-ellipsis">{{list.title}}</p>
+                        <div class="flex items-center text-sm text-[$borderGray]">
+                            By <span class="ml-1">{{ list.creator_name }}</span>
                         </div>
+                    </div>
+                    
+                </div>
+                <div class="flex-row flex-end ">
+                    <div class=" flex justify-center items-center">
+                        <mat-icon class="info-icon">info</mat-icon>
+                    </div>
+                    @for (button of list.actionButton; track button){
+                    <div>
+                        <button mat-flat-button [color]="button.background_color">{{button.label}}</button>
+                    </div>
                     }
-                  
                 </div>
             </div>
         </mat-card-content>
     </div>
-}
-</mat-card>
+    }
+</div>
