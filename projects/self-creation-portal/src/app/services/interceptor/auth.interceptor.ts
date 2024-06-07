@@ -1,6 +1,12 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/internal/operators/catchError';
+
+import { inject } from '@angular/core';
+import { LibSharedModulesService } from 'lib-shared-modules';
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('auth called.')
+  const commonService = inject(LibSharedModulesService);
   const authToken = localStorage.getItem('accToken');
   let authReq = req.clone({})
   if(authToken) {
@@ -11,5 +17,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  return next(authReq);
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      console.log(error)
+      if (error.status === 401) {
+        commonService.logout();
+      }
+      return throwError(error);
+    }))
 };

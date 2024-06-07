@@ -20,7 +20,7 @@ export class HeaderComponent {
 
   constructor( private libsharedservice: LibSharedModulesService, private router: Router) {
   }
-  
+
   backArrowButton() {
     this.libsharedservice.goBack()
   }
@@ -30,7 +30,6 @@ export class HeaderComponent {
   }
 
   logout() {
-    localStorage.removeItem('accToken');
-    this.router.navigate(['']);
+    this.libsharedservice.logout();
   }
 }
