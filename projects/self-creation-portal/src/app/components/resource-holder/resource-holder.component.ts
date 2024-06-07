@@ -146,7 +146,7 @@ export class ResourceHolderComponent implements OnInit{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
-      const currentData = form.find((item: any) => item.url === currentUrl)?.filterData;
+      const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl)?.filterData;
       this.filters.filterData = currentData || [];
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'Status');
     });
