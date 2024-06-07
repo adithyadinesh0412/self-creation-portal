@@ -4,7 +4,8 @@ import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service'
-import { DynamicFormModule } from 'elevate-dynamic-form';
+import { DynamicFormModule } from 'dynamic-form-ramkumar';
+
 
 
 @Component({
