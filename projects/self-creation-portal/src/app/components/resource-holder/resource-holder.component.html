@@ -1,6 +1,6 @@
 <div class="w-full p-6">
     <lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
-    <lib-filter [filterData]="filterData" (filteredData)="onFilterChange($event)"></lib-filter>
+    <lib-filter [filterData]="filters.filterData" (filteredData)="onFilterChange($event)" [showChangesButton]="filters.showChangesButton"></lib-filter>
     <lib-pagination [totalCount]="pagination.totalCount" [pageSize]="pagination.pageSize" [pageSizeOptions]="pagination.pageSizeOptions" (paginatorChanged)="onPageChange($event)"></lib-pagination>
     @for (list of filters.currentList; track list) {
         <lib-card [list]="list" class="p-6"></lib-card>

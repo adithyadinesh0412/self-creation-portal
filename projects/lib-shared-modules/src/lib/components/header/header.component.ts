@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LibSharedModulesService } from '../../lib-shared-modules.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'lib-header',
@@ -17,7 +18,7 @@ export class HeaderComponent {
   @Input() headerData : any;
   @Output() buttonClick: EventEmitter<string> =  new EventEmitter<string>();
 
-  constructor( private libsharedservice: LibSharedModulesService) {
+  constructor( private libsharedservice: LibSharedModulesService, private router: Router) {
   }
   
   backArrowButton() {
@@ -26,5 +27,10 @@ export class HeaderComponent {
 
   onButtonClick(button : any) {
     this.buttonClick.emit(button.title)
+  }
+
+  logout() {
+    localStorage.removeItem('accToken');
+    this.router.navigate(['']);
   }
 }
