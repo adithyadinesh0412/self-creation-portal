@@ -9,11 +9,23 @@ import { LibProjectService } from '../../../lib-project.service';
 export class LayoutComponent {
   backButton : boolean = true;
   subHeader : any;
-  headerData : any = {};
+  headerData : any = {
+    title:"Project name",
+    buttons: [{
+      title: "SAVE_AS_DRAFT",
+      disable:false
+    },
+    {
+      title: "PREVIEW",
+      disable:false
+    },
+    {
+      title: "SEND_FOR_REVIEW",
+      disable:true
+    }
+  ]
+  };
   selctedCardItem : any;
-  titleObj = {
-    "title" : "Project name"
-  }
 
   sidenavData:any
   constructor(private libProjectService:LibProjectService) {

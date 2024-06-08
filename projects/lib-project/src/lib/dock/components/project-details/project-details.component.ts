@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service'
 import { DynamicFormModule } from 'dynamic-form-ramkumar';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -12,7 +13,7 @@ import { DynamicFormModule } from 'dynamic-form-ramkumar';
   selector: 'lib-project-details',
   standalone: true,
   imports: [
-    HeaderComponent,DynamicFormModule
+    HeaderComponent,DynamicFormModule,TranslateModule
   ],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.css'

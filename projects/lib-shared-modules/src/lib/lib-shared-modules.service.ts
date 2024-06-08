@@ -11,15 +11,16 @@ export class LibSharedModulesService {
   constructor( private router : Router, private location : Location) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.previousUrl = event.url;
+        this.previousUrl = event.url; 
       }
     });
   }
 
   goBack(): void {
-    if (this.previousUrl) {
-      this.router.navigateByUrl(this.previousUrl);
-    }
+    this.location.back();
+    // if (this.previousUrl) {
+    //   this.router.navigateByUrl(this.previousUrl);
+    // }
   }
 
   logout() {
