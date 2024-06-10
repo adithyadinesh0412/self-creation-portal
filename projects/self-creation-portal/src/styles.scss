@@ -81,6 +81,7 @@ $cardLightBlue:#f3f7fa;
 $chipPurple:#A59EFB;
 $textBlue:#0A4F9D;
 $borderGray:#d1d3d5;
+$buttonDisable:#80868b;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 
@@ -94,4 +95,13 @@ body{
   padding: 0 15px !important;
   margin: 0 5px 15px 0 !important;
   box-sizing: border-box;
+}
+.button-enable{   
+  color: $primary;
+  border: 1px solid $primary;
+}
+.button-disable{
+background-color: $buttonDisable;
+color: $secondary;
+border: 1px solid $buttonDisable;
 }
