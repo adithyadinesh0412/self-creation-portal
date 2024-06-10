@@ -8,31 +8,16 @@ import { LibProjectService } from '../../../lib-project.service';
 })
 export class LayoutComponent {
   backButton : boolean = true;
-  subHeader : any;
-  headerData : any = {
-    title:"Project name",
-    buttons: [{
-      title: "SAVE_AS_DRAFT",
-      disable:false
-    },
-    {
-      title: "PREVIEW",
-      disable:false
-    },
-    {
-      title: "SEND_FOR_REVIEW",
-      disable:true
-    }
-  ]
-  };
+  subHeader : any; 
   selctedCardItem : any;
-
+  headerData:any
   sidenavData:any
   constructor(private libProjectService:LibProjectService) {
   }
   ngOnInit(){
     this.libProjectService.currentData.subscribe(data => {
       this.sidenavData= data.sidenavData.sidenav
+      this.headerData = data.sidenavData.headerData
     });
   }
 
