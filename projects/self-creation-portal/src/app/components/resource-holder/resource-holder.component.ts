@@ -39,108 +39,110 @@ export class ResourceHolderComponent implements OnInit{
     showChangesButton: false
   };
 
-  lists:any = [
-    {
-      "id": 1,
-      "title": "A Sunny Day in the mid summer during vacation of th",
-      "type": "project",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 2,
-      "title": "sample project",
-      "type": "project",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 3,
-      "title": "sample survey",
-      "type": "survey",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 4,
-      "title": "sample project",
-      "type": "project",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 5,
-      "title": "sample project",
-      "type": "project",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 6,
-      "title": "sample project",
-      "type": "observation with rubrics",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    },
-    {
-      "id": 7,
-      "title": "sample project",
-      "type": "observation",
-      "organization": {
-        "id": 24,
-        "name": "Tunerlabs",
-        "code": "tl"
-      },
-      "creator_name": "Suma",
-      "status": "DRAFT",
-      "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-    }
-  ]
+  // lists:any = [
+  //   {
+  //     "id": 1,
+  //     "title": "A Sunny Day in the mid summer during vacation of th",
+  //     "type": "project",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 2,
+  //     "title": "sample project",
+  //     "type": "project",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 3,
+  //     "title": "sample survey",
+  //     "type": "survey",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 4,
+  //     "title": "sample project",
+  //     "type": "project",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 5,
+  //     "title": "sample project",
+  //     "type": "project",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 6,
+  //     "title": "sample project",
+  //     "type": "observation with rubrics",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   },
+  //   {
+  //     "id": 7,
+  //     "title": "sample project",
+  //     "type": "observation",
+  //     "organization": {
+  //       "id": 24,
+  //       "name": "Tunerlabs",
+  //       "code": "tl"
+  //     },
+  //     "creator_name": "Suma",
+  //     "status": "DRAFT",
+  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
+  //   }
+  // ]
 
+  lists:any = []
   constructor(private route: ActivatedRoute, private formService: FormService) {
   }
 
   ngOnInit() {
     this.loadSidenavData();
-    this.filters.filteredLists = this.lists;
-    this.pagination.totalCount = this.lists.length;
-    this.updateCurrentList();
+    this.getList(); 
+    // this.filters.filteredLists = this.lists;
+    // this.pagination.totalCount = this.lists.length;
+    // this.updateCurrentList();
   }
 
   loadSidenavData(){
@@ -155,7 +157,8 @@ export class ResourceHolderComponent implements OnInit{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    this.updateCurrentList();
+    // this.updateCurrentList();
+    this.getList(); 
   }
 
   receiveSearchResults(event: string) {
@@ -168,8 +171,9 @@ export class ResourceHolderComponent implements OnInit{
   onFilterChange(event: any) {
     this.filters.current.type = event;
     this.pagination.currentPage = 0;
-    this.applyFiltersAndSearch();
-    this.paginationComponent.resetToFirstPage();
+    // this.applyFiltersAndSearch();
+    // this.paginationComponent.resetToFirstPage();
+    this.getList(); 
   }
 
   applyFiltersAndSearch() {
@@ -187,6 +191,30 @@ export class ResourceHolderComponent implements OnInit{
     this.updateCurrentList();
   }
 
+
+  getList() {
+    const params: { [key: string]: any } = {
+      page: this.pagination.currentPage + 1,
+      limit: this.pagination.pageSize,
+      type: 'project',
+      status: 'draft', 
+      sort_by: 'created_at',
+      sort_order: 'desc',
+      filter: 'all'
+    };
+    
+    if (this.filters.search) {
+      params['search'] = this.filters.search;
+    }
+
+    this.formService.getResourceList(params).subscribe(response => {
+      this.lists = response.data; 
+      this.filters.filteredLists = this.lists;
+      this.pagination.totalCount = response.totalCount;
+      this.updateCurrentList();
+    });
+  }
+  
   updateCurrentList() {
     const start = this.pagination.currentPage * this.pagination.pageSize;
     const end = start + this.pagination.pageSize;
