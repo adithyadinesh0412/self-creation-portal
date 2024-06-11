@@ -5,3 +5,8 @@
     border: 1px solid $primary;
     border-radius: 5px 
   }
+
+.disable-fileds{
+  pointer-events: none;
+  color: $tertiary;
+}

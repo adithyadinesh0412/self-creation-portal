@@ -32,19 +32,19 @@
                                     [placeholder]="tasksData.description.placeholder"></textarea>
                             </mat-form-field>
                         </div>
-                        <div class="flex gap-2">
-                            <mat-slide-toggle class="example-margin" labelPosition="before" color="primary"
+                        <div class="sm:flex md:flex lg:flex xl:flex gap-2">
+                            <mat-slide-toggle labelPosition="before" color="primary"
                                 [formControlName]="tasksData.mandatory.name">
                                 {{tasksData.mandatory.label}}
                             </mat-slide-toggle>
 
-                            <mat-slide-toggle class="example-margin" labelPosition="before" color="primary"
+                            <mat-slide-toggle labelPosition="before" color="primary"
                                 [formControlName]="tasksData.allowEvidence.name">
                                 {{tasksData.allowEvidence.label}}
                             </mat-slide-toggle>
-
-                            <mat-form-field floatLabel="always" appearance="outline">
-                                <mat-select [formControlName]="tasksData.fileType.name" placeholder="File type">
+                            
+                            <div class="border px-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" >
+                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="File type">
                                     @for(option of tasksData.fileType.options;track option){
                                     <mat-option [value]="option">
                                         {{ option }}
@@ -52,14 +52,14 @@
                                     }
 
                                 </mat-select>
-                            </mat-form-field>
+                            </div>
 
-                            <div class="flex">
+                            <div class="flex gap-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" >
                                 <p>{{tasksData.minEvidences.label}}</p>
-                                <mat-form-field floatLabel="always" appearance="outline">
+                                <div class="border">
                                     <input matInput [formControlName]="tasksData.minEvidences.name" placeholder="1"
-                                        type="number" min="1" />
-                                </mat-form-field>
+                                        type="number" min="1"  class="w-16 mt-1 block" />
+                                </div>
                             </div>
                         </div>
                     </div>
