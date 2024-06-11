@@ -93,9 +93,33 @@ export class FormService {
 
   }
 
-  getResourceList(params: any): Observable<any> {
-    const endpoint = RESOURCE_URLS.RESOURCE_LIST;  
-    const queryParams = new HttpParams({ fromObject: params });
-    return this.httpService.get(endpoint, queryParams);
+  private createUrlWithParams(baseUrl: string, params: { [key: string]: any }): string {
+    let httpParams = new HttpParams();
+    for (const key in params) {
+      if (params.hasOwnProperty(key) && params[key] !== undefined && params[key] !== '') {
+        httpParams = httpParams.set(key, params[key]);
+      }
+    }
+    return `${baseUrl}?${httpParams.toString()}`;
+  }
+
+  private generateParams(pagination: any, filters: any): { [key: string]: any } {
+    return {
+      page: pagination.currentPage + 1,
+      limit: pagination.pageSize,
+      type: 'project',
+      status: 'draft',
+      sort_by: 'title',
+      sort_order: 'desc',
+      filter: '',
+      search: btoa(filters.search) || ''
+    };
+  }
+
+  getResourceList(pagination: any, filters: any): Observable<any> {
+    const endpoint = RESOURCE_URLS.RESOURCE_LIST;
+    const params = this.generateParams(pagination, filters);
+    const url = this.createUrlWithParams(endpoint, params);
+    return this.httpService.get(url);
   }
 }

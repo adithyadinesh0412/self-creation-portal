@@ -26,21 +26,25 @@ app.all('*', async function (req, res) {
   try {
       // Extract the original URL
       const originalUrl = req.originalUrl;
-      console.log("response ", req.headers)
 
       // Modify the base URL as needed
       const newUrl = `${baseUrl}${originalUrl}`;
-      const response = await axios({
-        method: 'post',
+      options = {
+        method: req.method,
         url: newUrl,
         headers: {
           'X-auth-token': req.headers['x-auth-token']
-        },
-        data: req.body
-    });
+        }
+      }
+      if(Object.keys(req.body).length>0) {
+        options.data = req.body
+      }
+      console.log(req.body);
+      const response = await axios(options);
     // Send the response back to the client
     res.status(response.status).json(response.data);
   } catch (error) {
+    console.log(error);
       if (error.response) {
           // The request was made and the server responded with a status code
           res.status(error.response.status).json(error.response.config.data);

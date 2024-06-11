@@ -164,8 +164,10 @@ export class ResourceHolderComponent implements OnInit{
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
     this.pagination.currentPage = 0;
-    this.applyFiltersAndSearch();
+    // this.applyFiltersAndSearch();
+    // this.getList();
     this.paginationComponent.resetToFirstPage();
+    // this.updateCurrentList();
   }
 
   onFilterChange(event: any) {
@@ -188,30 +190,21 @@ export class ResourceHolderComponent implements OnInit{
     
     this.filters.filteredLists = filteredLists;
     this.pagination.totalCount = filteredLists.length;
-    this.updateCurrentList();
+    // this.updateCurrentList();
   }
 
-
   getList() {
-    const params: { [key: string]: any } = {
-      page: this.pagination.currentPage + 1,
-      limit: this.pagination.pageSize,
-      type: 'project',
-      status: 'draft', 
-      sort_by: 'created_at',
-      sort_order: 'desc',
-      filter: 'all'
-    };
-    
-    if (this.filters.search) {
-      params['search'] = this.filters.search;
-    }
-
-    this.formService.getResourceList(params).subscribe(response => {
-      this.lists = response.data; 
+    this.formService.getResourceList(this.pagination, this.filters).subscribe(response => {
+      console.log('API Response:', response);
+      const result = response.result || { data: [], count: 0 };
+      this.lists = result.data;
       this.filters.filteredLists = this.lists;
-      this.pagination.totalCount = response.totalCount;
-      this.updateCurrentList();
+      this.pagination.totalCount = result.count;
+      console.log(result.count);
+      // this.updateCurrentList();
+    },
+    error => {
+      console.error('Error fetching resource list:', error);
     });
   }
   
