@@ -21,10 +21,12 @@
                     <div class=" flex justify-center items-center">
                         <mat-icon class="info-icon">info</mat-icon>
                     </div>
-                    @for (button of list.actionButton; track button){
-                    <div>
-                        <button mat-flat-button [color]="button.background_color">{{button.label}}</button>
-                    </div>
+                    @if(showActionButton){
+                        @for (button of list.actionButton; track button){
+                            <div>
+                                <button mat-flat-button [ngStyle]="{'background-color': button.background_color, 'color': 'white'}">{{button.label}}</button>
+                            </div>
+                            }
                     }
                 </div>
             </div>

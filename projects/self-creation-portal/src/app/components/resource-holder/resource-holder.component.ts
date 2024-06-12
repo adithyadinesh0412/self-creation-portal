@@ -34,104 +34,15 @@ export class ResourceHolderComponent implements OnInit{
     search: '',
     current: {}  as { type: string},
     filteredLists: [] as any[],
-    currentList: [] as any[],
     filterData: [] as any,
-    showChangesButton: false
+    showChangesButton: false,
+    showActionButton: false
   };
-
-  // lists:any = [
-  //   {
-  //     "id": 1,
-  //     "title": "A Sunny Day in the mid summer during vacation of th",
-  //     "type": "project",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 2,
-  //     "title": "sample project",
-  //     "type": "project",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 3,
-  //     "title": "sample survey",
-  //     "type": "survey",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 4,
-  //     "title": "sample project",
-  //     "type": "project",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 5,
-  //     "title": "sample project",
-  //     "type": "project",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 6,
-  //     "title": "sample project",
-  //     "type": "observation with rubrics",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   },
-  //   {
-  //     "id": 7,
-  //     "title": "sample project",
-  //     "type": "observation",
-  //     "organization": {
-  //       "id": 24,
-  //       "name": "Tunerlabs",
-  //       "code": "tl"
-  //     },
-  //     "creator_name": "Suma",
-  //     "status": "DRAFT",
-  //     "actionButton": [{ action: 'EDIT', label: 'Edit', background_color: 'primary' }, { action: 'DELETE', label: 'Delete', background_color: 'warn' }]
-  //   }
-  // ]
+  
+  sortOptions = {
+    sort_by: '',
+    sort_order: ''
+  };
 
   lists:any = []
   constructor(private route: ActivatedRoute, private formService: FormService) {
@@ -139,79 +50,77 @@ export class ResourceHolderComponent implements OnInit{
 
   ngOnInit() {
     this.loadSidenavData();
-    this.getList(); 
-    // this.filters.filteredLists = this.lists;
-    // this.pagination.totalCount = this.lists.length;
-    // this.updateCurrentList();
+    this.getList();
   }
 
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
+    const isDraftsUrl = !!currentUrl && currentUrl.includes('drafts');
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl)?.filterData;
       this.filters.filterData = currentData || [];
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'Status');
+      this.filters.showActionButton = isDraftsUrl;
     });
   }
 
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    // this.updateCurrentList();
     this.getList(); 
   }
 
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
     this.pagination.currentPage = 0;
-    // this.applyFiltersAndSearch();
-    // this.getList();
     this.paginationComponent.resetToFirstPage();
-    // this.updateCurrentList();
   }
 
   onFilterChange(event: any) {
-    this.filters.current.type = event;
+     if (['A to Z', 'Z to A', 'Latest first', 'Oldest first'].includes(event)) {
+      switch (event) {
+        case 'A to Z':
+          this.sortOptions.sort_by = 'title';
+          this.sortOptions.sort_order = 'asc';
+          break;
+        case 'Z to A':
+          this.sortOptions.sort_by = 'title';
+          this.sortOptions.sort_order = 'desc';
+          break;
+        case 'Latest first':
+          this.sortOptions.sort_by = 'created_at';
+          this.sortOptions.sort_order = 'asc';
+          break;
+        case 'Oldest first':
+          this.sortOptions.sort_by = 'created_at';
+          this.sortOptions.sort_order = 'desc';
+          break;
+        default:
+          this.sortOptions.sort_by = '';
+          this.sortOptions.sort_order = '';
+      }
+    } else {
+      this.filters.current.type = event;
+    }
     this.pagination.currentPage = 0;
-    // this.applyFiltersAndSearch();
-    // this.paginationComponent.resetToFirstPage();
-    this.getList(); 
-  }
-
-  applyFiltersAndSearch() {
-    let filteredLists = this.lists;
-    if (this.filters.current.type) {
-      filteredLists = filteredLists.filter((item: any) => item.type.toLowerCase() === this.filters.current.type.toLowerCase());
-    }
-
-    if (this.filters.search) {
-      filteredLists = filteredLists.filter((item: any) => item.title.toLowerCase().includes(this.filters.search));
-    }
-    
-    this.filters.filteredLists = filteredLists;
-    this.pagination.totalCount = filteredLists.length;
-    // this.updateCurrentList();
+    this.paginationComponent.resetToFirstPage();
   }
 
   getList() {
-    this.formService.getResourceList(this.pagination, this.filters).subscribe(response => {
-      console.log('API Response:', response);
+    this.formService.getResourceList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
-      this.lists = result.data;
+      this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
-      console.log(result.count);
-      // this.updateCurrentList();
-    },
-    error => {
-      console.error('Error fetching resource list:', error);
     });
   }
   
-  updateCurrentList() {
-    const start = this.pagination.currentPage * this.pagination.pageSize;
-    const end = start + this.pagination.pageSize;
-    this.filters.currentList = this.filters.filteredLists.slice(start, end);
+  addActionButtons(item: any): any {
+    item.actionButton = item.actionButton || [
+      { action: 'EDIT', label: 'Edit', background_color: '#0a4f9d'  },
+      { action: 'DELETE', label: 'Delete', background_color:'#EC555D' }
+    ];
+    return item;
   }
 
 }

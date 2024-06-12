@@ -1,13 +1,13 @@
 <div class="w-full p-6 flex flex-col gap-2">
     <lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
-    <lib-filter [filterData]="filters.filterData" (filteredData)="onFilterChange($event)"></lib-filter>
+    <lib-filter [filterData]="filters.filterData" (filteredData)="onFilterChange($event)" [showChangesButton]="filters.showChangesButton"></lib-filter>
    <div class="w-full flex justify-between gap-2">
     <div class="flex justify-center items-center text-lg">{{"SHOWING" | translate}} <span class="px-1">{{filters.filteredLists.length}}</span> {{ "RESULTS" | translate}}</div>
     <lib-pagination [totalCount]="pagination.totalCount" [pageSize]="pagination.pageSize" [pageSizeOptions]="pagination.pageSizeOptions" (paginatorChanged)="onPageChange($event)"></lib-pagination>
    </div>
     @for (list of filters.filteredLists; track list) {
         <div class="pb-1">
-        <lib-card [list]="list"></lib-card>
+        <lib-card [list]="list" [showActionButton]="filters.showActionButton"></lib-card>
         </div>
     } 
 </div>

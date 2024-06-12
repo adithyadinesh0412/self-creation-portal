@@ -103,22 +103,22 @@ export class FormService {
     return `${baseUrl}?${httpParams.toString()}`;
   }
 
-  private generateParams(pagination: any, filters: any): { [key: string]: any } {
+  private generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } {
     return {
       page: pagination.currentPage + 1,
       limit: pagination.pageSize,
       type: 'project',
       status: 'draft',
-      sort_by: 'title',
-      sort_order: 'desc',
+      sort_by:  sortOptions.sort_by || '',
+      sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || ''
     };
   }
 
-  getResourceList(pagination: any, filters: any): Observable<any> {
+  getResourceList(pagination: any, filters: any, sortOptions: any): Observable<any> {
     const endpoint = RESOURCE_URLS.RESOURCE_LIST;
-    const params = this.generateParams(pagination, filters);
+    const params = this.generateParams(pagination, filters, sortOptions);
     const url = this.createUrlWithParams(endpoint, params);
     return this.httpService.get(url);
   }
