@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
     HeaderComponent,DynamicFormModule,TranslateModule
   ],
   templateUrl: './project-details.component.html',
-  styleUrl: './project-details.component.css'
+  styleUrl: './project-details.component.scss'
 })
 export class ProjectDetailsComponent {
  data:any;

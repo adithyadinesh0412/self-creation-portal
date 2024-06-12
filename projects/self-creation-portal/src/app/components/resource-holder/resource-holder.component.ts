@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { HeaderComponent, SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent } from '../../../../../lib-shared-modules/src/public-api';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
@@ -181,7 +181,7 @@ export class ResourceHolderComponent implements OnInit{
     if (this.filters.search) {
       filteredLists = filteredLists.filter((item: any) => item.title.toLowerCase().includes(this.filters.search));
     }
-    
+
     this.filters.filteredLists = filteredLists;
     this.pagination.totalCount = filteredLists.length;
     this.updateCurrentList();
