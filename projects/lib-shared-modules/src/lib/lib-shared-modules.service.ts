@@ -8,17 +8,23 @@ import { NavigationEnd, Router } from '@angular/router';
 export class LibSharedModulesService {
 
   private previousUrl !: string;
-  constructor( private router : Router, private location : Location) { 
+  constructor( private router : Router, private location : Location) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.previousUrl = event.url;
+        this.previousUrl = event.url; 
       }
     });
   }
 
-  public goBack(): void {
-    if (this.previousUrl) {
-      this.router.navigateByUrl(this.previousUrl);
-    }
+  goBack(): void {
+    this.location.back();
+    // if (this.previousUrl) {
+    //   this.router.navigateByUrl(this.previousUrl);
+    // }
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['login']);
   }
 }

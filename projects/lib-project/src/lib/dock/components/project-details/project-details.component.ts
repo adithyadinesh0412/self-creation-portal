@@ -5,16 +5,18 @@ import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service'
 import { DynamicFormModule } from 'dynamic-form-ramkumar';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
   imports: [
-    HeaderComponent,DynamicFormModule
+    HeaderComponent,DynamicFormModule,TranslateModule
   ],
   templateUrl: './project-details.component.html',
-  styleUrl: './project-details.component.css'
+  styleUrl: './project-details.component.scss'
 })
 export class ProjectDetailsComponent {
  data:any;

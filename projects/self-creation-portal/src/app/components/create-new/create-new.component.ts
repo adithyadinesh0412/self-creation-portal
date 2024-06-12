@@ -5,8 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogModelComponent, DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
-import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog'; 
+import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
@@ -23,7 +22,7 @@ import { LibProjectService } from 'lib-project';
 })
 export class CreateNewComponent {
   resourceList : any
-  
+
   resourceHeader = {
     "title":"PROJECT_NAME",
     "buttons":[
@@ -57,18 +56,18 @@ export class CreateNewComponent {
         this.libProjectService.setData( {
           "res" : result,
           "sidenavData": cardItem
-        }); 
+        });
         this.router.navigate([cardItem.url])
       })
       .catch((error) => {
         console.error(error);
       });
   }
- 
+
   getsolutionList() {
     this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
       this.resourceList = form?.result?.data?.fields?.controls
     })
   }
-  
+
 }

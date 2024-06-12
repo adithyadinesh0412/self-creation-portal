@@ -23,10 +23,10 @@
     "PROGRAM_DETAILS":"Program details",
     "RESOURCES":"Resources",
     "RESOURCE_LEVEL_TARGETING":"Resource level targeting",
-    "PROJECT_NAME":"Project Name",
+    "PROJECT_NAME":"Project name",
     "SAVE_AS_DRAFT": "Save as draft",
     "PREVIEW": "Preview",
-    "SEND_FOR_REVIEW": "Send for Review",
+    "SEND_FOR_REVIEW": "Send for review",
     "OBSERVATION_FORM": "Observation Form",
     "PAGINATION": "Pagination",
     "PROGRESS_STATUS": "Progress Status",
@@ -42,5 +42,6 @@
     "BACK": "Back",
     "CHANGE_UNSAVED_MESSAGE":"Changes will not be saved, do you want to go back?",
     "SHOWING":"Showing",
-    "RESULTS":"Results"
+    "RESULTS":"Results",
+    "WORKSPACE":"Workspace"
 }
