@@ -1,11 +1,11 @@
 {
     "/user": {
-      "target": "http://localhost:3000",
+      "target": "http://localhost:1691",
       "secure": false,
       "changeOrigin": true
     },
     "/scp/v1": {
-      "target": "http://localhost:3000",
+      "target": "http://localhost:1691",
       "secure": false,
       "changeOrigin": true
     }
