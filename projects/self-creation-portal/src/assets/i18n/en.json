@@ -45,5 +45,8 @@
     "RESULTS":"Results",
     "WORKSPACE":"Workspace",
     "EDIT":"Edit",
-    "CHANGES_REQUIRED":"Changes required"
+    "CHANGES_REQUIRED":"Changes required",
+    "TASK_DESCRIPTION":"Break down the project into smaller tasks. Mandatory tasks cannot be edited or deleted by users and need to be marked as complete for project submission.",
+    "TASK":"Task",
+    "ADD_TASK":"Add task"
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 1590;
+const port = process.env.PORT || 1690;
 
 app.use(express.static(path.join(__dirname+"/dist/self-creation-portal", 'browser')));
 
