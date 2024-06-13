@@ -43,5 +43,8 @@
     "CHANGE_UNSAVED_MESSAGE":"Changes will not be saved, do you want to go back?",
     "SHOWING":"Showing",
     "RESULTS":"Results",
-    "WORKSPACE":"Workspace"
+    "WORKSPACE":"Workspace",
+    "TASK_DESCRIPTION":"Break down the project into smaller tasks. Mandatory tasks cannot be edited or deleted by users and need to be marked as complete for project submission.",
+    "TASK":"Task",
+    "ADD_TASK":"Add task"
 }
