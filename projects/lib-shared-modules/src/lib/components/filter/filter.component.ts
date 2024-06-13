@@ -20,23 +20,23 @@ export class FilterComponent {
   changeButton: string = "CHANGES_REQUIRED";
 
   OnClickfilter(event:any){
-    if (['A to Z', 'Z to A', 'Latest first', 'Oldest first'].includes(event)) {
+    if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event)) {
       let sort_by = '';
       let sort_order = '';
       switch (event) {
-        case 'A to Z':
+        case "A_TO_Z":
           sort_by = 'title';
           sort_order = 'asc';
           break;
-        case 'Z to A':
+        case "Z_TO_A":
           sort_by = 'title';
           sort_order = 'desc';
           break;
-        case 'Latest first':
+        case "LATEST_FIRST":
           sort_by = 'created_at';
           sort_order = 'asc';
           break;
-        case 'Oldest first':
+        case "OLDEST_FIRST":
           sort_by = 'created_at';
           sort_order = 'desc';
           break;

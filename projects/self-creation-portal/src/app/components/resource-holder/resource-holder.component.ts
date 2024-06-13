@@ -59,7 +59,7 @@ export class ResourceHolderComponent implements OnInit{
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl)?.filterData;
       this.filters.filterData = currentData || [];
-      this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'Status');
+      this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
     });
   }
 

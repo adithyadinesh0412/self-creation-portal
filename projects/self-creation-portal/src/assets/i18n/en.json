@@ -48,5 +48,17 @@
     "CHANGES_REQUIRED":"Changes required",
     "TASK_DESCRIPTION":"Break down the project into smaller tasks. Mandatory tasks cannot be edited or deleted by users and need to be marked as complete for project submission.",
     "TASK":"Task",
-    "ADD_TASK":"Add task"
+    "ADD_TASK":"Add task",
+    "TYPE":"Type",
+    "SORT_BY":"Sort by",
+    "STATUS":"Status",
+    "OBSERVATION WITH RUBRICS": "Observation with rubric",
+    "PROGRAMS": "Programs",
+    "A_TO_Z": "A to Z",
+    "Z_TO_A": "Z to A",
+    "LATEST_FIRST": "Latest first",
+    "OLDEST_FIRST": "Oldest first",
+    "IN_PROGRESS": "In progress",
+    "REPORTED": "Reported",
+    "REPORTED_AND_REJECTED": "Reported and rejected"
 }
