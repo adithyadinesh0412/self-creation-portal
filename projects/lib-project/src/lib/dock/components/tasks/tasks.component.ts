@@ -10,6 +10,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { LibProjectService } from '../../../lib-project.service'
 
 
 @Component({
@@ -23,24 +24,19 @@ export class TasksComponent {
 
   tasksForm: FormGroup;
   taskFileTypes: string[] = ['PDF', 'Image'];
-
-  constructor(private fb: FormBuilder) {
+  tasksData:any;
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
   }
-
-  tasksData:any = 
-    {
-      description: { label: 'Describe the task', placeholder: 'Describe the task', type: 'text', name: 'description', validators: { required: true } },
-      mandatory: { label: 'Mandatory', type: 'checkbox', name: 'mandatory', validators: {} },
-      allowEvidence: { label: 'Allow evidence(s)', type: 'checkbox', name: 'allowEvidence', validators: {} },
-      fileType: { label: 'File type', type: 'select', name: 'fileType', options: ['PDF', 'Image'], validators: {} },
-      minEvidences: { label: 'Min. number of evidences', type: 'number', name: 'minEvidences', validators: {} }
-    }
-
+  
   ngOnInit() {
-    this.addTask();  // Initialize the form with one task
+    this.libProjectService.currentData.subscribe(data => {
+      this.tasksData = data.tasksData
+      this.addTask();
+    });
+
   }
 
   get tasks() {
