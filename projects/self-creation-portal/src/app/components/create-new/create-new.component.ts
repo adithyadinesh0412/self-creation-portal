@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
-import { PROJECT_DETAILS } from '../../constants/formConstant';
+import { PROJECT_DETAILS, TASK_DETAILS } from '../../constants/formConstant';
 import { SOLUTION_LIST } from '../../constants/formConstant';
 import { LibProjectService } from 'lib-project';
 
@@ -53,11 +53,14 @@ export class CreateNewComponent {
  onCardClick(cardItem: any) {
     this.formService.getFormWithEntities(cardItem.formName)
       .then((result) => {
+        this.formService.getForm(TASK_DETAILS).subscribe((tasksData) => {
         this.libProjectService.setData( {
           "res" : result,
+          "tasksData":tasksData.result.data.fields.controls,
           "sidenavData": cardItem
         });
         this.router.navigate([cardItem.url])
+      })
       })
       .catch((error) => {
         console.error(error);

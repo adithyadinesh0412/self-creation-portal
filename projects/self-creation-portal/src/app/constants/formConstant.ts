@@ -14,3 +14,8 @@ export const SOLUTION_LIST: IFORM = {
 	"type": "solutionlist",
 	"sub_type": "solutionlistForm"
 }
+
+export const TASK_DETAILS: IFORM = {
+	"type": "tasksDetails",
+	"sub_type": "tasksDetailsForm"
+}

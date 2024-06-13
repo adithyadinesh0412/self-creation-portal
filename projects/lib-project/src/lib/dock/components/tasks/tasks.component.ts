@@ -1,40 +1,71 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { LibProjectService } from '../../../lib-project.service'
+
 
 @Component({
   selector: 'lib-tasks',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule,HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule,MatInputModule,MatSlideToggleModule,MatSelectModule,MatButtonModule,TranslateModule],
   templateUrl: './tasks.component.html',
-  styleUrl: './tasks.component.css'
+  styleUrl: './tasks.component.scss'
 })
 export class TasksComponent {
 
-  constructor(private fb: FormBuilder) {
+  tasksForm: FormGroup;
+  taskFileTypes: string[] = ['PDF', 'Image'];
+  tasksData:any;
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService) {
+    this.tasksForm = this.fb.group({
+      tasks: this.fb.array([])
+    });
   }
-  myForm: FormGroup = this.fb.group({});
- 
-  public tasksData = [
-    {
-      "name": "objective",
-      "label": "Objective",
-      "value": "",
-      "class": "",
-      "type": "textarea",
-      "placeHolder": "Summarize the goal of the project",
-      "position": "floating",
-      "errorMessage": {
-          "required": "Summarize the goal of the project",
-      },
-      "validators": {
-          "required": true,
-      }
-    }
-  ]
+  
+  ngOnInit() {
+    this.libProjectService.currentData.subscribe(data => {
+      this.tasksData = data.tasksData
+      this.addTask();
+    });
 
+  }
+
+  get tasks() {
+    return this.tasksForm.get('tasks') as FormArray;
+  }
+
+  addTask() {
+    const taskGroup = this.fb.group({
+      description: ['', Validators.required],
+      mandatory: [false],
+      allowEvidence: [false],
+      fileType: [''],
+      minEvidences: [1, Validators.min(1)]
+    });
+    this.tasks.push(taskGroup);
+  }
+
+  deleteTask(index: number) {
+    this.tasks.removeAt(index);
+  }
+
+  moveTask(index: number, direction: number) {
+    if ((index + direction) >= 0 && (index + direction) < this.tasks.length) {
+      const task = this.tasks.at(index);
+      this.tasks.removeAt(index);
+      this.tasks.insert(index + direction, task);
+    }
+  }
+
+  submit() {}
 
 }
