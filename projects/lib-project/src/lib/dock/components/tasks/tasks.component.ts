@@ -70,5 +70,6 @@ export class TasksComponent {
     }
   }
 
+  submit() {}
 
 }
