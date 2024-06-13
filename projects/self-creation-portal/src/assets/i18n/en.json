@@ -43,5 +43,7 @@
     "CHANGE_UNSAVED_MESSAGE":"Changes will not be saved, do you want to go back?",
     "SHOWING":"Showing",
     "RESULTS":"Results",
-    "WORKSPACE":"Workspace"
+    "WORKSPACE":"Workspace",
+    "EDIT":"Edit",
+    "CHANGES_REQUIRED":"Changes required"
 }

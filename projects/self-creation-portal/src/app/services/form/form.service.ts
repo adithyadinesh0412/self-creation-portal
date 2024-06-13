@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import {  Observable, map} from 'rxjs';
-import { HttpProviderService } from "../http-provider/http-provider.service"
-import { FORM_URLS, RESOURCE_URLS } from '../configs/url.config.json';
+import { map } from 'rxjs';
+import { HttpProviderService } from "../http-provider/http-provider.service";
+import { FORM_URLS } from '../configs/url.config.json';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
-import { HttpParams } from '@angular/common/http';
 
 
 @Injectable({
@@ -91,35 +90,5 @@ export class FormService {
       }
     });
 
-  }
-
-  private createUrlWithParams(baseUrl: string, params: { [key: string]: any }): string {
-    let httpParams = new HttpParams();
-    for (const key in params) {
-      if (params.hasOwnProperty(key) && params[key] !== undefined && params[key] !== '') {
-        httpParams = httpParams.set(key, params[key]);
-      }
-    }
-    return `${baseUrl}?${httpParams.toString()}`;
-  }
-
-  private generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } {
-    return {
-      page: pagination.currentPage + 1,
-      limit: pagination.pageSize,
-      type: 'project',
-      status: 'draft',
-      sort_by:  sortOptions.sort_by || '',
-      sort_order: sortOptions.sort_order || '',
-      filter: '',
-      search: btoa(filters.search) || ''
-    };
-  }
-
-  getResourceList(pagination: any, filters: any, sortOptions: any): Observable<any> {
-    const endpoint = RESOURCE_URLS.RESOURCE_LIST;
-    const params = this.generateParams(pagination, filters, sortOptions);
-    const url = this.createUrlWithParams(endpoint, params);
-    return this.httpService.get(url);
   }
 }

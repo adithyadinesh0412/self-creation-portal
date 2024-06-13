@@ -9,6 +9,7 @@ import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, S
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
+import { ResourceService } from '../../services/resource-service/resource.service';
 import { SIDE_NAV_DATA } from '../../constants/formConstant';
 
 
@@ -45,7 +46,7 @@ export class ResourceHolderComponent implements OnInit{
   };
 
   lists:any = []
-  constructor(private route: ActivatedRoute, private formService: FormService) {
+  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService) {
   }
 
   ngOnInit() {
@@ -55,12 +56,10 @@ export class ResourceHolderComponent implements OnInit{
 
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
-    const isDraftsUrl = !!currentUrl && currentUrl.includes('drafts');
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl)?.filterData;
       this.filters.filterData = currentData || [];
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'Status');
-      this.filters.showActionButton = isDraftsUrl;
     });
   }
 
@@ -77,48 +76,31 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   onFilterChange(event: any) {
-     if (['A to Z', 'Z to A', 'Latest first', 'Oldest first'].includes(event)) {
-      switch (event) {
-        case 'A to Z':
-          this.sortOptions.sort_by = 'title';
-          this.sortOptions.sort_order = 'asc';
-          break;
-        case 'Z to A':
-          this.sortOptions.sort_by = 'title';
-          this.sortOptions.sort_order = 'desc';
-          break;
-        case 'Latest first':
-          this.sortOptions.sort_by = 'created_at';
-          this.sortOptions.sort_order = 'asc';
-          break;
-        case 'Oldest first':
-          this.sortOptions.sort_by = 'created_at';
-          this.sortOptions.sort_order = 'desc';
-          break;
-        default:
-          this.sortOptions.sort_by = '';
-          this.sortOptions.sort_order = '';
-      }
-    } else {
-      this.filters.current.type = event;
-    }
+    this.filters.current.type = event;
+    this.pagination.currentPage = 0;
+    this.paginationComponent.resetToFirstPage();
+  }
+
+  onSortOptionsChanged(event: { sort_by: string, sort_order: string }) {
+    this.sortOptions = event;
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
   }
 
   getList() {
-    this.formService.getResourceList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
+      this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
     });
   }
   
   addActionButtons(item: any): any {
     item.actionButton = item.actionButton || [
-      { action: 'EDIT', label: 'Edit', background_color: '#0a4f9d'  },
-      { action: 'DELETE', label: 'Delete', background_color:'#EC555D' }
+      { action: 'EDIT', label: 'EDIT', background_color: '#0a4f9d'  },
+      { action: 'DELETE', label: 'DELETE', background_color:'#EC555D' }
     ];
     return item;
   }
