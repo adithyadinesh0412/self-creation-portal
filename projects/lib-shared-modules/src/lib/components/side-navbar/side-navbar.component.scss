@@ -1,3 +1,4 @@
+@import  "../../../../../self-creation-portal/src/styles.scss";
 mat-sidenav-container {
     height: 80vh;
 }
@@ -14,5 +15,13 @@ mat-sidenav {
         align-items: center;
         gap: 1rem;
         font-size: 18px;
+    }
+}
+.active{ 
+    background: $cardLightBlue;
+    border-top: 1px solid $borderGray;
+    border-bottom: 1px solid $borderGray;
+    .entry{
+        color: $primary;
     }
 }

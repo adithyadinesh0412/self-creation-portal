@@ -2,9 +2,9 @@
   <div class="container">
     @for(filter of filterData;track filter){
       <div class="filter-container">
-            <mat-select [placeholder]="filter.label" [multiple]="filter.isMultiple">
+            <mat-select [placeholder]="filter.label | translate" [multiple]="filter.isMultiple">
                 @for(option of filter.option;track option){
-              <mat-option (click)="OnClickfilter(option)" [value]="option">{{option}}</mat-option>
+              <mat-option (click)="OnClickfilter(option)" [value]="option">{{option | translate}}</mat-option>
                 }
             </mat-select>
           </div>
@@ -12,7 +12,7 @@
     @if(showChangesButton){
     <div class="filter-container">
       <div>
-        <button class="inline-flex items-center text-primary px-2">{{ changeButton }}<mat-icon>looks_one</mat-icon>
+        <button class="inline-flex items-center text-primary px-2">{{ changeButton | translate }}<mat-icon>looks_one</mat-icon>
         </button>
       </div>
     </div>

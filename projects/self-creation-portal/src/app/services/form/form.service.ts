@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {  map} from 'rxjs';
-import { HttpProviderService } from "../http-provider/http-provider.service"
+import { map } from 'rxjs';
+import { HttpProviderService } from "../http-provider/http-provider.service";
 import { FORM_URLS } from '../configs/url.config.json';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
 
@@ -13,7 +13,7 @@ export class FormService {
   constructor(private httpService: HttpProviderService) { }
 
   // Getting form from api
- getForm(formBody: any) {
+  getForm(formBody: any) {
     const config = {
       url: FORM_URLS.READ_FORM,
       payload: formBody,
@@ -89,7 +89,6 @@ export class FormService {
         reject(error);
       }
     });
-  
-}
 
+  }
 }
