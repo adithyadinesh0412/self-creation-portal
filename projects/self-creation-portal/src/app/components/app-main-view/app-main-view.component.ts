@@ -6,9 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { HeaderComponent, SideNavbarComponent} from '../../../../../lib-shared-modules/src/public-api';
 import { FormService } from '../../services/form/form.service';
 import { SIDE_NAV_DATA } from '../../constants/formConstant';
+import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class AppMainViewComponent {
   ngOnInit(){
     this.getnavData()
   }
-  
+
   onButtonClick(buttonTitle: string) {
   }
 
