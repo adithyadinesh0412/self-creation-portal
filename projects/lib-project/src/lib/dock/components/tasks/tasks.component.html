@@ -1,11 +1,10 @@
 <div class="main flex">
     <div class="w-full">
         <div color="secondary" class="border-b px-10 py-2">
-            <span>Tasks</span>
+            <span>{{"TASKS" | translate}}</span>
         </div>
         <div class="px-10 my-5">
-            <p>Break down the project into smaller tasks. Mandatory tasks cannot be edited or deleted by users and need
-                to be marked as complete for project submission.</p>
+            <p>{{"TASK_DESCRIPTION" | translate}}</p>
         </div>
         <form [formGroup]="tasksForm" (ngSubmit)="submit()">
             <div formArrayName="tasks">
@@ -14,14 +13,14 @@
                     <div>
                         <div class="w-full">
                             <div class="flex justify-between">
-                                <p>Task {{i+1}}</p>
+                                <p>{{"TASK" | translate}} {{i+1}}</p>
                                 <div class="flex gap-3">
                                     <div>
                                         <mat-icon (click)="this.moveTask(i, -1)">arrow_upward</mat-icon>
                                         <mat-icon (click)="this.moveTask(i, 1)">arrow_downward</mat-icon>
                                     </div>
                                     <div>
-                                        <mat-icon color='danger' (click)="deleteTask(i)">delete_outline</mat-icon>
+                                        <mat-icon color="warn" (click)="deleteTask(i)">delete_outline</mat-icon>
                                     </div>
                                 </div>
                             </div>
@@ -69,12 +68,11 @@
             </div>
 
             <div class="px-10 py-2">
-                <button (click)="addTask()" mat-raised-button class="flex items-center button">
+                <button (click)="addTask()" [disabled]="!tasksForm.valid" mat-raised-button class="flex items-center button">
                     <mat-icon class="cursor-pointer" color="primary">add_circle</mat-icon>
-                    <span color="primary">Add task</span>
+                    <span color="primary">{{"ADD_TASK" | translate}}</span>
                 </button>
             </div>
-            <button type="submit">Submit</button>
         </form>
     </div>
 </div>

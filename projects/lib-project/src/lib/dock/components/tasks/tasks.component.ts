@@ -9,12 +9,13 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'lib-tasks',
   standalone: true,
-  imports: [CommonModule,HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule,MatInputModule,MatSlideToggleModule,MatSelectModule,MatButtonModule],
+  imports: [CommonModule,HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule,MatInputModule,MatSlideToggleModule,MatSelectModule,MatButtonModule,TranslateModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
@@ -66,15 +67,6 @@ export class TasksComponent {
       const task = this.tasks.at(index);
       this.tasks.removeAt(index);
       this.tasks.insert(index + direction, task);
-    }
-  }
-
-  submit() {
-    if (this.tasksForm.valid) {
-      console.log(this.tasksForm.value);
-      // Handle form submission
-    } else {
-      console.error('Form is invalid');
     }
   }
 
