@@ -1,0 +1,5 @@
+{
+    "PROJECT_URLS": {
+        "CREATE_OR_UPDATE_PROJECT":"/scp/v1/projects/update"
+    }
+}

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpProviderService } from "../http-provider/http-provider.service";
 import { CommonService } from "../common-service/common.service";
 import { RESOURCE_URLS } from '../configs/url.config.json';
+import { HttpProviderService } from 'lib-shared-modules';
 
 @Injectable({
   providedIn: 'root'

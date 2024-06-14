@@ -4,17 +4,26 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 
 import { inject } from '@angular/core';
 import { LibSharedModulesService } from 'lib-shared-modules';
+import { environment } from 'environments';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const commonService = inject(LibSharedModulesService);
   const authToken = localStorage.getItem('accToken');
+  console.log(req)
   let authReq = req.clone({})
-  if(authToken) {
-    authReq = req.clone({
-      setHeaders: {
-        'x-auth-token': `bearer ${authToken}`
-      }
-    });
+  if (req.headers.get('X-Requested-With') === 'XMLHttpRequest') {
+    if(authToken) {
+      authReq = req.clone({
+        url: `${environment.baseURL}${req.url}`,
+        setHeaders: {
+          'x-auth-token': `bearer ${authToken}`
+        }
+      });
+    }else {
+      authReq = req.clone({
+        url: `${environment.baseURL}${req.url}`
+      });
+    }
   }
 
   return next(authReq).pipe(
