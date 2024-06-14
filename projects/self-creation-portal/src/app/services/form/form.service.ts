@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { HttpProviderService } from "../http-provider/http-provider.service";
 import { FORM_URLS } from '../configs/url.config.json';
 import { PROJECT_DETAILS } from '../../constants/formConstant';
+import { HttpProviderService } from 'lib-shared-modules';
 
 
 @Injectable({
@@ -50,7 +50,7 @@ export class FormService {
 
     return [...arr1, ...arr2];
   }
-  
+
   populateEntity(formData: any, entityList: any) {
     formData.controls.forEach((control: { name: any; options: any; subfields: any; }) => {
       let entity = entityList.find((entityData: { value: any; }) => control.name === entityData.value);

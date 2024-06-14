@@ -1,0 +1,70 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError, Observable, throwError } from 'rxjs';
+
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HttpProviderService {
+
+  constructor(private http:HttpClient) { }
+
+
+    get(endpoint: string, params?: HttpParams) {
+      const updatedOptions = this.addXRequestedWithHeader();
+      return this.http.get(endpoint, { ...params,...updatedOptions })
+        .pipe(catchError(this.handleError));
+    }
+
+
+    post(endpoint: string, body: any, options?: { headers?: HttpHeaders, params?: HttpParams }) {
+      const updatedOptions = this.addXRequestedWithHeader(options);
+      return this.http.post(endpoint, body,updatedOptions)
+        .pipe(catchError(this.handleError));
+    }
+
+
+    put(endpoint: string, body: any, options?: { headers?: HttpHeaders, params?: HttpParams }) {
+      const updatedOptions = this.addXRequestedWithHeader(options);
+      return this.http.put(endpoint, body, updatedOptions)
+        .pipe(catchError(this.handleError));
+    }
+
+
+    delete(endpoint: string, options?: { headers?: HttpHeaders, params?: HttpParams }) {
+      const updatedOptions = this.addXRequestedWithHeader(options);
+      return this.http.delete(endpoint, updatedOptions)
+        .pipe(catchError(this.handleError));
+    }
+
+    /**
+    * Method to handle errors.
+    * @param error : Error from API response
+    */
+    private handleError(error: HttpErrorResponse): Observable<never> {
+      let errorMessage = '';
+      if (error.error instanceof ErrorEvent) {
+        // Client-side error
+        errorMessage = `Client-side error: ${error.error.message}`;
+      } else {
+        // Server-side error
+        errorMessage = `Server-side error: ${error.status} ${error.message}`;
+      }
+      // Here you can add additional logging if needed
+      console.error(errorMessage);
+      return throwError(() => new Error(errorMessage));
+    }
+
+    private addXRequestedWithHeader(options?: any): any {
+      if (!options) {
+        options = { headers: new HttpHeaders() };
+      }
+      if (!options.headers) {
+        options.headers = new HttpHeaders();
+      }
+      options.headers = options.headers.set('X-Requested-With', 'XMLHttpRequest');
+      return options;
+    }
+}

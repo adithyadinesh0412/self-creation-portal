@@ -25,6 +25,9 @@
       ],
       "lib-survey": [
         "./dist/lib-survey"
+      ],
+      "environments":[
+        "./environments/environment.prod.ts"
       ]
     },
     "noFallthroughCasesInSwitch": true,
