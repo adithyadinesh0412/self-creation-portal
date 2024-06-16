@@ -42,7 +42,7 @@
                                 {{tasksData.allowEvidence.label}}
                             </mat-slide-toggle>
                             
-                            <div class="border px-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" >
+                            <div class="border px-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
                                 <mat-select  [formControlName]="tasksData.fileType.name" placeholder="File type">
                                     @for(option of tasksData.fileType.options;track option){
                                     <mat-option [value]="option">
@@ -53,7 +53,7 @@
                                 </mat-select>
                             </div>
 
-                            <div class="flex gap-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" >
+                            <div class="flex gap-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p>{{tasksData.minEvidences.label}}</p>
                                 <div class="border">
                                     <input matInput [formControlName]="tasksData.minEvidences.name" placeholder="1"

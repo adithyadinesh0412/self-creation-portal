@@ -36,7 +36,7 @@ export class TasksComponent {
       this.tasksData = data.tasksData
       this.addTask();
     });
-
+    
   }
 
   get tasks() {
@@ -46,10 +46,12 @@ export class TasksComponent {
   addTask() {
     const taskGroup = this.fb.group({
       description: ['', Validators.required],
-      mandatory: [false],
-      allowEvidence: [false],
-      fileType: [''],
-      minEvidences: [1, Validators.min(1)]
+      is_mandatory: [false],
+      allow_evidence: [false],
+      evidence_details: this.fb.group({
+        file_types: [''],
+        min_no_of_evidences: [1, Validators.min(1)]
+      })  
     });
     this.tasks.push(taskGroup);
   }
