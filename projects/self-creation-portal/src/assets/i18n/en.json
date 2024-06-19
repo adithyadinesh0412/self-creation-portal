@@ -64,5 +64,10 @@
     "SUBTASKS_AND_RESOURCES_DESCRIPTION":"You can add combination of these resources 1 -Learning resource + subtasks; 2-One observation; 3-Only learning resource(s); 4-Only subtasks",
     "ADD_OBSERVATION":"Add observation",
     "ADD_SUBTASKS":"Add subtask(s)",
-    "SUBTASK_HEADER":"Task description for task"
+    "SUBTASK_HEADER":"Task description for task",
+    "DESCRIBE_THE_TASKS":"Describe the task",
+    "MANDATORY":"Mandatory",
+    "ALLOW_EVIDENCE":"Allow evidence(s)",
+    "ALL_FILE_TYPES":"All file types",
+    "MIN_NUMBER_OF_EVIDENCE":"Min. number of evidences"
 }
