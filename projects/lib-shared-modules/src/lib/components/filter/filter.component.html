@@ -4,7 +4,7 @@
       <div class="filter-container">
             <mat-select [placeholder]="filter.label | translate" [multiple]="filter.isMultiple">
                 @for(option of filter.option;track option){
-              <mat-option (click)="OnClickfilter(option)" [value]="option">{{option | translate}}</mat-option>
+              <mat-option (click)="OnClickfilter(option)" [value]="option.value">{{option.label | translate}}</mat-option>
                 }
             </mat-select>
           </div>

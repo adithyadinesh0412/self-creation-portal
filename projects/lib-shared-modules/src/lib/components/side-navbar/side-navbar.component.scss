@@ -1,10 +1,11 @@
 @import  "../../../../../self-creation-portal/src/styles.scss";
 mat-sidenav-container {
-    height: 80vh;
+    height: 100vh;
 }
-
+.mdc-list {
+    padding: 0px;
+}
 mat-sidenav {
-    padding-top: 2rem;
     width: 300px;
 
     mat-nav-list{
