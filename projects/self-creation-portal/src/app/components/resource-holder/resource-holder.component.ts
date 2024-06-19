@@ -10,7 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
 import { ResourceService } from '../../services/resource-service/resource.service';
-import { SIDE_NAV_DATA } from '../../constants/formConstant';
+import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 
 
 @Component({
@@ -39,7 +39,7 @@ export class ResourceHolderComponent implements OnInit{
     showChangesButton: false,
     showActionButton: false
   };
-  
+
   sortOptions = {
     sort_by: '',
     sort_order: ''
@@ -66,7 +66,7 @@ export class ResourceHolderComponent implements OnInit{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    this.getList(); 
+    this.getList();
   }
 
   receiveSearchResults(event: string) {
@@ -96,7 +96,7 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
     });
   }
-  
+
   addActionButtons(item: any): any {
     item.actionButton = item.actionButton || [
       { action: 'EDIT', label: 'EDIT', background_color: '#0a4f9d'  },

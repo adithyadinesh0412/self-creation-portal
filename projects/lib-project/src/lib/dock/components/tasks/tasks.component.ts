@@ -30,13 +30,18 @@ export class TasksComponent {
       tasks: this.fb.array([])
     });
   }
-  
+
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
       this.tasksData = data.tasksData
       this.addTask();
     });
-    
+
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave) {
+        this.submit();
+      }
+    });
   }
 
   get tasks() {
@@ -51,7 +56,7 @@ export class TasksComponent {
       evidence_details: this.fb.group({
         file_types: [''],
         min_no_of_evidences: [1, Validators.min(1)]
-      })  
+      })
     });
     this.tasks.push(taskGroup);
   }
@@ -68,6 +73,9 @@ export class TasksComponent {
     }
   }
 
-  submit() {}
+  submit() {
+    console.log(this.tasks)
+    this.libProjectService.createOrUpdateProject({'tasks':this.tasks.value})
+  }
 
 }

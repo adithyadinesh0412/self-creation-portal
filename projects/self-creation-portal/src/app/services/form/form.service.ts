@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { FORM_URLS } from '../configs/url.config.json';
-import { PROJECT_DETAILS } from '../../constants/formConstant';
-import { HttpProviderService } from 'lib-shared-modules';
+import { HttpProviderService, PROJECT_DETAILS } from 'lib-shared-modules';
+
 
 
 @Injectable({
@@ -73,16 +73,16 @@ export class FormService {
   getFormWithEntities(form: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        this.getForm(PROJECT_DETAILS).subscribe((formResponse) => {
+        this.getForm(PROJECT_DETAILS).subscribe((formResponse:any) => {
           let formData = formResponse?.result?.data?.fields || [];
           let entityNames = this.getEntityNames(formData);
-          this.getEntities(entityNames).subscribe((entities) => {
+          this.getEntities(entityNames).subscribe((entities:any) => {
             let data = this.populateEntity(formData, entities);
             resolve(data);
-          }, (error) => {
+          }, (error:any) => {
             reject(error);
           });
-        }, (error) => {
+        }, (error:any) => {
           reject(error);
         });
       } catch (error) {

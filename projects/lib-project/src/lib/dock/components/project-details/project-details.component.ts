@@ -1,10 +1,10 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { Observable } from 'rxjs';
 import { map} from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service'
-import { DynamicFormModule } from 'dynamic-form-ramkumar';
+import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 
 
@@ -18,8 +18,9 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss'
 })
-export class ProjectDetailsComponent {
+export class ProjectDetailsComponent implements OnDestroy {
   data:any;
+  @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute) {}
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
@@ -38,5 +39,18 @@ export class ProjectDetailsComponent {
         })
       }
     });
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave) {
+        this.saveForm();
+      }
+    });
+  }
+
+  saveForm() {
+    console.log('Form value: ',this.formLib?.myForm.value)
+  }
+
+  ngOnDestroy() {
+    this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value)
   }
 }

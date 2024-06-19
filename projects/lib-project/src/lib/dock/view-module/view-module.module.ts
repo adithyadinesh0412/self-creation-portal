@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ViewModuleRoutingModule } from './view-module-routing.module';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { LayoutComponent } from './layout/layout.component';
+import { TasksComponent } from '../components/tasks/tasks.component';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { LayoutComponent } from './layout/layout.component';
     ViewModuleRoutingModule,
     HeaderComponent,
     SideNavbarComponent,
+    TasksComponent
   ],
   exports:[LayoutComponent]
 })

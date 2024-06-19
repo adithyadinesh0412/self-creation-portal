@@ -9,7 +9,6 @@ import { environment } from 'environments';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const commonService = inject(LibSharedModulesService);
   const authToken = localStorage.getItem('accToken');
-  console.log(req)
   let authReq = req.clone({})
   if (req.headers.get('X-Requested-With') === 'XMLHttpRequest') {
     if(authToken) {

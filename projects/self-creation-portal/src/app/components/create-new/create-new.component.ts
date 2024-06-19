@@ -8,8 +8,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { FormService } from '../../services/form/form.service';
-import { PROJECT_DETAILS, TASK_DETAILS } from '../../constants/formConstant';
-import { SOLUTION_LIST } from '../../constants/formConstant';
+import { PROJECT_DETAILS, TASK_DETAILS } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
+import { SOLUTION_LIST } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 import { LibProjectService } from 'lib-project';
 
 
