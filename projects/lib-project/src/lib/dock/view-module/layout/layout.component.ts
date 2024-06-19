@@ -8,7 +8,7 @@ import { LibProjectService } from '../../../lib-project.service';
 })
 export class LayoutComponent {
   backButton : boolean = true;
-  subHeader : any; 
+  subHeader : any;
   selctedCardItem : any;
   headerData:any
   sidenavData:any
@@ -22,5 +22,9 @@ export class LayoutComponent {
   }
 
   onButtonClick(buttonTitle: string) {
+    console.log(buttonTitle);
+    if(buttonTitle === "SAVE_AS_DRAFT") {
+      this.libProjectService.saveProjectFunc(true);
+    }
   }
 }

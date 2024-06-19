@@ -20,10 +20,10 @@ export class FilterComponent {
   changeButton: string = "CHANGES_REQUIRED";
 
   OnClickfilter(event:any){
-    if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event)) {
+    if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event.value)) {
       let sort_by = '';
       let sort_order = '';
-      switch (event) {
+      switch (event.value) {
         case "A_TO_Z":
           sort_by = 'title';
           sort_order = 'asc';
@@ -34,11 +34,11 @@ export class FilterComponent {
           break;
         case "LATEST_FIRST":
           sort_by = 'created_at';
-          sort_order = 'asc';
+          sort_order = 'desc';
           break;
         case "OLDEST_FIRST":
           sort_by = 'created_at';
-          sort_order = 'desc';
+          sort_order = 'asc';
           break;
         default:
           sort_by = '';
@@ -46,7 +46,7 @@ export class FilterComponent {
       }
       this.sortOptionsChanged.emit({ sort_by, sort_order });
     } else {
-      this.filteredData.emit(event);
+      this.filteredData.emit(event.value);
     }
   }
 }
