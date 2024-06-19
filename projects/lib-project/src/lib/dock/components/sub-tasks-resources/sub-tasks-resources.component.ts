@@ -51,7 +51,7 @@ export class SubTasksResourcesComponent implements OnInit{
     });
       this.taskData.push({
         header: `Task Description for task ${i + 1}`,
-        buttons: [{"label":"Add observation","disable":false},{"label":"Add learning resource(s)","disable":false},{"label":"Add subtask(s)","disable":false}],
+        buttons: [{"label":"ADD_OBSERVATION","disable":false},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
         subTasks: subtaskForm,
         resources: []  // Initialize an empty array for resources
       });
@@ -60,10 +60,10 @@ export class SubTasksResourcesComponent implements OnInit{
 
   onAction(button : string, taskIndex: number) {
       switch (button) {
-        case 'Add observation':
+        case 'ADD_OBSERVATION':
           break;
   
-        case 'Add learning resource(s)':
+        case 'ADD_LEARNING_RESOURCE':
           const dialogRef = this.dialog.open(DialogModelComponent, { 
             data: {
               control: this.learningResources
@@ -78,7 +78,7 @@ export class SubTasksResourcesComponent implements OnInit{
             });
           break;
   
-        case 'Add subtask(s)':
+        case 'ADD_SUBTASKS':
           this.addSubTask(taskIndex)
           break;
   
