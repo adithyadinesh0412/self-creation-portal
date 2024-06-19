@@ -50,10 +50,9 @@ export class SubTasksResourcesComponent implements OnInit{
         subtasks: this.fb.array([])  // Initialize a new FormArray for each task
     });
       this.taskData.push({
-        header: `Task Description for task ${i + 1}`,
-        buttons: [{"label":"ADD_OBSERVATION","disable":false},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
+        buttons: [{"label":"ADD_OBSERVATION","disable":true},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
         subTasks: subtaskForm,
-        resources: []  // Initialize an empty array for resources
+        resources: []
       });
     }
   }

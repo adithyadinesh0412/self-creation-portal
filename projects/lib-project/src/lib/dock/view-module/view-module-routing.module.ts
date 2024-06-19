@@ -4,6 +4,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { SubTasksResourcesComponent } from '../components/sub-tasks-resources/sub-tasks-resources.component';
 import { ProjectDetailsComponent } from '../components/project-details/project-details.component';
 import { TasksComponent } from '../components/tasks/tasks.component';
+import { CertificatesComponent } from '../components/certificates/certificates.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
           path:'sub-tasks',
           component:SubTasksResourcesComponent
       },
+      {
+        path:'certificate',
+        component:CertificatesComponent
+      }
       
     ]
   }
