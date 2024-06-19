@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { Observable } from 'rxjs';
@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss'
 })
-export class ProjectDetailsComponent implements OnDestroy {
+export class ProjectDetailsComponent implements OnDestroy,OnInit {
   data:any;
   @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute) {}

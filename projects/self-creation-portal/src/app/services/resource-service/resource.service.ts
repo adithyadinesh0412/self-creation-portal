@@ -15,7 +15,7 @@ export class ResourceService {
     return {
       page: pagination.currentPage + 1,
       limit: pagination.pageSize,
-      type: 'project',
+      type: filters.current.type || "",
       status: 'draft',
       sort_by:  sortOptions.sort_by || '',
       sort_order: sortOptions.sort_order || '',

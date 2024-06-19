@@ -33,7 +33,8 @@ export class TasksComponent {
 
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
-      this.tasksData = data.tasksData
+      this.tasksData = data.tasksData.tasks;
+      console.log(this.tasksData)
       this.addTask();
     });
 
