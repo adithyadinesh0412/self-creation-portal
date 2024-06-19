@@ -6,16 +6,16 @@
         <div class="px-10 my-5">
             <p>{{"SUBTASKS_AND_RESOURCES_DESCRIPTION" | translate}}</p>
         </div>
-        <div class="px-10 py-2">
+        <div class="px-10">
             @for(item of taskData; track item; let i = $index) {
             <div>
                 <p class="mt-5">{{"SUBTASK_HEADER"| translate}} {{i+1}}</p>
-                <mat-card>
-                    <div class="flex flex-row gap-8">
+                <div>
+                    <div class="flex flex-row gap-28  pt-5 pb-8">
                         @for(button of item.buttons; track button) {
-                        <div class="p-2">
+                        <div class="">
                             <mat-card-content class="cursor-pointer">
-                                <div [class.disabled]="button.disable" (click)="!button.disable && onAction(button.label, i)" class="flex items-center text-primary">
+                                <div [class.disabled]="button.disable" (click)="!button.disable && onAction(button.label, i)" class="flex items-center text-primary pb-2">
                                     <mat-icon>add_circle</mat-icon><span class="px-2">{{button.label | translate}}</span></div>
                                 @if (button.label === 'ADD_SUBTASKS') {
                                 <form [formGroup]="item.subTasks" (ngSubmit)="onSubtasks(item.subTasks, i)">
@@ -32,9 +32,9 @@
                                 </form>
                                 }
                                 @if (button.label === 'ADD_LEARNING_RESOURCE' && item.resources){
-                                <div class="flex flex-col gap-2">
+                                <div class="flex flex-col">
                                     @for(resource of item.resources;track resource;let j= $index){
-                                        <div class="flex justify-between items-center p-2 bg-gray-100 rounded mb-2">
+                                        <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2">
                                             <section class="flex items-center gap-2">
                                                 <mat-icon class="text-xl">videocam_off</mat-icon>
                                                 <p class="overflow-ellipsis">{{resource.name}}</p>
@@ -48,7 +48,8 @@
                         </div>
                         }
                     </div>
-                </mat-card>
+                    <hr>
+                </div>
             </div>
             }
         </div>

@@ -82,6 +82,7 @@ $chipPurple:#A59EFB;
 $textBlue:#0A4F9D;
 $borderGray:#d1d3d5;
 $buttonDisable:#80868b;
+$horizontalBlueLine:#dbedfa;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 
