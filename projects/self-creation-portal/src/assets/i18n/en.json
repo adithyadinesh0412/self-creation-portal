@@ -16,7 +16,7 @@
     "PROGRAM": "Program",
     "PROJECT_DETAILS": "Project details",
     "TASKS": "Tasks",
-    "SUBTASKS_AND_RESOURCES": "Subtasks and Resources",
+    "SUBTASKS_AND_RESOURCES": "Subtasks and resources",
     "CERTIFICATE": "Certificate",
     "OBSERVATION_NAME":"Observation name",
     "SURVEY_NAME":"Survey name",
@@ -60,5 +60,6 @@
     "OLDEST_FIRST": "Oldest first",
     "IN_PROGRESS": "In progress",
     "REPORTED": "Reported",
-    "REPORTED_AND_REJECTED": "Reported and rejected"
+    "REPORTED_AND_REJECTED": "Reported and rejected",
+    "SUBTASKS_AND_RESOURCES_DESCRIPTION":"You can add combination of these resources 1 -Learning resource + subtasks; 2-One observation; 3-Only learning resource(s); 4-Only subtasks"
 }
