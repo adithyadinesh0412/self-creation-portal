@@ -11,6 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LibProjectService } from '../../../lib-project.service'
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -23,9 +24,10 @@ import { LibProjectService } from '../../../lib-project.service'
 export class TasksComponent {
 
   tasksForm: FormGroup;
+  projectId:string|number = '';
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
-  constructor(private fb: FormBuilder,private libProjectService:LibProjectService) {
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
@@ -33,10 +35,23 @@ export class TasksComponent {
 
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
-      this.tasksData = data.tasksData.tasks
+      this.tasksData = data.tasksData.tasks;
       this.addTask();
     });
-
+    this.route.queryParams.subscribe((params:any) => {
+      console.log(params)
+      if(!params.projectId){
+        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+          this.projectId = res.result.id
+          this.router.navigate([], {
+            queryParams: {
+              projectId: this.projectId
+            },
+            queryParamsHandling: 'merge'
+          });
+        })
+      }
+    });
     this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
       if(isProjectSave) {
         this.submit();
@@ -75,7 +90,7 @@ export class TasksComponent {
 
   submit() {
     console.log(this.tasks)
-    this.libProjectService.createOrUpdateProject({'tasks':this.tasks.value})
+    this.libProjectService.createOrUpdateProject({'tasks':this.tasks.value},this.projectId).subscribe((res) => console.log(res))
   }
 
 }

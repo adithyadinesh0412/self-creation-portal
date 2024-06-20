@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { FORM_URLS } from '../configs/url.config.json';
-import { HttpProviderService, PROJECT_DETAILS } from 'lib-shared-modules';
+import { ConfigService } from '../../configs/config.service';
+import { HttpProviderService } from '../http-provider.service';
+import { PROJECT_DETAILS } from '../../constants/formConstant';
+
 
 
 
@@ -10,12 +12,12 @@ import { HttpProviderService, PROJECT_DETAILS } from 'lib-shared-modules';
 })
 export class FormService {
 
-  constructor(private httpService: HttpProviderService) { }
+  constructor(private httpService: HttpProviderService, private configService:ConfigService) { }
 
   // Getting form from api
   getForm(formBody: any) {
     const config = {
-      url: FORM_URLS.READ_FORM,
+      url: this.configService.urlConFig.FORM_URLS.READ_FORM,
       payload: formBody,
     };
     return this.httpService.post(config.url, config.payload).pipe(
@@ -27,7 +29,7 @@ export class FormService {
 
   getEntities(entityTypes: any) {
     const config = {
-      url: FORM_URLS.READ_ENTITY_TYPE,
+      url: this.configService.urlConFig.FORM_URLS.READ_ENTITY_TYPE,
       payload: entityTypes.length ? { value: entityTypes } : {}
     };
     return this.httpService.post(config.url, config.payload).pipe(
