@@ -2,6 +2,8 @@ export * from './lib/lib-shared-modules.service';
 export * from './lib/constants/formConstant';
 export * from './lib/interface/form';
 export * from './lib/services/http-provider.service';
+export * from './lib/services/form/form.service';
+export * from './lib/configs/config.service';
 export * from './lib/lib-shared-modules.component';
 export * from './lib/components/card/card.component';
 export * from './lib/components/filter/filter.component';
