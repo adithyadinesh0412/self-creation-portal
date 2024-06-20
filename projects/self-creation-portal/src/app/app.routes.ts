@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { ResourceHolderComponent } from './components/resource-holder/resource-holder.component';
 import { AppMainViewComponent } from './components/app-main-view/app-main-view.component';
 import { SolutionsLibHolderComponent } from './components/solutions-lib-holder/solutions-lib-holder.component';
