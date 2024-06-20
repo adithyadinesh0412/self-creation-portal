@@ -1,9 +1,9 @@
 <div class="main flex">
     <div class="w-full">
-        <div color="secondary" class="border-b px-10 py-2">
+        <div color="secondary" class="border-b px-10 py-2 text-lg text-tertiary ">
             <span>{{"TASKS" | translate}}</span>
         </div>
-        <div class="px-10 my-5">
+        <div class="px-10 my-5 text-tertiary">
             <p>{{"TASK_DESCRIPTION" | translate}}</p>
         </div>
         <form [formGroup]="tasksForm" (ngSubmit)="submit()">
@@ -13,7 +13,7 @@
                     <div>
                         <div class="w-full">
                             <div class="flex justify-between">
-                                <p>{{"TASK" | translate}} {{i+1}}</p>
+                                <p class="text-tertiary">{{"TASK" | translate}} {{i+1}}</p>
                                 <div class="flex gap-3">
                                     <div>
                                         <mat-icon (click)="this.moveTask(i, -1)">arrow_upward</mat-icon>
@@ -31,19 +31,19 @@
                                     [placeholder]="tasksData.description.placeholder"></textarea>
                             </mat-form-field>
                         </div>
-                        <div class="sm:flex md:flex lg:flex xl:flex gap-2">
+                        <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary">
                             <mat-slide-toggle labelPosition="before" color="primary"
                                 [formControlName]="tasksData.mandatory.name">
-                                {{tasksData.mandatory.label}}
+                                {{tasksData.mandatory.label | translate}}
                             </mat-slide-toggle>
 
                             <mat-slide-toggle labelPosition="before" color="primary"
                                 [formControlName]="tasksData.allowEvidence.name">
-                                {{tasksData.allowEvidence.label}}
+                                {{tasksData.allowEvidence.label | translate}}
                             </mat-slide-toggle>
                             
-                            <div class="border px-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
-                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="File type">
+                            <div class="border px-2 w-40 text-center" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
+                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="All file Types's">
                                     @for(option of tasksData.fileType.options;track option){
                                     <mat-option [value]="option">
                                         {{ option }}
@@ -54,11 +54,9 @@
                             </div>
 
                             <div class="flex gap-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
-                                <p>{{tasksData.minEvidences.label}}</p>
-                                <div class="border">
+                                <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
                                     <input matInput [formControlName]="tasksData.minEvidences.name" placeholder="1"
-                                        type="number" min="1"  class="w-16 mt-1 block" />
-                                </div>
+                                        type="number" min="1"  class="w-14 block border text-center" />
                             </div>
                         </div>
                     </div>

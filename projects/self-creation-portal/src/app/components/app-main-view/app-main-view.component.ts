@@ -6,7 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { FormService } from '../../services/form/form.service';
+import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 
