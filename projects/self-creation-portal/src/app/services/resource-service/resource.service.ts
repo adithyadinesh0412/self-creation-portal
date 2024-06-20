@@ -20,7 +20,8 @@ export class ResourceService {
       sort_by:  sortOptions.sort_by || '',
       sort_order: sortOptions.sort_order || '',
       filter: '',
-      search: btoa(filters.search) || ''
+      search: btoa(filters.search) || '',
+      page_status: 'drafts'
     };
   }
 

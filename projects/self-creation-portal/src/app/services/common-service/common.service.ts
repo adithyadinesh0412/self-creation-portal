@@ -1,13 +1,13 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-  constructor(private router:Router) { }
+  constructor(private router:Router, private route: ActivatedRoute) { }
 
   logout() {
     localStorage.clear();
@@ -23,4 +23,13 @@ export class CommonService {
     }
     return `${baseUrl}?${httpParams.toString()}`;
   }
+
+  updateQueryParams(params: { [key: string]: any }) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+  }
+
 }
