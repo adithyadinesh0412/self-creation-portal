@@ -25,7 +25,9 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
   @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute, private formService:FormService) {}
   ngOnInit() {
-    this.getSideNavdata()
+    this.libProjectService.currentData.subscribe(data => {
+      this.data = data.projectDetails
+    });
     this.route.queryParams.subscribe((params:any) => {
       console.log(params)
       if(!params.projectId){
@@ -44,27 +46,6 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
       if(isProjectSave) {
         this.saveForm();
       }
-    });
-  }
-
-  getSideNavdata() {
-    let projectData:any;
-    this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
-      projectData = form?.result?.data?.fields?.controls.find((item:any)=> item.title ===  "PROJECT")
-    })
-    this.formService.getFormWithEntities("PROJECT_DETAILS")
-    .then((result) => {
-      this.formService.getForm(TASK_DETAILS).subscribe((tasksData) => {
-      this.libProjectService.setData( {
-        "tasksData":tasksData.result.data.fields.controls,
-        "sidenavData": projectData
-      });
-      console.log(tasksData)
-      this.data = result.controls;
-    })
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
 

@@ -23,7 +23,9 @@ export class LibProjectService {
     "languages": [],
     "learning_resources": [],
     "licence": "",
-    "tasks": [],
+    "tasks": [
+      {}
+    ],
     "certificate": {}
   }
   private saveProject = new BehaviorSubject<boolean>(false);
@@ -90,7 +92,6 @@ export class LibProjectService {
       ],
       "certificate": {}
     }
-    debugger;
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectId ? projectData : ''
