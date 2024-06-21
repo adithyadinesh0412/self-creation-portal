@@ -20,30 +20,39 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './project-details.component.scss'
 })
 export class ProjectDetailsComponent implements OnDestroy,OnInit {
-  data:any;
+  dynamicFormData:any;
   projectId:string|number ='';
   @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute, private formService:FormService) {}
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
-      this.data = data.projectDetails
-    });
-    this.route.queryParams.subscribe((params:any) => {
-      console.log(params)
-      if(!params.projectId){
-        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-          this.projectId = res.result.id
-          this.router.navigate([], {
-            queryParams: {
-              projectId: this.projectId
-            },
-            queryParamsHandling: 'merge'
-          });
-        })
-      }
+      this.dynamicFormData = data.projectDetails
+      this.route.queryParams.subscribe((params:any) => {
+        this.projectId = params.projectId;
+        console.log(this.route)
+        if(params.projectId){
+          if(params.mode === 'edit') {
+            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+              this.dynamicFormData.forEach((element:any) => {
+                element.value = res.result[element.name].value ? res.result[element.name].value : res.result[element.name];
+              })
+            })
+          }
+        }
+        else {
+          this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+            this.router.navigate([], {
+              queryParams: {
+                projectId: this.projectId
+              },
+              queryParamsHandling: 'merge'
+            });
+          })
+        }
+      });
     });
     this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave) {
+      if(isProjectSave && this.router.url.includes('project-details')) {
         this.saveForm();
       }
     });
@@ -57,8 +66,8 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
   }
 
   ngOnDestroy() {
-    if(this.projectId) {
-      this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
-    }
+    // if(this.projectId) {
+    //   this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
+    // }
   }
 }

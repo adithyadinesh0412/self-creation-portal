@@ -5,7 +5,7 @@ import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -39,7 +39,7 @@ export class SubTasksResourcesComponent implements OnInit{
 
   constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.subtask = this.fb.group({
-      subtasks: this.fb.array([])  
+      subtasks: this.fb.array([])
     });
   }
 
@@ -48,6 +48,7 @@ export class SubTasksResourcesComponent implements OnInit{
       this.learningResources = data.tasksData.subTaskLearningResources
     });
     this.route.queryParams.subscribe((params:any) => {
+      this.projectId = params.projectId;
       if(!params.projectId){
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
           this.projectId = res.result.id
@@ -61,12 +62,12 @@ export class SubTasksResourcesComponent implements OnInit{
       }
     });
     this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave) {
+      if(isProjectSave && this.router.url.includes('sub-tasks')) {
         this.submit();
       }
     });
     this.createSubTaskForm(this.libProjectService?.projectData?.tasks?.length)
-   
+
   }
   createSubTaskForm(taskLength:number){
     for (let i = 0; i < taskLength; i++) {
@@ -84,9 +85,9 @@ export class SubTasksResourcesComponent implements OnInit{
       switch (button) {
         case 'ADD_OBSERVATION':
           break;
-  
+
         case 'ADD_LEARNING_RESOURCE':
-          const dialogRef = this.dialog.open(DialogModelComponent, { 
+          const dialogRef = this.dialog.open(DialogModelComponent, {
             data: {
               control: this.learningResources
             }
@@ -99,11 +100,11 @@ export class SubTasksResourcesComponent implements OnInit{
               }
             });
           break;
-  
+
         case 'ADD_SUBTASKS':
           this.addSubTask(taskIndex)
           break;
-  
+
         default:
           break;
       }
