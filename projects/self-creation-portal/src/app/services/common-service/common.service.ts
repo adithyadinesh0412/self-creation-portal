@@ -25,11 +25,35 @@ export class CommonService {
   }
 
   updateQueryParams(params: { [key: string]: any }) {
+    console.log("calling service")
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
-      queryParamsHandling: 'merge'
+      queryParamsHandling: '' 
     });
+  }
+  
+  generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } {
+    return {
+      page: pagination.currentPage + 1,
+      limit: pagination.pageSize,
+      type: filters.current.type || "",
+      status: 'draft',
+      sort_by:  sortOptions.sort_by || '',
+      sort_order: sortOptions.sort_order || '',
+      filter: '',
+      search: btoa(filters.search) || '',
+      page_status: 'drafts'
+    };
+  }
+
+  applyQueryParams(params: any, pagination: any, filters: any, sortOptions: any) {
+    pagination.currentPage = +params['page'] - 1 || 0;
+    pagination.pageSize = +params['limit'] || pagination.pageSize;
+    filters.current.type = params['type'] || '';
+    filters.search = params['search'] ? atob(params['search']) : '';
+    sortOptions.sort_by = params['sort_by'] || '';
+    sortOptions.sort_order = params['sort_order'] || '';
   }
 
 }

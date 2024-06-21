@@ -7,7 +7,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { ResourceService } from '../../services/resource-service/resource.service';
 import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
@@ -47,7 +47,8 @@ export class ResourceHolderComponent implements OnInit{
   };
 
   lists:any = []
-  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService, private commonService: CommonService) {
+  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService, private commonService: CommonService, 
+    private router: Router,) {
   }
 
   ngOnInit() {
@@ -111,27 +112,23 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   updateQueryParams() {
-    const queryParams = {
-      page: this.pagination.currentPage + 1,
-      limit: this.pagination.pageSize,
-      type: this.filters.current.type || "",
-      search: btoa(this.filters.search) || '',
-      sort_by: this.sortOptions.sort_by || '',
-      sort_order: this.sortOptions.sort_order || ''
-    };
+    const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
     this.commonService.updateQueryParams(queryParams);
+    console.log("update");
   }
 
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
-      this.pagination.currentPage = +params['page'] - 1 || 0;
-      this.pagination.pageSize = +params['limit'] || this.pagination.pageSize;
-      this.filters.current.type = params['type'] || '';
-      this.filters.search = params['search'] ? atob(params['search']) : '';
-      this.sortOptions.sort_by = params['sort_by'] || '';
-      this.sortOptions.sort_order = params['sort_order'] || '';
+      this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
+      console.log(params)
       this.getList();
+      console.log("getqueryparam");
     });
   }
+  
+
+  // clearQueryParams() {
+  //   this.commonService.updateQueryParams({});
+  // }
 
 }
