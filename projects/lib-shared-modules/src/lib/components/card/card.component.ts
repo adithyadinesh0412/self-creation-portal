@@ -18,13 +18,4 @@ export class CardComponent {
   @Input() project:any;
 
   constructor(private router:Router) {}
-
-  cardAction() {
-    // this.router.navigate([], {
-    //   queryParams: {
-    //     projectId: this.project.
-    //   },
-    //   queryParamsHandling: 'merge'
-    // });
-  }
 }

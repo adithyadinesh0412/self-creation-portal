@@ -41,6 +41,7 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
         }
         else {
           this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+            this.projectId = res.result.id
             this.router.navigate([], {
               queryParams: {
                 projectId: this.projectId
@@ -59,7 +60,7 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
   }
 
   saveForm() {
-    console.log('Form value: ',this.formLib?.myForm.value)
+    console.log('Form value: ',this.formLib?.myForm)
     if(this.projectId) {
       this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
     }

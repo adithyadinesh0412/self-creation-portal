@@ -40,8 +40,29 @@ export class TasksComponent {
     });
     this.route.queryParams.subscribe((params:any) => {
       this.projectId = params.projectId;
-      console.log(params)
-      if(!params.projectId){
+      console.log(this.route)
+      if(params.projectId){
+        if(params.mode === 'edit') {
+          this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+            console.log(res)
+            this.tasks.reset()
+            res.result.tasks.forEach((element:any) => {
+              const task = this.fb.group({
+                description: [element.description ? element.description : '', Validators.required],
+                is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                evidence_details: this.fb.group({
+                  file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                  min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                })
+              });
+              this.tasks.push(task);
+            })
+
+          })
+        }
+      }
+      else {
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
           this.projectId = res.result.id
           this.router.navigate([], {
