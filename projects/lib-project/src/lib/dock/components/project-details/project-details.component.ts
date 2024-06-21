@@ -41,7 +41,7 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
         }
         else {
           this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-            this.projectId = res.result.id
+            this.projectId = res.result.id,
             this.router.navigate([], {
               queryParams: {
                 projectId: this.projectId
