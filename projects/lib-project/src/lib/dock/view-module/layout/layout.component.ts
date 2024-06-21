@@ -46,7 +46,7 @@ export class LayoutComponent {
   onButtonClick(buttonTitle: string) {
     console.log(buttonTitle);
     if(buttonTitle === "SAVE_AS_DRAFT") {
-      this.libProjectService.saveProjectFunc({trigger:true,navData:this.sidenavData});
+      this.libProjectService.saveProjectFunc(true);
     }
   }
 }

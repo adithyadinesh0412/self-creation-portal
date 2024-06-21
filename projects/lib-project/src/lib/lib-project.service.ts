@@ -17,7 +17,7 @@ export class LibProjectService {
     ],
     "certificate": {}
   }
-  private saveProject = new BehaviorSubject<Object>({trigger:false,navData:''});
+  private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
 
@@ -28,12 +28,11 @@ export class LibProjectService {
     this.dataSubject.next(data);
   }
 
-  saveProjectFunc(newAction:any) {
+  saveProjectFunc(newAction: boolean) {
     this.saveProject.next(newAction);
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
-    debugger;
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectId ? projectData : ''

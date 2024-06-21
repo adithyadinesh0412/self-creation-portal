@@ -48,6 +48,7 @@ export class SubTasksResourcesComponent implements OnInit{
       this.learningResources = data.tasksData.subTaskLearningResources
     });
     this.route.queryParams.subscribe((params:any) => {
+      this.projectId = params.projectId;
       if(!params.projectId){
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
           this.projectId = res.result.id
@@ -60,8 +61,8 @@ export class SubTasksResourcesComponent implements OnInit{
         })
       }
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:any) => {
-      if(isProjectSave.trigger) {
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave && this.router.url.includes('sub-tasks')) {
         this.submit();
       }
     });

@@ -39,6 +39,7 @@ export class TasksComponent {
       this.addTask();
     });
     this.route.queryParams.subscribe((params:any) => {
+      this.projectId = params.projectId;
       console.log(params)
       if(!params.projectId){
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
@@ -52,8 +53,9 @@ export class TasksComponent {
         })
       }
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:any) => {
-      if(isProjectSave.trigger) {
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave && this.router.url.includes('tasks')) {
+        console.log("project save")
         this.submit();
       }
     });

@@ -51,9 +51,8 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
         }
       });
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:any) => {
-      if(isProjectSave.trigger) {
-        console.log("project save")
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave && this.router.url.includes('project-details')) {
         this.saveForm();
       }
     });
