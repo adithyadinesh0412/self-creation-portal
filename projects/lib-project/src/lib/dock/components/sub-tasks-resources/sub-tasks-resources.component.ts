@@ -36,6 +36,7 @@ export class SubTasksResourcesComponent implements OnInit{
   subtask: FormGroup;
   learningResources:any
   projectId:string|number = '';
+  projectData:any;
 
   constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.subtask = this.fb.group({
@@ -49,6 +50,12 @@ export class SubTasksResourcesComponent implements OnInit{
     });
     this.route.queryParams.subscribe((params:any) => {
       this.projectId = params.projectId;
+      if( this.projectId) {
+        this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+          this.projectData = res?.result
+          this.createSubTaskForm(res?.result?.tasks?.length)
+        })
+      }
       if(!params.projectId){
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
           this.projectId = res.result.id
@@ -66,7 +73,6 @@ export class SubTasksResourcesComponent implements OnInit{
         this.submit();
       }
     });
-    this.createSubTaskForm(this.libProjectService?.projectData?.tasks?.length)
 
   }
   createSubTaskForm(taskLength:number){
@@ -125,7 +131,16 @@ export class SubTasksResourcesComponent implements OnInit{
   }
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
+  addSubtaskData(){
+    for (let i = 0; i < this.projectData.tasks.length; i++) {
+      this.projectData.tasks[i]['learning_resource'] = this.taskData[i].resources
+      this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+      
+    }
+    console.log(this.projectData.tasks)
+  }
   submit() {
-    this.libProjectService.createOrUpdateProject({'subTasks':this.taskData},this.projectId).subscribe((res) => console.log(res))
+    this.addSubtaskData()
+    this.libProjectService.createOrUpdateProject({'tasks': this.projectData.tasks},this.projectId).subscribe((res) => console.log(res))
   }
 }
