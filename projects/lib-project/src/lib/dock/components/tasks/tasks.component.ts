@@ -52,8 +52,8 @@ export class TasksComponent {
         })
       }
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave) {
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:any) => {
+      if(isProjectSave.trigger) {
         this.submit();
       }
     });
@@ -89,7 +89,7 @@ export class TasksComponent {
   }
 
   submit() {
-    console.log(this.tasks)
+    console.log(this.tasks.value)
     this.libProjectService.createOrUpdateProject({'tasks':this.tasks.value},this.projectId).subscribe((res) => console.log(res))
   }
 
