@@ -20,28 +20,15 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './project-details.component.scss'
 })
 export class ProjectDetailsComponent implements OnDestroy,OnInit {
-  data:any;
+  dynamicFormData:any;
   projectId:string|number ='';
   @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute, private formService:FormService) {}
   ngOnInit() {
     this.getSideNavdata()
-    this.route.queryParams.subscribe((params:any) => {
-      console.log(params)
-      if(!params.projectId){
-        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-          this.projectId = res.result.id
-          this.router.navigate([], {
-            queryParams: {
-              projectId: this.projectId
-            },
-            queryParamsHandling: 'merge'
-          });
-        })
-      }
-    });
     this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
       if(isProjectSave) {
+        console.log("project save")
         this.saveForm();
       }
     });
@@ -54,13 +41,37 @@ export class ProjectDetailsComponent implements OnDestroy,OnInit {
     })
     this.formService.getFormWithEntities("PROJECT_DETAILS")
     .then((result) => {
+      console.log(result)
+      this.route.queryParams.subscribe((params:any) => {
+        console.log(params)
+        if( params.projectId || params.mode === 'edit'){
+          this.projectId = params.projectId;
+            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+              console.log(res);
+              result.controls.forEach((element:any) => {
+                element.value = res.result[element.name].value ? res.result[element.name].value : res.result[element.name];
+              })
+            })
+        }
+        else {
+          this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+            this.projectId = res.result.id
+            this.router.navigate([], {
+              queryParams: {
+                projectId: this.projectId
+              },
+              queryParamsHandling: 'merge'
+            });
+          })
+        }
+      });
       this.formService.getForm(TASK_DETAILS).subscribe((tasksData) => {
       this.libProjectService.setData( {
         "tasksData":tasksData.result.data.fields.controls,
         "sidenavData": projectData
       });
       console.log(tasksData)
-      this.data = result.controls;
+      this.dynamicFormData = result.controls;
     })
     })
     .catch((error) => {

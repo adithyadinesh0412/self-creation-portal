@@ -1,8 +1,8 @@
 <div color="secondary" class="border-b px-10 py-2 text-lg text-tertiary">
   <span>{{"PROJECT_DETAILS" | translate}}</span>
 </div>
-@if(data){
+@if(dynamicFormData){
 <div class="items-center form-container">
-  <dynamic-form [formJson]="data" #formLib></dynamic-form>
+  <dynamic-form [formJson]="dynamicFormData" #formLib></dynamic-form>
 </div>
 }

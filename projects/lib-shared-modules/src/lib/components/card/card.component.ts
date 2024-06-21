@@ -4,6 +4,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 @Component({
   selector: 'lib-card',
   standalone: true,
@@ -14,4 +15,16 @@ import { TranslateModule } from '@ngx-translate/core';
 export class CardComponent {
   @Input() list: any;
   @Input() showActionButton: boolean = false;
+  @Input() project:any;
+
+  constructor(private router:Router) {}
+
+  cardAction() {
+    // this.router.navigate([], {
+    //   queryParams: {
+    //     projectId: this.project.
+    //   },
+    //   queryParamsHandling: 'merge'
+    // });
+  }
 }
