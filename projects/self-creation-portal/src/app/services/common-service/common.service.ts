@@ -23,15 +23,6 @@ export class CommonService {
     }
     return `${baseUrl}?${httpParams.toString()}`;
   }
-
-  updateQueryParams(params: { [key: string]: any }) {
-    console.log("calling service")
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: params,
-      queryParamsHandling: '' 
-    });
-  }
   
   generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } {
     return {
@@ -56,4 +47,12 @@ export class CommonService {
     sortOptions.sort_order = params['sort_order'] || '';
   }
 
+  updateQueryParams(params: { [key: string]: any }) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: '' 
+    });
+  }
+  
 }
