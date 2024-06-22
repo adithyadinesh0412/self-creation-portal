@@ -20,64 +20,55 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './project-details.component.scss'
 })
 export class ProjectDetailsComponent implements OnDestroy,OnInit {
-  data:any;
+  dynamicFormData:any;
   projectId:string|number ='';
   @ViewChild('formLib') formLib: MainFormComponent | undefined
   constructor(private libProjectService:LibProjectService, private router:Router, private route:ActivatedRoute, private formService:FormService) {}
   ngOnInit() {
-    this.getSideNavdata()
-    this.route.queryParams.subscribe((params:any) => {
-      console.log(params)
-      if(!params.projectId){
-        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-          this.projectId = res.result.id
-          this.router.navigate([], {
-            queryParams: {
-              projectId: this.projectId
-            },
-            queryParamsHandling: 'merge'
-          });
-        })
-      }
+    this.libProjectService.currentData.subscribe(data => {
+      this.dynamicFormData = data.projectDetails
+      this.route.queryParams.subscribe((params:any) => {
+        this.projectId = params.projectId;
+        console.log(this.route)
+        if(params.projectId){
+          if(params.mode === 'edit') {
+            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+              this.dynamicFormData.forEach((element:any) => {
+                element.value = res.result[element.name].value ? res.result[element.name].value : res.result[element.name];
+              })
+            })
+          }
+        }
+        else {
+          this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+            this.projectId = res.result.id,
+            this.router.navigate([], {
+              queryParams: {
+                projectId: this.projectId
+              },
+              queryParamsHandling: 'merge'
+            });
+          })
+        }
+      });
     });
     this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave) {
+      if(isProjectSave && this.router.url.includes('project-details')) {
         this.saveForm();
       }
     });
   }
 
-  getSideNavdata() {
-    let projectData:any;
-    this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
-      projectData = form?.result?.data?.fields?.controls.find((item:any)=> item.title ===  "PROJECT")
-    })
-    this.formService.getFormWithEntities("PROJECT_DETAILS")
-    .then((result) => {
-      this.formService.getForm(TASK_DETAILS).subscribe((tasksData) => {
-      this.libProjectService.setData( {
-        "tasksData":tasksData.result.data.fields.controls,
-        "sidenavData": projectData
-      });
-      console.log(tasksData)
-      this.data = result.controls;
-    })
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
-
   saveForm() {
-    console.log('Form value: ',this.formLib?.myForm.value)
+    console.log('Form value: ',this.formLib?.myForm)
     if(this.projectId) {
       this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
     }
   }
 
   ngOnDestroy() {
-    if(this.projectId) {
-      this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
-    }
+    // if(this.projectId) {
+    //   this.libProjectService.createOrUpdateProject(this.formLib?.myForm.value,this.projectId).subscribe((res) => console.log(res))
+    // }
   }
 }

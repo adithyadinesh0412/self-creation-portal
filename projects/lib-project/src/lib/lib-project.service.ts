@@ -12,18 +12,9 @@ export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
   currentData = this.dataSubject.asObservable();
   projectData = {
-    "title": '',
-    "categories": [],
-    "recommented_duration": {
-      "type": "",
-      "number": 0
-    },
-    "keywords": "",
-    "recommeneded_for": [],
-    "languages": [],
-    "learning_resources": [],
-    "licence": "",
-    "tasks": [],
+    "tasks": [
+      {}
+    ],
     "certificate": {}
   }
   private saveProject = new BehaviorSubject<boolean>(false);
@@ -42,60 +33,15 @@ export class LibProjectService {
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
-    // projectData = {...this.projectData,...projectData}
-    projectData = {
-      "title": "Backend project",
-      "categories": [
-        "communication"
-      ],
-      "recommented_duration": {
-        "type": "week",
-        "number": 5
-      },
-      "keywords": "test",
-      "recommeneded_for": [
-        "HM"
-      ],
-      "languages": [
-        "en"
-      ],
-      "learning_resources": [
-        {
-          "name": "sample doc",
-          "url": "http://test.com"
-        }
-      ],
-      "licence": "CC BY 4.0",
-      "tasks": [
-        {
-          "id": "7a8b13fb-c9e1-4296-8abd-8b64b357a128",
-          "name": "task without children",
-          "type": "content",
-          "is_mandatory": true,
-          "allow_evidences": true,
-          "evidence_details": {
-            "file_types": [
-              "mp4"
-            ],
-            "min_no_of_evidences": 5
-          },
-          "learning_resources": [
-            {
-              "name": "sample doc",
-              "url": "http://test.com"
-            }
-          ],
-          "sequence_no": 1
-        }
-      ],
-      "certificate": {}
-    }
-    debugger;
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectId ? projectData : ''
     };
     return this.httpService.post(config.url, config.payload);
+  }
+
+  readProject(projectId:number|string) {
+    return this.httpService.get(this.Configuration.urlConFig.PROJECT_URLS.READ_PROJECT+projectId);
   }
 
   // Getting form from api

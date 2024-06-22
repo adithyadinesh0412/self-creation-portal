@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent, DialogModelComponent } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,10 +35,12 @@ export class SubTasksResourcesComponent implements OnInit{
   taskData : any[] = [];
   subtask: FormGroup;
   learningResources:any
+  projectId:string|number = '';
+  projectData:any;
 
-  constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService) {
+  constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.subtask = this.fb.group({
-      subtasks: this.fb.array([])  
+      subtasks: this.fb.array([])
     });
   }
 
@@ -45,13 +48,40 @@ export class SubTasksResourcesComponent implements OnInit{
     this.libProjectService.currentData.subscribe(data => {
       this.learningResources = data.tasksData.subTaskLearningResources
     });
-    for (let i = 0; i < 5; i++) {
-      const subtaskForm = this.fb.group({
-        subtasks: this.fb.array([])  // Initialize a new FormArray for each task
+    this.route.queryParams.subscribe((params:any) => {
+      this.projectId = params.projectId;
+      if( this.projectId) {
+        this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+          this.projectData = res?.result
+          this.createSubTaskForm(res?.result?.tasks?.length)
+        })
+      }
+      if(!params.projectId){
+        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+          this.projectId = res.result.id
+          this.router.navigate([], {
+            queryParams: {
+              projectId: this.projectId
+            },
+            queryParamsHandling: 'merge'
+          });
+        })
+      }
     });
+    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+      if(isProjectSave && this.router.url.includes('sub-tasks')) {
+        this.submit();
+      }
+    });
+
+  }
+  createSubTaskForm(taskLength:number){
+    for (let i = 0; i < taskLength; i++) {
       this.taskData.push({
         buttons: [{"label":"ADD_OBSERVATION","disable":true},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
-        subTasks: subtaskForm,
+        subTasks: this.fb.group({
+          subtasks: this.fb.array([])  // Initialize a new FormArray for each task
+      }),
         resources: []
       });
     }
@@ -61,9 +91,9 @@ export class SubTasksResourcesComponent implements OnInit{
       switch (button) {
         case 'ADD_OBSERVATION':
           break;
-  
+
         case 'ADD_LEARNING_RESOURCE':
-          const dialogRef = this.dialog.open(DialogModelComponent, { 
+          const dialogRef = this.dialog.open(DialogModelComponent, {
             data: {
               control: this.learningResources
             }
@@ -76,11 +106,11 @@ export class SubTasksResourcesComponent implements OnInit{
               }
             });
           break;
-  
+
         case 'ADD_SUBTASKS':
           this.addSubTask(taskIndex)
           break;
-  
+
         default:
           break;
       }
@@ -100,4 +130,17 @@ export class SubTasksResourcesComponent implements OnInit{
     this.taskData[taskIndex].resources.splice(resourceIndex, 1);
   }
   onSubtasks(form: FormGroup, taskIndex: number) {}
+
+  addSubtaskData(){
+    for (let i = 0; i < this.projectData.tasks.length; i++) {
+      this.projectData.tasks[i]['learning_resource'] = this.taskData[i].resources
+      this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+      
+    }
+    console.log(this.projectData.tasks)
+  }
+  submit() {
+    this.addSubtaskData()
+    this.libProjectService.createOrUpdateProject({'tasks': this.projectData.tasks},this.projectId).subscribe((res) => console.log(res))
+  }
 }
