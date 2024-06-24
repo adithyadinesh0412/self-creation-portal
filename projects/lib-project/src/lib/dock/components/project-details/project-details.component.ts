@@ -45,8 +45,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   ) {}
   ngOnInit() {
     this.libProjectService.currentData.subscribe((data) => {
-      this.dynamicFormData = data.projectDetails;
       if (data) {
+        this.dynamicFormData = data.projectDetails;
         this.route.queryParams.subscribe((params: any) => {
           this.projectId = params.projectId;
           if (params.projectId) {
