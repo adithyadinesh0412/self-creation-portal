@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { ResourceService } from '../../services/resource-service/resource.service';
 import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
+import { CommonService } from '../../services/common-service/common.service';
 
 
 @Component({
@@ -45,13 +46,13 @@ export class ResourceHolderComponent implements OnInit{
     sort_order: ''
   };
 
-  lists:any = []
-  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService) {
+  lists:any = [];
+  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService, private commonService: CommonService) {
   }
 
   ngOnInit() {
     this.loadSidenavData();
-    this.getList();
+    this.getQueryParams();
   }
 
   loadSidenavData(){
@@ -67,24 +68,28 @@ export class ResourceHolderComponent implements OnInit{
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
     this.getList();
+    this.updateQueryParams(); 
   }
 
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
+    this.updateQueryParams(); 
   }
 
   onFilterChange(event: any) {
     this.filters.current.type = event;
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
+    this.updateQueryParams(); 
   }
 
   onSortOptionsChanged(event: { sort_by: string, sort_order: string }) {
     this.sortOptions = event;
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
+    this.updateQueryParams(); 
   }
 
   getList() {
@@ -105,4 +110,17 @@ export class ResourceHolderComponent implements OnInit{
     return item;
   }
 
+  //updateQueryParams to router
+  updateQueryParams() {
+    const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
+    this.commonService.updateQueryParams(queryParams);
+  }
+
+  getQueryParams() {
+    this.route.queryParams.subscribe(params => {
+      this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
+      this.getList();
+    });
+  }
+  
 }
