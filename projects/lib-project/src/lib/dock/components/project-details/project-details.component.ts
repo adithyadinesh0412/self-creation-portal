@@ -24,6 +24,7 @@ import { map } from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'lib-project-details',
@@ -36,6 +37,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   dynamicFormData: any;
   projectId: string | number = '';
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
+  private subscription: Subscription = new Subscription();
   constructor(
     private libProjectService: LibProjectService,
     private router: Router,
@@ -77,22 +79,26 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
               .subscribe((res: any) => {
                 (this.projectId = res.result.id),
                   this.router.navigate([], {
+                    relativeTo: this.route,
                     queryParams: {
                       projectId: this.projectId,
                       mode:'edit'
                     },
                     queryParamsHandling: 'merge',
+                    replaceUrl: true
                   });
               });
           }
         });
       }
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
-      if (isProjectSave && this.router.url.includes('project-details')) {
-        this.saveForm();
-      }
-    });
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
+        if (isProjectSave && this.router.url.includes('project-details')) {
+          this.saveForm();
+        }
+      })
+    );
   }
 
   saveForm() {
@@ -115,6 +121,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.saveForm();
+    this.subscription.unsubscribe();
   }
 
 }

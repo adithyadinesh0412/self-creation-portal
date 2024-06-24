@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LibProjectService } from '../../../lib-project.service'
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'lib-sub-tasks-resources',
@@ -37,6 +38,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   learningResources:any
   projectId:string|number = '';
   projectData:any;
+  private subscription: Subscription = new Subscription();
 
   constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.subtask = this.fb.group({
@@ -56,11 +58,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
         })
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave && this.router.url.includes('sub-tasks')) {
-        this.submit();
-      }
-    });
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+        if(isProjectSave && this.router.url.includes('sub-tasks')) {
+          this.submit();
+        }
+      })
+    );
 
   }
   createSubTaskForm(taskLength:number,tasks?:any){
@@ -121,11 +125,12 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
   addSubtaskData(){
-    for (let i = 0; i < this.projectData.tasks.length; i++) {
-      this.projectData.tasks[i]['resources'] = this.taskData[i].resources
-      this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+    if(this.projectData?.tasks) {
+      for (let i = 0; i < this.projectData.tasks.length; i++) {
+        this.projectData.tasks[i]['resources'] = this.taskData[i].resources
+        this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+      }
     }
-    console.log(this.projectData.tasks)
   }
 
   submit() {
@@ -141,5 +146,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   ngOnDestroy(){
     this.submit();
+    this.subscription.unsubscribe();
   }
 }

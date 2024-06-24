@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LibProjectService } from '../../../lib-project.service'
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   projectId:string|number = '';
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
+  private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
@@ -45,20 +47,22 @@ export class TasksComponent implements OnInit,OnDestroy {
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
             this.libProjectService.projectData = res.result;
             this.tasksForm.reset()
-            res.result.tasks.forEach((element:any) => {
-              const task = this.fb.group({
-                description: [element.description ? element.description : '', Validators.required],
-                is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-                evidence_details: this.fb.group({
-                  file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                  min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                }),
-                resources: [element.resources ? element.resources : ''],
-                subtask: [element.subtask ? element.subtask : ''],
-              });
-              this.tasks.push(task);
-            })
+            if(res.result.tasks) {
+              res.result.tasks.forEach((element:any) => {
+                const task = this.fb.group({
+                  description: [element.description ? element.description : '', Validators.required],
+                  is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                  allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                  evidence_details: this.fb.group({
+                    file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                    min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                  }),
+                  resources: [element.resources ? element.resources : ''],
+                  subtask: [element.subtask ? element.subtask : ''],
+                });
+                this.tasks.push(task);
+              })
+            }
           })
         }
       }
@@ -75,12 +79,14 @@ export class TasksComponent implements OnInit,OnDestroy {
         })
       }
     });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave && this.router.url.includes('tasks')) {
-        console.log("project save")
-        this.submit();
-      }
-    });
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+        if(isProjectSave && this.router.url.includes('tasks')) {
+          console.log("from subject it's getting called")
+          this.submit();
+        }
+      })
+    );
   }
 
   get tasks() {
@@ -123,6 +129,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   ngOnDestroy(){
+    this.subscription.unsubscribe();
     this.submit();
   }
 
