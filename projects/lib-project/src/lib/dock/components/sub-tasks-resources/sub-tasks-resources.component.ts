@@ -56,6 +56,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           this.libProjectService.projectData = res.result;
           this.projectData = res?.result
           this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
+          this.addSubtaskData()
         })
     });
     this.subscription.add(
@@ -146,6 +147,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   ngOnDestroy(){
     this.submit();
+    this.libProjectService.saveProjectFunc(false);
     this.subscription.unsubscribe();
   }
 }

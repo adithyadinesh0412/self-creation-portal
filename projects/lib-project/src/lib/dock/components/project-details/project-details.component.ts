@@ -121,6 +121,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.saveForm();
+    this.libProjectService.saveProjectFunc(false);
     this.subscription.unsubscribe();
   }
 
