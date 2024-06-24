@@ -12,6 +12,11 @@ export const routes: Routes = [
         canActivate:[AuthGuard],
         children:[
             {
+                path:'',
+                redirectTo:'create-new',
+                pathMatch:'full'
+            },
+            {
                 path:'create-new',
                 component:CreateNewComponent
             },

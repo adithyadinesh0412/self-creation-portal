@@ -46,6 +46,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private _snackBar:MatSnackBar
   ) {}
   ngOnInit() {
+    this.dynamicFormData = '';
     this.libProjectService.currentData.subscribe((data) => {
       if (data) {
         this.dynamicFormData = data.projectDetails;
