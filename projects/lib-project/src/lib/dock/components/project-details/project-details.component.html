@@ -3,6 +3,6 @@
 </div>
 @if(dynamicFormData){
 <div class="items-center form-container">
-  <dynamic-form [formJson]="dynamicFormData" #formLib></dynamic-form>
+  <dynamic-form [formJson]="dynamicFormData" #formLib (change)="getDynamicFormData($event)"></dynamic-form>
 </div>
 }
