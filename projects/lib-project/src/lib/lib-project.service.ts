@@ -3,6 +3,7 @@ import { HttpProviderService } from 'lib-shared-modules';
 import { BehaviorSubject, map } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable({
@@ -13,7 +14,6 @@ export class LibProjectService {
   currentData = this.dataSubject.asObservable();
   projectData = {
     "tasks": [
-      {}
     ],
     "certificate": {}
   }
@@ -21,7 +21,7 @@ export class LibProjectService {
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
 
-  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router) {
+  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
   }
 
   setData(data: any) {
@@ -30,6 +30,15 @@ export class LibProjectService {
 
   saveProjectFunc(newAction: boolean) {
     this.saveProject.next(newAction);
+  }
+
+  updateProjectData(projectData:any) {
+    this.projectData = {...this.projectData,...projectData}
+    console.log(this.projectData);
+  }
+
+  updateProjectDraft(projectId:string|number) {
+    return this.createOrUpdateProject(this.projectData,projectId)
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
@@ -55,6 +64,14 @@ export class LibProjectService {
         return result;
       })
     )
+  }
+
+  openSnackBar() {
+    this._snackBar.open('Your resource has been saved as draft', 'X', {
+      horizontalPosition: "center",
+      verticalPosition: "top",
+      duration:1000
+    });
   }
 
 }

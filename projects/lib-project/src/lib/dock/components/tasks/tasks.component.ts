@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
-export class TasksComponent {
+export class TasksComponent implements OnInit,OnDestroy {
 
   tasksForm: FormGroup;
   projectId:string|number = '';
@@ -36,7 +36,6 @@ export class TasksComponent {
   ngOnInit() {
     this.libProjectService.currentData.subscribe(data => {
       this.tasksData = data.tasksData.tasks;
-      this.addTask();
     });
     this.route.queryParams.subscribe((params:any) => {
       this.projectId = params.projectId;
@@ -44,8 +43,8 @@ export class TasksComponent {
       if(params.projectId){
         if(params.mode === 'edit') {
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-            console.log(res)
-            this.tasks.reset()
+            this.libProjectService.projectData = res.result;
+            this.tasksForm.reset()
             res.result.tasks.forEach((element:any) => {
               const task = this.fb.group({
                 description: [element.description ? element.description : '', Validators.required],
@@ -54,15 +53,17 @@ export class TasksComponent {
                 evidence_details: this.fb.group({
                   file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                   min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                })
+                }),
+                resources: [element.resources ? element.resources : ''],
+                subtask: [element.subtask ? element.subtask : ''],
               });
               this.tasks.push(task);
             })
-
           })
         }
       }
       else {
+        this.addTask();
         this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
           this.projectId = res.result.id
           this.router.navigate([], {
@@ -112,8 +113,17 @@ export class TasksComponent {
   }
 
   submit() {
-    console.log(this.tasks.value)
-    this.libProjectService.createOrUpdateProject({'tasks':this.tasks.value},this.projectId).subscribe((res) => console.log(res))
+    this.libProjectService.updateProjectData({'tasks':this.tasks.value})
+    this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
+      this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
+        this.libProjectService.projectData = response.result;
+        this.libProjectService.openSnackBar()
+      })
+    })
+  }
+
+  ngOnDestroy(){
+    this.submit();
   }
 
 }

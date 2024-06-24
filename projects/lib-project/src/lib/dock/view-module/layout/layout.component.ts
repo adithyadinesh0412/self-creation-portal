@@ -18,8 +18,8 @@ export class LayoutComponent {
   ngOnInit(){
     this.getProjectdata()
     this.libProjectService.currentData.subscribe(data => {
-      this.sidenavData= data.sidenavData.sidenav
-      this.headerData = data.sidenavData.headerData
+      this.sidenavData= data?.sidenavData.sidenav
+      this.headerData = data?.sidenavData.headerData
     });
   }
 

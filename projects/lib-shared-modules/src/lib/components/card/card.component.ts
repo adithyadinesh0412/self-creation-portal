@@ -18,4 +18,14 @@ export class CardComponent {
   @Input() project:any;
 
   constructor(private router:Router) {}
+
+  cardClick(item:any) {
+    console.log(item)
+    this.router.navigate(['solution/project/project-details'],{
+      queryParams: {
+        projectId: item.id,
+        mode:'edit'
+      }
+    })
+  }
 }
