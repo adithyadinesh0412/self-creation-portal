@@ -15,7 +15,8 @@ export class LibProjectService {
   projectData = {
     "tasks": [
     ],
-    "certificate": {}
+    "certificate": {},
+    "title":""
   }
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
@@ -38,6 +39,7 @@ export class LibProjectService {
   }
 
   updateProjectDraft(projectId:string|number) {
+    this.upDateProjectTitle()
     return this.createOrUpdateProject(this.projectData,projectId)
   }
 
@@ -72,6 +74,21 @@ export class LibProjectService {
       verticalPosition: "top",
       duration:1000
     });
+  }
+
+  upDateProjectTitle(){
+      const currentData = this.dataSubject.getValue();
+      const updatedData = {
+        ...currentData,
+        sidenavData: {
+          ...currentData.sidenavData,
+          headerData: {
+            ...currentData.sidenavData.headerData,
+            title: (this.projectData.title)? this.projectData.title: 'Project name'
+          }
+        }
+      };
+      this.setData(updatedData);
   }
 
 }
