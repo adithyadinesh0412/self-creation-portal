@@ -50,15 +50,17 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.libProjectService.currentData.subscribe(data => {
       this.learningResources = data?.tasksData.subTaskLearningResources
     });
-    this.route.queryParams.subscribe((params:any) => {
-      this.projectId = params.projectId;
-        this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-          this.libProjectService.projectData = res.result;
-          this.projectData = res?.result
-          this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
-          this.addSubtaskData()
-        })
-    });
+    this.subscription.add(
+      this.route.queryParams.subscribe((params:any) => {
+        this.projectId = params.projectId;
+          this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+            this.libProjectService.projectData = res.result;
+            this.projectData = res?.result
+            this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
+            this.addSubtaskData()
+          })
+      })
+    );
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
         if(isProjectSave && this.router.url.includes('sub-tasks')) {
