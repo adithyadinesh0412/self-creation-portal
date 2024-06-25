@@ -84,7 +84,7 @@ export class LibProjectService {
           ...currentData.sidenavData,
           headerData: {
             ...currentData.sidenavData.headerData,
-            title: (this.projectData.title)? this.projectData.title: 'Project name'
+            title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
           }
         }
       };
