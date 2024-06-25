@@ -39,46 +39,48 @@ export class TasksComponent implements OnInit,OnDestroy {
     this.libProjectService.currentData.subscribe(data => {
       this.tasksData = data.tasksData.tasks;
     });
-    this.route.queryParams.subscribe((params:any) => {
-      this.projectId = params.projectId;
-      console.log(this.route)
-      if(params.projectId){
-        if(params.mode === 'edit') {
-          this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-            this.libProjectService.projectData = res.result;
-            this.tasksForm.reset()
-            if(res.result.tasks) {
-              res.result.tasks.forEach((element:any) => {
-                const task = this.fb.group({
-                  description: [element.description ? element.description : '', Validators.required],
-                  is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                  allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-                  evidence_details: this.fb.group({
-                    file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                    min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                  }),
-                  resources: [element.resources ? element.resources : ''],
-                  subtask: [element.subtask ? element.subtask : ''],
-                });
-                this.tasks.push(task);
-              })
-            }
+    this.subscription.add(
+      this.route.queryParams.subscribe((params:any) => {
+        this.projectId = params.projectId;
+        console.log(this.route)
+        if(params.projectId){
+          if(params.mode === 'edit') {
+            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+              this.libProjectService.projectData = res.result;
+              this.tasksForm.reset()
+              if(res.result.tasks) {
+                res.result.tasks.forEach((element:any) => {
+                  const task = this.fb.group({
+                    description: [element.description ? element.description : '', Validators.required],
+                    is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                    allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                    evidence_details: this.fb.group({
+                      file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                      min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                    }),
+                    resources: [element.resources ? element.resources : ''],
+                    subtask: [element.subtask ? element.subtask : ''],
+                  });
+                  this.tasks.push(task);
+                })
+              }
+            })
+          }
+        }
+        else {
+          this.addTask();
+          this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
+            this.projectId = res.result.id
+            this.router.navigate([], {
+              queryParams: {
+                projectId: this.projectId
+              },
+              queryParamsHandling: 'merge'
+            });
           })
         }
-      }
-      else {
-        this.addTask();
-        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-          this.projectId = res.result.id
-          this.router.navigate([], {
-            queryParams: {
-              projectId: this.projectId
-            },
-            queryParamsHandling: 'merge'
-          });
-        })
-      }
-    });
+      })
+    )
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
         if(isProjectSave && this.router.url.includes('tasks')) {

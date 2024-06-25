@@ -49,47 +49,49 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     this.libProjectService.currentData.subscribe((data) => {
       if (data) {
         this.dynamicFormData = data.projectDetails;
-        this.route.queryParams.subscribe((params: any) => {
-          this.projectId = params.projectId;
-          if (params.projectId) {
-            if (params.mode === 'edit') {
-              this.libProjectService
-                .readProject(params.projectId)
-                .subscribe((res: any) => {
-                  this.libProjectService.projectData = res.result;
-                  this.dynamicFormData.forEach((element: any) => {
-                    element.value = res.result[element.name]?.value
-                      ? res.result[element.name].value
-                      : res.result[element.name];
-                    if (element.subfields) {
-                      element.subfields.forEach((subElement: any) => {
-                          subElement.value = res.result[element.name]?.[
-                            subElement.name
-                          ]?.value
-                            ? res.result[element.name]?.[subElement.name].value
-                            : res.result[element.name]?.[subElement.name];
-                      });
-                    }
+        this.subscription.add(
+          this.route.queryParams.subscribe((params: any) => {
+            this.projectId = params.projectId;
+            if (params.projectId) {
+              if (params.mode === 'edit') {
+                this.libProjectService
+                  .readProject(params.projectId)
+                  .subscribe((res: any) => {
+                    this.libProjectService.projectData = res.result;
+                    this.dynamicFormData.forEach((element: any) => {
+                      element.value = res.result[element.name]?.value
+                        ? res.result[element.name].value
+                        : res.result[element.name];
+                      if (element.subfields) {
+                        element.subfields.forEach((subElement: any) => {
+                            subElement.value = res.result[element.name]?.[
+                              subElement.name
+                            ]?.value
+                              ? res.result[element.name]?.[subElement.name].value
+                              : res.result[element.name]?.[subElement.name];
+                        });
+                      }
+                    });
                   });
+              }
+            } else {
+              this.libProjectService
+                .createOrUpdateProject()
+                .subscribe((res: any) => {
+                  (this.projectId = res.result.id),
+                    this.router.navigate([], {
+                      relativeTo: this.route,
+                      queryParams: {
+                        projectId: this.projectId,
+                        mode:'edit'
+                      },
+                      queryParamsHandling: 'merge',
+                      replaceUrl: true
+                    });
                 });
             }
-          } else {
-            this.libProjectService
-              .createOrUpdateProject()
-              .subscribe((res: any) => {
-                (this.projectId = res.result.id),
-                  this.router.navigate([], {
-                    relativeTo: this.route,
-                    queryParams: {
-                      projectId: this.projectId,
-                      mode:'edit'
-                    },
-                    queryParamsHandling: 'merge',
-                    replaceUrl: true
-                  });
-              });
-          }
-        });
+          })
+        )
       }
     });
     this.subscription.add(
