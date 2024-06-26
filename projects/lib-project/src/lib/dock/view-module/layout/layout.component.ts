@@ -35,7 +35,7 @@ export class LayoutComponent {
       this.libProjectService.setData( {
         "tasksData":tasksData.result.data.fields.controls,
         "sidenavData": projectData,
-        "projectDetails":result.controls,
+        "projectDetails":result.controls
       });
       this.libProjectService.upDateProjectTitle()
     })
