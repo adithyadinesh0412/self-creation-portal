@@ -5,6 +5,10 @@ import {MatIconModule} from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 
+interface FilterChangeEvent {
+  filterName: string;
+  values: string[];
+}
 @Component({
   selector: 'lib-filter',
   standalone: true,
@@ -15,11 +19,11 @@ import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 export class FilterComponent {
   @Input() filterData:any;
   @Input() showChangesButton: boolean = false;
-  @Output() filteredData = new EventEmitter<string | { sort_by: string, sort_order: string }>();
+  @Output() filteredData = new EventEmitter<FilterChangeEvent | { sort_by: string, sort_order: string }>();
   @Output() sortOptionsChanged = new EventEmitter<{ sort_by: string, sort_order: string }>();
   changeButton: string = "CHANGES_REQUIRED";
 
-  OnClickfilter(event:any){
+  OnClickfilter(event:any, filter: any){
     if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event.value)) {
       let sort_by = '';
       let sort_order = '';
@@ -46,7 +50,12 @@ export class FilterComponent {
       }
       this.sortOptionsChanged.emit({ sort_by, sort_order });
     } else {
-      this.filteredData.emit(event.value);
+      if (filter.isMultiple) {
+        const selectedValues = event.value as string[];
+        this.filteredData.emit({ filterName: filter.value, values: selectedValues });
+      } else {
+        this.filteredData.emit({ filterName: filter.value, values: [event.value] });
+      }
     }
   }
 }

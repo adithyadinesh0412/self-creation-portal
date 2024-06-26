@@ -28,8 +28,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       console.log(error)
-      if (error.status === 401) {
-        commonService.logout();
+      if(error.status === 401){
+        commonService.navigateToLogin()
       }
       return throwError(error);
     }))
