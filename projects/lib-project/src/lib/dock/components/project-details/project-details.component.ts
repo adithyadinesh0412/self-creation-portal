@@ -42,17 +42,23 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                     this.libProjectService.projectData = res.result;
                     this.dynamicFormData.forEach((element: any) => {
                       element.value = res.result[element.name]?.value
-                        ? res.result[element.name].value
-                        : res.result[element.name];
-                      if (element.subfields) {
-                        element.subfields.forEach((subElement: any) => {
-                            subElement.value = res.result[element.name]?.[
-                              subElement.name
-                            ]?.value
-                              ? res.result[element.name]?.[subElement.name].value
-                              : res.result[element.name]?.[subElement.name];
-                        });
+                      ? res.result[element.name].value
+                      : res.result[element.name];
+                    if (element.subfields) {
+                      element.subfields.forEach((subElement: any) => {
+                          subElement.value = res.result[element.name]?.[
+                            subElement.name
+                          ]?.value
+                            ? res.result[element.name]?.[subElement.name].value
+                            : res.result[element.name]?.[subElement.name];
+                      });
+                    }
+                      if(Array.isArray(element.value)) {
+                        element.value = res.result[element.name].map((arrayItem:any) => {
+                          return arrayItem.value ? arrayItem.value : element;
+                        })
                       }
+                      console.log(element);
                     });
                   });
               }

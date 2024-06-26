@@ -38,14 +38,14 @@ export class LayoutComponent {
         "projectDetails":result.controls,
       });
       this.libProjectService.upDateProjectTitle()
-      this.route.queryParams.subscribe((params: any) => {
-        if (params.projectId) {
-            this.libProjectService.readProject(params.projectId).subscribe((res: any) => {
-                this.libProjectService.projectData = res.result;
-                this.libProjectService.upDateProjectTitle()
-              });
-            }
-      })
+      // this.route.queryParams.subscribe((params: any) => {
+      //   if (params.projectId) {
+      //       this.libProjectService.readProject(params.projectId).subscribe((res: any) => {
+      //           this.libProjectService.projectData = res.result;
+      //           this.libProjectService.upDateProjectTitle()
+      //         });
+      //       }
+      // })
     })
     })
     .catch((error) => {
