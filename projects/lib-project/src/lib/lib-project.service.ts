@@ -11,11 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
-  currentData = this.dataSubject.asObservable();
+  currentProjectData = this.dataSubject.asObservable();
   projectData = {
     "tasks": [
     ],
-    "certificate": {}
+    "certificate": {},
+    "title":""
   }
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
@@ -34,7 +35,6 @@ export class LibProjectService {
 
   updateProjectData(projectData:any) {
     this.projectData = {...this.projectData,...projectData}
-    console.log(this.projectData);
   }
 
   updateProjectDraft(projectId:string|number) {
@@ -72,6 +72,21 @@ export class LibProjectService {
       verticalPosition: "top",
       duration:1000
     });
+  }
+
+  upDateProjectTitle(){
+      const currentProjectData = this.dataSubject.getValue();
+      const updatedData = {
+        ...currentProjectData,
+        sidenavData: {
+          ...currentProjectData.sidenavData,
+          headerData: {
+            ...currentProjectData.sidenavData.headerData,
+            title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
+          }
+        }
+      };
+      this.setData(updatedData);
   }
 
 }

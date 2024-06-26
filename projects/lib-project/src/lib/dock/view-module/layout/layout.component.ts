@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { FormService, HeaderComponent, SideNavbarComponent, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { FormService, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'lib-layout',
@@ -13,11 +14,11 @@ export class LayoutComponent {
   selctedCardItem : any;
   headerData:any
   sidenavData:any
-  constructor(private libProjectService:LibProjectService,private formService:FormService) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute) {
   }
   ngOnInit(){
     this.getProjectdata()
-    this.libProjectService.currentData.subscribe(data => {
+    this.libProjectService.currentProjectData.subscribe(data => {
       this.sidenavData= data?.sidenavData.sidenav
       this.headerData = data?.sidenavData.headerData
     });
@@ -34,8 +35,17 @@ export class LayoutComponent {
       this.libProjectService.setData( {
         "tasksData":tasksData.result.data.fields.controls,
         "sidenavData": projectData,
-        "projectDetails":result.controls
+        "projectDetails":result.controls,
       });
+      this.libProjectService.upDateProjectTitle()
+      this.route.queryParams.subscribe((params: any) => {
+        if (params.projectId) {
+            this.libProjectService.readProject(params.projectId).subscribe((res: any) => {
+                this.libProjectService.projectData = res.result;
+                this.libProjectService.upDateProjectTitle()
+              });
+            }
+      })
     })
     })
     .catch((error) => {

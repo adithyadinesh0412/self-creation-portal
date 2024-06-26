@@ -47,7 +47,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnInit() {
-    this.libProjectService.currentData.subscribe(data => {
+    this.libProjectService.currentProjectData.subscribe(data => {
       this.learningResources = data?.tasksData.subTaskLearningResources
     });
     this.subscription.add(
