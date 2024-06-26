@@ -28,7 +28,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
   ) {}
   ngOnInit() {
-    this.libProjectService.currentData.subscribe((data) => {
+    this.libProjectService.currentProjectData.subscribe((data) => {
       if (data) {
         this.dynamicFormData = data.projectDetails;
         this.subscription.add(

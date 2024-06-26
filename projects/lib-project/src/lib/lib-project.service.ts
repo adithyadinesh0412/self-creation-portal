@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
-  currentData = this.dataSubject.asObservable();
+  currentProjectData = this.dataSubject.asObservable();
   projectData = {
     "tasks": [
     ],
@@ -35,7 +35,6 @@ export class LibProjectService {
 
   updateProjectData(projectData:any) {
     this.projectData = {...this.projectData,...projectData}
-    console.log(this.projectData);
   }
 
   updateProjectDraft(projectId:string|number) {
@@ -76,13 +75,13 @@ export class LibProjectService {
   }
 
   upDateProjectTitle(){
-      const currentData = this.dataSubject.getValue();
+      const currentProjectData = this.dataSubject.getValue();
       const updatedData = {
-        ...currentData,
+        ...currentProjectData,
         sidenavData: {
-          ...currentData.sidenavData,
+          ...currentProjectData.sidenavData,
           headerData: {
-            ...currentData.sidenavData.headerData,
+            ...currentProjectData.sidenavData.headerData,
             title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
           }
         }
