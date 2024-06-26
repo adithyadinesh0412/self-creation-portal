@@ -1,26 +1,10 @@
 import {
   Component,
-  Input,
   OnDestroy,
   OnInit,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition,
-} from '@angular/material/snack-bar';
-import {
-  FormService,
-  HeaderComponent,
-  SideNavbarComponent,
-  SOLUTION_LIST,
-  TASK_DETAILS,
-} from 'lib-shared-modules';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,7 +13,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [HeaderComponent, DynamicFormModule, TranslateModule],
+  imports: [ DynamicFormModule, TranslateModule],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -42,8 +26,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private libProjectService: LibProjectService,
     private router: Router,
     private route: ActivatedRoute,
-    private formService: FormService,
-    private _snackBar:MatSnackBar
   ) {}
   ngOnInit() {
     this.libProjectService.currentData.subscribe((data) => {

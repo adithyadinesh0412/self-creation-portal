@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { FormService, HeaderComponent, SideNavbarComponent, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { FormService, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -35,9 +35,17 @@ export class LayoutComponent {
       this.libProjectService.setData( {
         "tasksData":tasksData.result.data.fields.controls,
         "sidenavData": projectData,
-        "projectDetails":result.controls
+        "projectDetails":result.controls,
       });
       this.libProjectService.upDateProjectTitle()
+      this.route.queryParams.subscribe((params: any) => {
+        if (params.projectId) {
+            this.libProjectService.readProject(params.projectId).subscribe((res: any) => {
+                this.libProjectService.projectData = res.result;
+                this.libProjectService.upDateProjectTitle()
+              });
+            }
+      })
     })
     })
     .catch((error) => {
