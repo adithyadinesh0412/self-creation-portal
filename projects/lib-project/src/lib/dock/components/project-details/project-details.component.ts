@@ -57,8 +57,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                         element.value = res.result[element.name].map((arrayItem:any) => {
                           return arrayItem.value ? arrayItem.value : element;
                         })
-                        // element.value = ["en","hi"]
-                        console.log('language',element)
                       }
                       console.log(element);
                     });
