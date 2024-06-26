@@ -34,7 +34,7 @@ export class ResourceHolderComponent implements OnInit{
 
   filters = {
     search: '',
-    current: {}  as { type: string},
+    current: { type: [] as string[] },
     filteredLists: [] as any[],
     filterData: [] as any,
     showChangesButton: false,
@@ -79,12 +79,15 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   onFilterChange(event: any) {
-    this.filters.current.type = event;
+    const filterName = event.filterName;
+    if (filterName === 'type') {
+      this.filters.current.type = event.values;
+    }
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
-    this.updateQueryParams(); 
+    this.updateQueryParams();
   }
-
+  
   onSortOptionsChanged(event: { sort_by: string, sort_order: string }) {
     this.sortOptions = event;
     this.pagination.currentPage = 0;

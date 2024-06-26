@@ -9,11 +9,6 @@ export class CommonService {
 
   constructor(private router:Router, private route: ActivatedRoute) { }
 
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['login']);
-  }
-
   createUrlWithParams(baseUrl: string, params: { [key: string]: any }): string {
     let httpParams = new HttpParams();
     for (const key in params) {
@@ -24,11 +19,11 @@ export class CommonService {
     return `${baseUrl}?${httpParams.toString()}`;
   }
   
-  generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } {
+  generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } { 
     return {
       page: pagination.currentPage + 1,
       limit: pagination.pageSize,
-      type: filters.current.type || "",
+      type: filters.current.type.join(',') || "",
       status: 'draft',
       sort_by:  sortOptions.sort_by || '',
       sort_order: sortOptions.sort_order || '',
@@ -41,7 +36,7 @@ export class CommonService {
   applyQueryParams(params: any, pagination: any, filters: any, sortOptions: any) {
     pagination.currentPage = +params['page'] - 1 || 0;
     pagination.pageSize = +params['limit'] || pagination.pageSize;
-    filters.current.type = params['type'] || '';
+    filters.current.type = params['type'] ? params['type'].split(',') : [];
     filters.search = params['search'] ? atob(params['search']) : '';
     sortOptions.sort_by = params['sort_by'] || '';
     sortOptions.sort_order = params['sort_order'] || '';
