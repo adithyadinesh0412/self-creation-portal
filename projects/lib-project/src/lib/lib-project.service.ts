@@ -39,7 +39,6 @@ export class LibProjectService {
   }
 
   updateProjectDraft(projectId:string|number) {
-    this.upDateProjectTitle()
     return this.createOrUpdateProject(this.projectData,projectId)
   }
 

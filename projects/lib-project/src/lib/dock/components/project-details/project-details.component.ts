@@ -108,6 +108,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
         this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
           this.libProjectService.projectData = response.result;
+          this.libProjectService.upDateProjectTitle()
           this.libProjectService.openSnackBar()
         })
       })
