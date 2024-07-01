@@ -40,31 +40,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             this.projectId = params.projectId;
             if (params.projectId) {
               if (params.mode === 'edit') {
-                this.libProjectService
-                  .readProject(params.projectId)
-                  .subscribe((res: any) => {
-                    this.libProjectService.projectData = res.result;
-                    this.dynamicFormData.forEach((element: any) => {
-                      element.value = res.result[element.name]?.value
-                      ? res.result[element.name].value
-                      : res.result[element.name];
-                    if (element.subfields) {
-                      element.subfields.forEach((subElement: any) => {
-                          subElement.value = res.result[element.name]?.[
-                            subElement.name
-                          ]?.value
-                            ? res.result[element.name]?.[subElement.name].value
-                            : res.result[element.name]?.[subElement.name];
-                      });
-                    }
-                      if(Array.isArray(element.value)) {
-                        element.value = res.result[element.name].map((arrayItem:any) => {
-                          return arrayItem.value ? arrayItem.value : element;
-                        })
-                      }
-                      console.log(element);
-                    });
-                  });
+                this.readProjectDeatilsAndMap()
               }
             } else {
               this.libProjectService
@@ -93,6 +69,36 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         }
       })
     );
+  }
+
+  readProjectDeatilsAndMap(){
+    this.subscription.add(
+      this.libProjectService
+      .readProject(this.projectId)
+      .subscribe((res: any) => {
+        this.libProjectService.projectData = res.result;
+        this.dynamicFormData.forEach((element: any) => {
+          element.value = res.result[element.name]?.value
+          ? res.result[element.name].value
+          : res.result[element.name];
+        if (element.subfields) {
+          element.subfields.forEach((subElement: any) => {
+              subElement.value = res.result[element.name]?.[
+                subElement.name
+              ]?.value
+                ? res.result[element.name]?.[subElement.name].value
+                : res.result[element.name]?.[subElement.name];
+          });
+        }
+          if(Array.isArray(element.value)) {
+            element.value = res.result[element.name].map((arrayItem:any) => {
+              return arrayItem.value ? arrayItem.value : element;
+            })
+          }
+        });
+      })
+    )
+    
   }
   
   canDeactivate(): Promise<any> {
