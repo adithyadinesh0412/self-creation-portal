@@ -37,9 +37,11 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit() {
-    this.libProjectService.currentProjectData.subscribe(data => {
-      this.tasksData = data.tasksData.tasks;
-    });
+    this.subscription.add(
+      this.libProjectService.currentProjectData.subscribe(data => {
+        this.tasksData = data.tasksData.tasks;
+      })
+    )
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
