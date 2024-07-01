@@ -9,6 +9,9 @@ import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogPopupComponent } from 'lib-shared-modules';
+
 
 @Component({
   selector: 'lib-project-details',
@@ -26,6 +29,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private libProjectService: LibProjectService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialog : MatDialog
   ) {}
   ngOnInit() {
     this.libProjectService.currentProjectData.subscribe((data) => {
@@ -90,6 +94,37 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       })
     );
   }
+  
+  canDeactivate(): Promise<any> {
+    if (!this.formLib?.myForm.pristine) {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: "SAVE_CHANGES",
+          content: "UNSAVED_CHNAGES_MESSAGE",
+          cancelButton: "DO_NOT_SAVE",
+          exitButton: "SAVE"
+        }
+      });
+  
+      return dialogRef.afterClosed().toPromise().then(result => {
+        if (result === "DO_NOT_SAVE") {
+          return true;
+        } else if (result === "SAVE") {
+          this.subscription.unsubscribe();
+          debugger
+          this.subscription.add(
+            this.saveForm()
+          );
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+  
 
   saveForm() {
     if(this.projectId) {
@@ -111,8 +146,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.saveForm();
-    this.libProjectService.saveProjectFunc(false);
     this.subscription.unsubscribe();
   }
 

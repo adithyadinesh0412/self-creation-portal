@@ -69,5 +69,8 @@
     "MANDATORY":"Mandatory",
     "ALLOW_EVIDENCE":"Allow evidence(s)",
     "ALL_FILE_TYPES":"All file types",
-    "MIN_NUMBER_OF_EVIDENCE":"Min. number of evidences"
+    "MIN_NUMBER_OF_EVIDENCE":"Min. number of evidences",
+    "SAVE_CHANGES":"Save changes",
+    "UNSAVED_CHNAGES_MESSAGE":"This resource/program has unsaved changes, Save before changing back?",
+    "DO_NOT_SAVE":"Do not save"
 }

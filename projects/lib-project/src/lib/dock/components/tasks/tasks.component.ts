@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { DialogPopupComponent, HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LibProjectService } from '../../../lib-project.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
   private subscription: Subscription = new Subscription();
-  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
@@ -91,6 +92,34 @@ export class TasksComponent implements OnInit,OnDestroy {
     );
   }
 
+canDeactivate(): Promise<any> {
+  if (!this.tasksForm?.pristine ) {
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data: {
+        header: "SAVE_CHANGES",
+        content: "UNSAVED_CHNAGES_MESSAGE",
+        cancelButton: "DO_NOT_SAVE",
+        exitButton: "SAVE"
+      }
+    });
+
+    return dialogRef.afterClosed().toPromise().then(result => {
+      if (result === "DO_NOT_SAVE") {
+        return true;
+      } else if (result === "SAVE") {
+        this.subscription.add(
+              this.submit()
+        );
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } else {
+    return Promise.resolve(true);
+  }
+}
+
   get tasks() {
     return this.tasksForm.get('tasks') as FormArray;
   }
@@ -132,8 +161,6 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
-    this.libProjectService.saveProjectFunc(false);
-    this.submit();
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, SideNavbarComponent, DialogModelComponent } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -70,6 +70,35 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     );
 
   }
+
+  canDeactivate(): Promise<any> {
+    if (!this.subtask?.dirty || !this.myForm?.dirty) {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: "SAVE_CHANGES",
+          content: "UNSAVED_CHNAGES_MESSAGE",
+          cancelButton: "DO_NOT_SAVE",
+          exitButton: "SAVE"
+        }
+      });
+  
+      return dialogRef.afterClosed().toPromise().then(result => {
+        if (result === "DO_NOT_SAVE") {
+          return true;
+        } else if (result === "SAVE") {
+          this.subscription.add(
+                this.submit()
+          );      
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+  
   createSubTaskForm(taskLength:number,tasks?:any){
     for (let i = 0; i < taskLength; i++) {
       this.taskData.push({
@@ -148,8 +177,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    this.submit();
-    this.libProjectService.saveProjectFunc(false);
     this.subscription.unsubscribe();
   }
 }
