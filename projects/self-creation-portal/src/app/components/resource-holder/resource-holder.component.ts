@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
@@ -17,7 +17,7 @@ import { CommonService } from '../../services/common-service/common.service';
 @Component({
   selector: 'app-resource-holder',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule],
+  imports: [HeaderComponent,SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule, NoResultFoundComponent],
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
 })
@@ -47,6 +47,8 @@ export class ResourceHolderComponent implements OnInit{
   };
 
   lists:any = [];
+  noResultMessage!: string ;
+  noResultFound !: string;
   constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService, private commonService: CommonService) {
   }
 
@@ -58,8 +60,10 @@ export class ResourceHolderComponent implements OnInit{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
-      const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl)?.filterData;
-      this.filters.filterData = currentData || [];
+      const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
+      this.filters.filterData = currentData?.filterData || [];
+      this.noResultMessage = currentData?.noResultMessage || '' ;
+      this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
     });
   }
@@ -74,7 +78,9 @@ export class ResourceHolderComponent implements OnInit{
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
     this.pagination.currentPage = 0;
-    this.paginationComponent.resetToFirstPage();
+    if(this.paginationComponent) {
+      this.paginationComponent.resetToFirstPage();
+    }
     this.updateQueryParams(); 
   }
 
@@ -84,7 +90,9 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.current.type = event.values;
     }
     this.pagination.currentPage = 0;
-    this.paginationComponent.resetToFirstPage();
+    if(this.paginationComponent) {
+      this.paginationComponent.resetToFirstPage();
+    }
     this.updateQueryParams();
   }
   
@@ -102,6 +110,9 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
       this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
+      if (this.lists.length === 0) {
+        this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
+      }
     });
   }
 

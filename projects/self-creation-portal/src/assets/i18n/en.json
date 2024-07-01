@@ -69,5 +69,9 @@
     "MANDATORY":"Mandatory",
     "ALLOW_EVIDENCE":"Allow evidence(s)",
     "ALL_FILE_TYPES":"All file types",
-    "MIN_NUMBER_OF_EVIDENCE":"Min. number of evidences"
+    "MIN_NUMBER_OF_EVIDENCE":"Min. number of evidences",
+    "NO_RESULT_FOUND":"Search results not found. Please try searching for something else.",
+    "NO_DRAFT": "No resource/program in draft at the moment.",
+    "NO_BROWSE_EXISTING": "There are no resource/program on the platform.",
+    "NO_SUBMITTED_FOR_REVIEW": "No resource/program submitted for review at the moment."
 }
