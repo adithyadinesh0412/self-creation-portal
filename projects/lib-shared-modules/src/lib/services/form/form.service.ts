@@ -93,4 +93,18 @@ export class FormService {
     });
 
   }
+
+  getPermissions() {
+    return this.httpService.get(this.configService.urlConFig.PERMISSIONS.PERMISSION_LIST);
+  }
+
+  checkPermissions(data:any,permissions:any) {
+    return data.filter((item:any) =>
+      item.permission_modules.some((module: string) =>
+        permissions.some((perm:any) => perm.module.includes(module))
+      )
+    );
+  }
+
+
 }

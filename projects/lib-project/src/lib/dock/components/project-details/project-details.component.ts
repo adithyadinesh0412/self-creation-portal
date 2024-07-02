@@ -22,6 +22,7 @@ import { DialogPopupComponent } from 'lib-shared-modules';
 })
 export class ProjectDetailsComponent implements OnDestroy, OnInit {
   dynamicFormData: any;
+  projectData:any;
   projectId: string | number = '';
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -32,7 +33,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private dialog : MatDialog
   ) {}
   ngOnInit() {
-    this.libProjectService.currentProjectData.subscribe((data) => {
+    this.libProjectService.currentProjectMetaData.subscribe((data) => {
       if (data) {
         this.dynamicFormData = data.projectDetails;
         this.subscription.add(
@@ -40,7 +41,23 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             this.projectId = params.projectId;
             if (params.projectId) {
               if (params.mode === 'edit') {
-                this.readProjectDeatilsAndMap()
+                this.subscription.add(
+                  this.libProjectService.currentProjectData.subscribe((res) => {
+                    if(res) {
+                      this.readProjectDeatilsAndMap(res);
+                    }
+                    else {
+                      this.subscription.add(
+                        this.libProjectService
+                        .readProject(this.projectId)
+                        .subscribe((res: any) => {
+                          this.libProjectService.setProjectData(res.result);
+                          this.readProjectDeatilsAndMap(res.result);
+                        })
+                        )
+                    }
+                  }))
+
               }
             } else {
               this.libProjectService
@@ -71,36 +88,29 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     );
   }
 
-  readProjectDeatilsAndMap(){
-    this.subscription.add(
-      this.libProjectService
-      .readProject(this.projectId)
-      .subscribe((res: any) => {
-        this.libProjectService.projectData = res.result;
+  readProjectDeatilsAndMap(res:any){
         this.dynamicFormData.forEach((element: any) => {
-          element.value = res.result[element.name]?.value
-          ? res.result[element.name].value
-          : res.result[element.name];
+          element.value = res[element.name]?.value
+          ? res[element.name].value
+          : res[element.name];
         if (element.subfields) {
           element.subfields.forEach((subElement: any) => {
-              subElement.value = res.result[element.name]?.[
+              subElement.value = res[element.name]?.[
                 subElement.name
               ]?.value
-                ? res.result[element.name]?.[subElement.name].value
-                : res.result[element.name]?.[subElement.name];
+                ? res[element.name]?.[subElement.name].value
+                : res[element.name]?.[subElement.name];
           });
         }
           if(Array.isArray(element.value)) {
-            element.value = res.result[element.name].map((arrayItem:any) => {
+            element.value = res[element.name].map((arrayItem:any) => {
               return arrayItem.value ? arrayItem.value : element;
             })
           }
         });
-      })
-    )
-    
+
   }
-  
+
   canDeactivate(): Promise<any> {
     if (!this.formLib?.myForm.pristine) {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
@@ -111,15 +121,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           exitButton: "SAVE"
         }
       });
-  
+
       return dialogRef.afterClosed().toPromise().then(result => {
         if (result === "DO_NOT_SAVE") {
           return true;
         } else if (result === "SAVE") {
-          this.subscription.unsubscribe();
-          this.subscription.add(
-            this.saveForm()
-          );
+          this.saveForm();
           return true;
         } else {
           return false;
@@ -129,24 +136,20 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       return Promise.resolve(true);
     }
   }
-  
+
 
   saveForm() {
     if(this.projectId) {
-      this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
-        this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
-          this.libProjectService.projectData = response.result;
-          this.libProjectService.upDateProjectTitle()
-          this.libProjectService.openSnackBar()
-        })
-      })
+      this.libProjectService.setProjectData(this.projectData)
+      this.projectData = {};
+      this.libProjectService.updateProjectDraft(this.projectId);
     }
   }
 
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (typeof data === "object") {
-      this.libProjectService.updateProjectData(data);
+      this.projectData = data;
     }
   }
 

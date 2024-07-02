@@ -48,7 +48,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   ngOnInit() {
     this.subscription.add(
-    this.libProjectService.currentProjectData.subscribe(data => {
+    this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.learningResources = data?.tasksData.subTaskLearningResources
     })
     )
@@ -56,7 +56,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-            this.libProjectService.projectData = res.result;
             this.projectData = res?.result
             this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
             this.addSubtaskData()
@@ -83,14 +82,14 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           exitButton: "SAVE"
         }
       });
-  
+
       return dialogRef.afterClosed().toPromise().then(result => {
         if (result === "DO_NOT_SAVE") {
           return true;
         } else if (result === "SAVE") {
           this.subscription.add(
                 this.submit()
-          );      
+          );
           return true;
         } else {
           return false;
@@ -100,7 +99,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       return Promise.resolve(true);
     }
   }
-  
+
   createSubTaskForm(taskLength:number,tasks?:any){
     for (let i = 0; i < taskLength; i++) {
       this.taskData.push({
@@ -169,13 +168,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   submit() {
     this.addSubtaskData();
-    this.libProjectService.updateProjectData({'tasks': this.projectData.tasks});
-    this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
-      this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
-        this.libProjectService.projectData = response.result;
-        this.libProjectService.openSnackBar()
-      })
-    })
+    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+    this.libProjectService.updateProjectDraft(this.projectId)
   }
 
   ngOnDestroy(){

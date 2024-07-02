@@ -38,7 +38,7 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
     this.subscription.add(
-      this.libProjectService.currentProjectData.subscribe(data => {
+      this.libProjectService.currentProjectMetaData.subscribe(data => {
         this.tasksData = data.tasksData.tasks;
       })
     )
@@ -48,11 +48,10 @@ export class TasksComponent implements OnInit,OnDestroy {
         console.log(this.route)
         if(params.projectId){
           if(params.mode === 'edit') {
-            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-              this.libProjectService.projectData = res.result;
+            this.libProjectService.currentProjectData.subscribe((res:any)=> {
               this.tasksForm.reset()
-              if(res.result.tasks) {
-                res.result.tasks.forEach((element:any) => {
+              if(res.tasks) {
+                res.tasks.forEach((element:any) => {
                   const task = this.fb.group({
                     description: [element.description ? element.description : '', Validators.required],
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
@@ -152,13 +151,8 @@ canDeactivate(): Promise<any> {
   }
 
   submit() {
-    this.libProjectService.updateProjectData({'tasks':this.tasks.value})
-    this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
-      this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
-        this.libProjectService.projectData = response.result;
-        this.libProjectService.openSnackBar()
-      })
-    })
+    this.libProjectService.setProjectData({'tasks':this.tasks.value})
+    this.libProjectService.updateProjectDraft(this.projectId);
   }
 
   ngOnDestroy(){
