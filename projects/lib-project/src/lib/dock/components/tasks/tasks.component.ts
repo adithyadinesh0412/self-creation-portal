@@ -52,7 +52,7 @@ export class TasksComponent implements OnInit,OnDestroy {
             this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
               this.libProjectService.projectData = res.result;
               this.tasksForm.reset()
-              if(res.result.tasks) {
+              if(res.result.tasks && res.result.tasks.length) {
                 res.result.tasks.forEach((element:any) => {
                   const task = this.fb.group({
                     description: [element.description ? element.description : '', Validators.required],
