@@ -92,10 +92,11 @@ body{
 }
 .btn {
   border: 1px solid $primary;
-  border-radius: 2px !important;
+  border-radius: 8px !important;
   padding: 0 15px !important;
-  margin: 0 5px 15px 0 !important;
+  margin: 5px 5px !important;
   box-sizing: border-box;
+  height: 30px;
 }
 .button-enable{
   color: $primary;

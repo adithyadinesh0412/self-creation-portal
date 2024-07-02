@@ -1,1 +1,10 @@
 @import "../../../../../../self-creation-portal/src/styles.scss";
+
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+    width: 630px;
+}
+
+::ng-deep .mdc-dialog .mdc-dialog__content {
+    color: $tertiary;
+    padding: 10px;
+}
