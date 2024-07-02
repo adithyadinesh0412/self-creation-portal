@@ -7,6 +7,6 @@
 </div>
 <div class="border-t"></div> 
 <div class="flex flex-row justify-end items-center">
-<button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="false">{{dialogueData.cancelButton |translate}}</button>
-<button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="true">{{dialogueData.exitButton |translate}}</button>
+<button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="dialogueData.cancelButton">{{dialogueData.cancelButton |translate}}</button>
+<button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="dialogueData.exitButton">{{dialogueData.exitButton |translate}}</button>
 </div>
