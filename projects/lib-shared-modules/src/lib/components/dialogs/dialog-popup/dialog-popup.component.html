@@ -1,12 +1,12 @@
-<div class="flex flex-row justify-between w-[30vw] items-center bg-primary h-10">
-    <mat-label mat-dialog-title class="text-white pt-0 py-4">{{dialogueData?.header |translate}}</mat-label>
-    <img class="cursor-pointer pr-2" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
+<div class="flex flex-row justify-between items-center bg-primary h-10">
+  <h2 class="text-white font-bold px-6">{{dialogueData?.header |translate}}</h2>
+  <img class="cursor-pointer pr-4" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
 </div>
-<div mat-dialog-content class="text-secondary p-4">
-    <h3>{{dialogueData?.content |translate}}</h3>
+<div mat-dialog-content>
+  <h3 class="h-20 text-sm font-bold px-4">{{dialogueData?.content |translate}}</h3>
 </div>
 <div class="border-t"></div> 
-<div mat-dialog-actions class="flex flex-row justify-end items-center space-x-4 py-0">
-  <button  class="btn text-primary w-24 min-w-24" [mat-dialog-close]="false">{{dialogueData.cancelButton |translate}}</button>
-  <button  class="btn bg-primary text-white w-24 min-w-24" [mat-dialog-close]="true" cdkFocusInitial>{{dialogueData.exitButton |translate}}</button>
+<div class="flex flex-row justify-end items-center">
+<button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="false">{{dialogueData.cancelButton |translate}}</button>
+<button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="true">{{dialogueData.exitButton |translate}}</button>
 </div>
