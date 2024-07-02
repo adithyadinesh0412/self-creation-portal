@@ -1,0 +1,29 @@
+<div class="flex flex-row justify-between items-center bg-primary h-10">
+    <h2 class="text-white font-bold px-6">{{dialogueData?.header |translate}}</h2>
+    <img class="cursor-pointer pr-4" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
+</div>
+<div mat-dialog-content>
+    <div>
+    <form class="text-box">
+            <textarea placeholder="Add a note for the reviewer" rows="4" matInput class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"></textarea>
+    </form>
+    <mat-radio-group aria-label="Select an option" class="">
+        <mat-radio-button value="1" class="-mx-1 mr-6">{{"SEND_TO_ALL_REVIEWERS" |translate}}</mat-radio-button>
+        <mat-radio-button value="2" class="-mx-1">{{"SELECT_REVIEWER" |translate}}</mat-radio-button>
+    </mat-radio-group>
+    <div class="flex ml-[3px]">
+        <mat-icon class="info-icon">info</mat-icon><p class="max-w-[35vw] ml-2 bg-transparent h-auto break-words">{{"SEND_FOR_REVIEW_DESCRIPTION" | translate}}</p>
+    </div>
+    </div>
+    <div class="max-h-40 mt-10 overflow-y-auto">
+        <mat-selection-list>
+            @for (item of dialogueData.reviewdata; track item) {
+              <mat-list-option>{{item.name}}</mat-list-option>
+            }
+          </mat-selection-list>
+    </div>
+</div>
+<div class="border-t"></div> 
+<div class="flex flex-row justify-end items-center">
+  <button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="true">{{dialogueData.sendForReview |translate}}</button>
+</div>
