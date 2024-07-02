@@ -9,6 +9,9 @@ import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogPopupComponent } from 'lib-shared-modules';
+
 
 @Component({
   selector: 'lib-project-details',
@@ -26,6 +29,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private libProjectService: LibProjectService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialog : MatDialog
   ) {}
   ngOnInit() {
     this.libProjectService.currentProjectData.subscribe((data) => {
@@ -36,31 +40,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             this.projectId = params.projectId;
             if (params.projectId) {
               if (params.mode === 'edit') {
-                this.libProjectService
-                  .readProject(params.projectId)
-                  .subscribe((res: any) => {
-                    this.libProjectService.projectData = res.result;
-                    this.dynamicFormData.forEach((element: any) => {
-                      element.value = res.result[element.name]?.value
-                      ? res.result[element.name].value
-                      : res.result[element.name];
-                    if (element.subfields) {
-                      element.subfields.forEach((subElement: any) => {
-                          subElement.value = res.result[element.name]?.[
-                            subElement.name
-                          ]?.value
-                            ? res.result[element.name]?.[subElement.name].value
-                            : res.result[element.name]?.[subElement.name];
-                      });
-                    }
-                      if(Array.isArray(element.value)) {
-                        element.value = res.result[element.name].map((arrayItem:any) => {
-                          return arrayItem.value ? arrayItem.value : element;
-                        })
-                      }
-                      console.log(element);
-                    });
-                  });
+                this.readProjectDeatilsAndMap()
               }
             } else {
               this.libProjectService
@@ -91,6 +71,66 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     );
   }
 
+  readProjectDeatilsAndMap(){
+    this.subscription.add(
+      this.libProjectService
+      .readProject(this.projectId)
+      .subscribe((res: any) => {
+        this.libProjectService.projectData = res.result;
+        this.dynamicFormData.forEach((element: any) => {
+          element.value = res.result[element.name]?.value
+          ? res.result[element.name].value
+          : res.result[element.name];
+        if (element.subfields) {
+          element.subfields.forEach((subElement: any) => {
+              subElement.value = res.result[element.name]?.[
+                subElement.name
+              ]?.value
+                ? res.result[element.name]?.[subElement.name].value
+                : res.result[element.name]?.[subElement.name];
+          });
+        }
+          if(Array.isArray(element.value)) {
+            element.value = res.result[element.name].map((arrayItem:any) => {
+              return arrayItem.value ? arrayItem.value : element;
+            })
+          }
+        });
+      })
+    )
+    
+  }
+  
+  canDeactivate(): Promise<any> {
+    if (!this.formLib?.myForm.pristine) {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: "SAVE_CHANGES",
+          content: "UNSAVED_CHNAGES_MESSAGE",
+          cancelButton: "DO_NOT_SAVE",
+          exitButton: "SAVE"
+        }
+      });
+  
+      return dialogRef.afterClosed().toPromise().then(result => {
+        if (result === "DO_NOT_SAVE") {
+          return true;
+        } else if (result === "SAVE") {
+          this.subscription.unsubscribe();
+          this.subscription.add(
+            this.saveForm()
+          );
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+  
+
   saveForm() {
     if(this.projectId) {
       this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
@@ -111,8 +151,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.saveForm();
-    this.libProjectService.saveProjectFunc(false);
     this.subscription.unsubscribe();
   }
 
