@@ -117,7 +117,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           return true;
         } else if (result === "SAVE") {
           this.subscription.unsubscribe();
-          debugger
           this.subscription.add(
             this.saveForm()
           );
