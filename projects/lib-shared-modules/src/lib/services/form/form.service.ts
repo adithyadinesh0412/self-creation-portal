@@ -99,11 +99,13 @@ export class FormService {
   }
 
   checkPermissions(data:any,permissions:any) {
-    return data.filter((item:any) =>
+    if(data && data[0]?.permission_modules) {
+      return data.filter((item:any) =>
       item.permission_modules.some((module: string) =>
         permissions.some((perm:any) => perm.module.includes(module))
       )
     );
+    }
   }
 
 

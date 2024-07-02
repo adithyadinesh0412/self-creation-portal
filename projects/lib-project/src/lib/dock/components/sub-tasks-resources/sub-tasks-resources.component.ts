@@ -55,11 +55,20 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
+        if(Object.keys(this.libProjectService.projectData).length) {
+          this.projectData = this.libProjectService.projectData;
+          this.createSubTaskForm(this.libProjectService.projectData?.tasks?.length > 0 ? this.libProjectService.projectData.tasks?.length : 1, this.libProjectService.projectData.tasks)
+          this.addSubtaskData()
+        }
+        else {
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+            this.libProjectService.setProjectData(res.result);
+            this.libProjectService.upDateProjectTitle();
             this.projectData = res?.result
             this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
             this.addSubtaskData()
           })
+        }
       })
     );
     this.subscription.add(
@@ -72,33 +81,33 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   }
 
-  canDeactivate(): Promise<any> {
-    if (!this.subtask?.dirty || !this.myForm?.dirty) {
-      const dialogRef = this.dialog.open(DialogPopupComponent, {
-        data: {
-          header: "SAVE_CHANGES",
-          content: "UNSAVED_CHNAGES_MESSAGE",
-          cancelButton: "DO_NOT_SAVE",
-          exitButton: "SAVE"
-        }
-      });
+  // canDeactivate(): Promise<any> {
+  //   if (!this.subtask?.dirty || !this.myForm?.dirty) {
+  //     const dialogRef = this.dialog.open(DialogPopupComponent, {
+  //       data: {
+  //         header: "SAVE_CHANGES",
+  //         content: "UNSAVED_CHNAGES_MESSAGE",
+  //         cancelButton: "DO_NOT_SAVE",
+  //         exitButton: "SAVE"
+  //       }
+  //     });
 
-      return dialogRef.afterClosed().toPromise().then(result => {
-        if (result === "DO_NOT_SAVE") {
-          return true;
-        } else if (result === "SAVE") {
-          this.subscription.add(
-                this.submit()
-          );
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      return Promise.resolve(true);
-    }
-  }
+  //     return dialogRef.afterClosed().toPromise().then(result => {
+  //       if (result === "DO_NOT_SAVE") {
+  //         return true;
+  //       } else if (result === "SAVE") {
+  //         this.subscription.add(
+  //               this.submit()
+  //         );
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     });
+  //   } else {
+  //     return Promise.resolve(true);
+  //   }
+  // }
 
   createSubTaskForm(taskLength:number,tasks?:any){
     for (let i = 0; i < taskLength; i++) {
@@ -173,6 +182,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
+    this.addSubtaskData();
+    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
     this.subscription.unsubscribe();
   }
 }

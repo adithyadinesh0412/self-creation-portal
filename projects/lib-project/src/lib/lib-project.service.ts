@@ -12,14 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
   currentProjectMetaData = this.dataSubject.asObservable();
-  projectDataSubject = new BehaviorSubject<any>(null);
-  currentProjectData = this.projectDataSubject.asObservable();
-  projectData = {
-    "tasks": [
-    ],
-    "certificate": {},
-    "title":""
-  }
+  projectData:any = {}
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
@@ -37,7 +30,6 @@ export class LibProjectService {
   setProjectData(data: any) {
     this.projectData = {...this.projectData,...data}
     console.log(this.projectData);
-    this.projectDataSubject.next(this.projectData);
   }
 
   saveProjectFunc(newAction: boolean) {
@@ -49,6 +41,8 @@ export class LibProjectService {
       console.log(res.result);
       this.setProjectData(res.result);
       this.openSnackBar()
+      this.saveProjectFunc(false);
+      this.upDateProjectTitle();
     })
   }
 
@@ -93,11 +87,20 @@ export class LibProjectService {
           ...currentProjectMetaData.sidenavData,
           headerData: {
             ...currentProjectMetaData.sidenavData.headerData,
-            title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
+            title: (this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME'
           }
         }
       };
       this.setData(updatedData);
   }
 
+  // startInterval() {
+  //   // Clear any existing subscription
+  //   this.clearInterval();
+
+  //   // Start new interval (1 minute = 60000 milliseconds)
+  //   this.intervalSubscription = interval(60000).subscribe(() => {
+
+  //   });
+  // }
 }
