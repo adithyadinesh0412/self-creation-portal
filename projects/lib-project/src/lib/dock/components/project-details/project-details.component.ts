@@ -107,6 +107,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
               return arrayItem.value ? arrayItem.value : element;
             })
           }
+          if(element.name === 'learning_resources'){
+            element.value  = res.result[element.name]
+          }
         });
 
   }

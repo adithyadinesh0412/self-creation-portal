@@ -13,14 +13,18 @@
                     <div>
                         <div class="w-full pt-3">
                             <div class="flex justify-between">
-                                <p class="text-tertiary">{{"TASK" | translate}} {{i+1}}</p>
+                                <p class="text-tertiary ">{{"TASK" | translate}} {{i+1}}
+                                    @if(i == 0){
+                                        <span class="asterisk">*</span>
+                                    } 
+                                </p>
                                 <div class="flex gap-3">
                                     <div>
-                                        <mat-icon (click)="this.moveTask(i, -1)">arrow_upward</mat-icon>
-                                        <mat-icon (click)="this.moveTask(i, 1)">arrow_downward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, -1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i<1}">arrow_upward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, 1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i>=tasks.controls.length-1}">arrow_downward</mat-icon>
                                     </div>
                                     <div>
-                                        <mat-icon color="warn" (click)="deleteTask(i)">delete_outline</mat-icon>
+                                        <mat-icon color="warn" class="cursor-pointer" (click)="tasks.controls.length > 1 ? deleteTask(i) : null" [ngClass]="{'disabled-with-pointer-event': tasks.controls.length <= 1}" >delete_outline</mat-icon>
                                     </div>
                                 </div>
                             </div>
@@ -42,8 +46,8 @@
                                 {{tasksData.allowEvidence.label | translate}}
                             </mat-slide-toggle>
 
-                            <div class="border px-2 w-40 text-center" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
-                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="File type">
+                            <div class="border px-2 w-40 text-center" [ngClass]="{'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
+                                <mat-select  [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="File type">
                                     @for(option of tasksData.fileType.options;track option){
                                     <mat-option [value]="option">
                                         {{ option }}
@@ -52,10 +56,9 @@
 
                                 </mat-select>
                             </div>
-
-                            <div class="flex gap-2" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
+                            <div class="flex gap-2" [ngClass]="{'disabled-with-pointer-event': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
-                                    <input matInput [formControlName]="tasksData.minEvidences.name" placeholder="1"
+                                    <input matInput [formControlName]="tasksData.minEvidences.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="1"
                                         type="number" min="1"  class="w-14 block border text-center" />
                             </div>
                         </div>
@@ -66,7 +69,7 @@
             </div>
 
             <div class="px-10 py-2">
-                <button (click)="addTask()" [disabled]="!tasksForm.valid" mat-raised-button class="flex items-center button">
+                <button (click)="addingTask()" [ngClass]="{'disable-fields': !tasksForm.valid}" mat-raised-button class="flex items-center button">
                     <mat-icon class="cursor-pointer" color="primary">add_circle</mat-icon>
                     <span color="primary">{{"ADD_TASK" | translate}}</span>
                 </button>

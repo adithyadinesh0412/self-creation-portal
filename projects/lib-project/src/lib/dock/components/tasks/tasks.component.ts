@@ -14,6 +14,7 @@ import { LibProjectService } from '../../../lib-project.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
   private subscription: Subscription = new Subscription();
-  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog) {
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
@@ -50,8 +51,8 @@ export class TasksComponent implements OnInit,OnDestroy {
           if(params.mode === 'edit') {
             this.libProjectService.currentProjectData.subscribe((res:any)=> {
               this.tasksForm.reset()
-              if(res.tasks) {
-                res.tasks.forEach((element:any) => {
+              if(res.result.tasks && res.result.tasks.length) {
+                res.result.tasks.forEach((element:any) => {
                   const task = this.fb.group({
                     description: [element.description ? element.description : '', Validators.required],
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
@@ -65,6 +66,10 @@ export class TasksComponent implements OnInit,OnDestroy {
                   });
                   this.tasks.push(task);
                 })
+              }
+              else{
+                this.addTask();
+                this.addTask();
               }
             })
           }
@@ -157,6 +162,18 @@ canDeactivate(): Promise<any> {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
+  }
+
+  addingTask() {
+    if (!this.tasksForm.valid) {
+      this._snackBar.open('Please fill the description of the already added tasks first', 'X', {
+        horizontalPosition: "center",
+        verticalPosition: "top",
+        duration:1000
+      });
+    } else {
+      this.addTask()
+    }
   }
 
 }
