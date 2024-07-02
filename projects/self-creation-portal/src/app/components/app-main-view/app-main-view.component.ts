@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { CommonService } from '../../services/common-service/common.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
 })
 export class AppMainViewComponent {
 
-  backButton : boolean = true;
+  backButton : boolean = false;
   headerData : any = {};
   titleObj = {
     "title" : "CREATION_PORTAL"
@@ -32,7 +33,8 @@ export class AppMainViewComponent {
   }
 
   ngOnInit(){
-    this.getnavData()
+    this.getnavData();
+    this.getPermissions();
   }
 
   onButtonClick(buttonTitle: string) {
@@ -41,6 +43,12 @@ export class AppMainViewComponent {
   getnavData(){
      this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
       this.sidenavData = form?.result?.data?.fields?.controls
+    })
+  }
+
+  getPermissions() {
+    this.formService.getPermissions().subscribe((res) => {
+      console.log(res);
     })
   }
 }

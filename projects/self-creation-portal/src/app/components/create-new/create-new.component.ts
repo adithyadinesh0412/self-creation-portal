@@ -7,9 +7,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { LibProjectService } from 'lib-project';
-import { SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { FormService, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
 
 
 @Component({
@@ -56,6 +55,9 @@ export class CreateNewComponent {
   getsolutionList() {
     this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
       this.resourceList = form?.result?.data?.fields?.controls
+      this.formService.getPermissions().subscribe((res:any) => {
+        this.resourceList = this.formService.checkPermissions(this.resourceList,res.result)
+      })
     })
   }
 

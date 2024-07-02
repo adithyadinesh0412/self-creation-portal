@@ -9,5 +9,8 @@
     },
     "LOGOUT_URLS": {
         "LOGOUT_API": "elevate-user/v1/account/logout"
+    },
+    "PERMISSIONS":{
+        "PERMISSION_LIST":"scp/v1/permissions/list"
     }
 }

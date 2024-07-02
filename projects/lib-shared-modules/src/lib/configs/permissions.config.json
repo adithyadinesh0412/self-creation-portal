@@ -1,0 +1,10 @@
+{
+    "CLOUD_SERVICES": "cloud-services",
+    "ENTITY_TYPES":"entity-types",
+    "ENTITIES":"entities",
+    "CERTIFICATES":"certificates",
+    "PROJECTS":"projects",
+    "REVIEWS":"reviews",
+    "OBSERVATIONS":"observations",
+    "RESOURCES":"resource"
+}
