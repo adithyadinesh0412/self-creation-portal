@@ -5,10 +5,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import {MatTooltipModule} from '@angular/material/tooltip';
 @Component({
   selector: 'lib-card',
   standalone: true,
-  imports: [MatCardModule,CommonModule,MatButtonModule,MatIconModule,TranslateModule],
+  imports: [MatCardModule,CommonModule,MatButtonModule,MatIconModule,TranslateModule,MatTooltipModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss'
 })

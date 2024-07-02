@@ -5,6 +5,7 @@ import { SubTasksResourcesComponent } from '../components/sub-tasks-resources/su
 import { ProjectDetailsComponent } from '../components/project-details/project-details.component';
 import { TasksComponent } from '../components/tasks/tasks.component';
 import { CertificatesComponent } from '../components/certificates/certificates.component';
+import { canDeactivateGuard } from 'lib-shared-modules';
 
 const routes: Routes = [
   {
@@ -18,15 +19,18 @@ const routes: Routes = [
     children:[
       {
         path:'project-details',
-        component:ProjectDetailsComponent
+        component:ProjectDetailsComponent,
+        canDeactivate:[canDeactivateGuard]
       },
       {
         path:'tasks',
-        component:TasksComponent
+        component:TasksComponent,
+        canDeactivate:[canDeactivateGuard]
       },
       {
           path:'sub-tasks',
-          component:SubTasksResourcesComponent
+          component:SubTasksResourcesComponent,
+          canDeactivate:[canDeactivateGuard]
       },
       {
         path:'certificate',
