@@ -10,9 +10,9 @@
                         </div>
                     </div>
                     <div class="flex-column">
-                        <p class="text capitalize overflow-ellipsis">{{list.title | translate}}</p>
+                        <p class="text capitalize overflow-ellipsis" [matTooltip]="list.title | translate">{{list.title | translate}}</p>
                         <div class="flex items-center text-sm text-[$borderGray]">
-                            By <span class="ml-1">{{ list.creator | translate }}</span>
+                            By <span class="ml-1 overflow-ellipsis">{{ list.creator | translate }}</span>
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@
                     @if(showActionButton){
                         @for (button of list.actionButton; track button){
                             <div>
-                                <button mat-flat-button [ngStyle]="{'background-color': button.background_color, 'color': 'white'}">{{button.label | translate}}</button>
+                                <button mat-flat-button [ngStyle]="{'background-color': button.background_color, 'color': 'white'}" (click)="cardClick(list)">{{button.label | translate}}</button>
                             </div>
                             }
                     }

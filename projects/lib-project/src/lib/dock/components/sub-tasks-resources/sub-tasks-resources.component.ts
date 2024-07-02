@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, SideNavbarComponent, DialogModelComponent } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LibProjectService } from '../../../lib-project.service'
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'lib-sub-tasks-resources',
@@ -29,7 +30,7 @@ import { LibProjectService } from '../../../lib-project.service'
   templateUrl: './sub-tasks-resources.component.html',
   styleUrl: './sub-tasks-resources.component.scss'
 })
-export class SubTasksResourcesComponent implements OnInit{
+export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   myForm: FormGroup = this.fb.group({});
   resources:any;
   taskData : any[] = [];
@@ -37,6 +38,7 @@ export class SubTasksResourcesComponent implements OnInit{
   learningResources:any
   projectId:string|number = '';
   projectData:any;
+  private subscription: Subscription = new Subscription();
 
   constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
     this.subtask = this.fb.group({
@@ -45,44 +47,68 @@ export class SubTasksResourcesComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.libProjectService.currentData.subscribe(data => {
-      this.learningResources = data.tasksData.subTaskLearningResources
-    });
-    this.route.queryParams.subscribe((params:any) => {
-      this.projectId = params.projectId;
-      if( this.projectId) {
-        this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-          this.projectData = res?.result
-          this.createSubTaskForm(res?.result?.tasks?.length)
-        })
-      }
-      if(!params.projectId){
-        this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-          this.projectId = res.result.id
-          this.router.navigate([], {
-            queryParams: {
-              projectId: this.projectId
-            },
-            queryParamsHandling: 'merge'
-          });
-        })
-      }
-    });
-    this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-      if(isProjectSave && this.router.url.includes('sub-tasks')) {
-        this.submit();
-      }
-    });
+    this.subscription.add(
+    this.libProjectService.currentProjectData.subscribe(data => {
+      this.learningResources = data?.tasksData.subTaskLearningResources
+    })
+    )
+    this.subscription.add(
+      this.route.queryParams.subscribe((params:any) => {
+        this.projectId = params.projectId;
+          this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+            this.libProjectService.projectData = res.result;
+            this.projectData = res?.result
+            this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
+            this.addSubtaskData()
+          })
+      })
+    );
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+        if(isProjectSave && this.router.url.includes('sub-tasks')) {
+          this.submit();
+        }
+      })
+    );
 
   }
-  createSubTaskForm(taskLength:number){
+
+  canDeactivate(): Promise<any> {
+    if (!this.subtask?.dirty || !this.myForm?.dirty) {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: "SAVE_CHANGES",
+          content: "UNSAVED_CHNAGES_MESSAGE",
+          cancelButton: "DO_NOT_SAVE",
+          exitButton: "SAVE"
+        }
+      });
+  
+      return dialogRef.afterClosed().toPromise().then(result => {
+        if (result === "DO_NOT_SAVE") {
+          return true;
+        } else if (result === "SAVE") {
+          this.subscription.add(
+                this.submit()
+          );      
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+  
+  createSubTaskForm(taskLength:number,tasks?:any){
     for (let i = 0; i < taskLength; i++) {
       this.taskData.push({
         buttons: [{"label":"ADD_OBSERVATION","disable":true},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
         subTasks: this.fb.group({
-          subtasks: this.fb.array([])  // Initialize a new FormArray for each task
+          subtasks: this.fb.array(tasks?.length > 0 && tasks[i].subtask?.length > 0 ? tasks[i]?.subtask : [])  // Initialize a new FormArray for each task
       }),
-        resources: []
+        resources: tasks?.length > 0 && tasks[i].resources?.length > 0 ? tasks[i]?.resources : []
       });
     }
   }
@@ -95,14 +121,15 @@ export class SubTasksResourcesComponent implements OnInit{
         case 'ADD_LEARNING_RESOURCE':
           const dialogRef = this.dialog.open(DialogModelComponent, {
             data: {
-              control: this.learningResources
+              control: this.learningResources,
+              ExistingResources:this.taskData[taskIndex].resources
             }
             });
 
             const componentInstance = dialogRef.componentInstance;
             componentInstance.saveLearningResource.subscribe((result: any) => {
               if (result) {
-                this.taskData[taskIndex].resources = result; // Save resources to the specific task
+                this.taskData[taskIndex].resources = this.taskData[taskIndex].resources.concat(result) // Save resources to the specific task
               }
             });
           break;
@@ -132,15 +159,26 @@ export class SubTasksResourcesComponent implements OnInit{
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
   addSubtaskData(){
-    for (let i = 0; i < this.projectData.tasks.length; i++) {
-      this.projectData.tasks[i]['learning_resource'] = this.taskData[i].resources
-      this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
-      
+    if(this.projectData?.tasks) {
+      for (let i = 0; i < this.projectData.tasks.length; i++) {
+        this.projectData.tasks[i]['resources'] = this.taskData[i].resources
+        this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+      }
     }
-    console.log(this.projectData.tasks)
   }
+
   submit() {
-    this.addSubtaskData()
-    this.libProjectService.createOrUpdateProject({'tasks': this.projectData.tasks},this.projectId).subscribe((res) => console.log(res))
+    this.addSubtaskData();
+    this.libProjectService.updateProjectData({'tasks': this.projectData.tasks});
+    this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
+      this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
+        this.libProjectService.projectData = response.result;
+        this.libProjectService.openSnackBar()
+      })
+    })
+  }
+
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
 }

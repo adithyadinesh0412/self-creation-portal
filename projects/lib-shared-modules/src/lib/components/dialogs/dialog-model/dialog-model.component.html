@@ -13,7 +13,7 @@
             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
               @if(control.label){
                 <mat-label>{{ control?.label }}</mat-label>
-              } 
+              }
               <input
                 matInput
                 [placeholder]="control?.placeHolder"
@@ -45,7 +45,7 @@
       </div>
     }
     <div  class="button-container">
-        <button (click)="onClickAddResource()" [disabled]="myGroup.invalid" mat-raised-button>
+        <button (click)="onClickAddResource()" [disabled]="myGroup.invalid || this.resources.length > 3" mat-raised-button>
           <mat-icon class="cursor-pointer">add_circle</mat-icon>
           <p> {{dialogData.control?.addButton}}</p>
         </button>

@@ -3,6 +3,7 @@ import { HttpProviderService } from 'lib-shared-modules';
 import { BehaviorSubject, map } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable({
@@ -10,18 +11,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
-  currentData = this.dataSubject.asObservable();
+  currentProjectData = this.dataSubject.asObservable();
   projectData = {
     "tasks": [
-      {}
     ],
-    "certificate": {}
+    "certificate": {},
+    "title":""
   }
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
 
-  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router) {
+  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
   }
 
   setData(data: any) {
@@ -30,6 +31,14 @@ export class LibProjectService {
 
   saveProjectFunc(newAction: boolean) {
     this.saveProject.next(newAction);
+  }
+
+  updateProjectData(projectData:any) {
+    this.projectData = {...this.projectData,...projectData}
+  }
+
+  updateProjectDraft(projectId:string|number) {
+    return this.createOrUpdateProject(this.projectData,projectId)
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
@@ -55,6 +64,29 @@ export class LibProjectService {
         return result;
       })
     )
+  }
+
+  openSnackBar() {
+    this._snackBar.open('Your resource has been saved as draft', 'X', {
+      horizontalPosition: "center",
+      verticalPosition: "top",
+      duration:1000
+    });
+  }
+
+  upDateProjectTitle(){
+      const currentProjectData = this.dataSubject.getValue();
+      const updatedData = {
+        ...currentProjectData,
+        sidenavData: {
+          ...currentProjectData.sidenavData,
+          headerData: {
+            ...currentProjectData.sidenavData.headerData,
+            title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
+          }
+        }
+      };
+      this.setData(updatedData);
   }
 
 }

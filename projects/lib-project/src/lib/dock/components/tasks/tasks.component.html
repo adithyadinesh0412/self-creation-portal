@@ -11,7 +11,7 @@
                 @for(task of tasks.controls; track task; let i = $index){
                 <div [formGroupName]="i" class="px-10">
                     <div>
-                        <div class="w-full">
+                        <div class="w-full pt-3">
                             <div class="flex justify-between">
                                 <p class="text-tertiary">{{"TASK" | translate}} {{i+1}}</p>
                                 <div class="flex gap-3">
@@ -41,9 +41,9 @@
                                 [formControlName]="tasksData.allowEvidence.name">
                                 {{tasksData.allowEvidence.label | translate}}
                             </mat-slide-toggle>
-                            
+
                             <div class="border px-2 w-40 text-center" [ngClass]="{'disable-fileds': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
-                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="All file Types's">
+                                <mat-select  [formControlName]="tasksData.fileType.name" placeholder="File type">
                                     @for(option of tasksData.fileType.options;track option){
                                     <mat-option [value]="option">
                                         {{ option }}

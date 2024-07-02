@@ -12,11 +12,11 @@
   </div>
 </mat-toolbar>
 <mat-toolbar class="sub-header border-b">
-    <div class="title">{{ headerData?.title || 'WORKSPACE'  | translate}}</div> 
-    @if (headerData.buttons) {
+  <div class="title" [matTooltip]="headerData?.title | translate" >{{ headerData?.title || 'WORKSPACE'  | translate}}</div>
+    @if (headerData?.buttons) {
       <div class="buttons-container">
-        @for (button of headerData.buttons; track button) {
-            <button  [disabled]="button.disable" [ngClass]="{'button-disable': button.disable, 'button-enable': !button.disable}" mat-raised-button (click)="onButtonClick(button)">{{ button.title | translate }}</button>
+        @for (button of headerData?.buttons; track button) {
+            <button  [disabled]="button.disable" [ngClass]="{'button-disable': button.disable, 'button-enable': !button.disable}" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
         }
       </div>
     }

@@ -5,11 +5,12 @@ import { LibSharedModulesService } from '../../lib-shared-modules.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'lib-header',
   standalone: true,
-  imports: [MatToolbarModule, MatIconModule, TranslateModule,CommonModule],
+  imports: [MatToolbarModule, MatIconModule, TranslateModule,CommonModule,MatTooltipModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
