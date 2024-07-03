@@ -11,34 +11,39 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LibProjectService {
   dataSubject = new BehaviorSubject<any>(null);
-  currentProjectData = this.dataSubject.asObservable();
-  projectData = {
-    "tasks": [
-    ],
-    "certificate": {},
-    "title":""
-  }
+  currentProjectMetaData = this.dataSubject.asObservable();
+  projectData:any = {}
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
+    this.route.queryParams.subscribe((params: any) => {
+      console.log("project service file")
+    })
   }
 
   setData(data: any) {
     this.dataSubject.next(data);
   }
 
+  setProjectData(data: any) {
+    this.projectData = {...this.projectData,...data}
+    console.log(this.projectData);
+  }
+
   saveProjectFunc(newAction: boolean) {
     this.saveProject.next(newAction);
   }
 
-  updateProjectData(projectData:any) {
-    this.projectData = {...this.projectData,...projectData}
-  }
-
   updateProjectDraft(projectId:string|number) {
-    return this.createOrUpdateProject(this.projectData,projectId)
+    this.createOrUpdateProject(this.projectData,projectId).subscribe((res:any) => {
+      console.log(res.result);
+      this.setProjectData(res.result);
+      this.openSnackBar()
+      this.saveProjectFunc(false);
+      this.upDateProjectTitle();
+    })
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
@@ -75,18 +80,27 @@ export class LibProjectService {
   }
 
   upDateProjectTitle(){
-      const currentProjectData = this.dataSubject.getValue();
+      const currentProjectMetaData = this.dataSubject.getValue();
       const updatedData = {
-        ...currentProjectData,
+        ...currentProjectMetaData,
         sidenavData: {
-          ...currentProjectData.sidenavData,
+          ...currentProjectMetaData.sidenavData,
           headerData: {
-            ...currentProjectData.sidenavData.headerData,
-            title: (this.projectData.title)? this.projectData.title: 'PROJECT_NAME'
+            ...currentProjectMetaData.sidenavData.headerData,
+            title: (this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME'
           }
         }
       };
       this.setData(updatedData);
   }
 
+  // startInterval() {
+  //   // Clear any existing subscription
+  //   this.clearInterval();
+
+  //   // Start new interval (1 minute = 60000 milliseconds)
+  //   this.intervalSubscription = interval(60000).subscribe(() => {
+
+  //   });
+  // }
 }

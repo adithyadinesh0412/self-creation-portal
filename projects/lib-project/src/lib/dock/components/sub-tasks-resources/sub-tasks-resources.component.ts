@@ -48,19 +48,27 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   ngOnInit() {
     this.subscription.add(
-    this.libProjectService.currentProjectData.subscribe(data => {
+    this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.learningResources = data?.tasksData.subTaskLearningResources
     })
     )
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
+        if(Object.keys(this.libProjectService.projectData).length) {
+          this.projectData = this.libProjectService.projectData;
+          this.createSubTaskForm(this.libProjectService.projectData?.tasks?.length > 0 ? this.libProjectService.projectData.tasks?.length : 1, this.libProjectService.projectData.tasks)
+          this.addSubtaskData()
+        }
+        else {
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-            this.libProjectService.projectData = res.result;
+            this.libProjectService.setProjectData(res.result);
+            this.libProjectService.upDateProjectTitle();
             this.projectData = res?.result
             this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
             this.addSubtaskData()
           })
+        }
       })
     );
     this.subscription.add(
@@ -73,34 +81,34 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   }
 
-  canDeactivate(): Promise<any> {
-    if (!this.subtask?.dirty || !this.myForm?.dirty) {
-      const dialogRef = this.dialog.open(DialogPopupComponent, {
-        data: {
-          header: "SAVE_CHANGES",
-          content: "UNSAVED_CHNAGES_MESSAGE",
-          cancelButton: "DO_NOT_SAVE",
-          exitButton: "SAVE"
-        }
-      });
-  
-      return dialogRef.afterClosed().toPromise().then(result => {
-        if (result === "DO_NOT_SAVE") {
-          return true;
-        } else if (result === "SAVE") {
-          this.subscription.add(
-                this.submit()
-          );      
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      return Promise.resolve(true);
-    }
-  }
-  
+  // canDeactivate(): Promise<any> {
+  //   if (!this.subtask?.dirty || !this.myForm?.dirty) {
+  //     const dialogRef = this.dialog.open(DialogPopupComponent, {
+  //       data: {
+  //         header: "SAVE_CHANGES",
+  //         content: "UNSAVED_CHNAGES_MESSAGE",
+  //         cancelButton: "DO_NOT_SAVE",
+  //         exitButton: "SAVE"
+  //       }
+  //     });
+
+  //     return dialogRef.afterClosed().toPromise().then(result => {
+  //       if (result === "DO_NOT_SAVE") {
+  //         return true;
+  //       } else if (result === "SAVE") {
+  //         this.subscription.add(
+  //               this.submit()
+  //         );
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     });
+  //   } else {
+  //     return Promise.resolve(true);
+  //   }
+  // }
+
   createSubTaskForm(taskLength:number,tasks?:any){
     for (let i = 0; i < taskLength; i++) {
       this.taskData.push({
@@ -169,16 +177,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   submit() {
     this.addSubtaskData();
-    this.libProjectService.updateProjectData({'tasks': this.projectData.tasks});
-    this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
-      this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
-        this.libProjectService.projectData = response.result;
-        this.libProjectService.openSnackBar()
-      })
-    })
+    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+    this.libProjectService.updateProjectDraft(this.projectId)
   }
 
   ngOnDestroy(){
+    this.addSubtaskData();
+    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
     this.subscription.unsubscribe();
   }
 }
