@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
-import {MatListModule, MatSelectionList} from '@angular/material/list';
+import {MatListModule, MatListOption, MatSelectionList} from '@angular/material/list';
 import {FormsModule} from '@angular/forms';
 
 @Component({
@@ -31,4 +31,12 @@ export class ReviewModelComponent {
       }
     }
   }
+  
+  getSelectedValues(sendForReview:any,selectedOptions: MatListOption[]) {
+    const selectedValues = selectedOptions.map(option => option.value);
+    return {
+            sendForReview: sendForReview,
+            selectedValues : selectedValues ,
+    }
+}
 }

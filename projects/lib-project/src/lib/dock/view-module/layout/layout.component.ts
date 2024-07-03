@@ -18,6 +18,7 @@ export class LayoutComponent {
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog) {
   }
   ngOnInit(){
+    this. setConfig()
     this.getProjectdata()
     this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.sidenavData= data?.sidenavData.sidenav
@@ -28,6 +29,12 @@ export class LayoutComponent {
       // });
       this.headerData = data?.sidenavData.headerData
     });
+  }
+  setConfig(){
+    this.libProjectService.setConfig().subscribe((res:any) => {
+      let project = res.result.find((res:any) => res.resource_type === "projects");
+      this.libProjectService.maxTaskCount = project.max_task_count
+    })
   }
 
   getProjectdata() {
@@ -75,9 +82,9 @@ export class LayoutComponent {
             }
           });
           dialogRef.afterClosed().subscribe(result => {
-            console.log(result)
-            if(result == "SEND_FOR_REVIEW"){
-
+            if(result.sendForReview == "SEND_FOR_REVIEW"){
+             
+              const reviewer_ids = result.selectedValues.map((item:any) => item.id);
             }
             return true;
           });

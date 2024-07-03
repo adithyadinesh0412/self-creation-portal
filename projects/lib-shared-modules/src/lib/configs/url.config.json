@@ -13,5 +13,8 @@
     },
     "PERMISSIONS":{
         "PERMISSION_LIST":"scp/v1/permissions/list"
+    },
+    "INSTANCES":{
+        "CONFIG_LIST":"scp/v1/config/list"
     }
 }

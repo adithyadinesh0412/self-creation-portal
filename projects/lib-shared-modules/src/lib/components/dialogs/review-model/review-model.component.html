@@ -18,12 +18,12 @@
     <div class="max-h-40 mt-10 overflow-y-auto">
         <mat-selection-list color="primary" #reviewer [multiple]="true">
             @for (item of dialogueData.reviewdata; track item) {
-              <mat-list-option>{{item.name}}</mat-list-option>
+              <mat-list-option  [value]="item">{{item.name}}</mat-list-option>
             }
           </mat-selection-list>
     </div>
 </div>
 <div class="border-t"></div> 
 <div class="flex flex-row justify-end items-center">
-  <button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="dialogueData.sendForReview">{{dialogueData.sendForReview |translate}}</button>
+  <button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="getSelectedValues(dialogueData.sendForReview, reviewer.selectedOptions.selected)" >{{dialogueData.sendForReview |translate}}</button>
 </div>
