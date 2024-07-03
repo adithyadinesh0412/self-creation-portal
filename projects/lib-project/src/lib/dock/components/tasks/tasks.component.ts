@@ -15,12 +15,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @Component({
   selector: 'lib-tasks',
   standalone: true,
-  imports: [CommonModule,HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule,MatInputModule,MatSlideToggleModule,MatSelectModule,MatButtonModule,TranslateModule],
+  imports: [CommonModule,HeaderComponent,SideNavbarComponent,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule,MatInputModule,MatSlideToggleModule,MatSelectModule,MatButtonModule,TranslateModule,MatTooltipModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
@@ -30,6 +31,8 @@ export class TasksComponent implements OnInit,OnDestroy {
   projectId:string|number = '';
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
+  SHIFT_TASK_UP ='SHIFT_TASK_UP';
+  SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
   private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar) {
     this.tasksForm = this.fb.group({
@@ -161,7 +164,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     const taskGroup = this.fb.group({
       description: ['', Validators.required],
       is_mandatory: [false],
-      allow_evidence: [false],
+      allow_evidence: [true],
       evidence_details: this.fb.group({
         file_types: [''],
         min_no_of_evidences: [1, Validators.min(1)]
@@ -171,7 +174,26 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   deleteTask(index: number) {
-    this.tasks.removeAt(index);
+    let content = this.tasks.value[index].subtask || this.tasks.value[index].resource ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data: {
+        header: "DELETE_TASK",
+        content:content ,
+        cancelButton: "NO",
+        exitButton: "YES"
+      }
+    });
+
+    return dialogRef.afterClosed().toPromise().then(result => {
+      if (result === "NO") {
+        return true;
+      } else if (result === "YES") {
+        this.tasks.removeAt(index);
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   moveTask(index: number, direction: number) {
@@ -194,7 +216,7 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   addingTask() {
     if (!this.tasksForm.valid) {
-      this._snackBar.open('Please fill the description of the already added tasks first', 'X', {
+      this._snackBar.open('Fill the description of the already added tasks first', 'X', {
         horizontalPosition: "center",
         verticalPosition: "top",
         duration:1000

@@ -77,6 +77,11 @@
     "NO_DRAFT": "No resource/program in draft at the moment.",
     "NO_BROWSE_EXISTING": "There are no resource/program on the platform.",
     "NO_SUBMITTED_FOR_REVIEW": "No resource/program submitted for review at the moment.",
+    "DELETE_TASK_MESSAGE":"Are you sure you want to delete this task?",
+    "DELETE_TASK_WITH_SUBTASK_MESSAGE":"This task has resources, subtasks or certificate criteria linked to it. Are you sure you want to delete this task?",
+    "DELETE_TASK":"Delete task?",
+    "SHIFT_TASK_UP":"Shift task up",
+    "SHIFT_TASK_DOWN":"Shift task down",
     "SEND_FOR_REVIEW_DESCRIPTION": "You can select multiple reviewers. However, only the first one to start reviewing will be able to provide feedback.",
     "SEND_TO_ALL_REVIEWERS": "Send to all reviewers",
     "SELECT_REVIEWER": "Select reviewer"

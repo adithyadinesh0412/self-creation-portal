@@ -20,8 +20,8 @@
                                 </p>
                                 <div class="flex gap-3">
                                     <div>
-                                        <mat-icon (click)="this.moveTask(i, -1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i<1}">arrow_upward</mat-icon>
-                                        <mat-icon (click)="this.moveTask(i, 1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i>=tasks.controls.length-1}">arrow_downward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, -1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i<1}" [matTooltip]="SHIFT_TASK_UP | translate">arrow_upward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, 1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i>=tasks.controls.length-1}" [matTooltip]="SHIFT_TASK_DOWN | translate">arrow_downward</mat-icon>
                                     </div>
                                     <div>
                                         <mat-icon color="warn" class="cursor-pointer" (click)="tasks.controls.length > 1 ? deleteTask(i) : null" [ngClass]="{'disabled-with-pointer-event': tasks.controls.length <= 1}" >delete_outline</mat-icon>
@@ -32,7 +32,7 @@
                         <div>
                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
                                 <textarea matInput [formControlName]="tasksData.description.name"
-                                    [placeholder]="tasksData.description.placeholder"></textarea>
+                                    [placeholder]="tasksData.description.placeholder" [maxlength]="tasksData.description.validators.maxlength"></textarea>
                             </mat-form-field>
                         </div>
                         <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary">
