@@ -171,28 +171,26 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   deleteTask(index: number) {
+    let content = this.tasks.value[index].subtask || this.tasks.value[index].resource ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       data: {
-        header: "SAVE_CHANGES",
-        content: "Are you sure you want to delete this task?",
+        header: "DELETE_TASK",
+        content:content ,
         cancelButton: "NO",
         exitButton: "YES"
       }
     });
 
     return dialogRef.afterClosed().toPromise().then(result => {
-      if (result === "DO_NOT_SAVE") {
+      if (result === "NO") {
         return true;
-      } else if (result === "SAVE") {
-        this.subscription.add(
-              this.submit()
-        );
+      } else if (result === "YES") {
+        this.tasks.removeAt(index);
         return true;
       } else {
         return false;
       }
     });
-    this.tasks.removeAt(index);
   }
 
   moveTask(index: number, direction: number) {
