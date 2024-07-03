@@ -1,10 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
+import {MatListModule, MatSelectionList} from '@angular/material/list';
 import {FormsModule} from '@angular/forms';
 
 @Component({
@@ -15,8 +15,20 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './review-model.component.scss'
 })
 export class ReviewModelComponent {
+  @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
+  
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
+  }
+  
+  onSelectReviewer(event: any) {
+    if(this.selectionList){
+      if (event.value === '1') {
+        this.selectionList.selectAll();
+      } else if (event.value === '2') {
+        this.selectionList.deselectAll();
+      }
+    }
   }
 }

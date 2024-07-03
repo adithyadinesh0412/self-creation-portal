@@ -1,7 +1,8 @@
 {
     "PROJECT_URLS": {
         "CREATE_OR_UPDATE_PROJECT": "scp/v1/projects/update",
-        "READ_PROJECT":"scp/v1/projects/details/"
+        "READ_PROJECT":"scp/v1/projects/details/",
+        "GET_REVIEWER_LIST":"scp/v1/projects/reviewerList"
     },
     "FORM_URLS": {
         "READ_FORM": "scp/v1/form/read",

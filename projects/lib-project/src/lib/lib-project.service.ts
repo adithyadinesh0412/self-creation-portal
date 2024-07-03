@@ -94,6 +94,18 @@ export class LibProjectService {
       this.setData(updatedData);
   }
 
+  getReviewerData(){
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        console.log(result)
+        return result;
+      })
+    )
+  }
+
   // startInterval() {
   //   // Clear any existing subscription
   //   this.clearInterval();
