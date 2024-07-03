@@ -145,6 +145,27 @@ canDeactivate(): Promise<any> {
   }
 
   deleteTask(index: number) {
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data: {
+        header: "SAVE_CHANGES",
+        content: "Are you sure you want to delete this task?",
+        cancelButton: "NO",
+        exitButton: "YES"
+      }
+    });
+
+    return dialogRef.afterClosed().toPromise().then(result => {
+      if (result === "DO_NOT_SAVE") {
+        return true;
+      } else if (result === "SAVE") {
+        this.subscription.add(
+              this.submit()
+        );
+        return true;
+      } else {
+        return false;
+      }
+    });
     this.tasks.removeAt(index);
   }
 
