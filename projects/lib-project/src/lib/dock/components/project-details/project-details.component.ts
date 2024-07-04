@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -32,36 +32,52 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private dialog : MatDialog
   ) {}
   ngOnInit() {
-    this.libProjectService.currentProjectData.subscribe((data) => {
-      if (data) {
-        this.dynamicFormData = data.projectDetails;
-        this.subscription.add(
-          this.route.queryParams.subscribe((params: any) => {
-            this.projectId = params.projectId;
-            if (params.projectId) {
-              if (params.mode === 'edit') {
-                this.readProjectDeatilsAndMap()
+    this.subscription.add(
+      this.libProjectService.currentProjectMetaData.subscribe((data) => {
+        if (data) {
+          this.dynamicFormData = data.projectDetails;
+          this.subscription.add(
+            this.route.queryParams.subscribe((params: any) => {
+              this.projectId = params.projectId;
+              if (params.projectId) {
+                if (params.mode === 'edit') {
+                  if(Object.keys(this.libProjectService.projectData).length) {
+                    this.readProjectDeatilsAndMap(this.libProjectService.projectData)
+                  }
+                  else {
+
+                      this.subscription.add(
+                        this.libProjectService
+                        .readProject(this.projectId)
+                        .subscribe((res: any) => {
+                          this.libProjectService.setProjectData(res.result);
+                          this.readProjectDeatilsAndMap(this.libProjectService.projectData);
+                          this.libProjectService.upDateProjectTitle();
+                        })
+                        )
+                    }
+                  }
+              } else {
+                this.libProjectService
+                  .createOrUpdateProject()
+                  .subscribe((res: any) => {
+                    (this.projectId = res.result.id),
+                      this.router.navigate([], {
+                        relativeTo: this.route,
+                        queryParams: {
+                          projectId: this.projectId,
+                          mode:'edit'
+                        },
+                        queryParamsHandling: 'merge',
+                        replaceUrl: true
+                      });
+                  });
               }
-            } else {
-              this.libProjectService
-                .createOrUpdateProject()
-                .subscribe((res: any) => {
-                  (this.projectId = res.result.id),
-                    this.router.navigate([], {
-                      relativeTo: this.route,
-                      queryParams: {
-                        projectId: this.projectId,
-                        mode:'edit'
-                      },
-                      queryParamsHandling: 'merge',
-                      replaceUrl: true
-                    });
-                });
-            }
-          })
-        )
-      }
-    });
+            })
+          )
+        }
+      })
+    )
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
         if (isProjectSave && this.router.url.includes('project-details')) {
@@ -71,82 +87,79 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     );
   }
 
-  readProjectDeatilsAndMap(){
-    this.subscription.add(
-      this.libProjectService
-      .readProject(this.projectId)
-      .subscribe((res: any) => {
-        this.libProjectService.projectData = res.result;
+  readProjectDeatilsAndMap(res:any){
         this.dynamicFormData.forEach((element: any) => {
-          element.value = res.result[element.name]?.value
-          ? res.result[element.name].value
-          : res.result[element.name];
-        if (element.subfields) {
-          element.subfields.forEach((subElement: any) => {
-              subElement.value = res.result[element.name]?.[
-                subElement.name
-              ]?.value
-                ? res.result[element.name]?.[subElement.name].value
-                : res.result[element.name]?.[subElement.name];
-          });
-        }
-          if(Array.isArray(element.value)) {
-            element.value = res.result[element.name].map((arrayItem:any) => {
-              return arrayItem.value ? arrayItem.value : element;
+          if(Array.isArray(res[element.name])) {
+            console.log(Array.isArray(element.value))
+            element.value = res[element.name].map((arrayItem:any) => {
+              return arrayItem.value ? arrayItem.value : arrayItem;
             })
           }
+          else {
+            element.value = res[element.name]?.value
+            ? res[element.name].value
+            : res[element.name];
+          }
+        if (element.subfields) {
+          element.subfields.forEach((subElement: any) => {
+              subElement.value = res[element.name]?.[
+                subElement.name
+              ]?.value
+                ? res[element.name]?.[subElement.name].value
+                : res[element.name]?.[subElement.name];
+          });
+        }
+        if(element.type == "addResource") {
+          element.value =  res[element.name]
+          return
+        }
         });
-      })
-    )
-    
+        console.log(this.dynamicFormData);
   }
-  
-  canDeactivate(): Promise<any> {
-    if (!this.formLib?.myForm.pristine) {
-      const dialogRef = this.dialog.open(DialogPopupComponent, {
-        data: {
-          header: "SAVE_CHANGES",
-          content: "UNSAVED_CHNAGES_MESSAGE",
-          cancelButton: "DO_NOT_SAVE",
-          exitButton: "SAVE"
-        }
-      });
-  
-      return dialogRef.afterClosed().toPromise().then(result => {
-        if (result === "DO_NOT_SAVE") {
-          return true;
-        } else if (result === "SAVE") {
-          this.subscription.unsubscribe();
-          this.subscription.add(
-            this.saveForm()
-          );
-          return true;
-        } else {
-          return false;
-        }
-      });
-    } else {
-      return Promise.resolve(true);
-    }
-  }
-  
+
+  // canDeactivate(): Promise<any> {
+  //   this.router.events.subscribe(event => {
+  //     if (event instanceof NavigationStart) {
+  //       console.log('Next URL:', event.url);
+  //     }
+  //   });
+  //   if (!this.formLib?.myForm.pristine) {
+  //     const dialogRef = this.dialog.open(DialogPopupComponent, {
+  //       data: {
+  //         header: "SAVE_CHANGES",
+  //         content: "UNSAVED_CHNAGES_MESSAGE",
+  //         cancelButton: "DO_NOT_SAVE",
+  //         exitButton: "SAVE"
+  //       }
+  //     });
+
+  //     return dialogRef.afterClosed().toPromise().then(result => {
+  //       if (result === "DO_NOT_SAVE") {
+  //         return true;
+  //       } else if (result === "SAVE") {
+  //         this.saveForm();
+  //         return true;
+  //       } else {
+  //         return false;
+  //       }
+  //     });
+  //   } else {
+  //     return Promise.resolve(true);
+  //   }
+  // }
+
 
   saveForm() {
     if(this.projectId) {
-      this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) => {
-        this.libProjectService.readProject(this.projectId).subscribe((response:any) => {
-          this.libProjectService.projectData = response.result;
-          this.libProjectService.upDateProjectTitle()
-          this.libProjectService.openSnackBar()
-        })
-      })
+      this.libProjectService.updateProjectDraft(this.projectId);
     }
   }
 
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (typeof data === "object") {
-      this.libProjectService.updateProjectData(data);
+      console.log(data);
+      this.libProjectService.setProjectData(data);
     }
   }
 

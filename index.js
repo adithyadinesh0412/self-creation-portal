@@ -7,7 +7,7 @@ app.use(express.static(path.join(__dirname+"/dist/self-creation-portal", 'browse
 
 app.get('*', (req, res) => {
     // res.sendFile(path.join(__dirname, 'www', 'index.html'));
-    res.sendFile(path.join(__dirname+"/dist/self-creation-portal",'index.html'));
+    res.sendFile(path.join(__dirname+"/dist/self-creation-portal/browser/",'index.html'));
   });
 
 app.listen(port, () => {

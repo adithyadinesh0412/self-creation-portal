@@ -1,6 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpProviderService } from 'lib-shared-modules';
+import { ConfigService } from '../configs/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,8 +49,7 @@ export class CommonService {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
-      queryParamsHandling: '' 
+      queryParamsHandling: ''
     });
   }
-  
 }
