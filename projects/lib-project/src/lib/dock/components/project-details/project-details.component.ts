@@ -117,36 +117,38 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         console.log(this.dynamicFormData);
   }
 
-  // canDeactivate(): Promise<any> {
-  //   this.router.events.subscribe(event => {
-  //     if (event instanceof NavigationStart) {
-  //       console.log('Next URL:', event.url);
-  //     }
-  //   });
-  //   if (!this.formLib?.myForm.pristine) {
-  //     const dialogRef = this.dialog.open(DialogPopupComponent, {
-  //       data: {
-  //         header: "SAVE_CHANGES",
-  //         content: "UNSAVED_CHNAGES_MESSAGE",
-  //         cancelButton: "DO_NOT_SAVE",
-  //         exitButton: "SAVE"
-  //       }
-  //     });
+  canDeactivate(): Promise<any> {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        console.log('Next URL:', event.url);
+      }
+    });
+    if (!this.formLib?.myForm.pristine) {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: "SAVE_CHANGES",
+          content: "UNSAVED_CHNAGES_MESSAGE",
+          cancelButton: "DO_NOT_SAVE",
+          exitButton: "SAVE"
+        }
+      });
 
-  //     return dialogRef.afterClosed().toPromise().then(result => {
-  //       if (result === "DO_NOT_SAVE") {
-  //         return true;
-  //       } else if (result === "SAVE") {
-  //         this.saveForm();
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  //     });
-  //   } else {
-  //     return Promise.resolve(true);
-  //   }
-  // }
+      return dialogRef.afterClosed().toPromise().then(result => {
+        if (result === "DO_NOT_SAVE") {
+          this.libProjectService.projectData = {};
+          return true;
+        } else if (result === "SAVE") {
+          this.saveForm();
+          this.libProjectService.projectData = {}
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
 
 
   saveForm() {
