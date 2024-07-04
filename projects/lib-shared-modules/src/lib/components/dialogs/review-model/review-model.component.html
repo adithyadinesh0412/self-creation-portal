@@ -8,7 +8,7 @@
             <textarea placeholder="Add a note for the reviewer" rows="3" matInput class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"></textarea>
     </form>
     <mat-radio-group color="primary" aria-label="Select an option" class="" (change)="onSelectReviewer($event)">
-      <mat-radio-button value="1" class="-mx-1 mr-6">{{"SEND_TO_ALL_REVIEWERS" |translate}}</mat-radio-button>
+      <mat-radio-button value="1" checked="true" class="-mx-1 mr-6">{{"SEND_TO_ALL_REVIEWERS" |translate}}</mat-radio-button>
       <mat-radio-button value="2" class="-mx-1">{{"SELECT_REVIEWER" |translate}}</mat-radio-button>
   </mat-radio-group>
     <div class="flex ml-[3px]">
@@ -25,5 +25,5 @@
 </div>
 <div class="border-t"></div> 
 <div class="flex flex-row justify-end items-center">
-  <button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="getSelectedValues(dialogueData.sendForReview, reviewer.selectedOptions.selected)" >{{dialogueData.sendForReview |translate}}</button>
+  <button [disabled]="reviewer.selectedOptions.selected.length === 0"  [ngClass]="{'disable-button': reviewer.selectedOptions.selected.length === 0}" class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="getSelectedValues(dialogueData.sendForReview, reviewer.selectedOptions.selected)" >{{dialogueData.sendForReview |translate}}</button>
 </div>

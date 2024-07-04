@@ -82,7 +82,6 @@ export class TasksComponent implements OnInit,OnDestroy {
               this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
                 this.tasksForm.reset()
                 this.libProjectService.projectData = res.result;
-                this.libProjectService.upDateProjectTitle();
                 if(res && res.result.tasks && res.result.tasks.length) {
                   res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({
@@ -150,7 +149,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   deleteTask(index: number) {
-    let content = this.tasks.value[index].subtask || this.tasks.value[index].resource ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
+    let content = (this.tasks.value[index].subtask &&  this.tasks.value[index].subtask.length) || (this.tasks.value[index].resources && this.tasks.value[index].resources.length) ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       data: {
         header: "DELETE_TASK",

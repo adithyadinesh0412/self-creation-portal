@@ -30,6 +30,7 @@
     padding: 0;
 }
 .overflow-ellipsis{
+    max-width: 37.5rem;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
