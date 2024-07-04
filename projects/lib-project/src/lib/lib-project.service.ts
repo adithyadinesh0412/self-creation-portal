@@ -99,6 +99,9 @@ export class LibProjectService {
       this.setData(updatedData);
   }
 
+  deleteProject(projectId:number|string){
+    return this.httpService.delete(this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT+projectId);
+  }
   getReviewerData(){
     const config = {
       url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
