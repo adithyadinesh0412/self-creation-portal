@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { DialogPopupComponent } from '../dialogs/dialog-popup/dialog-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { LibProjectService } from 'lib-project';
 @Component({
   selector: 'lib-card',
   standalone: true,
@@ -20,24 +21,12 @@ export class CardComponent {
   @Input() showActionButton: boolean = false;
   @Input() project:any;
 
-  constructor(private router:Router, private dialog : MatDialog) {}
-
-  cardClick(item:any) {
-    console.log(item);
-    console.log(item.actionButton);
-    this.router.navigate(['solution/project/project-details'],{
-      queryParams: {
-        projectId: item.id,
-        mode:'edit'
-      }
-    })
-  }
+  constructor(private router:Router, private dialog : MatDialog, private libProjectService:LibProjectService) {}
 
   onButtonClick(label: string, item: any){
     console.log("buttonclick");
     switch (label) {
       case 'EDIT':
-        console.log(label)
         this.router.navigate(['solution/project/project-details'],{
           queryParams: {
             projectId: item.id,
@@ -46,16 +35,14 @@ export class CardComponent {
         })
         break;
       case 'DELETE':
-        this.handleDelete(item);
-          // Action for button at index 1
+        this.deleteProject(item);
         break;
       default:
           break;
     }
   }
 
-  handleDelete(item: any) {
-    console.log("Deleting item: ");
+  deleteProject(item: any) {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       data : {
         header: "DELETE_RESOURCE",
@@ -66,6 +53,14 @@ export class CardComponent {
       });
   
       dialogRef.afterClosed().subscribe(result => {
+        if(result === "CANCEL"){
+          return true
+        } else if(result === "DELETE"){
+          this.libProjectService.deleteProject(item.id)
+          return true
+        } else {
+          return false
+        }
       });
   }
 }

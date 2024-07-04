@@ -64,17 +64,10 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
       let pageStatus = currentData?.value;
+      let status =  '';
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
-
-      console.log(pageStatus)
-      console.log(currentData)
-      ////
-      // let pageStatus = 'drafts';
-      // if(currentUrl === 'submit-for-review' ){
-      //   pageStatus = 'submitted_for_review';
-      // }
-      this.getList(pageStatus);
+      this.getList(pageStatus, status);
     });
   }
 
@@ -113,12 +106,11 @@ export class ResourceHolderComponent implements OnInit{
     this.updateQueryParams(); 
   }
 
-  getList(pageStatus: string = 'drafts') {
-    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, pageStatus).subscribe(response => {
+  getList(pageStatus: string = 'drafts', status: string = '') {
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, pageStatus, status).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
-      console.log(this.lists)
       this.pagination.totalCount = result.count;
       this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
       if (this.lists.length === 0) {
@@ -144,8 +136,9 @@ export class ResourceHolderComponent implements OnInit{
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
       const pageStatus = params['page_status'] || 'drafts';
+      const status = params['status'] || ''; 
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-      this.getList(pageStatus);
+      this.getList(pageStatus, status);
     });
   }
   

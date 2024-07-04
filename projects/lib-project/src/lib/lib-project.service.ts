@@ -94,6 +94,9 @@ export class LibProjectService {
       this.setData(updatedData);
   }
 
+  deleteProject(projectId:number|string){
+    return this.httpService.delete(this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT+projectId);
+  }
   // startInterval() {
   //   // Clear any existing subscription
   //   this.clearInterval();
