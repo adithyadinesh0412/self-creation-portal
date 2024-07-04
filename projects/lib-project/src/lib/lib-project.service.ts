@@ -16,6 +16,7 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
+  maxTaskCount:number=0
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
     this.route.queryParams.subscribe((params: any) => {
@@ -92,6 +93,30 @@ export class LibProjectService {
         }
       };
       this.setData(updatedData);
+  }
+
+  getReviewerData(){
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        console.log(result)
+        return result;
+      })
+    )
+  }
+
+  setConfig(){
+    const config = {
+      url: this.Configuration.urlConFig.INSTANCES.CONFIG_LIST,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        console.log(result)
+        return result;
+      })
+    )
   }
 
   // startInterval() {

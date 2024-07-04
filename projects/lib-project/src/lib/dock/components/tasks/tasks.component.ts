@@ -33,6 +33,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   tasksData:any;
   SHIFT_TASK_UP ='SHIFT_TASK_UP';
   SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
+  maxTaskLength = this.libProjectService.maxTaskCount
   private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar) {
     this.tasksForm = this.fb.group({
@@ -215,7 +216,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   addingTask() {
-    if (!this.tasksForm.valid) {
+    if (!this.tasksForm.valid || this.tasks.length>=this.maxTaskLength) {
       this._snackBar.open('Fill the description of the already added tasks first', 'X', {
         horizontalPosition: "center",
         verticalPosition: "top",
