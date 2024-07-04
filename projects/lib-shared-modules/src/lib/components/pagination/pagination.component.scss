@@ -1,0 +1,5 @@
+/* Hide the items per page label and selector */
+::ng-deep .mat-mdc-paginator-page-size {
+    display: none !important;
+  }
+  
