@@ -21,7 +21,7 @@ export class CardComponent {
   @Input() showActionButton: boolean = false;
   @Input() project:any;
 
-  constructor(private router:Router, private dialog : MatDialog, private libProjectService:LibProjectService) {}
+  constructor(private router:Router, private dialog : MatDialog) {}
 
   onButtonClick(label: string, item: any){
     console.log("buttonclick");
@@ -51,12 +51,12 @@ export class CardComponent {
         exitButton:"DELETE"
       }
       });
-  
+
       dialogRef.afterClosed().subscribe(result => {
         if(result === "CANCEL"){
           return true
         } else if(result === "DELETE"){
-          this.libProjectService.deleteProject(item.id)
+          // this.libProjectService.deleteProject(item.id)
           return true
         } else {
           return false
