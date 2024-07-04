@@ -17,7 +17,6 @@ import { CommonModule } from '@angular/common';
 })
 export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
-  selectedOption = 1
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
