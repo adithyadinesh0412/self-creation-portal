@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { FormService, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { FormService, ReviewModelComponent, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'lib-layout',
@@ -14,14 +15,26 @@ export class LayoutComponent {
   selctedCardItem : any;
   headerData:any
   sidenavData:any
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog) {
   }
   ngOnInit(){
+    this. setConfig()
     this.getProjectdata()
     this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.sidenavData= data?.sidenavData.sidenav
+      // data?.sidenavData.headerData.buttons.forEach((element:any) => {
+      //   if(element.title == "SEND_FOR_REVIEW"){
+      //     element.disable = false;
+      //   }
+      // });
       this.headerData = data?.sidenavData.headerData
     });
+  }
+  setConfig(){
+    this.libProjectService.setConfig().subscribe((res:any) => {
+      let project = res.result.find((res:any) => res.resource_type === "projects");
+      this.libProjectService.maxTaskCount = project.max_task_count
+    })
   }
 
   getProjectdata() {
@@ -54,9 +67,31 @@ export class LayoutComponent {
   }
 
   onButtonClick(buttonTitle: string) {
-    console.log(buttonTitle);
-    if(buttonTitle === "SAVE_AS_DRAFT") {
-      this.libProjectService.saveProjectFunc(true);
+    switch (buttonTitle) {
+      case "SAVE_AS_DRAFT":{
+        this.libProjectService.saveProjectFunc(true);
+        break;
+      }
+      case "SEND_FOR_REVIEW":
+        this.libProjectService.getReviewerData().subscribe((list:any) =>{
+          const dialogRef = this.dialog.open(ReviewModelComponent, {
+            data : {
+              header: "SEND_FOR_REVIEW",
+              reviewdata: list.result.data,
+              sendForReview: "SEND_FOR_REVIEW"
+            }
+          });
+          dialogRef.afterClosed().subscribe(result => {
+            if(result.sendForReview == "SEND_FOR_REVIEW"){
+             
+              const reviewer_ids = result.selectedValues.map((item:any) => item.id);
+            }
+            return true;
+          });
+        })  
+        break; 
+      default:
+            break;
     }
   }
 }
