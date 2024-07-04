@@ -6,20 +6,27 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule, MatListOption, MatSelectionList} from '@angular/material/list';
 import {FormsModule} from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'lib-review-model',
   standalone: true,
-  imports: [MatDialogModule, TranslateModule, MatFormFieldModule, MatRadioModule, MatIconModule, MatListModule, FormsModule],
+  imports: [CommonModule, MatDialogModule, TranslateModule, MatFormFieldModule, MatRadioModule, MatIconModule, MatListModule, FormsModule],
   templateUrl: './review-model.component.html',
   styleUrl: './review-model.component.scss'
 })
 export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
-  
+  selectedOption = 1
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
+  }
+
+  ngAfterViewInit() {
+    if(this.selectionList){
+      this.selectionList.selectAll();
+      }
   }
   
   onSelectReviewer(event: any) {
