@@ -16,6 +16,11 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
+  maxTaskCount:number=0
+  validForm={
+    projectDetails: false,
+    tasks:false
+  }
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
     this.route.queryParams.subscribe((params: any) => {
@@ -97,6 +102,47 @@ export class LibProjectService {
   deleteProject(projectId:number|string){
     return this.httpService.delete(this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT+projectId);
   }
+  getReviewerData(){
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        console.log(result)
+        return result;
+      })
+    )
+  }
+
+  setConfig(){
+    const config = {
+      url: this.Configuration.urlConFig.INSTANCES.CONFIG_LIST,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        console.log(result)
+        return result;
+      })
+    )
+  }
+
+  sendForReview(reviewers:any){
+   let reviewer = {
+     "reviwer_ids" : reviewers
+   }
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.SEND_FOR_REVIEW,
+      payload:[reviewer]
+    };
+
+    return this.httpService.post(config.url, config.payload).pipe(
+      map((result: any) => {
+        return result;
+      })
+    )
+
+  }
+
   // startInterval() {
   //   // Clear any existing subscription
   //   this.clearInterval();
