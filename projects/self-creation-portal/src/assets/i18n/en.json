@@ -79,5 +79,7 @@
     "NO_SUBMITTED_FOR_REVIEW": "No resource/program submitted for review at the moment.",
     "SEND_FOR_REVIEW_DESCRIPTION": "You can select multiple reviewers. However, only the first one to start reviewing will be able to provide feedback.",
     "SEND_TO_ALL_REVIEWERS": "Send to all reviewers",
-    "SELECT_REVIEWER": "Select reviewer"
+    "SELECT_REVIEWER": "Select reviewer",
+    "DELETE_RESOURCE": "Delete resource?",
+    "CONFIRM_DELETE_MESSAGE":"Would you like to delete the selected resource/program?"
 }

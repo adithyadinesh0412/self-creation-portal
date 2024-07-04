@@ -63,8 +63,18 @@ export class ResourceHolderComponent implements OnInit{
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
+      let pageStatus = currentData?.value;
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
+
+      console.log(pageStatus)
+      console.log(currentData)
+      ////
+      // let pageStatus = 'drafts';
+      // if(currentUrl === 'submit-for-review' ){
+      //   pageStatus = 'submitted_for_review';
+      // }
+      this.getList(pageStatus);
     });
   }
 
@@ -103,11 +113,12 @@ export class ResourceHolderComponent implements OnInit{
     this.updateQueryParams(); 
   }
 
-  getList() {
-    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
+  getList(pageStatus: string = 'drafts') {
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, pageStatus).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
+      console.log(this.lists)
       this.pagination.totalCount = result.count;
       this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
       if (this.lists.length === 0) {
@@ -132,8 +143,9 @@ export class ResourceHolderComponent implements OnInit{
 
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
+      const pageStatus = params['page_status'] || 'drafts';
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-      this.getList();
+      this.getList(pageStatus);
     });
   }
   

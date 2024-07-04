@@ -19,7 +19,7 @@ export class CommonService {
     return `${baseUrl}?${httpParams.toString()}`;
   }
   
-  generateParams(pagination: any, filters: any, sortOptions: any): { [key: string]: any } { 
+  generateParams(pagination: any, filters: any, sortOptions: any, pageStatus: string = ''): { [key: string]: any } { 
     return {
       page: pagination.currentPage + 1,
       limit: pagination.pageSize,
@@ -29,7 +29,8 @@ export class CommonService {
       sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || '',
-      page_status: 'drafts'
+      // page_status: 'drafts'
+      page_status: pageStatus || 'drafts' 
     };
   }
 
