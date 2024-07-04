@@ -85,6 +85,8 @@ export class LayoutComponent {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
              
               const reviewer_ids = result.selectedValues.map((item:any) => item.id);
+              this.libProjectService.sendForReview(reviewer_ids).subscribe((res:any) =>{
+              })
             }
             return true;
           });
