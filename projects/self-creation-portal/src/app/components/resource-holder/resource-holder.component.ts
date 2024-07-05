@@ -63,8 +63,11 @@ export class ResourceHolderComponent implements OnInit{
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
+      let pageStatus = currentData?.value;
+      let status =  '';
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
+      this.getList(pageStatus, status);
     });
   }
 
@@ -103,8 +106,8 @@ export class ResourceHolderComponent implements OnInit{
     this.updateQueryParams(); 
   }
 
-  getList() {
-    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
+  getList(pageStatus: string = 'drafts', status: string = '') {
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, pageStatus, status).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
@@ -132,8 +135,10 @@ export class ResourceHolderComponent implements OnInit{
 
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
+      const pageStatus = params['page_status'] || 'drafts';
+      const status = params['status'] || ''; 
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-      this.getList();
+      this.getList(pageStatus, status);
     });
   }
   

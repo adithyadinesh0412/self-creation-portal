@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpProviderService } from 'lib-shared-modules';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { interval } from 'rxjs/internal/observable/interval';
 
 
 @Injectable({
@@ -84,7 +85,7 @@ export class LibProjectService {
     });
   }
 
-  upDateProjectTitle(){
+  upDateProjectTitle(title?:string){
       const currentProjectMetaData = this.dataSubject.getValue();
       const updatedData = {
         ...currentProjectMetaData,
@@ -92,13 +93,16 @@ export class LibProjectService {
           ...currentProjectMetaData.sidenavData,
           headerData: {
             ...currentProjectMetaData.sidenavData.headerData,
-            title: (this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME'
+            title: title ? title : ((this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME')
           }
         }
       };
       this.setData(updatedData);
   }
 
+  deleteProject(projectId:number|string){
+    return this.httpService.delete(this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT+projectId);
+  }
   getReviewerData(){
     const config = {
       url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
@@ -164,4 +168,11 @@ export class LibProjectService {
 
   //   });
   // }
+  startAutoSave(projectID:string|number) {
+    return interval(30000).pipe(
+      switchMap(() => {
+        return this.createOrUpdateProject(this.projectData,projectID);
+      })
+    );
+  }
 }

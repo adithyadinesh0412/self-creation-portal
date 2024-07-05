@@ -33,6 +33,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   tasksData:any;
   SHIFT_TASK_UP ='SHIFT_TASK_UP';
   SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
+  private autoSaveSubscription: Subscription = new Subscription();
   maxTaskLength = this.libProjectService.maxTaskCount
   private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar) {
@@ -44,7 +45,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   ngOnInit() {
     this.subscription.add(
       this.libProjectService.currentProjectMetaData.subscribe(data => {
-        this.tasksData = data.tasksData.tasks;
+        this.tasksData = data?.tasksData.tasks;
       })
     )
     this.subscription.add(
@@ -75,12 +76,12 @@ export class TasksComponent implements OnInit,OnDestroy {
                 this.addTask();
                 this.addTask();
               }
+              this.startAutoSaving();
             }
             else {
               this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
                 this.tasksForm.reset()
                 this.libProjectService.projectData = res.result;
-                this.libProjectService.upDateProjectTitle();
                 if(res && res.result.tasks && res.result.tasks.length) {
                   res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({
@@ -101,6 +102,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                   this.addTask();
                   this.addTask();
                 }
+                this.startAutoSaving();
               })
             }
           }
@@ -128,34 +130,6 @@ export class TasksComponent implements OnInit,OnDestroy {
       })
     );
   }
-
-// canDeactivate(): Promise<any> {
-//   if (!this.tasksForm?.pristine ) {
-//     const dialogRef = this.dialog.open(DialogPopupComponent, {
-//       data: {
-//         header: "SAVE_CHANGES",
-//         content: "UNSAVED_CHNAGES_MESSAGE",
-//         cancelButton: "DO_NOT_SAVE",
-//         exitButton: "SAVE"
-//       }
-//     });
-
-//     return dialogRef.afterClosed().toPromise().then(result => {
-//       if (result === "DO_NOT_SAVE") {
-//         return true;
-//       } else if (result === "SAVE") {
-//         this.subscription.add(
-//               this.submit()
-//         );
-//         return true;
-//       } else {
-//         return false;
-//       }
-//     });
-//   } else {
-//     return Promise.resolve(true);
-//   }
-// }
 
   get tasks() {
     return this.tasksForm.get('tasks') as FormArray;
@@ -197,6 +171,12 @@ export class TasksComponent implements OnInit,OnDestroy {
     });
   }
 
+  startAutoSaving() {
+    this.autoSaveSubscription = this.libProjectService
+      .startAutoSave(this.projectId)
+      .subscribe((data) => console.log(data));
+  }
+
   moveTask(index: number, direction: number) {
     if ((index + direction) >= 0 && (index + direction) < this.tasks.length) {
       const task = this.tasks.at(index);
@@ -215,6 +195,9 @@ export class TasksComponent implements OnInit,OnDestroy {
     console.log(this.tasks?.status)
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.subscription.unsubscribe();
+    if (this.autoSaveSubscription) {
+      this.autoSaveSubscription.unsubscribe();
+    }
   }
 
   addingTask() {
