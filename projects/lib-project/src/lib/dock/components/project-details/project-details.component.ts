@@ -164,6 +164,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
+    this.libProjectService.validForm.projectDetails = this.formLib?.myForm.status ? this.formLib?.myForm.status: "INVALID"
+    console.log(this.formLib?.myForm.status)
     this.subscription.unsubscribe();
   }
 
