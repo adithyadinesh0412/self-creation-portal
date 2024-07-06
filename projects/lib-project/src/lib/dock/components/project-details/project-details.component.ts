@@ -85,6 +85,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   readProjectDeatilsAndMap(formControls:any,res: any) {
+    this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks.length > 0 ? "VALID": "INVALID"
+    this.libProjectService.checkValidationForSubmit() 
     formControls.forEach((element: any) => {
       if (Array.isArray(res[element.name])) {
         console.log(Array.isArray(element.value));

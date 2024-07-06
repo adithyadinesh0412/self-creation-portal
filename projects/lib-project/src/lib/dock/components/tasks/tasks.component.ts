@@ -129,6 +129,9 @@ export class TasksComponent implements OnInit,OnDestroy {
         }
       })
     );
+
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.checkValidationForSubmit()  
   }
 
   get tasks() {
