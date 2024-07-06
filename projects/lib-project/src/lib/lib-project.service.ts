@@ -145,11 +145,9 @@ export class LibProjectService {
   }
 
   checkValidationForSubmit(){
-    console.log("ashgdjkljhgvdasldk")
     const currentProjectMetaData = this.dataSubject.getValue();
     currentProjectMetaData?.sidenavData.headerData.buttons.forEach((element:any) => {
       if(element.title == "SEND_FOR_REVIEW"){
-        console.log(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID")
         if(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID"){
           element.disable = false;
         }else{

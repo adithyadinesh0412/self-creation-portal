@@ -70,6 +70,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           })
         );
       }
+      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.checkValidationForSubmit() 
     });
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe(
@@ -149,6 +151,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   saveForm() {
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     if (this.projectId) {
       this.libProjectService.updateProjectDraft(this.projectId);
     }
@@ -194,8 +197,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    this.libProjectService.validForm.projectDetails = this.formLib?.myForm.status ? this.formLib?.myForm.status: "INVALID"
-    console.log(this.formLib?.myForm.status)
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.checkValidationForSubmit()  
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
