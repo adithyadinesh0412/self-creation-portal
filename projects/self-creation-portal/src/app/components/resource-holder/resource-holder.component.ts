@@ -7,11 +7,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { ResourceService } from '../../services/resource-service/resource.service';
 import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 import { CommonService } from '../../services/common-service/common.service';
+import { LibProjectService } from 'lib-project';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
 
 
 @Component({
@@ -35,6 +38,7 @@ export class ResourceHolderComponent implements OnInit{
   filters = {
     search: '',
     current: { type: [] as string[] },
+    status: '' as string,
     filteredLists: [] as any[],
     filterData: [] as any,
     showChangesButton: false,
@@ -49,12 +53,19 @@ export class ResourceHolderComponent implements OnInit{
   lists:any = [];
   noResultMessage!: string ;
   noResultFound !: string;
-  constructor(private route: ActivatedRoute, private formService: FormService, private resourceService: ResourceService, private commonService: CommonService) {
+  pageStatus !: string;
+  constructor(
+    private route: ActivatedRoute, 
+    private formService: FormService, 
+    private resourceService: ResourceService, 
+    private commonService: CommonService, 
+    private libProjectService:LibProjectService, 
+    private router:Router, 
+    private dialog : MatDialog) {
   }
 
   ngOnInit() {
     this.loadSidenavData();
-    this.getQueryParams();
   }
 
   loadSidenavData(){
@@ -63,11 +74,10 @@ export class ResourceHolderComponent implements OnInit{
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
-      let pageStatus = currentData?.value;
-      let status =  '';
+      this.pageStatus = currentData?.value || '';
+      this.getQueryParams();
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
-      this.getList(pageStatus, status);
     });
   }
 
@@ -91,6 +101,8 @@ export class ResourceHolderComponent implements OnInit{
     const filterName = event.filterName;
     if (filterName === 'type') {
       this.filters.current.type = event.values;
+    } else if (filterName === 'status') {
+      this.filters.status = event.values;
     }
     this.pagination.currentPage = 0;
     if(this.paginationComponent) {
@@ -106,8 +118,8 @@ export class ResourceHolderComponent implements OnInit{
     this.updateQueryParams(); 
   }
 
-  getList(pageStatus: string = 'drafts', status: string = '') {
-    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, pageStatus, status).subscribe(response => {
+  getList() {
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
       const result = response.result || { data: [], count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
@@ -135,11 +147,56 @@ export class ResourceHolderComponent implements OnInit{
 
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
-      const pageStatus = params['page_status'] || 'drafts';
-      const status = params['status'] || ''; 
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-      this.getList(pageStatus, status);
+      this.getList();
     });
   }
   
+  handleButtonClick(event: { label: string, item: any }) {
+    const { label, item } = event;
+    switch (label) {
+      case 'EDIT':
+        this.router.navigate(['solution/project/project-details'], {
+          queryParams: {
+            projectId: item.id,
+            mode: 'edit'
+          }
+        });
+        break;
+      case 'DELETE':
+        this.confirmAndDeleteProject(item)
+        break;
+      default:
+        break;
+    }
+  }
+
+  deleteProject(item: any) {
+    this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
+      this.getList(); 
+    })
+  }
+
+  confirmAndDeleteProject(item: any) {
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data : {
+        header: "DELETE_RESOURCE",
+        content:"CONFIRM_DELETE_MESSAGE",
+        cancelButton:"CANCEL",
+        exitButton:"DELETE"
+      }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if(result === "CANCEL"){
+          return true
+        } else if(result === "DELETE"){
+          this.deleteProject(item); 
+          return true
+        } else {
+          return false
+        }
+      });
+  }
+
 }

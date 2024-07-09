@@ -86,5 +86,7 @@
     "SEND_TO_ALL_REVIEWERS": "Send to all reviewers",
     "SELECT_REVIEWER": "Select reviewer",
     "DELETE_RESOURCE": "Delete resource?",
-    "CONFIRM_DELETE_MESSAGE":"Would you like to delete the selected resource/program?"
+    "CONFIRM_DELETE_MESSAGE":"Would you like to delete the selected resource/program?",
+    "REJECTED": "Rejected",
+    "ALL_STATUS": "All status"
 }

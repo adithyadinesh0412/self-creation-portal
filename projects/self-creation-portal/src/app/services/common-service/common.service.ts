@@ -1,8 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpProviderService } from 'lib-shared-modules';
-import { ConfigService } from '../configs/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,17 +19,17 @@ export class CommonService {
     return `${baseUrl}?${httpParams.toString()}`;
   }
   
-  generateParams(pagination: any, filters: any, sortOptions: any, pageStatus: string = '', status: string = ''): { [key: string]: any } { 
+  generateParams(pagination: any, filters: any, sortOptions: any, pageStatus: string = '' ): { [key: string]: any } { 
     return {
       page: pagination.currentPage + 1,
       limit: pagination.pageSize,
       type: filters.current.type.join(',') || "",
-      status: status || '',
+      status: filters.status || '',
       sort_by:  sortOptions.sort_by || '',
       sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || '',
-      page_status: pageStatus || 'drafts' 
+      page_status: pageStatus || ''
     };
   }
 
@@ -39,6 +37,7 @@ export class CommonService {
     pagination.currentPage = +params['page'] - 1 || 0;
     pagination.pageSize = +params['limit'] || pagination.pageSize;
     filters.current.type = params['type'] ? params['type'].split(',') : [];
+    filters.status = params['status'] || '';
     filters.search = params['search'] ? atob(params['search']) : '';
     sortOptions.sort_by = params['sort_by'] || '';
     sortOptions.sort_order = params['sort_order'] || '';
