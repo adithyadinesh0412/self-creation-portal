@@ -157,15 +157,6 @@ export class LibProjectService {
     });
   }
 
-  // startInterval() {
-  //   // Clear any existing subscription
-  //   this.clearInterval();
-
-  //   // Start new interval (1 minute = 60000 milliseconds)
-  //   this.intervalSubscription = interval(60000).subscribe(() => {
-
-  //   });
-  // }
   startAutoSave(projectID:string|number) {
     return interval(30000).pipe(
       switchMap(() => {
