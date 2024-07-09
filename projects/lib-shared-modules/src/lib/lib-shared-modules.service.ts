@@ -3,6 +3,8 @@ import { Location } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 import { HttpProviderService } from './services/http-provider.service';
 import { LOGOUT_URLS } from './configs/url.config.json';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { LOGOUT_URLS } from './configs/url.config.json';
 export class LibSharedModulesService {
 
   private previousUrl !: string;
-  constructor( private router : Router, private location : Location, private httpService: HttpProviderService) {
+  constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.previousUrl = event.url; 
@@ -50,6 +52,18 @@ export class LibSharedModulesService {
   navigateToLogin(): void {
     localStorage.clear();
     this.router.navigate(['login']);
+  }
+
+  openErrorToast(message:any) {
+    this.translate.get([message]).subscribe(resp => {
+      this._snackBar.open(resp[message], 'X', {
+        horizontalPosition: "center",
+        verticalPosition: "top",
+        duration:1000
+      });
+    })
+   
+    
   }
 }
  

@@ -86,5 +86,8 @@
     "SEND_TO_ALL_REVIEWERS": "Send to all reviewers",
     "SELECT_REVIEWER": "Select reviewer",
     "DELETE_RESOURCE": "Delete resource?",
-    "CONFIRM_DELETE_MESSAGE":"Would you like to delete the selected resource/program?"
+    "CONFIRM_DELETE_MESSAGE":"Would you like to delete the selected resource/program?",
+    "UNAUTHORIZED_REQUEST":"Unauthorized request",
+    "ADD_TITLE_TO_CONTINUE_SAVING":"Add title to continue saving",
+    "CONTINUE":"Continue"
 }

@@ -19,8 +19,8 @@ export class LibProjectService {
   projectId:string|number='';
   maxTaskCount:number=0
   validForm={
-    projectDetails: false,
-    tasks:false
+    projectDetails: "INVALID",
+    tasks:"INVALID"
   }
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
@@ -142,6 +142,19 @@ export class LibProjectService {
       })
     )
 
+  }
+
+  checkValidationForSubmit(){
+    const currentProjectMetaData = this.dataSubject.getValue();
+    currentProjectMetaData?.sidenavData.headerData.buttons.forEach((element:any) => {
+      if(element.title == "SEND_FOR_REVIEW"){
+        if(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID"){
+          element.disable = false;
+        }else{
+          element.disable = true;
+        }
+      }
+    });
   }
 
   startAutoSave(projectID:string|number) {

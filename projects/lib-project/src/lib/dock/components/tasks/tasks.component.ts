@@ -129,6 +129,8 @@ export class TasksComponent implements OnInit,OnDestroy {
         }
       })
     );
+    this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
+    this.libProjectService.checkValidationForSubmit()  
   }
 
   get tasks() {
@@ -160,9 +162,9 @@ export class TasksComponent implements OnInit,OnDestroy {
     });
 
     return dialogRef.afterClosed().toPromise().then(result => {
-      if (result === "NO") {
+      if (result.data === "NO") {
         return true;
-      } else if (result === "YES") {
+      } else if (result.data === "YES") {
         this.tasks.removeAt(index);
         return true;
       } else {
@@ -186,11 +188,14 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   submit() {
+     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.libProjectService.updateProjectDraft(this.projectId);
   }
 
   ngOnDestroy(){
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.checkValidationForSubmit()  
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
@@ -199,14 +204,20 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   addingTask() {
-    if (!this.tasksForm.valid || this.tasks.length>=this.maxTaskLength) {
-      this._snackBar.open('Fill the description of the already added tasks first', 'X', {
-        horizontalPosition: "center",
-        verticalPosition: "top",
-        duration:1000
+    const taskCantAddMessage = !this.tasksForm.valid
+      ? 'Fill the description of the already added tasks first'
+      : this.tasks.length >= this.maxTaskLength
+        ? 'Task limit reached. No more tasks can be added.'
+        : '';
+
+    if (taskCantAddMessage) {
+      this._snackBar.open(taskCantAddMessage, 'X', {
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        duration: 1000,
       });
     } else {
-      this.addTask()
+      this.addTask();
     }
   }
 

@@ -17,6 +17,7 @@ import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 export class ProjectDetailsComponent implements OnDestroy, OnInit {
   dynamicFormData: any;
   projectId: string | number = '';
+  formDataForTitle:any;
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
@@ -28,8 +29,29 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.libProjectService.projectData = {};
+    this.getFormWithEntitiesAndMap();
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe(
+        (isProjectSave: boolean) => {
+          if (isProjectSave && this.router.url.includes('project-details')) {
+            this.saveForm();
+          }
+        }
+      )
+    );
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    if(this.libProjectService.projectData.tasks){
+      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
+    }
+    this.libProjectService.checkValidationForSubmit()
+  }
+
+
+  getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
+        this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
         this.subscription.add(
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
@@ -49,6 +71,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                   );
                 }
                 this.startAutoSaving();
+                const mainFormStatus = this.formLib?.myForm.status ?? "INVALID";
+                const subFormStatus = this.formLib?.subform?.myForm.status ?? "INVALID";
+                this.libProjectService.validForm.projectDetails = (mainFormStatus === "INVALID" || subFormStatus === "INVALID") ? "INVALID" : "VALID";
               }
             } else {
               this.libProjectService
@@ -70,16 +95,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           })
         );
       }
+
     });
-    this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe(
-        (isProjectSave: boolean) => {
-          if (isProjectSave && this.router.url.includes('project-details')) {
-            this.saveForm();
-          }
-        }
-      )
-    );
   }
 
   readProjectDeatilsAndMap(formControls:any,res: any) {
@@ -126,10 +143,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         .afterClosed()
         .toPromise()
         .then((result) => {
-          if (result === 'DO_NOT_SAVE') {
+          if (result.data === 'DO_NOT_SAVE') {
             this.libProjectService.projectData = {};
             return true;
-          } else if (result === 'SAVE') {
+          } else if (result.data === 'SAVE') {
             this.saveForm();
             this.libProjectService.projectData = {};
             return true;
@@ -149,15 +166,45 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   saveForm() {
-    if (this.projectId) {
-      this.libProjectService.updateProjectDraft(this.projectId);
+    if (this.libProjectService.projectData.title) {
+      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.checkValidationForSubmit()
+      if (this.projectId) {
+        this.libProjectService.updateProjectDraft(this.projectId);
+      }
+      return;
+    } else {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: 'SAVE_CHANGES',
+          content: 'ADD_TITLE_TO_CONTINUE_SAVING',
+          form:[this.formDataForTitle],
+          exitButton: 'CONTINUE',
+        },
+      });
+
+      return dialogRef
+        .afterClosed()
+        .toPromise()
+        .then((result) => {
+           if (result.data === 'CONTINUE') {
+            if(result.title){
+              this.libProjectService.upDateProjectTitle(result.title);
+              this.libProjectService.setProjectData({title:result.title});
+              this.getFormWithEntitiesAndMap()
+            }   
+            return true;
+          } else {
+            return false;
+          }
+        });
     }
+
   }
 
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (!this.isEvent(data)) {
-      console.log();
       if(this.libProjectService.projectData.title != data.title) {
         console.log('triggered')
         this.libProjectService.upDateProjectTitle(data.title);
@@ -166,6 +213,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
   }
 
+ 
   isEvent(data:any) {
     return typeof data === 'object' && data !== null &&
            'type' in data && 'target' in data &&
@@ -193,6 +241,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.checkValidationForSubmit()  
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
