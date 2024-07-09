@@ -53,9 +53,9 @@ export class CardComponent {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if(result === "CANCEL"){
+        if(result.data === "CANCEL"){
           return true
-        } else if(result === "DELETE"){
+        } else if(result.data === "DELETE"){
           // this.libProjectService.deleteProject(item.id)
           return true
         } else {

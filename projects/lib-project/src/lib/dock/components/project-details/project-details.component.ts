@@ -49,6 +49,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                   );
                 }
                 this.startAutoSaving();
+                const mainFormStatus = this.formLib?.myForm.status ?? "INVALID";
+                const subFormStatus = this.formLib?.subform?.myForm.status ?? "INVALID";
+                this.libProjectService.validForm.projectDetails = (mainFormStatus === "INVALID" || subFormStatus === "INVALID") ? "INVALID" : "VALID";
               }
             } else {
               this.libProjectService
@@ -70,8 +73,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           })
         );
       }
-      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-      this.libProjectService.checkValidationForSubmit() 
+
     });
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe(
@@ -82,11 +84,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         }
       )
     );
+   
+    
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    if(this.libProjectService.projectData.tasks){
+      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
+    }
+    this.libProjectService.checkValidationForSubmit()
   }
 
   readProjectDeatilsAndMap(formControls:any,res: any) {
-    this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks.length > 0 ? "VALID": "INVALID"
-    this.libProjectService.checkValidationForSubmit() 
     formControls.forEach((element: any) => {
       if (Array.isArray(res[element.name])) {
         console.log(Array.isArray(element.value));
@@ -130,10 +137,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         .afterClosed()
         .toPromise()
         .then((result) => {
-          if (result === 'DO_NOT_SAVE') {
+          if (result.data === 'DO_NOT_SAVE') {
             this.libProjectService.projectData = {};
             return true;
-          } else if (result === 'SAVE') {
+          } else if (result.data === 'SAVE') {
             this.saveForm();
             this.libProjectService.projectData = {};
             return true;
@@ -153,10 +160,58 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   saveForm() {
-    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    if (this.projectId) {
-      this.libProjectService.updateProjectDraft(this.projectId);
+    if (this.libProjectService.projectData.title) {
+      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.checkValidationForSubmit()
+      if (this.projectId) {
+        this.libProjectService.updateProjectDraft(this.projectId);
+      }
+      return;
+    } else {
+      const dialogRef = this.dialog.open(DialogPopupComponent, {
+        data: {
+          header: 'SAVE_CHANGES',
+          content: 'Add title to continue saving',
+          form:[{
+            "name": "title",
+            "label": "Project title",
+            "value": "",
+            "class": "",
+            "type": "text",
+            "placeHolder": "Enter project title",
+            "position": "floating",
+            "errorMessage": {
+                "required": "Enter project title"
+            },
+            "validators": {
+                "required": true,
+                "maxLength": 255
+            }
+        }],
+          // cancelButton: 'DO_NOT_SAVE',
+          exitButton: 'continue',
+        },
+      });
+
+      return dialogRef
+        .afterClosed()
+        .toPromise()
+        .then((result) => {
+          if (result.data === 'DO_NOT_SAVE') {
+            this.libProjectService.projectData = {};
+            return true;
+          } else if (result.data === 'continue') {
+            if(result.title){
+              this.libProjectService.projectData = {};
+              this.libProjectService.updateProjectDraft(this.projectId);
+            }   
+            return true;
+          } else {
+            return false;
+          }
+        });
     }
+
   }
 
   getDynamicFormData(data: any) {

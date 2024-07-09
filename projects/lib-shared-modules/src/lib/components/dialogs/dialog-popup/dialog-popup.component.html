@@ -2,11 +2,25 @@
   <h2 class="text-white font-bold px-6">{{dialogueData?.header |translate}}</h2>
   <img class="cursor-pointer pr-4" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
 </div>
-<div mat-dialog-content>
-  <h3 class="h-20 text-sm font-bold px-4">{{dialogueData?.content |translate}}</h3>
+<div mat-dialog-content class="h-30">
+  <h3 class="text-sm font-bold px-4">{{dialogueData?.content |translate}}</h3>
+  @if(dialogueData?.form){
+    @for(control of dialogueData?.form; track control){
+      <div class="flex">
+        <mat-form-field class="example-full-width">
+          <mat-label>{{ control.label }}</mat-label>
+          <input matInput id="exampleInput" [(ngModel)]="title" placeholder="Type here..."/>
+        </mat-form-field>
+      </div>
+    }
+  }
 </div>
 <div class="border-t"></div> 
 <div class="flex flex-row justify-end items-center">
-<button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="dialogueData.cancelButton">{{dialogueData.cancelButton |translate}}</button>
-<button  class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="dialogueData.exitButton">{{dialogueData.exitButton |translate}}</button>
+  @if(dialogueData.cancelButton){
+    <button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.cancelButton }">{{dialogueData.cancelButton |translate}}</button>
+  }
+  @if(dialogueData.exitButton){
+    <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title }">{{dialogueData.exitButton |translate}}</button>
+  }
 </div>
