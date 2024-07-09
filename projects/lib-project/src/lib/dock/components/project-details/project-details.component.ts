@@ -17,6 +17,7 @@ import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 export class ProjectDetailsComponent implements OnDestroy, OnInit {
   dynamicFormData: any;
   projectId: string | number = '';
+  formDataForTitle:any;
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
@@ -28,6 +29,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.libProjectService.projectData = {};
     this.getFormWithEntitiesAndMap();
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe(
@@ -49,6 +51,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
+        this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
         this.subscription.add(
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
@@ -175,23 +178,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         data: {
           header: 'SAVE_CHANGES',
           content: 'ADD_TITLE_TO_CONTINUE_SAVING',
-          form:[{
-            "name": "title",
-            "label": "Project title",
-            "value": "",
-            "class": "",
-            "type": "text",
-            "placeHolder": "Enter project title",
-            "position": "floating",
-            "errorMessage": {
-                "required": "Enter project title"
-            },
-            "validators": {
-                "required": true,
-                "maxLength": 255
-            }
-        }],
-          // cancelButton: 'DO_NOT_SAVE',
+          form:[this.formDataForTitle],
           exitButton: 'CONTINUE',
         },
       });
