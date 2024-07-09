@@ -21,7 +21,4 @@ export class DialogPopupComponent {
     public dialogRef: MatDialogRef<DialogPopupComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
   }
-
-  ngOnInit() {
-  }
 }
