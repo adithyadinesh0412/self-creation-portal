@@ -174,7 +174,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
         data: {
           header: 'SAVE_CHANGES',
-          content: 'Add title to continue saving',
+          content: 'ADD_TITLE_TO_CONTINUE_SAVING',
           form:[{
             "name": "title",
             "label": "Project title",
@@ -192,7 +192,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             }
         }],
           // cancelButton: 'DO_NOT_SAVE',
-          exitButton: 'continue',
+          exitButton: 'CONTINUE',
         },
       });
 
@@ -200,9 +200,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         .afterClosed()
         .toPromise()
         .then((result) => {
-          if (result.data === 'DO_NOT_SAVE') {
-            return true;
-          } else if (result.data === 'continue') {
+           if (result.data === 'CONTINUE') {
             if(result.title){
               this.libProjectService.upDateProjectTitle(result.title);
               this.libProjectService.setProjectData({title:result.title});
