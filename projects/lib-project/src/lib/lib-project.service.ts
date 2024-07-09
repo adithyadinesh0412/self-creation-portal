@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpProviderService } from 'lib-shared-modules';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { interval } from 'rxjs/internal/observable/interval';
 
 
 @Injectable({
@@ -18,8 +19,8 @@ export class LibProjectService {
   projectId:string|number='';
   maxTaskCount:number=0
   validForm={
-    projectDetails: false,
-    tasks:false
+    projectDetails: "INVALID",
+    tasks:"INVALID"
   }
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
@@ -84,7 +85,7 @@ export class LibProjectService {
     });
   }
 
-  upDateProjectTitle(){
+  upDateProjectTitle(title?:string){
       const currentProjectMetaData = this.dataSubject.getValue();
       const updatedData = {
         ...currentProjectMetaData,
@@ -92,7 +93,7 @@ export class LibProjectService {
           ...currentProjectMetaData.sidenavData,
           headerData: {
             ...currentProjectMetaData.sidenavData.headerData,
-            title: (this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME'
+            title: title ? title : ((this.projectData?.title)? this.projectData?.title: 'PROJECT_NAME')
           }
         }
       };
@@ -152,13 +153,24 @@ export class LibProjectService {
 
   }
 
-  // startInterval() {
-  //   // Clear any existing subscription
-  //   this.clearInterval();
+  checkValidationForSubmit(){
+    const currentProjectMetaData = this.dataSubject.getValue();
+    currentProjectMetaData?.sidenavData.headerData.buttons.forEach((element:any) => {
+      if(element.title == "SEND_FOR_REVIEW"){
+        if(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID"){
+          element.disable = false;
+        }else{
+          element.disable = true;
+        }
+      }
+    });
+  }
 
-  //   // Start new interval (1 minute = 60000 milliseconds)
-  //   this.intervalSubscription = interval(60000).subscribe(() => {
-
-  //   });
-  // }
+  startAutoSave(projectID:string|number) {
+    return interval(30000).pipe(
+      switchMap(() => {
+        return this.createOrUpdateProject(this.projectData,projectID);
+      })
+    );
+  }
 }
