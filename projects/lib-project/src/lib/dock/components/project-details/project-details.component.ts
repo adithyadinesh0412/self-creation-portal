@@ -28,6 +28,25 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.getFormWithEntitiesAndMap();
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe(
+        (isProjectSave: boolean) => {
+          if (isProjectSave && this.router.url.includes('project-details')) {
+            this.saveForm();
+          }
+        }
+      )
+    );
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    if(this.libProjectService.projectData.tasks){
+      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
+    }
+    this.libProjectService.checkValidationForSubmit()
+  }
+
+
+  getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
         this.subscription.add(
@@ -75,22 +94,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       }
 
     });
-    this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe(
-        (isProjectSave: boolean) => {
-          if (isProjectSave && this.router.url.includes('project-details')) {
-            this.saveForm();
-          }
-        }
-      )
-    );
-   
-    
-    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    if(this.libProjectService.projectData.tasks){
-      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
-    }
-    this.libProjectService.checkValidationForSubmit()
   }
 
   readProjectDeatilsAndMap(formControls:any,res: any) {
@@ -198,12 +201,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         .toPromise()
         .then((result) => {
           if (result.data === 'DO_NOT_SAVE') {
-            this.libProjectService.projectData = {};
             return true;
           } else if (result.data === 'continue') {
             if(result.title){
-              this.libProjectService.projectData = {};
-              this.libProjectService.updateProjectDraft(this.projectId);
+              this.libProjectService.upDateProjectTitle(result.title);
+              this.libProjectService.setProjectData({title:result.title});
+              this.getFormWithEntitiesAndMap()
             }   
             return true;
           } else {
@@ -217,7 +220,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (!this.isEvent(data)) {
-      console.log();
       if(this.libProjectService.projectData.title != data.title) {
         console.log('triggered')
         this.libProjectService.upDateProjectTitle(data.title);
