@@ -188,9 +188,9 @@ export class ResourceHolderComponent implements OnInit{
       });
   
       dialogRef.afterClosed().subscribe(result => {
-        if(result === "CANCEL"){
+        if(result.data === "CANCEL"){
           return true
-        } else if(result === "DELETE"){
+        } else if(result.data === "DELETE"){
           this.deleteProject(item); 
           return true
         } else {
