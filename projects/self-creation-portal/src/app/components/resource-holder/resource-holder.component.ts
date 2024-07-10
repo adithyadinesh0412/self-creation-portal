@@ -5,16 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent } from 'lib-shared-modules';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
 import { ResourceService } from '../../services/resource-service/resource.service';
-import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
 import { CommonService } from '../../services/common-service/common.service';
 import { LibProjectService } from 'lib-project';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogPopupComponent } from '../../../../../lib-shared-modules/src/public-api';
 
 
 @Component({
