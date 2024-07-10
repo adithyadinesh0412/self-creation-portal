@@ -192,6 +192,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
               this.libProjectService.upDateProjectTitle(result.title);
               this.libProjectService.setProjectData({title:result.title});
               this.getFormWithEntitiesAndMap()
+              this.saveForm()
             }   
             return true;
           } else {
