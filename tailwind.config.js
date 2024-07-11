@@ -11,7 +11,8 @@ module.exports = {
         'tertiary':'#FBFDFE',
         'chipPurple':'#A59EFB',
         'chipRejected':'#FD6969',
-        'chipPublished':'#008840'
+        'chipPublished':'#008840',
+        'numberCircle': '#EC555D'
       },
     },
   },

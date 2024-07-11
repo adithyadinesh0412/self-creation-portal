@@ -39,7 +39,8 @@ export class ResourceHolderComponent implements OnInit{
     filteredLists: [] as any[],
     filterData: [] as any,
     showChangesButton: false,
-    showActionButton: false
+    showActionButton: false,
+    changeReqCount : 0
   };
 
   sortOptions = {
@@ -100,7 +101,7 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.current.type = event.values;
     } else if (filterName === 'status') {
       this.filters.status = event.values;
-    }
+    } 
     this.pagination.currentPage = 0;
     if(this.paginationComponent) {
       this.paginationComponent.resetToFirstPage();
@@ -117,7 +118,7 @@ export class ResourceHolderComponent implements OnInit{
 
   getList() {
     this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
-      const result = response.result || { data: [], count: 0 };
+      const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
@@ -125,6 +126,7 @@ export class ResourceHolderComponent implements OnInit{
       if (this.lists.length === 0) {
         this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
       }
+      this.filters.changeReqCount = result.changes_requested_count;
     });
   }
 

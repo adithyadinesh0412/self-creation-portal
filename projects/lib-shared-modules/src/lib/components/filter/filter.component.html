@@ -12,7 +12,8 @@
     @if(showChangesButton){
     <div class="filter-container">
       <div>
-        <button class="inline-flex items-center text-primary px-2">{{ changeButton | translate }}<mat-icon>looks_one</mat-icon>
+        <button class="inline-flex items-center text-primary px-2">{{ changeButton | translate }}
+          <span class="ml-2 flex items-center justify-center w-5 h-5 rounded-full bg-numberCircle text-white text-sm">{{ changeReqCount }}</span>
         </button>
       </div>
     </div>
