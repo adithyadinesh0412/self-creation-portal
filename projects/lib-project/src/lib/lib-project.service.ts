@@ -43,13 +43,15 @@ export class LibProjectService {
   }
 
   updateProjectDraft(projectId:string|number) {
-    this.createOrUpdateProject(this.projectData,projectId).subscribe((res:any) => {
-      console.log(res.result);
-      this.setProjectData(res.result);
-      this.openSnackBar()
-      this.saveProjectFunc(false);
-      this.upDateProjectTitle();
-    })
+    return this.createOrUpdateProject(this.projectData, projectId).pipe(
+      map((res: any) => {
+        this.setProjectData(res.result);
+        this.openSnackBar();
+        this.saveProjectFunc(false);
+        this.upDateProjectTitle();
+        return res;
+      })
+    );
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
@@ -136,13 +138,10 @@ export class LibProjectService {
     )
   }
 
-  sendForReview(reviewers:any){
-   let reviewer = {
-     "reviwer_ids" : reviewers
-   }
+  sendForReview(reviewers:any,projectId:any){
     const config = {
-      url: this.Configuration.urlConFig.PROJECT_URLS.SEND_FOR_REVIEW,
-      payload:[reviewer]
+       url : `${this.Configuration.urlConFig.PROJECT_URLS.SEND_FOR_REVIEW}/${projectId}`,
+       payload:{ "reviwer_ids" : reviewers }
     };
 
     return this.httpService.post(config.url, config.payload).pipe(
@@ -169,7 +168,7 @@ export class LibProjectService {
   startAutoSave(projectID:string|number) {
     return interval(30000).pipe(
       switchMap(() => {
-        return this.createOrUpdateProject(this.projectData,projectID);
+        return this.updateProjectDraft(projectID);
       })
     );
   }
