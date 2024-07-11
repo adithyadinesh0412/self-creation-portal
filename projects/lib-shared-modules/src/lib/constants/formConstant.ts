@@ -19,3 +19,5 @@ export const TASK_DETAILS: IFORM = {
 	"type": "tasksDetails",
 	"sub_type": "tasksDetailsForm"
 }
+
+export const PROJECT_DETAILS_PAGE = 'solution/project/project-details'
