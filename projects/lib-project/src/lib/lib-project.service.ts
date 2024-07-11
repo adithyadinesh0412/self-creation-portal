@@ -101,8 +101,17 @@ export class LibProjectService {
   }
 
   deleteProject(projectId:number|string){
-    return this.httpService.delete(this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT+projectId);
+    const config = {
+      url : `${this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT}/${projectId}`
+    };
+    return this.httpService.delete(config.url).pipe(
+      map((result : any) => {
+        console.log('Delete project successsfully', result);
+        return result;
+      })
+    );
   }
+
   getReviewerData(){
     const config = {
       url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
