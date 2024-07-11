@@ -55,7 +55,7 @@ export class LibProjectService {
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
-      payload: projectId ? projectData : ''
+      payload: projectId ? projectData : {title:'Untitled project'}
     };
     return this.httpService.post(config.url, config.payload);
   }
