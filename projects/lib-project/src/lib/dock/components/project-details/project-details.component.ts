@@ -66,9 +66,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                   );
                 }
                 this.startAutoSaving();
-                const mainFormStatus = this.formLib?.myForm.status ?? "INVALID";
-                const subFormStatus = this.formLib?.subform?.myForm.status ?? "INVALID";
-                this.libProjectService.validForm.projectDetails = (mainFormStatus === "INVALID" || subFormStatus === "INVALID") ? "INVALID" : "VALID";
               }
             } else {
               this.libProjectService
@@ -90,11 +87,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           })
         );
       }
-    if(this.libProjectService.projectData.tasks){
-      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
-    }
-    this.libProjectService.checkValidationForSubmit()
-
     });
   }
 
@@ -119,6 +111,13 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       }
     });
     this.dynamicFormData = formControls;
+    if( this.formLib){
+      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    }
+    if(this.libProjectService.projectData.tasks){
+      this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
+    }
+    this.libProjectService.checkValidationForSubmit()
     console.log(this.dynamicFormData);
   }
 
