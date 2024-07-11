@@ -4,7 +4,7 @@
         "READ_PROJECT":"scp/v1/projects/details/",
         "DELETE_PROJECT":"scp/v1/projects/update/",
         "GET_REVIEWER_LIST":"scp/v1/projects/reviewerList",
-        "SEND_FOR_REVIEW":"scp/v1/project/submitForReview"
+        "SEND_FOR_REVIEW":"scp/v1/projects/submitForReview"
     },
     "FORM_URLS": {
         "READ_FORM": "scp/v1/form/read",

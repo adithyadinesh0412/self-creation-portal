@@ -85,9 +85,13 @@ export class LayoutComponent {
           });
           dialogRef.afterClosed().subscribe(result => {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
-             
-              const reviewer_ids = result.selectedValues.map((item:any) => item.id);
-              this.libProjectService.sendForReview(reviewer_ids).subscribe((res:any) =>{
+              this.route.queryParams.subscribe((params: any) => {
+                if (params.projectId) {
+                  
+                  const reviewer_ids = result.selectedValues.map((item:any) => item.id);
+                  this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
+                  })
+                }
               })
             }
             return true;

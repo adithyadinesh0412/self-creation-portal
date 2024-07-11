@@ -158,7 +158,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   submit() {
     this.addSubtaskData();
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
-    this.libProjectService.updateProjectDraft(this.projectId)
+    this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
 
   ngOnDestroy(){
