@@ -5,6 +5,7 @@ import { HttpProviderService } from './services/http-provider.service';
 import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from './services/toast/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class LibSharedModulesService {
 
   private previousUrl !: string;
-  constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService) {
+  constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService,private toastService:ToastService) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.previousUrl = event.url; 
@@ -56,11 +57,11 @@ export class LibSharedModulesService {
 
   openErrorToast(message:any) {
     this.translate.get([message]).subscribe(resp => {
-      this._snackBar.open(resp[message], 'X', {
-        horizontalPosition: "center",
-        verticalPosition: "top",
-        duration:1000
-      });
+      let data = {
+        "message":resp[message],
+        "class":"error",
+      }
+     this.toastService.openSnackBar(data)
     })
    
     

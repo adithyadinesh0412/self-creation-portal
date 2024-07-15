@@ -84,6 +84,8 @@ $borderGray:#d1d3d5;
 $buttonDisable:#80868b;
 $horizontalBlueLine:#dbedfa;
 $warn: #FF0000;
+$error:	#ff3333;
+$success:#008840;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
 
@@ -115,4 +117,29 @@ border: 1px solid $buttonDisable;
 
 .text-tertiary{
 color:$tertiary
+}
+
+.success .mdc-snackbar__surface {
+  background-color: white !important;
+  border-width: 2px 2px 2px 12px;
+  border-style: solid;
+  border-color: $success;
+  border-radius: 25px;
+  color: $success  !important;
+}
+
+.error .mdc-snackbar__surface{
+  background-color: white !important;
+  border-width: 2px 2px 2px 12px;
+  border-style: solid;
+  border-color: $error;
+  border-radius: 25px;
+}
+
+.error .mdc-snackbar__label{
+  color: $error  !important;
+}
+
+.success .mdc-snackbar__label{
+  color: $success  !important;
 }
