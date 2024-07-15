@@ -5,16 +5,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog, MatDialogModule, MatDialogConfig} from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { LibProjectService } from 'lib-project';
-import { FormService, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
+import { FormService, SOLUTION_LIST} from 'lib-shared-modules';
 
 
 @Component({
   selector: 'app-create-new',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, TranslateModule, MatDialogModule],
+  imports: [MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, TranslateModule],
   templateUrl: './create-new.component.html',
   styleUrl: './create-new.component.scss'
 })
@@ -41,7 +39,7 @@ export class CreateNewComponent {
     ]
   }
 
-  constructor(private dialog : MatDialog,private router:Router,private formService:FormService,private libProjectService:LibProjectService) {
+  constructor(private router:Router,private formService:FormService) {
   }
 
   ngOnInit() {

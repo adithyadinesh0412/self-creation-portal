@@ -91,5 +91,9 @@
     "ALL_STATUS": "All status",
     "UNAUTHORIZED_REQUEST":"Unauthorized request",
     "ADD_TITLE_TO_CONTINUE_SAVING":"Add title to continue saving",
-    "CONTINUE":"Continue"
+    "CONTINUE":"Continue",
+    "PROJECT_SUBMITTED_SUCCESSFULLY":"Project submitted successfully",
+    "FILL_THE_DISCRIPTION_OF_THE_ALREADY_ADDED_FIRST":"Fill the description of the already added tasks first",
+    "TASK_LIMIT_REACHED":"Task limit reached. No more tasks can be added.",
+    "YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT":"Your resource has been saved as draft"
 }

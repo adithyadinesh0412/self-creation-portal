@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogPopupComponent, HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService } from 'lib-shared-modules';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,7 +36,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   private autoSaveSubscription: Subscription = new Subscription();
   maxTaskLength = this.libProjectService.maxTaskCount
   private subscription: Subscription = new Subscription();
-  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar) {
+  constructor(private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router,private dialog : MatDialog,private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
@@ -143,7 +143,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       is_mandatory: [false],
       allow_evidence: [true],
       evidence_details: this.fb.group({
-        file_types: [''],
+        file_types: [[]],
         min_no_of_evidences: [1, Validators.min(1)]
       })
     });
@@ -188,7 +188,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   submit() {
-     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
@@ -205,17 +205,17 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   addingTask() {
     const taskCantAddMessage = !this.tasksForm.valid
-      ? 'Fill the description of the already added tasks first'
+      ? 'FILL_THE_DISCRIPTION_OF_THE_ALREADY_ADDED_FIRST'
       : this.tasks.length >= this.maxTaskLength
-        ? 'Task limit reached. No more tasks can be added.'
+        ? 'TASK_LIMIT_REACHED'
         : '';
 
     if (taskCantAddMessage) {
-      this._snackBar.open(taskCantAddMessage, 'X', {
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-        duration: 1000,
-      });
+      let data = {
+        "message":taskCantAddMessage,
+        "class":"error"
+      }
+     this.toastService.openSnackBar(data)
     } else {
       this.addTask();
     }

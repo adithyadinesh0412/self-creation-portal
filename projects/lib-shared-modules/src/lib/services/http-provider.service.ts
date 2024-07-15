@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
+import { ToastService } from './toast/toast.service';
 
 
 
@@ -9,7 +10,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class HttpProviderService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private toastService:ToastService) { }
 
 
     get(endpoint: string, params?: HttpParams) {
@@ -54,6 +55,12 @@ export class HttpProviderService {
       }
       // Here you can add additional logging if needed
       console.error(errorMessage);
+      let data = {
+        "message":errorMessage,
+        "class":"error",
+        "panelClass":"error"
+      }
+     this.toastService.openSnackBar(data)
       return throwError(() => new Error(errorMessage));
     }
 
