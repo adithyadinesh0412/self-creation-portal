@@ -91,5 +91,6 @@
     "ALL_STATUS": "All status",
     "UNAUTHORIZED_REQUEST":"Unauthorized request",
     "ADD_TITLE_TO_CONTINUE_SAVING":"Add title to continue saving",
-    "CONTINUE":"Continue"
+    "CONTINUE":"Continue",
+    "NOT_STARTED":"Not started"
 }

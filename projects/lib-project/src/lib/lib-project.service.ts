@@ -102,11 +102,12 @@ export class LibProjectService {
       this.setData(updatedData);
   }
 
-  deleteProject(projectId:number|string){
+  deleteProject(projectId:number|string,projectData:any){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT}/${projectId}`
+      url : `${this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT}/${projectId}`,
+      payload :  projectData ? projectData : { title: 'Untitled project' }
     };
-    return this.httpService.delete(config.url).pipe(
+    return this.httpService.delete(config.url, { body: config.payload }).pipe(
       map((result : any) => {
         console.log('Delete project successsfully', result);
         return result;
