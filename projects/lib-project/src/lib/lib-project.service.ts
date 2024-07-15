@@ -146,6 +146,12 @@ export class LibProjectService {
 
     return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
+        console.log(result)
+        let data = {
+          message : result.message,
+          class : 'success'
+        }
+        this.toastService.openSnackBar(data)
         return result;
       })
     )

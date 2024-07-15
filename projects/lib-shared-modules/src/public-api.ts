@@ -17,3 +17,4 @@ export * from './lib/guards/canDeactivate/can-deactivate.guard'
 export * from './lib/components/no-result-found/no-result-found.component';
 export * from './lib/components/dialogs/review-model/review-model.component';
 export * from './lib/services/toast/toast.service'
+export * from './lib/constants/urlConstants';

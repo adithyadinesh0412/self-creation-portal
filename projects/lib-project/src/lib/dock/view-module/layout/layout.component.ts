@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { FormService, ReviewModelComponent, SOLUTION_LIST, TASK_DETAILS } from 'lib-shared-modules';
-import { ActivatedRoute } from '@angular/router';
+import { FormService, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS } from 'lib-shared-modules';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -15,7 +15,7 @@ export class LayoutComponent {
   selctedCardItem : any;
   headerData:any
   sidenavData:any
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog,private router:Router,) {
   }
   ngOnInit(){
     this. setConfig()
@@ -87,9 +87,9 @@ export class LayoutComponent {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
               this.route.queryParams.subscribe((params: any) => {
                 if (params.projectId) {
-                  
                   const reviewer_ids = result.selectedValues.map((item:any) => item.id);
                   this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
+                    this.router.navigate([SUBMITTED_FOR_REVIEW]);
                   })
                 }
               })
