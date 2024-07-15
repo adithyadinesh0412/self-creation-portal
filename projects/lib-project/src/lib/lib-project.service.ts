@@ -81,7 +81,7 @@ export class LibProjectService {
 
   openSnackBar() {
     let data = {
-      "message":'Your resource has been saved as draft',
+      "message":'YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT',
       "class":"success",
     }
    this.toastService.openSnackBar(data)

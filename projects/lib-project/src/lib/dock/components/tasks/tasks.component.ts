@@ -205,9 +205,9 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   addingTask() {
     const taskCantAddMessage = !this.tasksForm.valid
-      ? 'Fill the description of the already added tasks first'
+      ? 'FILL_THE_DISCRIPTION_OF_THE_ALREADY_ADDED_FIRST'
       : this.tasks.length >= this.maxTaskLength
-        ? 'Task limit reached. No more tasks can be added.'
+        ? 'TASK_LIMIT_REACHED'
         : '';
 
     if (taskCantAddMessage) {

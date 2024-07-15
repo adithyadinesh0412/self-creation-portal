@@ -56,15 +56,11 @@ export class LibSharedModulesService {
   }
 
   openErrorToast(message:any) {
-    this.translate.get([message]).subscribe(resp => {
       let data = {
-        "message":resp[message],
+        "message":message,
         "class":"error",
       }
-     this.toastService.openSnackBar(data)
-    })
-   
-    
+     this.toastService.openSnackBar(data) 
   }
 }
  
