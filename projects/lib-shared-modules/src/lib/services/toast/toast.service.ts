@@ -1,4 +1,4 @@
-import { Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastComponent } from '../../components/toast/toast.component';
 
@@ -14,6 +14,7 @@ export class ToastService {
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: [data.class],
+      duration: 1000,
       data: data
     });
   }

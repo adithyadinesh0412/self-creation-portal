@@ -143,7 +143,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       is_mandatory: [false],
       allow_evidence: [true],
       evidence_details: this.fb.group({
-        file_types: [''],
+        file_types: [[]],
         min_no_of_evidences: [1, Validators.min(1)]
       })
     });
@@ -188,7 +188,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   submit() {
-     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }

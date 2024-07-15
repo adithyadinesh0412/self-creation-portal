@@ -47,14 +47,11 @@
                             </mat-slide-toggle>
 
                             <div class="border px-2 w-40 text-center" [ngClass]="{'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
-                                <mat-select  [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
-                                    @for(option of tasksData.fileType.options;track option){
-                                    <mat-option [value]="option">
+                                <mat-select multiple="true" [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
+                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option">
                                         {{ option }}
                                     </mat-option>
-                                    }
-
-                                </mat-select>
+                                </mat-select>                         
                             </div>
                             <div class="flex gap-2" [ngClass]="{'disabled-with-pointer-event': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
