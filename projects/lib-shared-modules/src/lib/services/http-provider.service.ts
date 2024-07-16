@@ -33,7 +33,7 @@ export class HttpProviderService {
     }
 
 
-    delete(endpoint: string, options?: { headers?: HttpHeaders, params?: HttpParams, body?: any }) {
+    delete(endpoint: string, options?: { headers?: HttpHeaders, params?: HttpParams }) {
       const updatedOptions = this.addXRequestedWithHeader(options);
       return this.http.delete(endpoint, updatedOptions)
         .pipe(catchError(this.handleError));

@@ -174,7 +174,7 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   deleteProject(item: any) {
-    this.libProjectService.deleteProject(item.id, item).subscribe((response : any) => {
+    this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
       if (this.lists.length === 1 && this.pagination.currentPage > 0) {
         this.pagination.currentPage -= 1;
       }
