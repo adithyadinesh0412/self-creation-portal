@@ -104,7 +104,7 @@ export class LibProjectService {
 
   deleteProject(projectId:number|string){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.DELETE_PROJECT}/${projectId}`
+      url : `${this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT}/${projectId}`
     };
     return this.httpService.delete(config.url).pipe(
       map((result : any) => {
