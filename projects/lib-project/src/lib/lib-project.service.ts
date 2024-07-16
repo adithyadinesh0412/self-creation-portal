@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpProviderService } from 'lib-shared-modules';
+import { HttpProviderService, ToastService } from 'lib-shared-modules';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,7 +23,7 @@ export class LibProjectService {
     tasks:"INVALID"
   }
 
-  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar) {
+  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
       console.log("project service file")
     })
@@ -80,11 +80,11 @@ export class LibProjectService {
   }
 
   openSnackBar() {
-    this._snackBar.open('Your resource has been saved as draft', 'X', {
-      horizontalPosition: "center",
-      verticalPosition: "top",
-      duration:1000
-    });
+    let data = {
+      "message":'YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT',
+      "class":"success",
+    }
+   this.toastService.openSnackBar(data)
   }
 
   upDateProjectTitle(title?:string){
@@ -146,6 +146,12 @@ export class LibProjectService {
 
     return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
+        console.log(result)
+        let data = {
+          message : result.message,
+          class : 'success'
+        }
+        this.toastService.openSnackBar(data)
         return result;
       })
     )
@@ -168,7 +174,7 @@ export class LibProjectService {
   startAutoSave(projectID:string|number) {
     return interval(30000).pipe(
       switchMap(() => {
-        return this.updateProjectDraft(projectID);
+        return this.createOrUpdateProject(this.projectData, projectID);
       })
     );
   }
