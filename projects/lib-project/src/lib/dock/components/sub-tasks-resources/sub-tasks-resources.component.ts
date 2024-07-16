@@ -102,6 +102,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
         case 'ADD_LEARNING_RESOURCE':
           const dialogRef = this.dialog.open(DialogModelComponent, {
+            disableClose: true,
             data: {
               control: this.learningResources,
               ExistingResources:this.taskData[taskIndex].resources

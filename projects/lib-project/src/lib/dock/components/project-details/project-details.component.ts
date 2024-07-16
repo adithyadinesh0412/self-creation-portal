@@ -129,6 +129,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     });
     if (!this.formLib?.myForm.pristine) {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
+        disableClose: true,
         data: {
           header: 'SAVE_CHANGES',
           content: 'UNSAVED_CHNAGES_MESSAGE',
@@ -174,6 +175,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     } else {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
         data: {
+          disableClose: true,
           header: 'SAVE_CHANGES',
           content: 'ADD_TITLE_TO_CONTINUE_SAVING',
           form:[this.formDataForTitle],

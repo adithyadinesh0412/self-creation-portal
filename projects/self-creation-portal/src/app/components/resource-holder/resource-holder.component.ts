@@ -184,6 +184,7 @@ export class ResourceHolderComponent implements OnInit{
 
   confirmAndDeleteProject(item: any) {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      disableClose: true,
       data : {
         header: "DELETE_RESOURCE",
         content:"CONFIRM_DELETE_MESSAGE",
