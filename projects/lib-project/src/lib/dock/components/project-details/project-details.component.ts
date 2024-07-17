@@ -193,7 +193,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
               this.libProjectService.setProjectData({title:result.title});
               this.getFormWithEntitiesAndMap()
               this.saveForm()
-            }   
+            }
             return true;
           } else {
             return false;
@@ -214,7 +214,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
   }
 
- 
+
   isEvent(data:any) {
     return typeof data === 'object' && data !== null &&
            'type' in data && 'target' in data &&
@@ -243,10 +243,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.libProjectService.checkValidationForSubmit() 
+    this.libProjectService.checkValidationForSubmit()
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 }

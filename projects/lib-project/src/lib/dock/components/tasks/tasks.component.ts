@@ -130,7 +130,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       })
     );
     this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
-    this.libProjectService.checkValidationForSubmit()  
+    this.libProjectService.checkValidationForSubmit()
   }
 
   get tasks() {
@@ -196,12 +196,13 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(){
     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-    this.libProjectService.checkValidationForSubmit()  
+    this.libProjectService.checkValidationForSubmit()
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {

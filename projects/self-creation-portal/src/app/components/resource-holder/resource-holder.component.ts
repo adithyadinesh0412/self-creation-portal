@@ -125,6 +125,9 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
       if (this.lists.length === 0) {
         this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
+        if (this.pagination.currentPage > 0) {
+          this.pagination.currentPage -= 1;
+        }
       }
       this.filters.changeReqCount = result.changes_requested_count;
     });
@@ -172,7 +175,10 @@ export class ResourceHolderComponent implements OnInit{
 
   deleteProject(item: any) {
     this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
-      this.getList(); 
+      if (this.lists.length === 1 && this.pagination.currentPage > 0) {
+        this.pagination.currentPage -= 1;
+      }
+      this.getList();
     })
   }
 
