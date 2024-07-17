@@ -58,7 +58,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         this.projectId = params.projectId;
         if(Object.keys(this.libProjectService.projectData).length) {
           this.projectData = this.libProjectService.projectData;
-          this.createSubTaskForm(this.libProjectService.projectData?.tasks?.length > 0 ? this.libProjectService.projectData.tasks?.length : 1, this.libProjectService.projectData.tasks)
+          this.createSubTaskForm()
           this.addSubtaskData()
           this.startAutoSaving();
         }
@@ -66,7 +66,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
             this.libProjectService.setProjectData(res.result);
             this.projectData = res?.result
-            this.createSubTaskForm(res?.result?.tasks?.length > 0 ? res?.result?.tasks?.length : 1, res?.result?.tasks)
+            this.createSubTaskForm()
             this.addSubtaskData()
             this.startAutoSaving();
           })
@@ -83,17 +83,33 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   }
 
-  createSubTaskForm(taskLength:number,tasks?:any){
-    for (let i = 0; i < taskLength; i++) {
-      this.taskData.push({
-        buttons: [{"label":"ADD_OBSERVATION","disable":true},{"label":"ADD_LEARNING_RESOURCE","disable":false},{"label":"ADD_SUBTASKS","disable":false}],
-        subTasks: this.fb.group({
-          subtasks: this.fb.array(tasks?.length > 0 && tasks[i].subtask?.length > 0 ? tasks[i]?.subtask : [])  // Initialize a new FormArray for each task
-      }),
-        resources: tasks?.length > 0 && tasks[i].resources?.length > 0 ? tasks[i]?.resources : []
-      });
+  createSubTaskForm() {
+    const getButtonStates = (taskDescriptionLength: number) => {
+        return taskDescriptionLength
+            ? [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": false}, {"label": "ADD_SUBTASKS", "disable": false}]
+            : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}];
+    };
+
+    const createTaskObject = (task?: any) => {
+        return {
+            buttons: task ? getButtonStates(task.description.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            subTasks: this.fb.group({
+                subtasks: this.fb.array(task?.subtask?.length > 0 ? task.subtask : [])
+            }),
+            resources: task?.resources?.length > 0 ? task.resources : []
+        };
+    };
+
+    if (this.libProjectService.projectData?.tasks?.length > 0) {
+        this.libProjectService.projectData.tasks.forEach((task: any) => {
+            this.taskData.push(createTaskObject(task));
+        });
+    } else {
+        for (let i = 0; i < 2; i++) {
+            this.taskData.push(createTaskObject());
+        }
     }
-  }
+}
 
   onAction(button : string, taskIndex: number) {
       switch (button) {
