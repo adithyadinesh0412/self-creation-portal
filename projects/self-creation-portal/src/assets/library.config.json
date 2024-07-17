@@ -10,5 +10,5 @@
     "otpGenerationApiPathForResetPassword": "/elevate-user/v1/account/generateOtp",
     "supportEmail":"mentoredtest1@yopmail.com",
     "privacyPolicyUrl":"https://shikshalokam.org/mentoring/privacy-policy/",
-    "termOfUseUrl":"https://www.termsofuse.com"
+    "termOfUseUrl":"https://shikshalokam.org/mentoring/term-of-use/"
 }
