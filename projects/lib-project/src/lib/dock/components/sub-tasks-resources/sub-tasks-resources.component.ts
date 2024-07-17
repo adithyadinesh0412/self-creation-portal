@@ -169,5 +169,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 }
