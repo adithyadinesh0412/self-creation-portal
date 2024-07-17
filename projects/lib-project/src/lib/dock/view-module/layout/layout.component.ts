@@ -18,6 +18,10 @@ export class LayoutComponent {
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog,private router:Router,) {
   }
   ngOnInit(){
+    this.libProjectService.validForm={
+      projectDetails: "INVALID",
+      tasks:"INVALID"
+    }
     this. setConfig()
     this.getProjectdata()
     this.libProjectService.currentProjectMetaData.subscribe(data => {
@@ -77,6 +81,7 @@ export class LayoutComponent {
       case "SEND_FOR_REVIEW":
         this.libProjectService.getReviewerData().subscribe((list:any) =>{
           const dialogRef = this.dialog.open(ReviewModelComponent, {
+            disableClose: true,
             data : {
               header: "SEND_FOR_REVIEW",
               reviewdata: list.result.data,

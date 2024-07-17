@@ -130,7 +130,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       })
     );
     this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
-    this.libProjectService.checkValidationForSubmit()  
+    this.libProjectService.checkValidationForSubmit()
   }
 
   get tasks() {
@@ -153,6 +153,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   deleteTask(index: number) {
     let content = (this.tasks.value[index].subtask &&  this.tasks.value[index].subtask.length) || (this.tasks.value[index].resources && this.tasks.value[index].resources.length) ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      disableClose: true,
       data: {
         header: "DELETE_TASK",
         content:content ,
@@ -195,12 +196,13 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(){
     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-    this.libProjectService.checkValidationForSubmit()  
+    this.libProjectService.checkValidationForSubmit()
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {
