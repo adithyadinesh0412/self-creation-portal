@@ -19,24 +19,21 @@ const routes: Routes = [
     children:[
       {
         path:'project-details',
-        component:ProjectDetailsComponent,
-        canDeactivate:[canDeactivateGuard]
+        component:ProjectDetailsComponent
       },
       {
         path:'tasks',
-        component:TasksComponent,
-        canDeactivate:[canDeactivateGuard]
+        component:TasksComponent
       },
       {
           path:'sub-tasks',
-          component:SubTasksResourcesComponent,
-          canDeactivate:[canDeactivateGuard]
+          component:SubTasksResourcesComponent
       },
       {
         path:'certificate',
         component:CertificatesComponent
       }
-      
+
     ]
   }
 ];

@@ -17,10 +17,10 @@ import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 export class ProjectDetailsComponent implements OnDestroy, OnInit {
   dynamicFormData: any;
   projectId: string | number = '';
+  intervalId:any;
   formDataForTitle:any;
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
-  private autoSaveSubscription: Subscription = new Subscription();
   constructor(
     private libProjectService: LibProjectService,
     private router: Router,
@@ -29,6 +29,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.startAutoSaving();
     this.libProjectService.projectData = {};
     this.getFormWithEntitiesAndMap();
     this.subscription.add(
@@ -65,24 +66,23 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                       })
                   );
                 }
-                this.startAutoSaving();
               }
             } else {
-              this.libProjectService
-                .createOrUpdateProject()
-                .subscribe((res: any) => {
-                  (this.projectId = res.result.id),
-                    this.router.navigate([], {
-                      relativeTo: this.route,
-                      queryParams: {
-                        projectId: this.projectId,
-                        mode: 'edit',
-                      },
-                      queryParamsHandling: 'merge',
-                      replaceUrl: true,
-                    });
-                });
-              this.startAutoSaving();
+              this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+              // this.libProjectService
+              // .createOrUpdateProject()
+              // .subscribe((res: any) => {
+              //   (this.projectId = res.result.id),
+              //     this.router.navigate([], {
+              //       relativeTo: this.route,
+              //       queryParams: {
+              //         projectId: this.projectId,
+              //         mode: 'edit',
+              //       },
+              //       queryParamsHandling: 'merge',
+              //       replaceUrl: true,
+              //     });
+              // });
             }
           })
         );
@@ -117,51 +117,37 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     if(this.libProjectService.projectData.tasks){
       this.libProjectService.validForm.tasks =  this.libProjectService.projectData.tasks[0].description ? "VALID": "INVALID"
     }
-    this.libProjectService.checkValidationForSubmit()
+    this.libProjectService.checkValidationForSubmit();
     console.log(this.dynamicFormData);
   }
 
-  canDeactivate(): Promise<any> {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        console.log('Next URL:', event.url);
+  startAutoSaving() {
+    this.intervalId = setInterval(() => {
+      if(!this.projectId) {
+        this.createProject({title:'Untitled project'})
+      } else {
+        this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
       }
-    });
-    if (!this.formLib?.myForm.pristine) {
-      const dialogRef = this.dialog.open(DialogPopupComponent, {
-        disableClose: true,
-        data: {
-          header: 'SAVE_CHANGES',
-          content: 'UNSAVED_CHNAGES_MESSAGE',
-          cancelButton: 'DO_NOT_SAVE',
-          exitButton: 'SAVE',
-        },
-      });
-
-      return dialogRef
-        .afterClosed()
-        .toPromise()
-        .then((result) => {
-          if (result.data === 'DO_NOT_SAVE') {
-            this.libProjectService.projectData = {};
-            return true;
-          } else if (result.data === 'SAVE') {
-            this.saveForm();
-            this.libProjectService.projectData = {};
-            return true;
-          } else {
-            return false;
-          }
-        });
-    } else {
-      return Promise.resolve(true);
-    }
+    }, 30000);
   }
 
-  startAutoSaving() {
-    this.autoSaveSubscription = this.libProjectService
-      .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data));
+  createProject(payload?:any) {
+    this.subscription.add(
+      this.libProjectService
+      .createOrUpdateProject(payload)
+      .subscribe((res: any) => {
+        (this.projectId = res.result.id),
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: {
+              projectId: this.projectId,
+              mode: 'edit',
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+          });
+      })
+    )
   }
 
   saveForm() {
@@ -171,7 +157,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       if (this.projectId) {
         this.libProjectService.updateProjectDraft(this.projectId).subscribe();
       }
-      return;
+      else {
+        return this.createProject({title:this.libProjectService.projectData.title})
+      }
     } else {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
         data: {
@@ -222,31 +210,13 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
            typeof data.stopPropagation === 'function';
   };
 
-  isFormChanged(obj1: any, obj2: any): boolean {
-    if (obj1 === obj2) return true;
-
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
-      return false;
-    }
-
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-
-    if (keys1.length !== keys2.length) return false;
-
-    for (let key of keys1) {
-      if (!keys2.includes(key) || !this.isFormChanged(obj1[key], obj2[key])) return false;
-    }
-
-    return true;
-  }
-
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     this.libProjectService.checkValidationForSubmit()
     this.subscription.unsubscribe();
-    if (this.autoSaveSubscription) {
-      this.autoSaveSubscription.unsubscribe();
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
     }
     this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
