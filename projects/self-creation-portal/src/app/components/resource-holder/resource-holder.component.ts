@@ -193,11 +193,10 @@ export class ResourceHolderComponent implements OnInit{
       if (this.lists.length === 1 && this.pagination.currentPage > 0) {
         this.pagination.currentPage -= 1;
       }
-      let data = {
-        "message":'RESOURCE_DELETED_SUCCESSFULLY',
-        "class":"success",
-      }
-      this.toastService.openSnackBar(data)
+      this.toastService.openSnackBar({
+        "message": 'RESOURCE_DELETED_SUCCESSFULLY',
+        "class": "success"
+      })
       this.getList();
     })
   }
