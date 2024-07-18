@@ -36,10 +36,10 @@
                                     @for(resource of item.resources;track resource;let j= $index){
                                         <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2">
                                             <section class="flex items-center gap-2">
-                                                <mat-icon class="text-xl">videocam_off</mat-icon>
+                                                <img src="assets/images/video-icon.png" alt="My Image">
                                                 <p class="overflow-ellipsis">{{resource.name}}</p>
                                             </section>
-                                            <mat-icon (click)="deleteResource(i, j)" class="cursor-pointer text-xl">cancel</mat-icon>
+                                            <mat-icon (click)="deleteResource(i, j)" class="cursor-pointer">cancel</mat-icon>
                                         </div>
                                     }
                                 </div>
