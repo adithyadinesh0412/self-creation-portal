@@ -175,9 +175,11 @@ export class TasksComponent implements OnInit,OnDestroy {
   }
 
   startAutoSaving() {
-    this.autoSaveSubscription = this.libProjectService
+    this.subscription.add(
+      this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data));
+      .subscribe((data) => console.log(data))
+    )
   }
 
   moveTask(index: number, direction: number) {

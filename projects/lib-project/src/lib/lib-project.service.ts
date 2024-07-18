@@ -57,7 +57,7 @@ export class LibProjectService {
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
-      payload: projectId ? projectData : {title:'Untitled project'}
+      payload: projectData ? projectData : ''
     };
     return this.httpService.post(config.url, config.payload);
   }
@@ -174,7 +174,7 @@ export class LibProjectService {
   startAutoSave(projectID:string|number) {
     return interval(30000).pipe(
       switchMap(() => {
-        return this.createOrUpdateProject(this.projectData, projectID);
+        return this.createOrUpdateProject(this.projectData, this.projectData.id);
       })
     );
   }

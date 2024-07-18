@@ -158,9 +158,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
   startAutoSaving() {
-    this.autoSaveSubscription = this.libProjectService
+    this.subscription.add(
+      this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data));
+      .subscribe((data) => console.log(data))
+    )
   }
 
   addSubtaskData(){
