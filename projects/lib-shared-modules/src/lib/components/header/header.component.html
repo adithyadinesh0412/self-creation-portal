@@ -16,7 +16,7 @@
     @if (headerData?.buttons) {
       <div class="buttons-container">
         @for (button of headerData?.buttons; track button) {
-            <button  [disabled]="button.disable" [ngClass]="{'button-disable': button.disable, 'button-enable': !button.disable}" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
+          <button [disabled]="button.disable" [ngClass]="[ button.disable ? 'button-disable' : button.cssClass]" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
         }
       </div>
     }
