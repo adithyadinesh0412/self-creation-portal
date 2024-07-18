@@ -92,7 +92,7 @@ export class LayoutComponent {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
               this.route.queryParams.subscribe((params: any) => {
                 if (params.projectId) {
-                  const reviewer_ids = result.selectedValues.map((item:any) => item.id);
+                  const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
                   this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
                     this.router.navigate([SUBMITTED_FOR_REVIEW]);
                   })
