@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE } from 'lib-shared-modules';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE, ToastService } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceService } from '../../services/resource-service/resource.service';
@@ -59,7 +59,8 @@ export class ResourceHolderComponent implements OnInit{
     private commonService: CommonService, 
     private libProjectService:LibProjectService, 
     private router:Router, 
-    private dialog : MatDialog) {
+    private dialog : MatDialog,
+    private toastService:ToastService) {
   }
 
   ngOnInit() {
@@ -122,7 +123,7 @@ export class ResourceHolderComponent implements OnInit{
       this.lists = result.data.map(this.addActionButtons);
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
-      this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT');
+      this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT' || item.status === 'SUBMITTED');
       if (this.lists.length === 0) {
         this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
         if (this.pagination.currentPage > 0) {
@@ -134,13 +135,19 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   addActionButtons(item: any): any {
-    item.actionButton = item.actionButton || [
-      { action: 'EDIT', label: 'EDIT', background_color: '#0a4f9d'  },
-      { action: 'DELETE', label: 'DELETE', background_color:'#EC555D' }
-    ];
+    item.actionButton = [];
+    if (item.status === 'DRAFT') {
+      item.actionButton.push(
+        { action: 'EDIT', label: 'EDIT', background_color: '#0a4f9d' },
+        { action: 'DELETE', label: 'DELETE', background_color:'#EC555D' }
+      );
+    } else if (item.status === 'SUBMITTED') {
+      item.actionButton.push(
+        { action: 'VIEW', label: 'VIEW', background_color: '#0a4f9d' }
+      );
+    }
     return item;
   }
-
   //updateQueryParams to router
   updateQueryParams() {
     const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
@@ -168,6 +175,14 @@ export class ResourceHolderComponent implements OnInit{
       case 'DELETE':
         this.confirmAndDeleteProject(item)
         break;
+      case 'VIEW':
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+          queryParams: {
+            projectId: item.id,
+            mode: 'edit'
+          }
+        });
+        break;
       default:
         break;
     }
@@ -178,6 +193,10 @@ export class ResourceHolderComponent implements OnInit{
       if (this.lists.length === 1 && this.pagination.currentPage > 0) {
         this.pagination.currentPage -= 1;
       }
+      this.toastService.openSnackBar({
+        "message": 'RESOURCE_DELETED_SUCCESSFULLY',
+        "class": "success"
+      })
       this.getList();
     })
   }
