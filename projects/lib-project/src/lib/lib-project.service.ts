@@ -141,7 +141,7 @@ export class LibProjectService {
   sendForReview(reviewers:any,projectId:any){
     const config = {
        url : `${this.Configuration.urlConFig.PROJECT_URLS.SEND_FOR_REVIEW}/${projectId}`,
-       payload:{ "reviwer_ids" : reviewers }
+       payload:reviewers
     };
 
     return this.httpService.post(config.url, config.payload).pipe(
