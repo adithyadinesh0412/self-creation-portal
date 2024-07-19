@@ -35,7 +35,6 @@ export class LibProjectService {
 
   setProjectData(data: any) {
     this.projectData = {...this.projectData,...data}
-    console.log(this.projectData);
   }
 
   saveProjectFunc(newAction: boolean) {
@@ -55,6 +54,7 @@ export class LibProjectService {
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
+    this.projectData.title = this.projectData?.title?.length > 0 ? this.projectData.title :'Untitled project';
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectData ? projectData : ''

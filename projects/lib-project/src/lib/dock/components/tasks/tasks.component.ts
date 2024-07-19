@@ -109,15 +109,6 @@ export class TasksComponent implements OnInit,OnDestroy {
         }
         else {
           this.addTask();
-          this.libProjectService.createOrUpdateProject().subscribe((res:any) => {
-            this.projectId = res.result.id
-            this.router.navigate([], {
-              queryParams: {
-                projectId: this.projectId
-              },
-              queryParamsHandling: 'merge'
-            });
-          })
         }
       })
     )
@@ -148,6 +139,8 @@ export class TasksComponent implements OnInit,OnDestroy {
       })
     });
     this.tasks.push(taskGroup);
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.checkValidationForSubmit()
   }
 
   deleteTask(index: number) {
@@ -167,11 +160,19 @@ export class TasksComponent implements OnInit,OnDestroy {
         return true;
       } else if (result.data === "YES") {
         this.tasks.removeAt(index);
+        this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+        this.libProjectService.checkValidationForSubmit()
         return true;
       } else {
         return false;
       }
     });
+  }
+
+  checkValidation() {
+    this.libProjectService.setProjectData({'tasks':this.tasks.value})
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.checkValidationForSubmit()
   }
 
   startAutoSaving() {

@@ -148,3 +148,8 @@ color:$tertiary
 .success .mdc-snackbar__label{
   color: $success  !important;
 }
+
+.no-bottom-line .mdc-line-ripple::before{
+  position: relative;
+  display: none;
+}
