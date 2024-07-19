@@ -16,7 +16,7 @@
                                 <p class="text-tertiary ">{{"TASK" | translate}} {{i+1}}
                                     @if(i == 0){
                                         <span class="asterisk">*</span>
-                                    } 
+                                    }
                                 </p>
                                 <div class="flex gap-3">
                                     <div>
@@ -31,7 +31,7 @@
                         </div>
                         <div>
                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
-                                <textarea matInput [formControlName]="tasksData.description.name"
+                                <textarea matInput [formControlName]="tasksData.description.name" (change)="checkValidation()"
                                     [placeholder]="tasksData.description.placeholder" [maxlength]="tasksData.description.validators.maxLength"></textarea>
                             </mat-form-field>
                         </div>
@@ -51,7 +51,7 @@
                                     <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option">
                                         {{ option }}
                                     </mat-option>
-                                </mat-select>                         
+                                </mat-select>
                             </div>
                             <div class="flex gap-2" [ngClass]="{'disabled-with-pointer-event': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
@@ -64,7 +64,7 @@
                 }
 
             </div>
-            
+
             <div class="px-10 py-2">
                 <button (click)="addingTask()" type="button"  [ngClass]="{'disable-fields': (tasks.length>=maxTaskLength || !tasksForm.valid )}" mat-raised-button class="flex items-center button">
                     <mat-icon class="cursor-pointer" color="primary">add_circle</mat-icon>
