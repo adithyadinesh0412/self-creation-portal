@@ -56,7 +56,7 @@
                             <div class="flex gap-2" [ngClass]="{'disabled-with-pointer-event': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
                                     <input matInput [formControlName]="tasksData.minEvidences.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="1"
-                                        type="number" min="1"  class="w-14 block border text-center" />
+                                        type="number" min="1"  [max]="maxTaskLength" class="w-14 block border text-center" />
                             </div>
                         </div>
                     </div>
