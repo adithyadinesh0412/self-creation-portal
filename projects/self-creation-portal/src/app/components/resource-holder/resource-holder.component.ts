@@ -52,6 +52,8 @@ export class ResourceHolderComponent implements OnInit{
   noResultMessage!: string ;
   noResultFound !: string;
   pageStatus !: string;
+  buttonsData: any = {};
+  buttonsCSS : any;
   constructor(
     private route: ActivatedRoute, 
     private formService: FormService, 
@@ -71,12 +73,15 @@ export class ResourceHolderComponent implements OnInit{
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
+      this.buttonsCSS = form?.result?.data.fields.buttons;
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
       this.pageStatus = currentData?.value || '';
+      this.buttonsData = currentData?.buttonsData[0].buttons || currentData?.buttonsData[0].tagButtons || {} 
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
+      this.filters.showActionButton = this.buttonsData;
     });
   }
 
@@ -86,7 +91,7 @@ export class ResourceHolderComponent implements OnInit{
     this.getList();
     this.updateQueryParams(); 
   }
-
+  
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
     this.pagination.currentPage = 0;
@@ -120,10 +125,9 @@ export class ResourceHolderComponent implements OnInit{
   getList() {
     this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
       const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
-      this.lists = result.data.map(this.addActionButtons);
+      this.lists = this.addActionButtons(result.data)
       this.filters.filteredLists = this.lists;
       this.pagination.totalCount = result.count;
-      this.filters.showActionButton = this.lists.some((item: any) => item.status === 'DRAFT' || item.status === 'SUBMITTED');
       if (this.lists.length === 0) {
         this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
         if (this.pagination.currentPage > 0) {
@@ -134,20 +138,30 @@ export class ResourceHolderComponent implements OnInit{
     });
   }
 
-  addActionButtons(item: any): any {
-    item.actionButton = [];
-    if (item.status === 'DRAFT') {
-      item.actionButton.push(
-        { action: 'EDIT', label: 'EDIT', background_color: '#0a4f9d' },
-        { action: 'DELETE', label: 'DELETE', background_color:'#EC555D' }
-      );
-    } else if (item.status === 'SUBMITTED') {
-      item.actionButton.push(
-        { action: 'VIEW', label: 'VIEW', background_color: '#0a4f9d' }
-      );
+  addActionButtons(cardItems: any): any {
+    if (!this.buttonsData) {
+      return cardItems;
     }
-    return item;
+    cardItems.forEach((cardItem : any) => {
+      cardItem.actionButton = [];
+      if (this.buttonsData) {
+        this.buttonsData.forEach((button: any) => {
+          if (this.buttonsCSS[button]) {
+            cardItem.actionButton.push(this.buttonsCSS[button]);
+          }
+          if(button.buttons){
+            if(button.status === cardItem.status){
+              button.buttons.forEach((button : any) => {
+                cardItem.actionButton.push(this.buttonsCSS[button]);
+              })
+            }
+          }
+        });
+      }
+    });
+    return cardItems
   }
+ 
   //updateQueryParams to router
   updateQueryParams() {
     const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
