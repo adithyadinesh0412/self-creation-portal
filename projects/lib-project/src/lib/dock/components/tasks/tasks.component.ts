@@ -67,8 +67,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
-                    resources: [element.resources ? element.resources : ''],
-                    subtask: [element.subtask ? element.subtask : ''],
+                    children:element.children,
                     sequence_no:[element.sequence_no]
                   });
                   this.tasks.push(task);
@@ -95,8 +94,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                         file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                         min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                       }),
-                      resources: [element.resources ? element.resources : ''],
-                      subtask: [element.subtask ? element.subtask : ''],
+                      children:element.children,
                       sequence_no:[element.sequence_no]
                     });
                     this.tasks.push(task);
@@ -112,6 +110,7 @@ export class TasksComponent implements OnInit,OnDestroy {
           }
         }
         else {
+          this.addTask();
           this.addTask();
         }
       })
@@ -216,7 +215,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
-    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {
