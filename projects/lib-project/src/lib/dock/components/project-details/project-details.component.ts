@@ -98,9 +98,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           return arrayItem.value ? arrayItem.value : arrayItem;
         });
       } else {
-        element.value = res[element.name]?.value
-          ? res[element.name].value
-          : res[element.name];
+          element.value = res[element.name];
       }
       if (element.subfields) {
         element.subfields.forEach((subElement: any) => {
@@ -132,8 +130,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }, 30000);
   }
 
-  createProject(payload?:any) {
-    this.subscription.add(
+  createProject(payload?:any) { // title should be send from calling methods only, due to title can be filled before project creation
       this.libProjectService
       .createOrUpdateProject(payload)
       .subscribe((res: any) => {
@@ -148,7 +145,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             replaceUrl: true,
           });
       })
-    )
   }
 
   saveForm() {
@@ -180,6 +176,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             if(result.title){
               this.libProjectService.upDateProjectTitle(result.title);
               this.libProjectService.setProjectData({title:result.title});
+              if (this.projectId) {
+                this.libProjectService.updateProjectDraft(this.projectId).subscribe();
+              }
+              else {
+                return this.createProject(this.libProjectService.projectData)
+              }
               this.getFormWithEntitiesAndMap()
               this.saveForm()
             }
@@ -193,13 +195,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   getDynamicFormData(data: any) {
+    console.log(data);
     const obj: { [key: string]: any } = {};
     if (!this.isEvent(data)) {
-      if(this.libProjectService.projectData.title != data.title) {
-        console.log('triggered')
-        this.libProjectService.upDateProjectTitle(data.title);
-      }
-      this.libProjectService.setProjectData(data);
+    if(this.libProjectService.projectData.title != data.title) {
+      console.log('triggered')
+      this.libProjectService.upDateProjectTitle(data.title);
+    }
+    this.libProjectService.setProjectData(data);
+    this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.checkValidationForSubmit()
     }
   }
 
@@ -219,6 +224,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
-    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    if(this.projectId) {
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    }
+    else {
+      this.libProjectService
+      .createOrUpdateProject(this.libProjectService.projectData)
+      .subscribe()
+      this.libProjectService.openSnackBar();
+    }
   }
 }
