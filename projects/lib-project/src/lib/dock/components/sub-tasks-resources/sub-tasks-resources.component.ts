@@ -107,8 +107,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
      this.subscription.add(
       this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
         if(res.result.tasks){
-          let data = (res?.result?.tasks.length > this.libProjectService?.projectData.tasks.length) ? res.result.tasks : this.libProjectService.projectData?.tasks
-          data.forEach((task: any) => {
+          res.result.tasks.forEach((task: any) => {
               this.taskData.push(createTaskObject(task));
           });
         }else if (this.libProjectService?.projectData.tasks){
