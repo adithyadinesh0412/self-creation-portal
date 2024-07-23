@@ -1,0 +1,89 @@
+@import  "../../../../../self-creation-portal/src/styles.scss";
+.button {
+    margin-right: 20px;
+  }
+  .button-active {
+    background-color: #9b4dca;
+    color: white;
+  }
+  .button-active:hover,
+  .button-active:focus {
+    background-color: #9b4dca;
+    border-color: #9b4dca;
+    color: #fff;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    background: $primary;
+    color: white;
+    padding: 1rem;
+    border-radius: .5rem 0.5rem 0 0;
+  }
+  .top-bar {
+    margin: 25px 0px;
+  }
+  .message {
+    border-radius: 20px;
+    margin: 5px 5px 7px;
+    padding: 3px 7px;
+    position: relative;
+    font-size: 18px;
+    display: inline-block;
+  }
+  .message.to {
+    background-color: #2095fe;
+    color: #fff;
+    margin-left: 100px;
+    text-align: left;
+    float: right;
+    /*margin: 5px 200px 15px;*/
+    /*width: calc(var(--size) + 2ch)*/
+  }
+  .message.from {
+    background-color: #e5e4e9;
+    color: #363636;
+    margin-right: 100px;
+    text-align: left;
+  }
+  .message.to + .message.to,
+  .message.from + .message.from {
+    margin-top: 10px;
+  }
+  .click-button {
+    width: 10rem;
+    height: 2rem;
+    position: absolute;
+    right: 4rem;
+    bottom: 0;
+  }
+  .save-button {
+    background: $primary;
+  }
+  .chatbox {
+    width: auto;
+    margin: 5px 5px 7px;
+    position: fixed;
+    bottom: 0;
+    right: 2rem;
+    overflow: scroll;
+    box-shadow: -1px 10px 5px 5px lightgray;
+  }
+  .ql-container.ql-snow {
+    border: 0 !important;
+  }
+  .comment-open {
+    background: $primary;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: .5rem 0.5rem 0 0;
+    padding: .7rem 2rem;
+    color: white;
+    position: fixed;
+    right: 2rem;
+    bottom: 0;
+  }
+  .message-date {
+
+  }

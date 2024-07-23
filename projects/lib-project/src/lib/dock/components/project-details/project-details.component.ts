@@ -98,7 +98,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           return arrayItem.value ? arrayItem.value : arrayItem;
         });
       } else {
-          element.value = res[element.name];
+          if(res[element.name]) {
+            element.value = res[element.name].value ? res[element.name].value : res[element.name];
+          }
       }
       if (element.subfields) {
         element.subfields.forEach((subElement: any) => {
@@ -226,11 +228,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
     if(this.projectId) {
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.saveProjectFunc(false);
     }
-    else {
-      this.libProjectService
-      .createOrUpdateProject(this.libProjectService.projectData)
-      .subscribe()
-    }
+    // else {
+    //   this.libProjectService
+    //   .createOrUpdateProject(this.libProjectService.projectData)
+    //   .subscribe()
+    // }
   }
 }
