@@ -4,16 +4,39 @@
 </div>
 <div mat-dialog-content class="h-30">
   <h3 class="text-sm font-bold p-4">{{dialogueData?.content |translate}}</h3>
+  <form #dialogueForm="ngForm">
   @if(dialogueData?.form){
     @for(control of dialogueData?.form; track control){
       <div class="flex">
         <mat-form-field class="w-full" appearance="outline">
           <mat-label>{{ control.label }}</mat-label>
-          <input matInput id="exampleInput" [(ngModel)]="title" placeholder="Type here..."/>
+          <input matInput id="exampleInput" [(ngModel)]="title" name="{{control.name}}" placeholder="Type here..."
+          [maxlength]="control?.validators.maxLength"
+          [required]="control?.validators?.required"
+          [pattern]="control?.validators?.pattern">
         </mat-form-field>
       </div>
+      @if(dialogueForm.controls[control.name] && dialogueForm.controls[control.name].errors){
+        <mat-error class="error-container">
+          <div class="error-message">
+            <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+            @if(dialogueForm.controls[control.name]?.errors?.['required']){
+              <span>{{control.errorMessage.required}}</span>
+            }
+            @if(dialogueForm.controls[control.name]?.errors?.['pattern']){
+              <span>{{control.errorMessage.pattern}}</span>
+            }
+            @if(dialogueForm.controls[control.name]?.errors?.['maxlength']){
+              <span>{{control.errorMessage.maxLength}}</span>
+            }
+          </div>
+        </mat-error>
+      }
+
+
     }
   }
+</form>
 </div>
 <div class="border-t"></div> 
 <div class="flex flex-row justify-end items-center">
