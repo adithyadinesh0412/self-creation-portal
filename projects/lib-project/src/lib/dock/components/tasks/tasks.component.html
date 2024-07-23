@@ -30,9 +30,17 @@
                             </div>
                         </div>
                         <div>
-                            <mat-form-field floatLabel="always" class="w-full" appearance="outline">
+                            <mat-form-field floatLabel="always" class="w-full pb-2" appearance="outline">
                                 <textarea matInput [formControlName]="tasksData.description.name" (change)="checkValidation()"
-                                    [placeholder]="tasksData.description.placeholder" [maxlength]="tasksData.description.validators.maxLength"></textarea>
+                                    [placeholder]="tasksData.description.placeholder" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern"></textarea>
+                                    @if(task.get(tasksData.description.name)?.touched && task.get(tasksData.description.name)?.invalid){
+                                        <mat-error class="flex items-center">
+                                            <div class="error-message">
+                                                <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                                <span class="pl-2"> Enter valid description</span>  
+                                              </div>
+                                        </mat-error>
+                                    }
                             </mat-form-field>
                         </div>
                         <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary">
@@ -48,8 +56,8 @@
 
                             <div class="border px-2 w-40 text-center" [ngClass]="{'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
                                 <mat-select multiple="true" [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
-                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option">
-                                        {{ option }}
+                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option.value">
+                                        {{ option.label }}
                                     </mat-option>
                                 </mat-select>
                             </div>

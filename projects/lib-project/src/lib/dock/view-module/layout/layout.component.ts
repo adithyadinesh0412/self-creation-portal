@@ -37,7 +37,8 @@ export class LayoutComponent {
   }
   setConfig(){
     this.libProjectService.setConfig().subscribe((res:any) => {
-      let project = res.result.find((res:any) => res.resource_type === "projects");
+      this.libProjectService.auto_save_interval =res?.result.instance?.auto_save_interval
+      let project = res.result.resource.find((res:any) => res.resource_type === "projects");
       this.libProjectService.maxTaskCount = project.max_task_count
     })
   }

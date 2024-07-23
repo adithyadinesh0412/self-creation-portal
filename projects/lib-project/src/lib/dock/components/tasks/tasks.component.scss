@@ -21,3 +21,17 @@ input:focus{
   color: $warn;  
   font-weight: bold;
 }
+
+.error-message{
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  margin-top: -18px;
+  align-items: center;
+}
+
+.error-icon{
+  font-size: 16px;
+  width: 20px;
+  height: auto;
+}
