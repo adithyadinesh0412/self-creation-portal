@@ -108,7 +108,20 @@ export class TasksComponent implements OnInit,OnDestroy {
           }
         }
         else {
-          this.addTask();
+          this.libProjectService
+          .createOrUpdateProject({title:'Untitled project'})
+          .subscribe((res: any) => {
+            (this.projectId = res.result.id),
+              this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {
+                  projectId: this.projectId,
+                  mode: 'edit',
+                },
+                queryParamsHandling: 'merge',
+                replaceUrl: true,
+              });
+          })
         }
       })
     )

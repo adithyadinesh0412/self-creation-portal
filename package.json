@@ -24,7 +24,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "authentication_frontend_library": "0.0.59",
-    "dynamic-form-ramkumar": "0.0.33",
+    "dynamic-form-ramkumar": "0.0.34",
     "ng-otp-input": "^1.9.3",
     "ngx-quill": "^26.0.5",
     "rxjs": "~7.8.0",
