@@ -25,13 +25,22 @@ input:focus{
 .error-message{
   display: flex;
   flex-direction: row;
-  font-size: 14px;
-  margin-top: -18px;
   align-items: center;
+  font-size: 12px;
+  padding: 0.125rem 0;
 }
 
 .error-icon{
   font-size: 16px;
   width: 20px;
   height: auto;
+}
+
+.error-container {
+  display: flex;
+  height: 2.000rem;
+}
+
+::ng-deep  .mat-mdc-form-field-subscript-wrapper{
+  display: none !important; 
 }

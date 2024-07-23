@@ -161,8 +161,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       }
     } else {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
+        disableClose: true,
         data: {
-          disableClose: true,
           header: 'SAVE_CHANGES',
           content: 'ADD_TITLE_TO_CONTINUE_SAVING',
           form:[this.formDataForTitle],
