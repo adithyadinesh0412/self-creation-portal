@@ -23,6 +23,7 @@ export class FilterComponent {
   @Output() sortOptionsChanged = new EventEmitter<{ sort_by: string, sort_order: string }>();
   changeButton: string = "CHANGES_REQUIRED";
   @Input() changeReqCount: number = 0
+  @Input() inprogressCount : number = 0
 
   OnClickfilter(event:any, filter: any){
     if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event.value)) {

@@ -40,7 +40,8 @@ export class ResourceHolderComponent implements OnInit{
     filterData: [] as any,
     showChangesButton: false,
     showActionButton: false,
-    changeReqCount : 0
+    changeReqCount : 0,
+    inprogressCount  : 0
   };
 
   sortOptions = {
@@ -77,7 +78,10 @@ export class ResourceHolderComponent implements OnInit{
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
       this.pageStatus = currentData?.value || '';
-      this.buttonsData = currentData?.buttonsData[0].buttons || currentData?.buttonsData[0].tagButtons || {} 
+      this.buttonsData = [
+        ...(currentData.buttonsData ? currentData.buttonsData[0].buttons : []),
+        ...(currentData.statusButtons || [])
+      ];
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
       this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
@@ -135,6 +139,7 @@ export class ResourceHolderComponent implements OnInit{
         }
       }
       this.filters.changeReqCount = result.changes_requested_count;
+      this.filters.inprogressCount  = 0;
     });
   }
 

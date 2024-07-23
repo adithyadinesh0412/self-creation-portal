@@ -1,22 +1,23 @@
 @if(filterData){
-  <div class="container">
-    @for(filter of filterData;track filter){
-      <div class="filter-container">
-            <mat-select [placeholder]="filter.label | translate" [multiple]="filter.isMultiple" (selectionChange)="OnClickfilter($event, filter)">
-                @for(option of filter.option;track option){
-              <mat-option [value]="option.value">{{option.label | translate}}</mat-option>
-                }
-            </mat-select>
-          </div>
+<div class="container">
+  @for(filter of filterData;track filter){
+  <div class="filter-container">
+    @if(filter.option){
+      <mat-select [placeholder]="filter.label | translate" [multiple]="filter.isMultiple" (selectionChange)="OnClickfilter($event, filter)">
+        @for(option of filter.option;track option){
+      <mat-option [value]="option.value">{{option.label | translate}}</mat-option>
+        }
+    </mat-select>
     }
-    @if(showChangesButton){
-    <div class="filter-container">
-      <div>
-        <button class="inline-flex items-center text-primary px-2">{{ changeButton | translate }}
-          <span class="ml-2 flex items-center justify-center w-5 h-5 rounded-full bg-numberCircle text-white text-sm">{{ changeReqCount }}</span>
-        </button>
-      </div>
-    </div>
-  }
+    @else {
+        <div>
+          <button class="inline-flex items-center text-primary px-2">
+          {{ filter.label | translate }}
+          <span class="ml-2 flex items-center justify-center w-5 h-5 rounded-full bg-numberCircle text-white text-sm">{{ changeReqCount || inprogressCount  }}</span>
+          </button>
+        </div>
+    }
   </div>
+  }
+</div>
 }
