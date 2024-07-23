@@ -231,7 +231,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService
       .createOrUpdateProject(this.libProjectService.projectData)
       .subscribe()
-      this.libProjectService.openSnackBar();
     }
   }
 }

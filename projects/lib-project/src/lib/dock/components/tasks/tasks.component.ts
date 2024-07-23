@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
-
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'lib-tasks',
@@ -59,6 +59,7 @@ export class TasksComponent implements OnInit,OnDestroy {
               if(this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
                 this.libProjectService.projectData.tasks.forEach((element:any) => {
                   const task = this.fb.group({
+                    id:[element.id],
                     description: [element.description ? element.description : '', Validators.required],
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                     allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
@@ -66,8 +67,8 @@ export class TasksComponent implements OnInit,OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
-                    resources: [element.resources ? element.resources : ''],
-                    subtask: [element.subtask ? element.subtask : ''],
+                    children:element.children,
+                    sequence_no:[element.sequence_no]
                   });
                   this.tasks.push(task);
                 })
@@ -85,6 +86,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                 if(res && res.result.tasks && res.result.tasks.length) {
                   res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({
+                      id:[element.id],
                       description: [element.description ? element.description : '', Validators.required],
                       is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                       allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
@@ -92,8 +94,8 @@ export class TasksComponent implements OnInit,OnDestroy {
                         file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                         min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                       }),
-                      resources: [element.resources ? element.resources : ''],
-                      subtask: [element.subtask ? element.subtask : ''],
+                      children:element.children,
+                      sequence_no:[element.sequence_no]
                     });
                     this.tasks.push(task);
                   })
@@ -108,6 +110,7 @@ export class TasksComponent implements OnInit,OnDestroy {
           }
         }
         else {
+          this.addTask();
           this.addTask();
         }
       })
@@ -130,6 +133,8 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   addTask() {
     const taskGroup = this.fb.group({
+      id:uuidv4(),
+      type: "content",
       description: ['', Validators.required],
       is_mandatory: [false],
       allow_evidence: [true],
@@ -193,6 +198,11 @@ export class TasksComponent implements OnInit,OnDestroy {
 
   submit() {
     this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    console.log(this.tasks)
+    this.tasks.value.forEach((item:any, index:any) => {
+      item.sequence_no = index + 1;
+    });
+  console.log(this.tasks.value)
     this.libProjectService.setProjectData({'tasks':this.tasks.value})
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
@@ -205,7 +215,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
-    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {
