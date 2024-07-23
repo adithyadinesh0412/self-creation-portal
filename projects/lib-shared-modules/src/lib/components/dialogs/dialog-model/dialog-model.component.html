@@ -54,6 +54,6 @@
   <hr>
   <section class="footer">
     <button mat-raised-button [mat-dialog-close]="false" class="cancel-btn">{{dialogData.control.cancelButton}}</button>
-    <button [disabled]="myGroup.invalid" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial (click)="confirmButton()">{{dialogData.control.confirmButton}}</button>
+    <button [disabled]="myGroup.invalid" color="primary"  mat-raised-button [mat-dialog-close]="true" cdkFocusInitial (click)="confirmButton()">{{dialogData.control.confirmButton}}</button>
   </section>
 </form>
