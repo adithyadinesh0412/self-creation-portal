@@ -17,7 +17,8 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
-  maxTaskCount:number=0
+  maxTaskCount:number=10
+  auto_save_interval:number=30000;
   validForm={
     projectDetails: "INVALID",
     tasks:"INVALID"
@@ -172,7 +173,7 @@ export class LibProjectService {
   }
 
   startAutoSave(projectID:string|number) {
-    return interval(30000).pipe(
+    return interval(this.auto_save_interval).pipe(
       switchMap(() => {
         return this.createOrUpdateProject(this.projectData, this.projectData.id);
       })
