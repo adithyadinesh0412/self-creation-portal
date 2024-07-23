@@ -75,7 +75,6 @@ export class TasksComponent implements OnInit,OnDestroy {
               }
               else{
                 this.addTask();
-                this.addTask();
               }
               this.startAutoSaving();
             }
@@ -102,7 +101,6 @@ export class TasksComponent implements OnInit,OnDestroy {
                 }
                 else{
                   this.addTask();
-                  this.addTask();
                 }
                 this.startAutoSaving();
               })
@@ -110,7 +108,6 @@ export class TasksComponent implements OnInit,OnDestroy {
           }
         }
         else {
-          this.addTask();
           this.addTask();
         }
       })

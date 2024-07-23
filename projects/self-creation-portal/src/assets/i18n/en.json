@@ -98,5 +98,6 @@
     "TASK_LIMIT_REACHED":"Task limit reached. No more tasks can be added.",
     "YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT":"Your resource has been saved as draft",
     "VIEW":"View",
-    "RESOURCE_DELETED_SUCCESSFULLY":"Resource deleted successfully"
+    "RESOURCE_DELETED_SUCCESSFULLY":"Resource deleted successfully",
+    "NO_REVIEWERS_FOUND":"No reviewers found. Contact your organization admin."
 }

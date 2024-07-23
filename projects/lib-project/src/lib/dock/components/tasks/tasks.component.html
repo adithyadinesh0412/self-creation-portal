@@ -56,8 +56,8 @@
 
                             <div class="border px-2 w-40 text-center" [ngClass]="{'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
                                 <mat-select multiple="true" [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
-                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option">
-                                        {{ option }}
+                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option.value">
+                                        {{ option.label }}
                                     </mat-option>
                                 </mat-select>
                             </div>
