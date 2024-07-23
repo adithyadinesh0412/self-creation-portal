@@ -6,18 +6,19 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { FormService, SOLUTION_LIST} from 'lib-shared-modules';
+import { CommentsBoxComponent, FormService, SOLUTION_LIST} from 'lib-shared-modules';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-create-new',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, TranslateModule,CommentsBoxComponent,CommonModule],
   templateUrl: './create-new.component.html',
   styleUrl: './create-new.component.scss'
 })
 export class CreateNewComponent {
-  resourceList : any
+  resourceList : any;
 
   resourceHeader = {
     "title":"PROJECT_NAME",
@@ -51,9 +52,9 @@ export class CreateNewComponent {
   }
 
   getsolutionList() {
-    this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
-      this.resourceList = form?.result?.data?.fields?.controls
-      this.formService.getPermissions().subscribe((res:any) => {
+    this.formService.getPermissions().subscribe((res:any) => {
+      this.formService.getForm(SOLUTION_LIST).subscribe((form) =>{
+        this.resourceList = form?.result?.data?.fields?.controls
         this.resourceList = this.formService.checkPermissions(this.resourceList,res.result)
       })
     })
