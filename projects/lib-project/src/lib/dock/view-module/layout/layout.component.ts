@@ -91,6 +91,8 @@ export class LayoutComponent {
           });
           dialogRef.afterClosed().subscribe(result => {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
+              this.libProjectService
+              .createOrUpdateProject(this.libProjectService.projectData).subscribe((res) => {
               this.route.queryParams.subscribe((params: any) => {
                 if (params.projectId) {
                   const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
@@ -99,11 +101,12 @@ export class LayoutComponent {
                   })
                 }
               })
+            })
             }
             return true;
           });
-        })  
-        break; 
+        })
+        break;
       default:
             break;
     }

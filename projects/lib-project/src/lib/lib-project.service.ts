@@ -56,6 +56,12 @@ export class LibProjectService {
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
     this.projectData.title = this.projectData?.title?.length > 0 ? this.projectData.title :'Untitled project';
+    for (let key in projectData) {
+      if(Array.isArray(projectData[key])) {
+        projectData[key] = projectData[key].map((element:any) =>  element.value ? element.value : element)
+      }
+      projectData[key]= projectData[key]?.value ? projectData[key].value : projectData[key];
+    }
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectData ? projectData : ''

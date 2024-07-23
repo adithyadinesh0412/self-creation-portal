@@ -109,7 +109,7 @@ export class TasksComponent implements OnInit,OnDestroy {
         }
         else {
           this.libProjectService
-          .createOrUpdateProject({title:'Untitled project'})
+          .createOrUpdateProject({...this.libProjectService.projectData,...{title:'Untitled project'}})
           .subscribe((res: any) => {
             (this.projectId = res.result.id),
               this.router.navigate([], {
