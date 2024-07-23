@@ -11,6 +11,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LibProjectService } from '../../../lib-project.service'
 import { Subscription } from 'rxjs/internal/Subscription';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'lib-sub-tasks-resources',
@@ -94,16 +95,32 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         return {
             buttons: task ? getButtonStates(task.description.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
             subTasks: this.fb.group({
-                subtasks: this.fb.array(task?.subtask?.length > 0 ? task.subtask : [])
+                subtasks: this.fb.array(task?.children?.[0]?.subtask?.length > 0 ? task.children?.[0].subtask : [])
             }),
-            resources: task?.resources?.length > 0 ? task.resources : []
+             resources : task?.children?.[0]?.learning_resources?.length > 0 ? task.children?.[0].learning_resources : [],
+             id: task?.children?.[0]?.id ?  task.children[0].id : "",
+             parent_id :task?.children?.[0]?.parent_id? task.children[0].parent_id : ""
         };
     };
 
     if (this.libProjectService.projectData?.tasks?.length > 0) {
-        this.libProjectService.projectData.tasks.forEach((task: any) => {
-            this.taskData.push(createTaskObject(task));
-        });
+     this.subscription.add(
+      this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
+        if(res.result.tasks){
+          res.result.tasks.forEach((task: any) => {
+              this.taskData.push(createTaskObject(task));
+          });
+        }else if (this.libProjectService?.projectData.tasks){
+          this.libProjectService?.projectData.tasks.forEach((task: any) => {
+              this.taskData.push(createTaskObject(task));
+          });
+        }else{
+          for (let i = 0; i < 1; i++) {
+            this.taskData.push(createTaskObject());
+        }
+        }
+       })
+     )     
     } else {
         for (let i = 0; i < 2; i++) {
             this.taskData.push(createTaskObject());
@@ -158,16 +175,26 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
   startAutoSaving() {
-    this.autoSaveSubscription = this.libProjectService
+    this.subscription.add(
+      this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data));
+      .subscribe((data) => console.log(data))
+    )
   }
 
   addSubtaskData(){
     if(this.projectData?.tasks) {
       for (let i = 0; i < this.projectData.tasks.length; i++) {
-        this.projectData.tasks[i]['resources'] = this.taskData[i].resources
-        this.projectData.tasks[i]['subtask'] = this.taskData[i].subTasks.value.subtasks
+        this.projectData.tasks[i]['children'] =[
+          {
+            "id":uuidv4(),
+            "learning_resources": this.taskData[i]?.resources,
+            "subtask" : this.taskData[i]?.subTasks.value.subtasks,
+            "type": "content",
+            "parent_id": this.projectData?.tasks[i].id,
+            "sequence_no": 1
+          }
+        ]
       }
     }
   }
@@ -185,6 +212,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
-    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 }

@@ -101,5 +101,6 @@
     "RESOURCE_DELETED_SUCCESSFULLY":"Resource deleted successfully",
     "INPROGRESS" : "In progress",
     "START_REVIEW" : "Start review",
-    "RESUME_REVIEW" : "Resume review"
+    "RESUME_REVIEW" : "Resume review",
+    "NO_REVIEWERS_FOUND":"No reviewers found. Contact your organization admin."
 }

@@ -5,9 +5,11 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 import { inject } from '@angular/core';
 import { LibSharedModulesService } from 'lib-shared-modules';
 import { environment } from 'environments';
+import { MatDialog } from '@angular/material/dialog';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const commonService = inject(LibSharedModulesService);
+  const matDialog = inject(MatDialog);
   const authToken = localStorage.getItem('accToken');
   let authReq = req.clone({})
   if (req.headers.get('X-Requested-With') === 'XMLHttpRequest') {
@@ -29,6 +31,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       commonService.openErrorToast(error.error.message)
       if(error.status === 401){
+        matDialog.closeAll();
         commonService.navigateToLogin()
       }
       return throwError(error);

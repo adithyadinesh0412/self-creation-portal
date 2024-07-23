@@ -105,6 +105,11 @@ body{
   color: $primary;
   border: 1px solid $primary;
 }
+.primary-button-enable{
+  color: $secondary;
+  border: 1px solid $primary;
+  background-color: $primary;
+}
 .button-disable{
 background-color: $buttonDisable;
 color: $secondary;
@@ -142,4 +147,9 @@ color:$tertiary
 
 .success .mdc-snackbar__label{
   color: $success  !important;
+}
+
+.no-bottom-line .mdc-line-ripple::before{
+  position: relative;
+  display: none;
 }

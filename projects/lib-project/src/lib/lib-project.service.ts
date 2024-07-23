@@ -17,7 +17,8 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
-  maxTaskCount:number=0
+  maxTaskCount:number=10
+  auto_save_interval:number=30000;
   validForm={
     projectDetails: "INVALID",
     tasks:"INVALID"
@@ -35,7 +36,6 @@ export class LibProjectService {
 
   setProjectData(data: any) {
     this.projectData = {...this.projectData,...data}
-    console.log(this.projectData);
   }
 
   saveProjectFunc(newAction: boolean) {
@@ -55,9 +55,10 @@ export class LibProjectService {
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
+    this.projectData.title = this.projectData?.title?.length > 0 ? this.projectData.title :'Untitled project';
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
-      payload: projectId ? projectData : {title:'Untitled project'}
+      payload: projectData ? projectData : ''
     };
     return this.httpService.post(config.url, config.payload);
   }
@@ -141,7 +142,7 @@ export class LibProjectService {
   sendForReview(reviewers:any,projectId:any){
     const config = {
        url : `${this.Configuration.urlConFig.PROJECT_URLS.SEND_FOR_REVIEW}/${projectId}`,
-       payload:{ "reviwer_ids" : reviewers }
+       payload:reviewers
     };
 
     return this.httpService.post(config.url, config.payload).pipe(
@@ -172,9 +173,9 @@ export class LibProjectService {
   }
 
   startAutoSave(projectID:string|number) {
-    return interval(30000).pipe(
+    return interval(this.auto_save_interval).pipe(
       switchMap(() => {
-        return this.createOrUpdateProject(this.projectData, projectID);
+        return this.createOrUpdateProject(this.projectData, this.projectData.id);
       })
     );
   }
