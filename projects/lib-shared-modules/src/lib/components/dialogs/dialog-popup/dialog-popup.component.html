@@ -10,14 +10,14 @@
       <div class="flex">
         <mat-form-field class="w-full" appearance="outline">
           <mat-label>{{ control.label }}</mat-label>
-          <input matInput id="exampleInput" [(ngModel)]="title" name="{{control.name}}" placeholder="Type here..."
+          <input matInput id="exampleInput"  [(ngModel)]="title"   #input="ngModel" name="{{control.name}}" placeholder="Type here..."
           [maxlength]="control?.validators.maxLength"
           [required]="control?.validators?.required"
           [pattern]="control?.validators?.pattern">
         </mat-form-field>
       </div>
-      @if(dialogueForm.controls[control.name] && dialogueForm.controls[control.name].errors){
         <mat-error class="error-container">
+          @if(input.touched && dialogueForm.controls[control.name] && dialogueForm.controls[control.name].errors){
           <div class="error-message">
             <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
             @if(dialogueForm.controls[control.name]?.errors?.['required']){
@@ -30,10 +30,8 @@
               <span>{{control.errorMessage.maxLength}}</span>
             }
           </div>
+        }
         </mat-error>
-      }
-
-
     }
   }
 </form>
