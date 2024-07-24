@@ -30,12 +30,12 @@ export const appConfig: ApplicationConfig = {
     { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] }
   ],
 };
-// export function configFactory(http: HttpClient): any {
-//   return http.get('assets/library.config.json');
-// }
 export function configFactory(http: HttpClient): any {
-  return http.get("../assets/config/library-config.json").pipe(switchMap((data:any)=>{
-    data.baseUrl = environment.baseURL
-    return of(data)
-  }))
+  return http.get('assets/library.config.json');
 }
+// export function configFactory(http: HttpClient): any {
+//   return http.get("../assets/config/library-config.json").pipe(switchMap((data:any)=>{
+//     data.baseUrl = environment.baseURL
+//     return of(data)
+//   }))
+// }
