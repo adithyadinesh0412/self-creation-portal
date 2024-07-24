@@ -51,6 +51,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
+        this.libProjectService.projectData.id = params.projectId;
         console.log(this.route)
         if(params.projectId){
           if(params.mode === 'edit') {
@@ -121,6 +122,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                 queryParamsHandling: 'merge',
                 replaceUrl: true,
               });
+              this.libProjectService.projectData.id = res.result.id;
           })
         }
       })
@@ -225,7 +227,9 @@ export class TasksComponent implements OnInit,OnDestroy {
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    if(this.libProjectService.projectData.length > 0) {
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    }
   }
 
   addingTask() {

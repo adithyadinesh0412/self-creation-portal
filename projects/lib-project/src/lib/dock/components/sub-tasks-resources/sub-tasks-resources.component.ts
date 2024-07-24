@@ -120,7 +120,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         }
         }
        })
-     )     
+     )
     } else {
         for (let i = 0; i < 2; i++) {
             this.taskData.push(createTaskObject());
@@ -212,6 +212,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
+    if(this.libProjectService.projectData.length > 0) {
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    }
   }
 }
