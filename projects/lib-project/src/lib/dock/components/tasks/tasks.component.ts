@@ -31,6 +31,7 @@ export class TasksComponent implements OnInit,OnDestroy {
   projectId:string|number = '';
   taskFileTypes: string[] = ['PDF', 'Image'];
   tasksData:any;
+  viewOnly:boolean = false;
   SHIFT_TASK_UP ='SHIFT_TASK_UP';
   SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
   private autoSaveSubscription: Subscription = new Subscription();
@@ -53,11 +54,36 @@ export class TasksComponent implements OnInit,OnDestroy {
         this.projectId = params.projectId;
         console.log(this.route)
         if(params.projectId){
-          if(params.mode === 'edit') {
-            if(Object.keys(this.libProjectService.projectData).length) {
+          if(Object.keys(this.libProjectService.projectData).length) {
+            this.tasksForm.reset()
+            if(this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
+              this.libProjectService.projectData.tasks.forEach((element:any) => {
+                const task = this.fb.group({
+                  id:[element.id],
+                  description: [element.description ? element.description : '', Validators.required],
+                  is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                  allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                  evidence_details: this.fb.group({
+                    file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                    min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                  }),
+                  children:[element.children],
+                  sequence_no:[element.sequence_no]
+                });
+                this.tasks.push(task);
+              })
+            }
+            else{
+              this.addTask();
+            }
+            this.startAutoSaving();
+          }
+          else {
+            this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
               this.tasksForm.reset()
-              if(this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
-                this.libProjectService.projectData.tasks.forEach((element:any) => {
+              this.libProjectService.projectData = res.result;
+              if(res && res.result.tasks && res.result.tasks.length) {
+                res.result.tasks.forEach((element:any) => {
                   const task = this.fb.group({
                     id:[element.id],
                     description: [element.description ? element.description : '', Validators.required],
@@ -67,7 +93,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
-                    children:element.children,
+                    children:[element.children],
                     sequence_no:[element.sequence_no]
                   });
                   this.tasks.push(task);
@@ -77,34 +103,19 @@ export class TasksComponent implements OnInit,OnDestroy {
                 this.addTask();
               }
               this.startAutoSaving();
-            }
-            else {
-              this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
-                this.tasksForm.reset()
-                this.libProjectService.projectData = res.result;
-                if(res && res.result.tasks && res.result.tasks.length) {
-                  res.result.tasks.forEach((element:any) => {
-                    const task = this.fb.group({
-                      id:[element.id],
-                      description: [element.description ? element.description : '', Validators.required],
-                      is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                      allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-                      evidence_details: this.fb.group({
-                        file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                        min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                      }),
-                      children:element.children,
-                      sequence_no:[element.sequence_no]
-                    });
-                    this.tasks.push(task);
-                  })
-                }
-                else{
-                  this.addTask();
-                }
-                this.startAutoSaving();
-              })
-            }
+            })
+          }
+          if(params.mode === 'edit') {
+            
+          }else if(params.mode === 'viewOnly'){
+            this.viewOnly = true;
+            console.log("sumaaaaaaaaaaaaaaaaaaaaaaaaa")
+            this.tasks.disable()
+          }
+
+
+          if(this.viewOnly){
+            this.tasks.disable()
           }
         }
         else {
@@ -122,19 +133,30 @@ export class TasksComponent implements OnInit,OnDestroy {
                 replaceUrl: true,
               });
           })
+          if(this.viewOnly){
+            this.tasks.disable()
+          }
         }
       })
     )
     this.subscription.add(
+      
       this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
         if(isProjectSave && this.router.url.includes('tasks')) {
           console.log("from subject it's getting called")
+          if(this.viewOnly){
+            this.tasks.disable()
+          }
           this.submit();
         }
       })
     );
     this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
     this.libProjectService.checkValidationForSubmit()
+
+    if(this.viewOnly){
+      this.tasks.disable()
+    }
   }
 
   get tasks() {

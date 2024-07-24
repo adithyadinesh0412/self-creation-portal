@@ -184,10 +184,16 @@ export class ResourceHolderComponent implements OnInit{
     const { label, item } = event;
     switch (label) {
       case 'EDIT':
+        // this.router.navigate([PROJECT_DETAILS_PAGE], {
+        //   queryParams: {
+        //     projectId: item.id,
+        //     mode: 'edit'
+        //   }
+        // });
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'edit'
+            mode: 'viewOnly'
           }
         });
         break;

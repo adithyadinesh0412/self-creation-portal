@@ -39,6 +39,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   learningResources:any
   projectId:string|number = '';
   projectData:any;
+  viewOnly:boolean = false;
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -57,6 +58,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
+
         if(Object.keys(this.libProjectService.projectData).length) {
           this.projectData = this.libProjectService.projectData;
           this.createSubTaskForm()
@@ -71,6 +73,10 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.addSubtaskData()
             this.startAutoSaving();
           })
+        }
+
+        if(params.mode === 'viewOnly'){
+          this.viewOnly = true;
         }
       })
     );

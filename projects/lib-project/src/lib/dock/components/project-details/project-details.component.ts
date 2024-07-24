@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
-import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
+import { DynamicFormModule, MainFormComponent } from '@elevate/dynamic-form';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogPopupComponent, FormService } from 'lib-shared-modules';
+
 
 @Component({
   selector: 'lib-project-details',
@@ -19,6 +20,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   projectId: string | number = '';
   intervalId:any;
   formDataForTitle:any;
+  viewOnly:boolean= false;
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   constructor(
@@ -52,20 +54,23 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
             if (params.projectId) {
+              if (Object.keys(this.libProjectService.projectData).length) {
+                this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+              } else {
+                this.subscription.add(
+                  this.libProjectService
+                    .readProject(this.projectId)
+                    .subscribe((res: any) => {
+                      this.libProjectService.setProjectData(res.result);
+                      this.readProjectDeatilsAndMap(data.controls,res.result);
+                      this.libProjectService.upDateProjectTitle();
+                    })
+                );
+              }
               if (params.mode === 'edit') {
-                if (Object.keys(this.libProjectService.projectData).length) {
-                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-                } else {
-                  this.subscription.add(
-                    this.libProjectService
-                      .readProject(this.projectId)
-                      .subscribe((res: any) => {
-                        this.libProjectService.setProjectData(res.result);
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
-                        this.libProjectService.upDateProjectTitle();
-                      })
-                  );
-                }
+               
+              }else if(params.mode === 'viewOnly'){
+                this.viewOnly = true
               }
             } else {
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);

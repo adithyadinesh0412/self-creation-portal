@@ -23,6 +23,7 @@ export class LibProjectService {
     projectDetails: "INVALID",
     tasks:"INVALID"
   }
+  viewOnly:boolean= false;
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
