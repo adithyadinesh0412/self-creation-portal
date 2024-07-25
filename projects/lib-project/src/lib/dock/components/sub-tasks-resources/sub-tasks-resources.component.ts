@@ -115,16 +115,12 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.taskData.push(createTaskObject(task));
           });
         }else{
-          for (let i = 0; i < 1; i++) {
             this.taskData.push(createTaskObject());
-        }
         }
        })
      )
     } else {
-        for (let i = 0; i < 1; i++) {
             this.taskData.push(createTaskObject());
-        }
     }
 }
 
