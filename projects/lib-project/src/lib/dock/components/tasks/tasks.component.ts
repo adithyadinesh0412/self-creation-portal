@@ -55,7 +55,7 @@ export class TasksComponent implements OnInit,OnDestroy {
         console.log(this.route)
         if(params.projectId){
           if(params.mode === 'edit') {
-            if(Object.keys(this.libProjectService.projectData).length) {
+            if(Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
               if(this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
                 this.libProjectService.projectData.tasks.forEach((element:any) => {
@@ -227,9 +227,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
-    if(this.libProjectService.projectData.length > 0) {
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-    }
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {
