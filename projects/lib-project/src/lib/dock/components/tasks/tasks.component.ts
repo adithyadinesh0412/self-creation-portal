@@ -151,7 +151,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       is_mandatory: [false],
       allow_evidence: [true],
       evidence_details: this.fb.group({
-        file_types: [[]],
+        file_types: [[this.tasksData.fileType.options[0].value]],
         min_no_of_evidences: [1, Validators.min(1)]
       })
     });
