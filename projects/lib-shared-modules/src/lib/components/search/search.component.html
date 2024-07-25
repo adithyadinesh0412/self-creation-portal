@@ -2,5 +2,5 @@
     <div class="flex text-center">
         <mat-icon class="search-icon" matPrefix (click)="onSearch(searchInput.value)">search</mat-icon>
     </div>
-    <input matInput #searchInput [formControl]="searchControl" [attr.maxlength]="maxLength"  (keyup.enter)="onSearch(searchInput.value)" placeholder="Search" >
+    <input type="search" matInput #searchInput [formControl]="searchControl" [attr.maxlength]="maxLength"  (keyup.enter)="onSearch(searchInput.value)" placeholder="Search" >
 </div>

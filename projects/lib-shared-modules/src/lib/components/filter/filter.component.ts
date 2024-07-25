@@ -18,12 +18,12 @@ interface FilterChangeEvent {
 })
 export class FilterComponent {
   @Input() filterData:any;
-  @Input() showChangesButton: boolean = false;
   @Output() filteredData = new EventEmitter<FilterChangeEvent | { sort_by: string, sort_order: string }>();
   @Output() sortOptionsChanged = new EventEmitter<{ sort_by: string, sort_order: string }>();
   changeButton: string = "CHANGES_REQUIRED";
   @Input() changeReqCount: number = 0
   @Input() inprogressCount : number = 0
+  @Output() filterButtonClickEvent = new EventEmitter<{ label: string }>();
 
   OnClickfilter(event:any, filter: any){
     if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event.value)) {
@@ -59,5 +59,9 @@ export class FilterComponent {
         this.filteredData.emit({ filterName: filter.value, values: [event.value] });
       }
     }
+  }
+
+  onButtonClick(filter: any){
+    this.filterButtonClickEvent.emit(filter)
   }
 }

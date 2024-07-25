@@ -12,7 +12,10 @@ module.exports = {
         'chipPurple':'#A59EFB',
         'chipRejected':'#FD6969',
         'chipPublished':'#008840',
-        'numberCircle': '#EC555D'
+        'numberCircle': '#EC555D',
+        'chipInprogress': '#FEEC8C',
+        'blackText': '#000000',
+        "chipBorder":'#9FA9C2'
       },
     },
   },

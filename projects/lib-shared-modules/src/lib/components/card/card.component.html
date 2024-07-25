@@ -8,6 +8,11 @@
                         <div class="chip-container capitalize item-center text-center bg-chipPurple">
                             {{list.type | translate}}
                         </div>
+                        @if(list.status === 'NOT_STARTED'){
+                            <div class="chip-container capitalize item-center text-center bg-tertiary">
+                                {{list.status | translate}}
+                            </div>
+                        }
                         @if(list.status === 'REJECTED' || list.status === 'REPORTED_AND_REJECTED') {
                             <div class="chip-container capitalize item-center text-center bg-chipRejected text-white">
                                 <div class="flex justify-center items-center">
@@ -26,6 +31,18 @@
                                 {{list.status | translate}}
                             </div>
                         }
+                        @if(list.status === 'COMMENTS'){
+                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-blackText">
+                                <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
+                                {{list.status | translate}}
+                            </div>
+                        }
+                        @if(list.status === 'INPROGRESS'){
+                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-blackText">
+                                <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
+                                {{list.status | translate}}
+                            </div>
+                        }
                     </div>
                     <div class="flex flex-column">
                         <p class="text capitalize overflow-ellipsis" [matTooltip]="list.title | translate">{{list.title | translate}}</p>
@@ -33,7 +50,12 @@
                             By <span class="ml-1 overflow-ellipsis">{{ list.creator | translate }}</span>
                         </div>
                     </div>
-
+                    @if(list.type === 'Program'){
+                        <div class="flex flex-row text-sm text-[$borderGray]"> 
+                            <div class="flex font-semibold">Start date:</div><span class="overflow-ellipsis">24/07/24</span>
+                            <div class="flex font-semibold ml-1">End date:</div><span class="overflow-ellipsis">24/07/24</span>
+                        </div>
+                    }
                 </div>
                 <div class="flex-row flex-end ">
                     <div class=" flex justify-center items-center">

@@ -10,10 +10,5 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './no-result-found.component.scss'
 })
 export class NoResultFoundComponent {
-  @Input() imagePath!: string;
   @Input() noResultMessage!: string;
-
-  getImageUrl(): string {
-    return this.imagePath
-  }
 }
