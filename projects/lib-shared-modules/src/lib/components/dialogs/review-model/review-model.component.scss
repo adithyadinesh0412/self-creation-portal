@@ -3,3 +3,17 @@
     background-color: gray;
     border: none;
 }
+
+.text-box {
+    position: relative;
+  }
+  
+  .text-box textarea {
+    width: 100%;
+  }
+  
+  .text-box .text-sm {
+    position: absolute;
+    bottom: 0.625rem;
+    right: 0.9375rem;
+  }

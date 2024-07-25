@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
+  charCount: number = 0;
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
@@ -45,4 +46,9 @@ export class ReviewModelComponent {
             selectedValues : selectedValues ,
     }
 }
+
+updateCharCount(event: any): void {
+  this.charCount = event.target.value.length;
+}
+
 }

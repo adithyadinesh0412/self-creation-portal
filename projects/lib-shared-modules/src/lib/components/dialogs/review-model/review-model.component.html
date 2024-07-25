@@ -5,7 +5,15 @@
 <div mat-dialog-content>
   <div>
   <form class="text-box">
-          <textarea placeholder="Add a note for the reviewer" rows="3" matInput class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2 w-16"></textarea>
+    <textarea 
+      placeholder="Add a note for the reviewer" 
+      rows="3" 
+      matInput 
+      class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"
+      (input)="updateCharCount($event)"
+      maxlength="200">
+    </textarea>
+    <div class="text-sm text-gray-500">{{ charCount }}/200</div>
   </form>
   @if(dialogueData.reviewdata.length>0){
   <mat-radio-group color="primary" aria-label="Select an option" class="" (change)="onSelectReviewer($event)">

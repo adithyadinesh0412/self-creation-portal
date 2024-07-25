@@ -51,10 +51,11 @@ export class TasksComponent implements OnInit,OnDestroy {
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
         this.projectId = params.projectId;
+        this.libProjectService.projectData.id = params.projectId;
         console.log(this.route)
         if(params.projectId){
           if(params.mode === 'edit') {
-            if(Object.keys(this.libProjectService.projectData).length) {
+            if(Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
               if(this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
                 this.libProjectService.projectData.tasks.forEach((element:any) => {
@@ -67,7 +68,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
-                    children:element.children,
+                    children:[element.children],
                     sequence_no:[element.sequence_no]
                   });
                   this.tasks.push(task);
@@ -93,7 +94,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                         file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                         min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                       }),
-                      children:element.children,
+                      children:[element.children],
                       sequence_no:[element.sequence_no]
                     });
                     this.tasks.push(task);
@@ -109,7 +110,7 @@ export class TasksComponent implements OnInit,OnDestroy {
         }
         else {
           this.libProjectService
-          .createOrUpdateProject({title:'Untitled project'})
+          .createOrUpdateProject({...this.libProjectService.projectData,...{title:'Untitled project'}})
           .subscribe((res: any) => {
             (this.projectId = res.result.id),
               this.router.navigate([], {
@@ -121,6 +122,7 @@ export class TasksComponent implements OnInit,OnDestroy {
                 queryParamsHandling: 'merge',
                 replaceUrl: true,
               });
+              this.libProjectService.projectData.id = res.result.id;
           })
         }
       })
@@ -150,7 +152,7 @@ export class TasksComponent implements OnInit,OnDestroy {
       allow_evidence: [true],
       evidence_details: this.fb.group({
         file_types: [[]],
-        min_no_of_evidences: [1, Validators.min(1)]
+        min_no_of_evidences: [1, [Validators.min(this.tasksData.minEvidences.validators.min), Validators.max(this.tasksData.minEvidences.validators.max)]]
       })
     });
     this.tasks.push(taskGroup);
@@ -225,7 +227,7 @@ export class TasksComponent implements OnInit,OnDestroy {
     if (this.autoSaveSubscription) {
       this.autoSaveSubscription.unsubscribe();
     }
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
   }
 
   addingTask() {
@@ -243,6 +245,18 @@ export class TasksComponent implements OnInit,OnDestroy {
      this.toastService.openSnackBar(data)
     } else {
       this.addTask();
+    }
+  }
+
+  adjustValue(event: any): void {
+    const inputValue = event.target.value;
+    const min = this.tasksData.minEvidences.validators.min;
+    const max = this.tasksData.minEvidences.validators.max;
+
+    if (inputValue < min) {
+      event.target.value = min;
+    } else if (inputValue > max) {
+      event.target.value = max;
     }
   }
 

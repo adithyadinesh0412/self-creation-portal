@@ -12,6 +12,8 @@ import {
 import { provideTranslations } from './translation.providers';
 import { LIBRARY_CONFIG, SlAuthLibModule } from 'authentication_frontend_library';
 import { authInterceptor } from './services/interceptor/auth.interceptor';
+import { environment } from 'environments';
+import { switchMap, of } from 'rxjs';
 // Create a loader for translation files
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -28,6 +30,12 @@ export const appConfig: ApplicationConfig = {
     { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] }
   ],
 };
+// export function configFactory(http: HttpClient): any {
+//   return http.get('assets/library.config.json');
+// }
 export function configFactory(http: HttpClient): any {
-  return http.get('assets/library.config.json');
+  return http.get("assets/library.config.json").pipe(switchMap((data:any)=>{
+    data.baseUrl = environment.baseURL
+    return of(data)
+  }))
 }
