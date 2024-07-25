@@ -151,8 +151,8 @@ export class TasksComponent implements OnInit,OnDestroy {
       is_mandatory: [false],
       allow_evidence: [true],
       evidence_details: this.fb.group({
-        file_types: [[this.tasksData.fileType.options[0].value]],
-        min_no_of_evidences: [1, Validators.min(1)]
+        file_types: [[]],
+        min_no_of_evidences: [1, [Validators.min(this.tasksData.minEvidences.validators.min), Validators.max(this.tasksData.minEvidences.validators.max)]]
       })
     });
     this.tasks.push(taskGroup);
@@ -245,6 +245,18 @@ export class TasksComponent implements OnInit,OnDestroy {
      this.toastService.openSnackBar(data)
     } else {
       this.addTask();
+    }
+  }
+
+  adjustValue(event: any): void {
+    const inputValue = event.target.value;
+    const min = this.tasksData.minEvidences.validators.min;
+    const max = this.tasksData.minEvidences.validators.max;
+
+    if (inputValue < min) {
+      event.target.value = min;
+    } else if (inputValue > max) {
+      event.target.value = max;
     }
   }
 

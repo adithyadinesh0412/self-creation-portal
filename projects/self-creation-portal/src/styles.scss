@@ -153,3 +153,7 @@ color:$tertiary
   position: relative;
   display: none;
 }
+
+.placeholder-text-black .mat-mdc-select-placeholder{
+  color:$tertiary
+}

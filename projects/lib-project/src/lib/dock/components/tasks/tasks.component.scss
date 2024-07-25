@@ -15,7 +15,7 @@ input:focus{
 
 .disabled-with-pointer-event {
   pointer-events: none;
-  color: $buttonDisable;
+  opacity: 0.8;
 }
 .asterisk{
   color: $warn;  
