@@ -14,7 +14,6 @@ module.exports = {
         'chipPublished':'#008840',
         'numberCircle': '#EC555D',
         'chipInprogress': '#FEEC8C',
-        'blackText': '#000000',
         "chipBorder":'#9FA9C2'
       },
     },

@@ -20,10 +20,9 @@ export class FilterComponent {
   @Input() filterData:any;
   @Output() filteredData = new EventEmitter<FilterChangeEvent | { sort_by: string, sort_order: string }>();
   @Output() sortOptionsChanged = new EventEmitter<{ sort_by: string, sort_order: string }>();
-  changeButton: string = "CHANGES_REQUIRED";
   @Input() changeReqCount: number = 0
   @Input() inprogressCount : number = 0
-  @Output() filterButtonClickEvent = new EventEmitter<{ label: string }>();
+  @Output() filterButtonActionEvent = new EventEmitter<{ label: string }>();
 
   OnClickfilter(event:any, filter: any){
     if (["A_TO_Z", "Z_TO_A", "LATEST_FIRST", "OLDEST_FIRST"].includes(event.value)) {
@@ -61,7 +60,7 @@ export class FilterComponent {
     }
   }
 
-  onButtonClick(filter: any){
-    this.filterButtonClickEvent.emit(filter)
+  filterButtonAction(filter: any){
+    this.filterButtonActionEvent.emit(filter)
   }
 }

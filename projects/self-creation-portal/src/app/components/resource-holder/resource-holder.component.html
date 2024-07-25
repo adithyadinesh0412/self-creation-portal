@@ -1,6 +1,6 @@
 <div class="w-full p-6 flex flex-col gap-2">
     <lib-search (searchEvent)="receiveSearchResults($event)" [maxLength]="150"></lib-search>
-    <lib-filter [filterData]="filters.filterData" (filteredData)="onFilterChange($event)" (sortOptionsChanged)="onSortOptionsChanged($event)"  [changeReqCount]="filters.changeReqCount" [inprogressCount]="filters.inprogressCount" (filterButtonClickEvent)="filterButtonClick($event)"></lib-filter>
+    <lib-filter [filterData]="filters.filterData" (filteredData)="onFilterChange($event)" (sortOptionsChanged)="onSortOptionsChanged($event)"  [changeReqCount]="filters.changeReqCount" [inprogressCount]="filters.inprogressCount" (filterButtonActionEvent)="filterButtonClickEvent($event)"></lib-filter>
     @if(filters.filteredLists.length > 0) {
    <div class="w-full flex justify-between gap-2">
     <div class="flex justify-center items-center text-lg">{{"SHOWING" | translate}} <span class="px-1">{{filters.filteredLists.length}}</span> {{ "RESULTS" | translate}} 
@@ -12,7 +12,7 @@
    </div>
     @for (list of filters.filteredLists; track list) {
         <div class="pb-1">
-        <lib-card [list]="list" [showActionButton]="filters.showActionButton" (buttonClickEvent)="cardButtonClick($event)"></lib-card>
+        <lib-card [list]="list" [showActionButton]="filters.showActionButton" (buttonClickEvent)="statusButtonClick($event)"></lib-card>
         </div>
     } 
     } 

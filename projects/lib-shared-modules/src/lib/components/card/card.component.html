@@ -32,13 +32,13 @@
                             </div>
                         }
                         @if(list.status === 'COMMENTS'){
-                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-blackText">
+                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-black">
                                 <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
                                 {{list.status | translate}}
                             </div>
                         }
                         @if(list.status === 'INPROGRESS'){
-                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-blackText">
+                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-black">
                                 <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
                                 {{list.status | translate}}
                             </div>
@@ -52,8 +52,8 @@
                     </div>
                     @if(list.type === 'Program'){
                         <div class="flex flex-row text-sm text-[$borderGray]"> 
-                            <div class="flex font-semibold">Start date:</div><span class="overflow-ellipsis">24/07/24</span>
-                            <div class="flex font-semibold ml-1">End date:</div><span class="overflow-ellipsis">24/07/24</span>
+                            <div class="flex font-semibold">Start date:</div><span class="overflow-ellipsis"></span>
+                            <div class="flex font-semibold ml-1">End date:</div><span class="overflow-ellipsis"></span>
                         </div>
                     }
                 </div>

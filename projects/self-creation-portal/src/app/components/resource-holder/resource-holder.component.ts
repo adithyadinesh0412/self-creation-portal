@@ -184,7 +184,7 @@ export class ResourceHolderComponent implements OnInit{
     });
   }
   
-  cardButtonClick(event: { label: string, item: any }) {
+  statusButtonClick(event: { label: string, item: any }) {
     const { label, item } = event;
     switch (label) {
       case 'EDIT':
@@ -211,7 +211,7 @@ export class ResourceHolderComponent implements OnInit{
     }
   }
 
-  filterButtonClick(event : any) {
+  filterButtonClickEvent(event : any) {
     switch(event.label) {
       case 'CHANGES_REQUIRED':
         console.log('CHANGES_REQUIRED', event);
