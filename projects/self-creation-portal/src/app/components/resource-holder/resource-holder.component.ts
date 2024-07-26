@@ -159,6 +159,13 @@ export class ResourceHolderComponent implements OnInit{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
+            if (button.status === 'NOT_STARTED' && cardItem.status === 'SUBMITTED') {
+              button.buttons.forEach((btn: string) => {
+                if (btn) {
+                  cardItem.actionButton.push(this.buttonsCSS[btn]);
+                }
+              });
+            }
             if(button.status === cardItem.status){
               button.buttons.forEach((button : any) => {
                 cardItem.actionButton.push(this.buttonsCSS[button]);
