@@ -50,4 +50,14 @@ export class CommonService {
       queryParamsHandling: ''
     });
   }
+
+  clearQueryParams() {
+    const queryParams = this.route.snapshot.queryParams;
+    if (Object.keys(queryParams).length > 0) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {}
+      });
+    }
+  }
 }

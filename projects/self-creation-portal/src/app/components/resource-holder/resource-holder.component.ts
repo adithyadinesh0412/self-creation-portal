@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
 })
-export class ResourceHolderComponent implements OnInit{
+export class ResourceHolderComponent implements OnInit, OnDestroy{
 
   @ViewChild(PaginationComponent) paginationComponent!: PaginationComponent;
 
@@ -68,6 +68,10 @@ export class ResourceHolderComponent implements OnInit{
 
   ngOnInit() {
     this.loadSidenavData();
+  }
+
+  ngOnDestroy() {
+    this.commonService.clearQueryParams();
   }
 
   loadSidenavData(){
@@ -132,7 +136,6 @@ export class ResourceHolderComponent implements OnInit{
         const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
         this.lists = this.addActionButtons(result.data)
         this.filters.filteredLists = this.lists;
-        console.log(this.filters.filteredLists)
         this.pagination.totalCount = result.count;
         if (this.lists.length === 0) {
           this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
