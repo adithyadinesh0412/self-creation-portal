@@ -6,12 +6,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [DynamicFormModule, TranslateModule],
+  imports: [CommonModule,DynamicFormModule, TranslateModule],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -21,6 +22,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   intervalId:any;
   formDataForTitle:any;
   viewOnly:boolean= false;
+  mode:any = ""
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   constructor(
@@ -31,18 +33,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
-    this.startAutoSaving();
-    this.libProjectService.projectData = {};
     this.getFormWithEntitiesAndMap();
-    this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe(
-        (isProjectSave: boolean) => {
-          if (isProjectSave && this.router.url.includes('project-details')) {
-            this.saveForm();
-          }
-        }
-      )
-    );
   }
 
 
@@ -54,24 +45,50 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
+            this.mode = params.mode;
             if (params.projectId) {
-              if (Object.keys(this.libProjectService.projectData).length) {
-                this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-              } else {
+              if (params.mode === 'edit') {
+                this.startAutoSaving();
+                this.libProjectService.projectData = {};
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                        this.libProjectService.upDateProjectTitle();
+                      })
+                  );
+                }
+
                 this.subscription.add(
-                  this.libProjectService
-                    .readProject(this.projectId)
-                    .subscribe((res: any) => {
-                      this.libProjectService.setProjectData(res.result);
-                      this.readProjectDeatilsAndMap(data.controls,res.result);
-                      this.libProjectService.upDateProjectTitle();
-                    })
+                  this.libProjectService.isProjectSave.subscribe(
+                    (isProjectSave: boolean) => {
+                      if (isProjectSave && this.router.url.includes('project-details')) {
+                        this.saveForm();
+                      }
+                    }
+                  )
                 );
               }
-              if (params.mode === 'edit') {
-               
-              }else if(params.mode === 'viewOnly'){
-                this.viewOnly = true
+              else if(params.mode === 'viewOnly'){
+
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                      })
+                  );
+                }
+                 this.viewOnly =true
               }
             } else {
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
@@ -213,19 +230,21 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   };
 
   ngOnDestroy() {
-    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.libProjectService.checkValidationForSubmit()
+    if(this.mode === 'edit'){
+      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.checkValidationForSubmit()
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+      if(this.projectId) {
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+        this.libProjectService.saveProjectFunc(false);
+      }
+      else {
+        this.libProjectService.saveProjectFunc(false);
+      }
+    }
     this.subscription.unsubscribe();
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-    if(this.projectId) {
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-      this.libProjectService.saveProjectFunc(false);
-    }
-    else {
-      this.libProjectService.saveProjectFunc(false);
-    }
-  }
+  } 
 }

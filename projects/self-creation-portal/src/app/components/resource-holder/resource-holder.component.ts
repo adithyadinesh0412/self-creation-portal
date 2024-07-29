@@ -198,16 +198,10 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     const { label, item } = event;
     switch (label) {
       case 'EDIT':
-        // this.router.navigate([PROJECT_DETAILS_PAGE], {
-        //   queryParams: {
-        //     projectId: item.id,
-        //     mode: 'edit'
-        //   }
-        // });
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'viewOnly'
+            mode: 'edit'
           }
         });
         break;
@@ -218,7 +212,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'view'
+            mode: 'viewOnly'
           }
         });
         break;

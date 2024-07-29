@@ -41,7 +41,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   learningResources:any
   projectId:string|number = '';
   projectData:any;
-  viewOnly:boolean = false;
+  viewOnly:boolean= false;
+  mode:any = ""
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -59,37 +60,53 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     )
     this.subscription.add(
       this.route.queryParams.subscribe((params:any) => {
-        this.projectId = params.projectId;
-
-        if(Object.keys(this.libProjectService.projectData).length) {
-          this.projectData = this.libProjectService.projectData;
-          this.createSubTaskForm()
-          this.addSubtaskData()
-          this.startAutoSaving();
-        }
-        else {
-          this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-            this.libProjectService.setProjectData(res.result);
-            this.projectData = res?.result
+        this.mode = params.mode;
+        if(params.mode === "edit"){
+          this.projectId = params.projectId;
+          if(Object.keys(this.libProjectService.projectData).length) {
+            this.projectData = this.libProjectService.projectData;
             this.createSubTaskForm()
             this.addSubtaskData()
             this.startAutoSaving();
-          })
-        }
+          }
+          else {
+            this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+              this.libProjectService.setProjectData(res.result);
+              this.projectData = res?.result
+              this.createSubTaskForm()
+              this.addSubtaskData()
+              this.startAutoSaving();
+            })
+          }
 
-        if(params.mode === 'viewOnly'){
-          this.viewOnly = true;
+          this.subscription.add(
+            this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+              if(isProjectSave && this.router.url.includes('sub-tasks')) {
+                this.submit();
+              }
+            })
+          );
         }
-      })
-    );
-    this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
-        if(isProjectSave && this.router.url.includes('sub-tasks')) {
-          this.submit();
-        }
-      })
-    );
+        if(params.mode === "viewOnly"){
+            this.viewOnly =true
 
+            if(Object.keys(this.libProjectService.projectData).length) {
+              this.projectData = this.libProjectService.projectData;
+              this.createSubTaskForm()
+              this.addSubtaskData()
+            }
+            else {
+              this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
+                this.libProjectService.setProjectData(res.result);
+                this.projectData = res?.result
+                this.createSubTaskForm()
+                this.addSubtaskData()
+              })
+            }
+        }
+       
+      })
+    ); 
   }
 
   createSubTaskForm() {
@@ -112,21 +129,31 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     };
 
     if (this.libProjectService.projectData?.tasks?.length > 0) {
-     this.subscription.add(
-      this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
-        if(res.result.tasks){
-          res.result.tasks.forEach((task: any) => {
-              this.taskData.push(createTaskObject(task));
-          });
-        }else if (this.libProjectService?.projectData.tasks){
+      if(this.mode === 'edit'){
+        this.subscription.add(
+          this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
+            if(res.result.tasks){
+              res.result.tasks.forEach((task: any) => {
+                  this.taskData.push(createTaskObject(task));
+              });
+            }else if (this.libProjectService?.projectData.tasks){
+              this.libProjectService?.projectData.tasks.forEach((task: any) => {
+                  this.taskData.push(createTaskObject(task));
+              });
+            }else{
+                this.taskData.push(createTaskObject());
+            }
+           })
+         )   
+      }else{
+        if (this.libProjectService?.projectData.tasks){
           this.libProjectService?.projectData.tasks.forEach((task: any) => {
               this.taskData.push(createTaskObject(task));
           });
         }else{
             this.taskData.push(createTaskObject());
         }
-       })
-     )
+      }
     } else {
             this.taskData.push(createTaskObject());
     }
@@ -210,14 +237,14 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    this.addSubtaskData();
-    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
-    this.subscription.unsubscribe();
-    if (this.autoSaveSubscription) {
-      this.autoSaveSubscription.unsubscribe();
+    if(this.mode === 'edit'){
+      this.addSubtaskData();
+      this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+      if (this.autoSaveSubscription) {
+        this.autoSaveSubscription.unsubscribe();
+      }
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
     }
-
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-
+    this.subscription.unsubscribe();
   }
 }
