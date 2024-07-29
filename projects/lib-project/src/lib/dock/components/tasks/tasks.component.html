@@ -57,7 +57,10 @@
                                 {{tasksData.allowEvidence.label | translate}}
                             </mat-slide-toggle>
 
-                            <div class="border px-2 w-40 text-center" [ngClass]="{'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details">
+                            <div class="border px-2 w-40 text-center" formGroupName="evidence_details" [ngClass]="{
+                                'disabled-with-pointer-events': !task.get(tasksData?.allowEvidence.name)?.value,
+                                'placeholder-text-black': task.get(tasksData?.allowEvidence.name)?.value
+                              }">
                                 <mat-select multiple="true" [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
                                     <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option.value">
                                         {{ option.label }}
@@ -66,9 +69,13 @@
                             </div>
                             <div class="flex gap-2" [ngClass]="{'disabled-with-pointer-event': !task.get(tasksData?.allowEvidence.name)?.value}" formGroupName="evidence_details" >
                                 <p class="text-tertiary">{{tasksData.minEvidences.label | translate}}</p>
-                                    <input matInput [formControlName]="tasksData.minEvidences.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="1"
-                                        type="number" min="1"  [max]="maxTaskLength" class="w-14 block border text-center" />
+                                <input matInput [formControlName]="tasksData.minEvidences.name"
+                                    [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="1" type="number"
+                                    [min]="tasksData.minEvidences.validators.min" [max]="tasksData.minEvidences.validators.max"
+                                    class="w-14 block border text-center" (input)="adjustValue($event)" />
                             </div>
+                            
+
                         </div>
                     </div>
                 </div>

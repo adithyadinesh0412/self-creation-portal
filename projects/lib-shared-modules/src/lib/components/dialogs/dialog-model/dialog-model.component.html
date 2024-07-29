@@ -5,7 +5,7 @@
       <mat-icon class="cursor-pointer text-white" [mat-dialog-close]="false">close</mat-icon>
     </div>
   </header>
-  <main formArrayName="resources" class="flex-grow overflow-auto p-4">
+  <main formArrayName="resources" class="flex-grow p-4 main-container">
     @for( resourceGroup of resources.controls; track resourceGroup;let  i = $index ){
       <div [formGroupName]="i" class="form-container">
         @for( control of dialogData.control.resource[i]; track control){

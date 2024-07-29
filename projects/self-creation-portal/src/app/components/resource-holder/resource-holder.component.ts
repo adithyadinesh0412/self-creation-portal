@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
 })
-export class ResourceHolderComponent implements OnInit{
+export class ResourceHolderComponent implements OnInit, OnDestroy{
 
   @ViewChild(PaginationComponent) paginationComponent!: PaginationComponent;
 
@@ -38,7 +38,6 @@ export class ResourceHolderComponent implements OnInit{
     status: '' as string,
     filteredLists: [] as any[],
     filterData: [] as any,
-    showChangesButton: false,
     showActionButton: false,
     changeReqCount : 0,
     inprogressCount  : 0
@@ -50,6 +49,7 @@ export class ResourceHolderComponent implements OnInit{
   };
 
   lists:any = [];
+  isDataLoaded : boolean = false;
   noResultMessage!: string ;
   noResultFound !: string;
   pageStatus !: string;
@@ -70,6 +70,10 @@ export class ResourceHolderComponent implements OnInit{
     this.loadSidenavData();
   }
 
+  ngOnDestroy() {
+    this.commonService.clearQueryParams();
+  }
+
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
@@ -84,7 +88,6 @@ export class ResourceHolderComponent implements OnInit{
       ];
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
-      this.filters.showChangesButton = this.filters.filterData.some((filter: any) => filter.label === 'STATUS');
       this.filters.showActionButton = this.buttonsData;
     });
   }
@@ -127,20 +130,24 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   getList() {
-    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
-      const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
-      this.lists = this.addActionButtons(result.data)
-      this.filters.filteredLists = this.lists;
-      this.pagination.totalCount = result.count;
-      if (this.lists.length === 0) {
-        this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
-        if (this.pagination.currentPage > 0) {
-          this.pagination.currentPage -= 1;
+    this.isDataLoaded = false;
+    if((this.pageStatus === 'drafts' ) || (this.pageStatus === 'submitted_for_review')) {
+      this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
+        const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
+        this.lists = this.addActionButtons(result.data)
+        this.filters.filteredLists = this.lists;
+        this.pagination.totalCount = result.count;
+        if (this.lists.length === 0) {
+          this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
+          if (this.pagination.currentPage > 0) {
+            this.pagination.currentPage -= 1;
+          }
         }
-      }
-      this.filters.changeReqCount = result.changes_requested_count;
-      this.filters.inprogressCount  = 0;
-    });
+        this.filters.changeReqCount = result.changes_requested_count;
+        this.filters.inprogressCount  = 0;
+        this.isDataLoaded = true;
+      });
+    }
   }
 
   addActionButtons(cardItems: any): any {
@@ -155,6 +162,13 @@ export class ResourceHolderComponent implements OnInit{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
+            if (button.status === 'NOT_STARTED' && cardItem.status === 'SUBMITTED') {
+              button.buttons.forEach((btn: string) => {
+                if (btn) {
+                  cardItem.actionButton.push(this.buttonsCSS[btn]);
+                }
+              });
+            }
             if(button.status === cardItem.status){
               button.buttons.forEach((button : any) => {
                 cardItem.actionButton.push(this.buttonsCSS[button]);
@@ -180,7 +194,7 @@ export class ResourceHolderComponent implements OnInit{
     });
   }
   
-  handleButtonClick(event: { label: string, item: any }) {
+  statusButtonClick(event: { label: string, item: any }) {
     const { label, item } = event;
     switch (label) {
       case 'EDIT':
@@ -204,11 +218,20 @@ export class ResourceHolderComponent implements OnInit{
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'edit'
+            mode: 'view'
           }
         });
         break;
       default:
+        break;
+    }
+  }
+
+  filterButtonClickEvent(event : any) {
+    switch(event.label) {
+      case 'CHANGES_REQUIRED':
+        break;
+      case 'INPROGRESS':
         break;
     }
   }
@@ -248,5 +271,5 @@ export class ResourceHolderComponent implements OnInit{
         }
       });
   }
-
+ 
 }

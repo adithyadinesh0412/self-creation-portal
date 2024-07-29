@@ -53,6 +53,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         this.subscription.add(
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
+            this.libProjectService.projectData.id = params.projectId;
             if (params.projectId) {
               if (Object.keys(this.libProjectService.projectData).length) {
                 this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
@@ -74,20 +75,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
               }
             } else {
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-              // this.libProjectService
-              // .createOrUpdateProject()
-              // .subscribe((res: any) => {
-              //   (this.projectId = res.result.id),
-              //     this.router.navigate([], {
-              //       relativeTo: this.route,
-              //       queryParams: {
-              //         projectId: this.projectId,
-              //         mode: 'edit',
-              //       },
-              //       queryParamsHandling: 'merge',
-              //       replaceUrl: true,
-              //     });
-              // });
             }
           })
         );
@@ -151,6 +138,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             queryParamsHandling: 'merge',
             replaceUrl: true,
           });
+          this.libProjectService.projectData.id = res.result.id;
       })
   }
 
@@ -236,10 +224,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       this.libProjectService.saveProjectFunc(false);
     }
-    // else {
-    //   this.libProjectService
-    //   .createOrUpdateProject(this.libProjectService.projectData)
-    //   .subscribe()
-    // }
+    else {
+      this.libProjectService.saveProjectFunc(false);
+    }
   }
 }

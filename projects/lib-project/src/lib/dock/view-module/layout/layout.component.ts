@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'lib-layout',
   templateUrl: './layout.component.html',
-  styleUrl: './layout.component.css'
+  styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
   backButton : boolean = true;
@@ -92,7 +92,7 @@ export class LayoutComponent {
           dialogRef.afterClosed().subscribe(result => {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
               this.libProjectService
-              .createOrUpdateProject(this.libProjectService.projectData).subscribe((res) => {
+              .createOrUpdateProject(this.libProjectService.projectData,this.libProjectService.projectData.id).subscribe((res) => {
               this.route.queryParams.subscribe((params: any) => {
                 if (params.projectId) {
                   const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
