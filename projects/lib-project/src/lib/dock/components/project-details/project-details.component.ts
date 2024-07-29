@@ -33,6 +33,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.libProjectService.projectData = {};
     this.getFormWithEntitiesAndMap();
   }
 
