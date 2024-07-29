@@ -23,3 +23,9 @@ input:focus{
 hr {
     border-color: $horizontalBlueLine;
   }
+
+
+.disabled-with-pointer-events {
+    pointer-events: none;
+    opacity: 0.5;
+}

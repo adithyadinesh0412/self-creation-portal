@@ -12,11 +12,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LibProjectService } from '../../../lib-project.service'
 import { Subscription } from 'rxjs/internal/Subscription';
 import { v4 as uuidv4 } from 'uuid';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'lib-sub-tasks-resources',
   standalone:true,
   imports: [
+    CommonModule,
     HeaderComponent,
     SideNavbarComponent,
     MatIconModule,
