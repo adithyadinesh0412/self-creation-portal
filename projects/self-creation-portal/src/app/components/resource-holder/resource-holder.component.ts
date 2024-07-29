@@ -224,10 +224,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   filterButtonClickEvent(event : any) {
     switch(event.label) {
       case 'CHANGES_REQUIRED':
-        console.log('CHANGES_REQUIRED', event);
         break;
       case 'INPROGRESS':
-        console.log('INPROGRESS',event);
         break;
     }
   }
