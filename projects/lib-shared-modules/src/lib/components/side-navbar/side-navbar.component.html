@@ -1,5 +1,5 @@
 <mat-sidenav-container>
-  <mat-sidenav [opened]="true" mode="side">
+  <mat-sidenav [opened]="true" mode="side" [disableClose]="true">
     <mat-nav-list>
       @for (item of sidenavData; track item) {
         <a mat-list-item [routerLink]="[item.url]" [queryParamsHandling]="'preserve'" routerLinkActive="active">

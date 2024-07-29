@@ -102,5 +102,7 @@
     "INPROGRESS" : "In progress",
     "START_REVIEW" : "Start review",
     "RESUME_REVIEW" : "Resume review",
-    "NO_REVIEWERS_FOUND":"No reviewers found. Contact your organization admin."
+    "NO_REVIEWERS_FOUND":"No reviewers found. Contact your organization admin.",
+    "NO_UP_FOR_REVIEW":"No resource/program to review at the moment",
+    "COMMENTS": "Comments"
 }
