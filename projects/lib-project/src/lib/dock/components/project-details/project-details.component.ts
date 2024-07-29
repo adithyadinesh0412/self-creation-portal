@@ -92,6 +92,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                  this.viewOnly =true
               }
             } else {
+              this.startAutoSaving();
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
             }
           })

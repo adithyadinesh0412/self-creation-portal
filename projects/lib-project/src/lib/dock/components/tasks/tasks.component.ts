@@ -165,6 +165,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           }
         }
         else {
+          this.startAutoSaving();
           this.libProjectService
             .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
             .subscribe((res: any) => {
