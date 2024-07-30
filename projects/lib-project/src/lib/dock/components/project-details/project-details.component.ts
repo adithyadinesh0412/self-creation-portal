@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
-import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
+import { DynamicFormModule, MainFormComponent } from '@elevate/dynamic-form';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
@@ -45,39 +45,39 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
             this.mode = params.mode;
-            if(params.mode){
-              if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
-                this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-              } else {
-                this.subscription.add(
-                  this.libProjectService
-                    .readProject(this.projectId)
-                    .subscribe((res: any) => {
-                      this.libProjectService.setProjectData(res.result);
-                      this.readProjectDeatilsAndMap(data.controls,res.result);
-                      this.libProjectService.upDateProjectTitle();
-                    })
-                );
-              }
-            }
-            
             if (params.projectId) {
-              if (params.mode === 'edit') {
-                this.startAutoSaving();
-                this.libProjectService.projectData = {};
-                this.subscription.add(
-                  this.libProjectService.isProjectSave.subscribe(
-                    (isProjectSave: boolean) => {
-                      if (isProjectSave && this.router.url.includes('project-details')) {
-                        this.saveForm();
+              if(params.mode){
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                        this.libProjectService.upDateProjectTitle();
+                      })
+                  );
+                }
+                if (params.mode === 'edit') {
+                  this.startAutoSaving();
+                  this.libProjectService.projectData = {};
+                  this.subscription.add(
+                    this.libProjectService.isProjectSave.subscribe(
+                      (isProjectSave: boolean) => {
+                        if (isProjectSave && this.router.url.includes('project-details')) {
+                          this.saveForm();
+                        }
                       }
-                    }
-                  )
-                );
+                    )
+                  );
+                }
+                else if(params.mode === 'viewOnly'){
+                   this.viewOnly =true
+                }
               }
-              else if(params.mode === 'viewOnly'){
-                 this.viewOnly =true
-              }
+              
             } else {
               this.startAutoSaving();
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
@@ -121,7 +121,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
 
   startAutoSaving() {
     this.intervalId = setInterval(() => {
-      if(!this.projectId) {
+      if(!this.projectId && !this.libProjectService.projectData.id) {
         this.createProject({title:'Untitled project'})
       } else {
         this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
