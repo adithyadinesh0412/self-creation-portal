@@ -16,28 +16,34 @@
         <mat-icon *ngIf="chatFlag" (click)="openChatBot()">expand_circle_down</mat-icon>
       </div>
     </section>
-    <section class="flex justify-beween p-3">
-      <p>Comments by</p>
-      <button class="btn button-enable mr-5 save-button" mat-flat-button>Resolve</button>
+    <section class="flex justify-between items-center p-3 bg-white">
+      <p>Comments by {{messages[0]?.commenter.name}}</p>
+      <button class="btn mr-5" [ngClass]="{'save-button': !isResolvable,'button-disabled':isResolvable}" mat-flat-button [disabled]="isResolvable">Resolve</button>
     </section>
-    <section>
+    <section class="p-3 chat-window">
       <!-- comment history should be listed here  -->
-      <!-- @for(message of messages; track message; let i = $index) {
+      @for(message of messages; track message; let i = $index) {
         <section>
-          <p class="message-date">{{message?.resolved_at | date : 'longDate'}}</p>
-          <div class="message-body">
-            <p>{{message?.comment}}</p>
-            <p>{{{{message?.resolved_at | date : 'shortTime'}}}}</p>
+          <div class="flex justify-center">
+            <p class="text-center date-stamp my-3">{{message?.created_at | date : 'mediumDate'}}</p>
           </div>
+          <!-- <p class="message-date">{{message?.resolved_at | date : 'longDate'}}</p> -->
+          <div class="flex w-50 message-container" [ngClass]="{'reviewer-message': message?.commenter.id == userId}">
+            <div class="message-body p-3" [ngClass]="{'reviewer-message-body': message?.commenter.id == userId}">
+              <p>{{message?.comment}}</p>
+              <p class="text-end">{{message?.resolved_at | date : 'shortTime'}}</p>
+            </div>
+          </div>
+          <p class="text-end color-primary my-2" *ngIf="message?.resolved_at">Resolved<mat-icon class="mr-5">check_circle</mat-icon></p>
         </section>
-      } -->
+      }
     </section>
     <section>
       <quill-editor [(ngModel)]="quillInput" placeholder="Type your comment" [modules]="quillConfig"
-        (onSelectionChanged)="onSelectionChanged($event)" [style]="{height: '20rem'}"></quill-editor>
+        (onSelectionChanged)="onSelectionChanged($event)"></quill-editor>
     </section>
     <section class="flex justify-end p-3">
-      <button class="btn button-enable mr-5 save-button" mat-flat-button>Save</button>
+      <button class="btn button-enable mr-5 save-button" mat-flat-button (click)="saveComment()">Save</button>
     </section>
   </div>
 </body>
