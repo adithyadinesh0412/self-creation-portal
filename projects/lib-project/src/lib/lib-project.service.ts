@@ -25,6 +25,7 @@ export class LibProjectService {
   }
   viewOnly:boolean= false;
   mode:any="edit"
+  showReviewerList:boolean = true;
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
