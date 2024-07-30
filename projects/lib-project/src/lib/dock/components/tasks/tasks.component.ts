@@ -63,7 +63,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                 this.libProjectService.projectData.tasks.forEach((element: any) => {
                   const task = this.fb.group({
                     id: [element.id],
-                    description: [element.description ? element.description : '', Validators.required],
+                    name: [element.name ? element.name : '', Validators.required],
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                     allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
                     evidence_details: this.fb.group({
@@ -92,7 +92,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                   res.result.tasks.forEach((element: any) => {
                     const task = this.fb.group({
                       id: [element.id],
-                      description: [element.description ? element.description : '', Validators.required],
+                      name: [element.name ? element.name : '', Validators.required],
                       is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                       allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
                       evidence_details: this.fb.group({
@@ -163,7 +163,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     const taskGroup = this.fb.group({
       id: uuidv4(),
       type: "content",
-      description: ['', Validators.required],
+      name: ['', Validators.required],
       is_mandatory: [false],
       allow_evidence: [true],
       evidence_details: this.fb.group({
