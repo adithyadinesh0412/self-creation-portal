@@ -188,4 +188,28 @@ export class LibProjectService {
       })
     );
   }
+
+  updateComment(){
+    const config = {
+      url : `${this.Configuration.urlConFig.PROJECT_URLS.UPDATE_COMMENT}}`,
+      payload:{}
+    };
+    return this.httpService.post(config.url, config.payload).pipe(
+      map((result: any) => {
+        return result;
+      })
+    );
+  }
+
+  getCommentList(){
+    const config = {
+      url : `${this.Configuration.urlConFig.PROJECT_URLS.COMMENT_LIST}}`,
+    };
+    return this.httpService.get(config.url).pipe(
+      map((result: any) => {
+        return result;
+      })
+    );
+  }
+
 }
