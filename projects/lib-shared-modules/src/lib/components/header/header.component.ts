@@ -3,9 +3,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LibSharedModulesService } from '../../lib-shared-modules.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'lib-header',
@@ -18,9 +19,17 @@ export class HeaderComponent {
   @Input() backButton : boolean = true ;
   @Input() title!: string;
   @Input() headerData : any;
+  mode:any = "edit";
+  private subscription: Subscription = new Subscription();
   @Output() buttonClick: EventEmitter<string> =  new EventEmitter<string>();
 
-  constructor( private libsharedservice: LibSharedModulesService, private router: Router) {
+  constructor( private libsharedservice: LibSharedModulesService, private router: Router, private route: ActivatedRoute,) {
+    this.subscription.add(
+      this.route.queryParams.subscribe((params: any) => {
+        this.mode = params.mode ? params.mode : "edit"
+     })
+    )
+   
   }
 
   backArrowButton() {
@@ -33,5 +42,9 @@ export class HeaderComponent {
 
   logout() {
     this.libsharedservice.logout();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

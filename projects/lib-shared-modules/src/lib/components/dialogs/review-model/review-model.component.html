@@ -11,21 +11,21 @@
         matInput 
         class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"
         (input)="updateCharCount($event)"
-        maxlength="200"
+        [maxlength]=dialogueData.note_length
         [(ngModel)]="reviewerNote"
         name="reviewerNote"
         [pattern]="pattern"
         required="false"
         #input="ngModel">
       </textarea>
-      <div class="text-sm text-gray-500">{{ charCount }}/200</div>
+      <div class="text-sm text-gray-500">{{ charCount }}/{{dialogueData.note_length}}</div>
     </form>
     <mat-error class="error-container">
       @if(input.errors && input.touched){
         <div class="error-message">
           <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
           @if(input.errors?.['pattern']){
-            <span>Objective can only include alphanumeric characters with spaces, -, _, /, <></span>
+            <span>Objective can only include alphanumeric characters with spaces, -, _, <></span>
           }
           @if(input.errors?.['maxlength']){
             <span>Note cannot exceed 200 characters.</span>

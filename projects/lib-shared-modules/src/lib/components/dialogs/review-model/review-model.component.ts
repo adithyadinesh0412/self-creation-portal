@@ -19,7 +19,7 @@ export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
   charCount: number = 0;
   reviewerNote:string = ""
-  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\/_ <>&]+$"
+  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\_ <>&]+$"
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
