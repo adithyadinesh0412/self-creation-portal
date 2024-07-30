@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
-import { DynamicFormModule, MainFormComponent } from '@elevate/dynamic-form';
+import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
