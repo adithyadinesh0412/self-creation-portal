@@ -17,7 +17,6 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
-  auto_save_interval:number=30000;
   validForm={
     projectDetails: "INVALID",
     tasks:"INVALID"
@@ -25,6 +24,7 @@ export class LibProjectService {
   viewOnly:boolean= false;
   mode:any="edit"
   projectConfig:any
+  instanceConfig:any
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
@@ -182,7 +182,7 @@ export class LibProjectService {
   }
 
   startAutoSave(projectID:string|number) {
-    return interval(this.auto_save_interval).pipe(
+    return interval(this.instanceConfig.auto_save_interval ? this.instanceConfig.auto_save_interval : 30000).pipe(
       switchMap(() => {
         return this.createOrUpdateProject(this.projectData, this.projectData.id);
       })

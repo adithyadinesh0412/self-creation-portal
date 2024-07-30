@@ -37,7 +37,7 @@ export class LayoutComponent {
   }
   setConfig(){
     this.libProjectService.setConfig().subscribe((res:any) => {
-      this.libProjectService.auto_save_interval =res?.result.instance?.auto_save_interval
+      this.libProjectService.instanceConfig = res?.result.instance;
       this.libProjectService.projectConfig = res.result.resource.find((res:any) => res.resource_type === "projects");
     })
   }
@@ -86,7 +86,8 @@ export class LayoutComponent {
               data : {
                 header: "SEND_FOR_REVIEW",
                 reviewdata: list.result.data,
-                sendForReview: "SEND_FOR_REVIEW"
+                sendForReview: "SEND_FOR_REVIEW",
+                note_length: this.libProjectService.instanceConfig.note_length ? this.libProjectService.instanceConfig.note_length : 200
               }
             });
             dialogRef.afterClosed().subscribe(result => {

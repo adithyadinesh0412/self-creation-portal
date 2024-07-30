@@ -11,14 +11,14 @@
         matInput 
         class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"
         (input)="updateCharCount($event)"
-        maxlength="200"
+        [maxlength]=dialogueData.note_length
         [(ngModel)]="reviewerNote"
         name="reviewerNote"
         [pattern]="pattern"
         required="false"
         #input="ngModel">
       </textarea>
-      <div class="text-sm text-gray-500">{{ charCount }}/200</div>
+      <div class="text-sm text-gray-500">{{ charCount }}/{{dialogueData.note_length}}</div>
     </form>
     <mat-error class="error-container">
       @if(input.errors && input.touched){
