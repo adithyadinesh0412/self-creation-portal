@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,53 +20,54 @@ import 'quill/dist/quill.snow.css';
 export class CommentsBoxComponent {
   userId:any = 0;
   isResolvable:boolean = false;
-  messages: any =  [
-        {
-          "id": 2,
-          "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-          "context": "page",
-          "page": 1,
-          "status": "RESOLVED",
-          "parent_id": 1,
-          "commenter": {
-            "id": 24,
-            "name": "Priyanka"
-          },
-          "is_read": true,
-          "resolved_by": 25,
-          "resolver": {
-            "id": 25,
-            "name": "Adithya"
-          },
-          "resolved_at": "2024-04-11T06:43:43.995Z"
-        },
-        {
-          "comment": "Add valid title The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-          "context": "page",
-          "page": 1,
-          "status": "UNRESOLVED",
-          "parent_id": null,
-          "commenter": {
-            "id": 25,
-            "name": "Ram"
-          },
-          "is_read": true
-        },
-        {
-          "id": 2,
-          "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-          "context": "page",
-          "page": 1,
-          "status": "RESOLVED",
-          "parent_id": 1,
-          "commenter": {
-            "id": 24,
-            "name": "Priyanka"
-          },
-          "is_read": true,
-          "resolved_by": 25
-        }
-      ];
+  @Input() messages:any =   [
+    {
+      "id": 2,
+      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "RESOLVED",
+      "parent_id": 1,
+      "commenter": {
+        "id": 24,
+        "name": "Priyanka"
+      },
+      "is_read": true,
+      "resolved_by": 25,
+      "resolver": {
+        "id": 25,
+        "name": "Adithya"
+      },
+      "resolved_at": "2024-04-11T06:43:43.995Z"
+    },
+    {
+      "comment": "Add valid title The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "UNRESOLVED",
+      "parent_id": null,
+      "commenter": {
+        "id": 25,
+        "name": "Ram"
+      },
+      "is_read": true
+    },
+    {
+      "id": 2,
+      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "RESOLVED",
+      "parent_id": 1,
+      "commenter": {
+        "id": 24,
+        "name": "Priyanka"
+      },
+      "is_read": true,
+      "resolved_by": 25
+    }
+  ];
+  @Output() comment = new EventEmitter<String>();
   value: any;
   chatFlag: boolean = false;
 
@@ -161,6 +162,7 @@ export class CommentsBoxComponent {
   saveComment() {
     console.log(this.quillInput)
     this.chatFlag = !this.chatFlag;
+    this.comment.emit(this.quillInput)
   }
 
 }
