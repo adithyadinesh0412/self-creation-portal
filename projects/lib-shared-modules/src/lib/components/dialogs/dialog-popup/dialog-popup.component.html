@@ -8,9 +8,9 @@
   @if(dialogueData?.form){
     @for(control of dialogueData?.form; track control){
       <div class="flex">
-        <mat-form-field class="w-full" appearance="outline">
+        <mat-form-field class="w-full" appearance="outline" floatLabel="always">
           <mat-label>{{ control.label }}</mat-label>
-          <input matInput id="exampleInput"  [(ngModel)]="title"   #input="ngModel" name="{{control.name}}" placeholder="Type here..."
+          <input matInput id="exampleInput"  [(ngModel)]="title"   #input="ngModel" name="{{control.name}}" [placeholder]="control.placeHolder"
           [maxlength]="control?.validators.maxLength"
           [required]="control?.validators?.required"
           [pattern]="control?.validators?.pattern">

@@ -20,11 +20,11 @@
                                 </p>
                                 <div class="flex gap-3">
                                     <div>
-                                        <mat-icon (click)="this.moveTask(i, -1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i<1 || viewOnly}" [matTooltip]="SHIFT_TASK_UP | translate">arrow_upward</mat-icon>
-                                        <mat-icon (click)="this.moveTask(i, 1)" class="cursor-pointer" [ngClass]="{'disabled-with-pointer-event': i>=tasks.controls.length-1 || viewOnly}" [matTooltip]="SHIFT_TASK_DOWN | translate">arrow_downward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, -1)" class="cursor-pointer" [ngClass]="{'disable-fields': i<1 || viewOnly}" [matTooltip]="SHIFT_TASK_UP | translate">arrow_upward</mat-icon>
+                                        <mat-icon (click)="this.moveTask(i, 1)" class="cursor-pointer" [ngClass]="{'disable-fields': i>=tasks.controls.length-1 || viewOnly}" [matTooltip]="SHIFT_TASK_DOWN | translate">arrow_downward</mat-icon>
                                     </div>
                                     <div>
-                                        <mat-icon color="warn" class="cursor-pointer" (click)="tasks.controls.length > 1 ? deleteTask(i) : null" [ngClass]="{'disabled-with-pointer-event': tasks.controls.length <= 1 || viewOnly}" >delete_outline</mat-icon>
+                                        <mat-icon color="warn" class="cursor-pointer" (click)="tasks.controls.length > 1 ? deleteTask(i) : null" [ngClass]="{'disable-fields': tasks.controls.length <= 1 || viewOnly}" >delete_outline</mat-icon>
                                     </div>
                                 </div>
                             </div>

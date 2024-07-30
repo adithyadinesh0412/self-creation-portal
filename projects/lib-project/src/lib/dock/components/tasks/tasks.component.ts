@@ -46,99 +46,155 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription.add(
-        this.libProjectService.currentProjectMetaData.subscribe(data => {
-            this.tasksData = data?.tasksData.tasks;
-        })
-    );
-
+      this.libProjectService.currentProjectMetaData.subscribe(data => {
+        this.tasksData = data?.tasksData.tasks;
+      })
+    )
     this.subscription.add(
-        this.route.queryParams.subscribe((params: any) => {
-            this.projectId = params.projectId;
-            this.libProjectService.projectData.id = params.projectId;
-            this.mode = params.mode;
-
-            if (params.projectId) {
-                if (params.mode === 'edit') {
-                    this.initializeProjectData('edit');
-                } else if (params.mode === 'viewOnly') {
-                    this.viewOnly = true;
-                    this.initializeProjectData('viewOnly');
-                }
-            } else {
-                this.startAutoSaving();
-                this.libProjectService.createOrUpdateProject({ ...this.libProjectService.projectData, title: 'Untitled project' })
-                    .subscribe((res: any) => {
-                        this.projectId = res.result.id;
-                        this.router.navigate([], {
-                            relativeTo: this.route,
-                            queryParams: {
-                                projectId: this.projectId,
-                                mode: 'edit',
-                            },
-                            queryParamsHandling: 'merge',
-                            replaceUrl: true,
-                        });
-                        this.libProjectService.projectData.id = res.result.id;
+      this.route.queryParams.subscribe((params: any) => {
+        this.projectId = params.projectId;
+        this.libProjectService.projectData.id = params.projectId;
+        this.mode = params.mode;
+        if (params.projectId) {
+          if (params.mode === 'edit') {
+            if (Object.keys(this.libProjectService.projectData).length > 1) {
+              this.tasksForm.reset()
+              if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
+                this.libProjectService.projectData.tasks.forEach((element: any) => {
+                  const task = this.fb.group({
+                    id: [element.id],
+                    description: [element.description ? element.description : '', Validators.required],
+                    is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                    allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                    evidence_details: this.fb.group({
+                      file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                      min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                    }),
+                    children: [element.children],
+                    sequence_no: [element.sequence_no]
+                  });
+                  this.tasks.push(task);
+                })
+              }
+              else {
+                this.addTask();
+              }
+              this.startAutoSaving();
+            }
+            else {
+              this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
+                this.tasksForm.reset()
+                this.libProjectService.projectData = res.result;
+                if (res && res.result.tasks && res.result.tasks.length) {
+                  res.result.tasks.forEach((element: any) => {
+                    const task = this.fb.group({
+                      id: [element.id],
+                      description: [element.description ? element.description : '', Validators.required],
+                      is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                      allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                      evidence_details: this.fb.group({
+                        file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                        min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                      }),
+                      children: [element.children],
+                      sequence_no: [element.sequence_no]
                     });
+                    this.tasks.push(task);
+                  })
+                }
+                else {
+                  this.addTask();
+                }
+                this.startAutoSaving();
+              })
             }
-        })
-    );
+          }
+          else if (params.mode === 'viewOnly') {
+            this.viewOnly = true
 
+            if (Object.keys(this.libProjectService.projectData).length > 1) {
+              this.tasksForm.reset()
+              if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
+                this.libProjectService.projectData.tasks.forEach((element: any) => {
+                  const task = this.fb.group({
+                    id: [element.id],
+                    description: [element.description ? element.description : '', Validators.required],
+                    is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                    allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                    evidence_details: this.fb.group({
+                      file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                      min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                    }),
+                    learning_resources:[element.learning_resources],
+                    children: [element.children],
+                    sequence_no: [element.sequence_no]
+                  });
+                  this.tasks.push(task);
+                })
+              }
+              else {
+                this.addTask();
+              }
+            }
+            else {
+              this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
+                this.tasksForm.reset()
+                this.libProjectService.projectData = res.result;
+                if (res && res.result.tasks && res.result.tasks.length) {
+                  res.result.tasks.forEach((element: any) => {
+                    const task = this.fb.group({
+                      id: [element.id],
+                      description: [element.description ? element.description : '', Validators.required],
+                      is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
+                      allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                      evidence_details: this.fb.group({
+                        file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
+                        min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                      }),
+                      children: [element.children],
+                      sequence_no: [element.sequence_no]
+                    });
+                    this.tasks.push(task);
+                  })
+                }
+                else {
+                  this.addTask();
+                }
+              })
+            }
+          }
+        }
+        else {
+          this.startAutoSaving();
+          this.libProjectService
+            .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
+            .subscribe((res: any) => {
+              (this.projectId = res.result.id),
+                this.router.navigate([], {
+                  relativeTo: this.route,
+                  queryParams: {
+                    projectId: this.projectId,
+                    mode: 'edit',
+                  },
+                  queryParamsHandling: 'merge',
+                  replaceUrl: true,
+                });
+              this.libProjectService.projectData.id = res.result.id;
+            })
+        }
+      })
+    )
     this.subscription.add(
-        this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
-            if (isProjectSave && this.router.url.includes('tasks')) {
-                this.submit();
-            }
-        })
+      this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
+        if (isProjectSave && this.router.url.includes('tasks')) {
+          console.log("from subject it's getting called")
+          this.submit();
+        }
+      })
     );
-
-    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID";
-    this.libProjectService.checkValidationForSubmit();
-}
-
-private initializeProjectData(mode: string) {
-    if (Object.keys(this.libProjectService.projectData).length > 1) {
-        this.resetAndInitTasks(this.libProjectService.projectData.tasks);
-    } else {
-        this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
-            this.libProjectService.projectData = res.result;
-            this.resetAndInitTasks(res.result.tasks);
-        });
-    }
-
-    if (mode === 'edit') {
-        this.startAutoSaving();
-    }
-}
-
-private resetAndInitTasks(tasks: any[]) {
-    this.tasksForm.reset();
-
-    if (tasks && tasks.length) {
-        tasks.forEach((element: any) => {
-            this.tasks.push(this.createTaskFormGroup(element));
-        });
-    } else {
-        this.addTask();
-    }
-}
-
-private createTaskFormGroup(element: any): FormGroup {
-    return this.fb.group({
-        id: [element.id],
-        description: [element.description ? element.description : '', Validators.required],
-        is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-        allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-        evidence_details: this.fb.group({
-            file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-            min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-        }),
-        children: [element.children],
-        sequence_no: [element.sequence_no]
-    });
-}
-
-
+    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
+    this.libProjectService.checkValidationForSubmit()
+  }
 
   get tasks() {
     return this.tasksForm.get('tasks') as FormArray;

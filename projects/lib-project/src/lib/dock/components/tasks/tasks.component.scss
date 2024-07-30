@@ -7,13 +7,14 @@
   }
 
 .disable-fields{
-  background-color: $buttonDisable;
+  pointer-events: none;
+  color: $buttonDisable;
 }
 input:focus{
   outline: none;
 }
 
-.disabled-with-pointer-event {
+.disabled-with-pointer-event{
   pointer-events: none;
   opacity: 0.8;
 }
