@@ -56,7 +56,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.libProjectService.projectData.id = params.projectId;
         this.mode = params.mode;
         if (params.projectId) {
-          if (params.mode === 'edit') {
+          if (params.mode) {
             if (Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
               if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
@@ -79,62 +79,10 @@ export class TasksComponent implements OnInit, OnDestroy {
               else {
                 this.addTask();
               }
-              this.startAutoSaving();
-            }
-            else {
-              this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
-                this.tasksForm.reset()
-                this.libProjectService.projectData = res.result;
-                if (res && res.result.tasks && res.result.tasks.length) {
-                  res.result.tasks.forEach((element: any) => {
-                    const task = this.fb.group({
-                      id: [element.id],
-                      description: [element.description ? element.description : '', Validators.required],
-                      is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                      allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-                      evidence_details: this.fb.group({
-                        file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                        min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                      }),
-                      children: [element.children],
-                      sequence_no: [element.sequence_no]
-                    });
-                    this.tasks.push(task);
-                  })
-                }
-                else {
-                  this.addTask();
-                }
+              if(params.mode === 'edit') {
                 this.startAutoSaving();
-              })
-            }
-          }
-          else if (params.mode === 'viewOnly') {
-            this.viewOnly = true
-
-            if (Object.keys(this.libProjectService.projectData).length > 1) {
-              this.tasksForm.reset()
-              if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
-                this.libProjectService.projectData.tasks.forEach((element: any) => {
-                  const task = this.fb.group({
-                    id: [element.id],
-                    description: [element.description ? element.description : '', Validators.required],
-                    is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                    allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
-                    evidence_details: this.fb.group({
-                      file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                      min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
-                    }),
-                    learning_resources:[element.learning_resources],
-                    children: [element.children],
-                    sequence_no: [element.sequence_no]
-                  });
-                  this.tasks.push(task);
-                })
               }
-              else {
-                this.addTask();
-              }
+             
             }
             else {
               this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
@@ -160,7 +108,14 @@ export class TasksComponent implements OnInit, OnDestroy {
                 else {
                   this.addTask();
                 }
+                if(params.mode === 'edit') {
+                  this.startAutoSaving();
+                }
               })
+            }
+
+            if (params.mode === 'viewOnly') {
+              this.viewOnly = true
             }
           }
         }
@@ -184,14 +139,18 @@ export class TasksComponent implements OnInit, OnDestroy {
         }
       })
     )
-    this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
-        if (isProjectSave && this.router.url.includes('tasks')) {
-          console.log("from subject it's getting called")
-          this.submit();
-        }
-      })
-    );
+   
+    if(this.mode === 'edit'){
+      this.subscription.add(
+        this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
+          if (isProjectSave && this.router.url.includes('tasks')) {
+            console.log("from subject it's getting called")
+            this.submit();
+          }
+        })
+      );
+    }
+   
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
     this.libProjectService.checkValidationForSubmit()
   }

@@ -62,12 +62,14 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       this.route.queryParams.subscribe((params:any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
-        if(params.mode === "edit"){
+        if(params.mode){
           if(Object.keys(this.libProjectService.projectData).length) {
             this.projectData = this.libProjectService.projectData;
             this.createSubTaskForm()
             this.addSubtaskData()
-            this.startAutoSaving();
+            if (params.mode === "edit") {
+              this.startAutoSaving();
+            }
           }
           else {
             this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
@@ -75,36 +77,26 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.projectData = res?.result
               this.createSubTaskForm()
               this.addSubtaskData()
+              if (params.mode === "edit") {
               this.startAutoSaving();
+            }
             })
           }
 
-          this.subscription.add(
+          if (params.mode === "edit") {
+             this.subscription.add(
             this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
               if(isProjectSave && this.router.url.includes('sub-tasks')) {
                 this.submit();
               }
             })
           );
-        }
-        if(params.mode === "viewOnly"){
-            this.viewOnly =true
-
-            if(Object.keys(this.libProjectService.projectData).length) {
-              this.projectData = this.libProjectService.projectData;
-              this.createSubTaskForm()
-              this.addSubtaskData()
             }
-            else {
-              this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
-                this.libProjectService.setProjectData(res.result);
-                this.projectData = res?.result
-                this.createSubTaskForm()
-                this.addSubtaskData()
-              })
-            }
+           if(params.mode === "viewOnly"){
+              this.viewOnly =true
+          }
         }
-       
+      
       })
     ); 
   }
