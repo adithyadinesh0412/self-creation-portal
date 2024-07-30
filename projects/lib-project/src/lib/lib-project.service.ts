@@ -17,16 +17,19 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
-  maxTaskCount:number=10
-  auto_save_interval:number=30000;
   validForm={
     projectDetails: "INVALID",
     tasks:"INVALID"
   }
+  viewOnly:boolean= false;
+  mode:any="edit"
+  projectConfig:any
+  instanceConfig:any
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
       console.log("project service file")
+      this.mode = params.mode ? params.mode : "edit"
     })
   }
 
@@ -167,7 +170,7 @@ export class LibProjectService {
 
   checkValidationForSubmit(){
     const currentProjectMetaData = this.dataSubject.getValue();
-    currentProjectMetaData?.sidenavData.headerData.buttons.forEach((element:any) => {
+    currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element:any) => {
       if(element.title == "SEND_FOR_REVIEW"){
         if(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID"){
           element.disable = false;
@@ -179,7 +182,7 @@ export class LibProjectService {
   }
 
   startAutoSave(projectID:string|number) {
-    return interval(this.auto_save_interval).pipe(
+    return interval(this.instanceConfig.auto_save_interval ? this.instanceConfig.auto_save_interval : 30000).pipe(
       switchMap(() => {
         return this.createOrUpdateProject(this.projectData, this.projectData.id);
       })
