@@ -17,7 +17,6 @@ export class LibProjectService {
   private saveProject = new BehaviorSubject<boolean>(false);
   isProjectSave = this.saveProject.asObservable();
   projectId:string|number='';
-  maxTaskCount:number=10
   auto_save_interval:number=30000;
   validForm={
     projectDetails: "INVALID",
@@ -25,7 +24,7 @@ export class LibProjectService {
   }
   viewOnly:boolean= false;
   mode:any="edit"
-  showReviewerList:boolean = true;
+  projectConfig:any
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {

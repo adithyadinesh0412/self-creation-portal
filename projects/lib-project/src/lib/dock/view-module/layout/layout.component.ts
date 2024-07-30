@@ -38,9 +38,7 @@ export class LayoutComponent {
   setConfig(){
     this.libProjectService.setConfig().subscribe((res:any) => {
       this.libProjectService.auto_save_interval =res?.result.instance?.auto_save_interval
-      let project = res.result.resource.find((res:any) => res.resource_type === "projects");
-      this.libProjectService.maxTaskCount = project.max_task_count
-      this.libProjectService.showReviewerList = project.show_reviewer_list
+      this.libProjectService.projectConfig = res.result.resource.find((res:any) => res.resource_type === "projects");
     })
   }
 
@@ -81,7 +79,7 @@ export class LayoutComponent {
         break;
       }
       case "SEND_FOR_REVIEW":{
-        if(this.libProjectService.showReviewerList){
+        if(this.libProjectService.projectConfig.show_reviewer_list){
           this.libProjectService.getReviewerData().subscribe((list:any) =>{
             const dialogRef = this.dialog.open(ReviewModelComponent, {
               disableClose: true,
