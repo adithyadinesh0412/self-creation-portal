@@ -62,7 +62,7 @@
                                 'placeholder-text-black': task.get(tasksData?.allowEvidence.name)?.value
                               }">
                                 <mat-select multiple="true" [formControlName]="tasksData.fileType.name" [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="All file types">
-                                    <mat-option *ngFor="let option of tasksData.fileType.options" [value]="option.value">
+                                    <mat-option [matTooltip]="option.label" *ngFor="let option of tasksData.fileType.options" [value]="option.value">
                                         {{ option.label }}
                                     </mat-option>
                                 </mat-select>
