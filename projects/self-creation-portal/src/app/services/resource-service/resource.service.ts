@@ -17,4 +17,11 @@ export class ResourceService {
     const url = this.commonService.createUrlWithParams(endpoint, params);
     return this.httpService.get(url);
   }
+
+  getUpForReviewList(pagination: any, filters: any, sortOptions: any): Observable<any> {
+    const endpoint = RESOURCE_URLS.UP_FOR_REVIEW_LIST;
+    const params = this.commonService.generateParams(pagination, filters, sortOptions);
+    const url = this.commonService.createUrlWithParams(endpoint, params);
+    return this.httpService.get(url);
+  }
 }
