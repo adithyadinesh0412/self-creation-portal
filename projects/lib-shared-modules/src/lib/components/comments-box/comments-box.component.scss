@@ -20,6 +20,21 @@
     padding: 1rem;
     border-radius: .5rem 0.5rem 0 0;
   }
+  quill-editor {
+    height: 8rem !important;
+    width: 100%;
+  }
+  .chat-window {
+    background: #e1e8ed;
+    height: 17rem;
+    overflow-y: scroll;
+  }
+  .date-stamp {
+    background: lightblue;
+    color: white;
+    padding: 3px 5px;
+    border-radius: 2px;
+  }
   .top-bar {
     margin: 25px 0px;
   }
@@ -58,19 +73,25 @@
     bottom: 0;
   }
   .save-button {
-    background: $primary;
+    background: $primary !important;
+    color: white !important;
   }
   .chatbox {
-    width: auto;
+    width: 30%;
     margin: 5px 5px 7px;
     position: fixed;
     bottom: 0;
     right: 2rem;
     overflow: scroll;
     box-shadow: -1px 10px 5px 5px lightgray;
+    font-size: 0.8rem !important;
   }
   .ql-container.ql-snow {
     border: 0 !important;
+  }
+  .button-disabled {
+    background: gray !important;
+    color: white !important;
   }
   .comment-open {
     background: $primary;
@@ -86,4 +107,27 @@
   }
   .message-date {
 
+  }
+  .message-container {
+    justify-content: end;
+  }
+  .message-body {
+    color: white;
+    background: $primary;
+    width: 70%;
+    border-radius: 0.8rem;
+  }
+  .color-primary {
+    color: $primary;
+    mat-icon {
+      margin-bottom: -5px;
+    }
+  }
+  .reviewer-message {
+    justify-content: start !important;
+    color: $primary;
+  }
+  .reviewer-message-body {
+    background: white !important;
+    color: black !important;
   }

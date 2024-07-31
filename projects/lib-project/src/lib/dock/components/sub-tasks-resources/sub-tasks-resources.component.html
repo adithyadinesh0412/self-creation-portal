@@ -6,7 +6,7 @@
         <div class="px-10 my-5 text-tertiary">
             <p>{{"SUBTASKS_AND_RESOURCES_DESCRIPTION" | translate}}</p>
         </div>
-        <div class="px-10">
+        <div class="px-10"  [ngClass]="{'disabled-with-pointer-events': viewOnly}">
             @for(item of taskData; track item; let i = $index) {
             <div>
                 <p class="mt-5 text-lg text-tertiary">{{"SUBTASK_HEADER"| translate}} {{i+1}}</p>
@@ -23,7 +23,7 @@
                                         @for( control of item.subTasks.get('subtasks').controls;track control; let j =
                                         $index) {
                                         <div class="flex items-center space-x-2">
-                                            <input class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Set a meeting with a teacher">
+                                            <input [value]="control.name" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask">
                                             <mat-icon class="cursor-pointer"
                                                 (click)="onDeleteSubtask(i, j)" color="primary">delete</mat-icon>
                                           </div>

@@ -18,6 +18,8 @@ import { CommonModule } from '@angular/common';
 export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
   charCount: number = 0;
+  reviewerNote:string = ""
+  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\_ <>&]+$"
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
@@ -49,6 +51,10 @@ export class ReviewModelComponent {
 
 updateCharCount(event: any): void {
   this.charCount = event.target.value.length;
+}
+
+trackByFn(index: number, item: any): any {
+  return item.id || index;
 }
 
 }

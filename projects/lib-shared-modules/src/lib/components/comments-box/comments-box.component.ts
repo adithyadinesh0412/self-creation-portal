@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,51 +12,69 @@ import 'quill/dist/quill.snow.css';
 @Component({
   selector: 'lib-comments-box',
   standalone: true,
-  imports: [CommonModule,MatIconModule,MatButtonModule,    FormsModule,
+  imports: [CommonModule,MatIconModule,MatButtonModule,FormsModule,
     QuillEditorComponent],
   templateUrl: './comments-box.component.html',
   styleUrl: './comments-box.component.scss'
 })
 export class CommentsBoxComponent {
-  messages: any =  [
-        {
-          "id": 2,
-          "comment": "Check spelling",
-          "context": "page",
-          "page": 1,
-          "status": "RESOLVED",
-          "parent_id": 1,
-          "commenter": {
-            "id": 24,
-            "name": "Priyanka"
-          },
-          "is_read": true,
-          "resolved_by": 25,
-          "resolver": {
-            "id": 25,
-            "name": "Adithya"
-          },
-          "resolved_at": "2024-04-11T06:43:43.995Z"
-        },
-        {
-          "comment": "Add valid title",
-          "context": "page",
-          "page": 1,
-          "status": "UNRESOLVED",
-          "parent_id": null,
-          "commenter": {
-            "id": 24,
-            "name": "Priyanka"
-          },
-          "is_read": true
-        }
-      ];
+  userId:any = 0;
+  isResolvable:boolean = false;
+  @Input() messages:any =   [
+    {
+      "id": 2,
+      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "RESOLVED",
+      "parent_id": 1,
+      "commenter": {
+        "id": 24,
+        "name": "Priyanka"
+      },
+      "is_read": true,
+      "resolved_by": 25,
+      "resolver": {
+        "id": 25,
+        "name": "Adithya"
+      },
+      "resolved_at": "2024-04-11T06:43:43.995Z"
+    },
+    {
+      "comment": "Add valid title The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "UNRESOLVED",
+      "parent_id": null,
+      "commenter": {
+        "id": 25,
+        "name": "Ram"
+      },
+      "is_read": true
+    },
+    {
+      "id": 2,
+      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
+      "context": "page",
+      "page": 1,
+      "status": "RESOLVED",
+      "parent_id": 1,
+      "commenter": {
+        "id": 24,
+        "name": "Priyanka"
+      },
+      "is_read": true,
+      "resolved_by": 25
+    }
+  ];
+  @Output() comment = new EventEmitter<String>();
   value: any;
   chatFlag: boolean = false;
 
   @ViewChild('editor') editor:any;
 
   name = 'Angular';
+  currentUserId:number = 25;
   modules = {
     formula: true,
     toolbar: [
@@ -101,6 +119,9 @@ export class CommentsBoxComponent {
   constructor() { }
 
   ngOnInit() {
+    // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
+    this.userId = 25;
+    this.isResolvable = this.messages[this.messages.length - 1].resolved_at ? true : false;
   }
 
   test=(event:any)=>{
@@ -136,6 +157,12 @@ export class CommentsBoxComponent {
   logChange($event:any) {
     console.log(this.editor);
     console.log($event);
+  }
+
+  saveComment() {
+    console.log(this.quillInput)
+    this.chatFlag = !this.chatFlag;
+    this.comment.emit(this.quillInput)
   }
 
 }

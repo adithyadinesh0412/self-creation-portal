@@ -1,45 +1,63 @@
 <div class="flex flex-row justify-between items-center bg-primary h-10">
-  <h2 class="text-white font-bold px-6">{{dialogueData?.header |translate}}</h2>
+  <h2 class="text-white font-bold px-6">{{ dialogueData?.header | translate }}</h2>
   <img class="cursor-pointer pr-4" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
 </div>
 <div mat-dialog-content>
   <div>
-  <form class="text-box">
-    <textarea 
-      placeholder="Add a note for the reviewer" 
-      rows="3" 
-      matInput 
-      class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"
-      (input)="updateCharCount($event)"
-      maxlength="200">
-    </textarea>
-    <div class="text-sm text-gray-500">{{ charCount }}/200</div>
-  </form>
-  @if(dialogueData.reviewdata.length>0){
-  <mat-radio-group color="primary" aria-label="Select an option" class="" (change)="onSelectReviewer($event)">
-    <mat-radio-button value="1" checked="true" class="-mx-1 mr-6">{{"SEND_TO_ALL_REVIEWERS" |translate}}</mat-radio-button>
-    <mat-radio-button value="2" class="-mx-1">{{"SELECT_REVIEWER" |translate}}</mat-radio-button>
-</mat-radio-group>
-  <div class="flex ml-[3px]">
-      <mat-icon class="info-icon">info</mat-icon><p class="max-w-[35vw] ml-2 bg-transparent h-auto break-words">{{"SEND_FOR_REVIEW_DESCRIPTION" | translate}}</p>
-  </div>
-}
-  </div>
-  <div class="max-h-40 mt-10 overflow-y-auto">
-      <mat-selection-list color="primary" #reviewer [multiple]="true">
-        @if(dialogueData.reviewdata.length>0){
-          @for (item of dialogueData.reviewdata; track item) {
-            <mat-list-option  [value]="item">{{item.name}}</mat-list-option>
+    <form class="text-box" #dialogueForm="ngForm">
+      <textarea 
+        placeholder="Add a note for the reviewer" 
+        rows="3" 
+        matInput 
+        class="w-full outline-none rounded-lg border-2 border-gray-400 ml-[3px] px-4 py-2"
+        (input)="updateCharCount($event)"
+        [maxlength]=dialogueData.note_length
+        [(ngModel)]="reviewerNote"
+        name="reviewerNote"
+        [pattern]="pattern"
+        required="false"
+        #input="ngModel">
+      </textarea>
+      <div class="text-sm text-gray-500">{{ charCount }}/{{dialogueData.note_length}}</div>
+    </form>
+    <mat-error class="error-container">
+      @if(input.errors && input.touched){
+        <div class="error-message">
+          <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+          @if(input.errors?.['pattern']){
+            <span>Objective can only include alphanumeric characters with spaces, -, _, <></span>
           }
-        }@else{
-          <div class="text-black pb-10">
-            {{"NO_REVIEWERS_FOUND" | translate}}
-          </div>
-        }  
-        </mat-selection-list>
+          @if(input.errors?.['maxlength']){
+            <span>Note cannot exceed 200 characters.</span>
+          }
+        </div>
+      }
+    </mat-error>
+
+    @if(dialogueData.reviewdata.length > 0){
+      <mat-radio-group color="primary" aria-label="Select an option" (change)="onSelectReviewer($event)">
+        <mat-radio-button value="1" checked="true" class="-mx-1 mr-6">{{ 'SEND_TO_ALL_REVIEWERS' | translate }}</mat-radio-button>
+        <mat-radio-button value="2" class="-mx-1">{{ 'SELECT_REVIEWER' | translate }}</mat-radio-button>
+      </mat-radio-group>
+      <div class="flex ml-[3px]">
+        <mat-icon class="info-icon">info</mat-icon>
+        <p class="max-w-[35vw] ml-2 bg-transparent h-auto break-words">{{ 'SEND_FOR_REVIEW_DESCRIPTION' | translate }}</p>
+      </div>
+    }
+    <div class="max-h-40 mt-10 overflow-y-auto">
+      <mat-selection-list color="primary" #reviewer [multiple]="true">
+        @if(dialogueData.reviewdata.length > 0){
+          @for (item of dialogueData.reviewdata; track item) {
+            <mat-list-option [value]="item">{{ item.name }}</mat-list-option>
+          }
+        } @else {
+          <div class="text-black pb-10">{{ 'NO_REVIEWERS_FOUND' | translate }}</div>
+        }
+      </mat-selection-list>
+    </div>
   </div>
 </div>
-<div class="border-t"></div> 
+<div class="border-t"></div>
 <div class="flex flex-row justify-end items-center">
 <button [disabled]="reviewer.selectedOptions.selected.length === 0"  [ngClass]="{'disable-button': reviewer.selectedOptions.selected.length === 0}" class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="getSelectedValues(dialogueData.sendForReview, reviewer.selectedOptions.selected)" >{{dialogueData.sendForReview |translate}}</button>
 </div>

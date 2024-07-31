@@ -37,9 +37,8 @@ export class LayoutComponent {
   }
   setConfig(){
     this.libProjectService.setConfig().subscribe((res:any) => {
-      this.libProjectService.auto_save_interval =res?.result.instance?.auto_save_interval
-      let project = res.result.resource.find((res:any) => res.resource_type === "projects");
-      this.libProjectService.maxTaskCount = project.max_task_count
+      this.libProjectService.instanceConfig = res?.result.instance;
+      this.libProjectService.projectConfig = res.result.resource.find((res:any) => res.resource_type === "projects");
     })
   }
 
@@ -79,34 +78,43 @@ export class LayoutComponent {
         this.libProjectService.saveProjectFunc(true);
         break;
       }
-      case "SEND_FOR_REVIEW":
-        this.libProjectService.getReviewerData().subscribe((list:any) =>{
-          const dialogRef = this.dialog.open(ReviewModelComponent, {
-            disableClose: true,
-            data : {
-              header: "SEND_FOR_REVIEW",
-              reviewdata: list.result.data,
-              sendForReview: "SEND_FOR_REVIEW"
-            }
-          });
-          dialogRef.afterClosed().subscribe(result => {
-            if(result.sendForReview == "SEND_FOR_REVIEW"){
-              this.libProjectService
-              .createOrUpdateProject(this.libProjectService.projectData,this.libProjectService.projectData.id).subscribe((res) => {
-              this.route.queryParams.subscribe((params: any) => {
-                if (params.projectId) {
-                  const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
-                  this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
-                    this.router.navigate([SUBMITTED_FOR_REVIEW]);
-                  })
-                }
+      case "SEND_FOR_REVIEW":{
+        if(this.libProjectService.projectConfig.show_reviewer_list){
+          this.libProjectService.getReviewerData().subscribe((list:any) =>{
+            const dialogRef = this.dialog.open(ReviewModelComponent, {
+              disableClose: true,
+              data : {
+                header: "SEND_FOR_REVIEW",
+                reviewdata: list.result.data,
+                sendForReview: "SEND_FOR_REVIEW",
+                note_length: this.libProjectService.instanceConfig.note_length ? this.libProjectService.instanceConfig.note_length : 200
+              }
+            });
+            dialogRef.afterClosed().subscribe(result => {
+              if(result.sendForReview == "SEND_FOR_REVIEW"){
+                this.libProjectService
+                .createOrUpdateProject(this.libProjectService.projectData,this.libProjectService.projectData.id).subscribe((res) => {
+                this.route.queryParams.subscribe((params: any) => {
+                  if (params.projectId) {
+                    const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
+                    this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
+                      this.router.navigate([SUBMITTED_FOR_REVIEW]);
+                    })
+                  }
+                })
               })
-            })
-            }
-            return true;
-          });
-        })
-        break;
+              }
+              return true;
+            });
+          })
+          break;
+        }else{
+          this.libProjectService.sendForReview({},this.libProjectService.projectData.id).subscribe((res:any) =>{
+            this.router.navigate([SUBMITTED_FOR_REVIEW]);
+          })
+          break;
+        } 
+      }
       default:
             break;
     }

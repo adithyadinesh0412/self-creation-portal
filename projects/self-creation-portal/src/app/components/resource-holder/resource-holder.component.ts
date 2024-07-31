@@ -293,7 +293,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'view'
+            mode: 'viewOnly'
           }
         });
         break;
