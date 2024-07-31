@@ -165,7 +165,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       type: "content",
       name: ['', Validators.required],
       is_mandatory: [false],
-      allow_evidence: [true],
+      allow_evidence: [false],
       evidence_details: this.fb.group({
         file_types: [[]],
         min_no_of_evidences: [1, [Validators.min(this.tasksData.minEvidences.validators.min), Validators.max(this.tasksData.minEvidences.validators.max)]]
@@ -229,6 +229,11 @@ export class TasksComponent implements OnInit, OnDestroy {
     console.log(this.tasks)
     this.tasks.value.forEach((item: any, index: any) => {
       item.sequence_no = index + 1;
+      if(item.allow_evidence == true && item.evidence_details.file_types.length == 0){
+       item.evidence_details.file_types =  this.tasksData.fileType.options.map((item:any)=> item.value);
+      }else if(item.allow_evidence == false){
+        item.evidence_details = {}
+      }
     });
     console.log(this.tasks.value)
     this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
