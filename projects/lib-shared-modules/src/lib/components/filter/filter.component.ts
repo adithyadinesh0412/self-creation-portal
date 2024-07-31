@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input,  Output } from '@angular/core';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface FilterChangeEvent {
   filterName: string;
@@ -12,12 +13,13 @@ interface FilterChangeEvent {
 @Component({
   selector: 'lib-filter',
   standalone: true,
-  imports: [MatSelectModule,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule, TranslateModule],
+  imports: [MatSelectModule,MatFormFieldModule,MatIconModule,FormsModule,ReactiveFormsModule, TranslateModule, CommonModule],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss'
 })
 export class FilterComponent {
   @Input() filterData:any;
+  @Input() activeFilterButton: string = ''; 
   @Output() filteredData = new EventEmitter<FilterChangeEvent | { sort_by: string, sort_order: string }>();
   @Output() sortOptionsChanged = new EventEmitter<{ sort_by: string, sort_order: string }>();
   @Input() changeReqCount: number = 0
@@ -61,6 +63,6 @@ export class FilterComponent {
   }
 
   filterButtonAction(filter: any){
-    this.filterButtonActionEvent.emit(filter)
+    this.filterButtonActionEvent.emit({ label: filter.label });
   }
 }

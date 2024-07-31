@@ -40,7 +40,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     filterData: [] as any,
     showActionButton: false,
     changeReqCount : 0,
-    inprogressCount  : 0
+    inprogressCount  : 0,
+    activeFilterButton: '' as string
   };
 
   sortOptions = {
@@ -55,6 +56,76 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   pageStatus !: string;
   buttonsData: any = {};
   buttonsCSS : any;
+
+  reviewList : any = [
+    {
+      "id": 3,
+      "title": "review",
+      "type": "projects",
+      "status": "SUBMITTED",
+      "submitted_on": null,
+      "last_reviewed_on": null,
+      "notes": "hey hello",
+      "review_status": null,
+      "creator": "yodi test",
+      "organization": {
+        "id": 24,
+        "name": "Shikshalokam",
+        "code": "sl"
+      }
+    },
+      {
+            "id": 4,
+            "title": "sample project",
+            "type": "projects",
+            "status": "SUBMITTED",
+            "submitted_on": null,
+            "last_reviewed_on": null,
+            "notes": "hey hello",
+            "review_status": null,
+            "creator": "yodi test",
+            "organization": {
+              "id": 24,
+              "name": "Shikshalokam",
+              "code": "sl"
+            }
+      },
+      {
+        "id": 5,
+        "title": "upforreview",
+        "type": "projects",
+        "status": "SUBMITTED",
+        "submitted_on": null,
+        "last_reviewed_on": null,
+        "notes": "hey hello",
+        "review_status": null,
+        "creator": "yodi test",
+        "organization": {
+          "id": 24,
+          "name": "Shikshalokam",
+          "code": "sl"
+        },
+      },
+      {
+            "id": 158,
+            "title": "Untitled project",
+            "type": "projects",
+            "status": "IN_REVIEW",
+            "submitted_on": null,
+            "last_reviewed_on": null,
+            "created_at": "2024-07-11T10:44:09.000Z",
+            "notes": "hey hello",
+            "review_status": "INPROGRESS",
+            "creator": "yodi test",
+            "organization": {
+              "id": 24,
+              "name": "Tunerlabs",
+              "code": "tl",
+              "description": "Tunerlabs"
+            }
+      }
+  ]
+     
   constructor(
     private route: ActivatedRoute, 
     private formService: FormService, 
@@ -148,6 +219,13 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         this.isDataLoaded = true;
       });
     }
+    else if(this.pageStatus === 'up_for_review') {
+      const result = this.reviewList;
+      this.lists = this.addActionButtons(result)
+      this.filters.filteredLists = this.lists;
+      this.pagination.totalCount = result.length;  
+      this.isDataLoaded = true;
+    }
   }
 
   addActionButtons(cardItems: any): any {
@@ -162,14 +240,17 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
-            if (button.status === 'NOT_STARTED' && cardItem.status === 'SUBMITTED') {
-              button.buttons.forEach((btn: string) => {
+            if(!cardItem.review_status) {
+              if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED') || (cardItem.status === 'IN_REVIEW'))) {
+                button.buttons.forEach((btn: string) => {
                 if (btn) {
                   cardItem.actionButton.push(this.buttonsCSS[btn]);
                 }
               });
+              }
             }
-            if(button.status === cardItem.status){
+            
+            if(button.status === cardItem.review_status){
               button.buttons.forEach((button : any) => {
                 cardItem.actionButton.push(this.buttonsCSS[button]);
               })
@@ -216,16 +297,35 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
           }
         });
         break;
+      case 'START_REVIEW':
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+          queryParams: {
+            projectId: item.id,
+            mode: 'view'
+          }
+        });
+        break;
+      case 'RESUME_REVIEW':
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+          queryParams: {
+            projectId: item.id,
+            mode: 'view'
+          }
+        })
+        break;
       default:
         break;
     }
   }
 
-  filterButtonClickEvent(event : any) {
+  filterButtonClickEvent(event : { label: string }) {
+    this.filters.activeFilterButton = event.label;
     switch(event.label) {
       case 'CHANGES_REQUIRED':
+        this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
         break;
       case 'INPROGRESS':
+        this.filters.filteredLists = this.reviewList.filter((item: any) => item.review_status === 'INPROGRESS');
         break;
     }
   }

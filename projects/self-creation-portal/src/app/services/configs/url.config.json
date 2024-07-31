@@ -10,6 +10,7 @@
            "READ_ENTITY_TYPE":"scp/v1/entity-types/read"
     },
     "RESOURCE_URLS":{
-        "RESOURCE_LIST":"scp/v1/resource/list"
+        "RESOURCE_LIST":"scp/v1/resource/list",
+        "UP_FOR_REVIEW_LIST":"scp/v1/resource/upForReview"
     }
 }

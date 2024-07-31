@@ -4,7 +4,7 @@
         <mat-card-content>
             <div class="flex-row mr-10">
                 <div class="flex-column">
-                    <div  class="flex-row">
+                    <div class="flex-row">
                         <div class="chip-container capitalize item-center text-center bg-chipPurple">
                             {{list.type | translate}}
                         </div>
@@ -13,34 +13,38 @@
                                 {{list.status | translate}}
                             </div>
                         }
-                        @if(list.status === 'REJECTED' || list.status === 'REPORTED_AND_REJECTED') {
-                            <div class="chip-container capitalize item-center text-center bg-chipRejected text-white">
-                                <div class="flex justify-center items-center">
-                                    @if(list.status === 'REJECTED') {
-                                        <mat-icon class="text-sm mt-1" matPrefix>block</mat-icon>
-                                    }
-                                    @if(list.status === 'REPORTED_AND_REJECTED') {
-                                        <mat-icon class="text-sm mt-1" matPrefix>warning</mat-icon>
-                                    }
-                                {{list.status | translate}}
-                                </div>
-                            </div>
-                        }
                         @if(list.status === 'PUBLISHED'){
                             <div class="chip-container capitalize item-center text-center bg-chipPublished text-white">
                                 {{list.status | translate}}
                             </div>
                         }
-                        @if(list.status === 'COMMENTS'){
-                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-black">
-                                <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
+                        @if(list.status === 'REJECTED' || list.status === 'REPORTED_AND_REJECTED') {
+                            <div class="chip-container capitalize item-center text-center bg-chipRejected text-white">
+                                <div class="flex justify-center items-center">
+                                    @if(list.status === 'REJECTED') {
+                                        <mat-icon class="text-sm icon-padding" matPrefix>block</mat-icon>
+                                    }
+                                    @if(list.status === 'REPORTED_AND_REJECTED') {
+                                        <mat-icon class="text-sm icon-padding" matPrefix>warning</mat-icon>
+                                    }
                                 {{list.status | translate}}
+                                </div>
                             </div>
                         }
-                        @if(list.status === 'INPROGRESS'){
-                            <div class="chip-container capitalize item-center text-center bg-chipInprogress text-black">
-                                <mat-icon class="text-sm mt-1" matPrefix>access_time</mat-icon>
-                                {{list.status | translate}}
+                        @if(list.status === 'COMMENTS'){
+                            <div class="chip-container capitalize item-center text-center bg-chipComment text-black">
+                                <div class="flex justify-center items-center">
+                                    <img src="assets/icons/comments-icon.png" alt="" class="mr-2">
+                                    {{list.status | translate}}
+                                </div>
+                            </div>
+                        }
+                        @if(list.review_status === 'INPROGRESS'){
+                            <div class="chip-container capitalize  item-center text-center bg-chipInprogress text-black">
+                                <div class="inline-flex items-center justify-center">
+                                    <img src="assets/icons/inprogress-icon.png" alt="" class="mr-2">
+                                   {{list.review_status | translate}}
+                                </div>
                             </div>
                         }
                     </div>
