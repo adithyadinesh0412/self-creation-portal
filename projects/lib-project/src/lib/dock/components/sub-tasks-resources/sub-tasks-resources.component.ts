@@ -92,7 +92,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             })
           );
             }
-           if(params.mode === 'viewOnly'){
+           if(params.mode === "viewOnly"){
               this.viewOnly =true
           }
         }else{
