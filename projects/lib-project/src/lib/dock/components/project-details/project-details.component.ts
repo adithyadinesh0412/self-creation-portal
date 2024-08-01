@@ -115,7 +115,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
+      const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
     this.libProjectService.checkValidationForSubmit();
