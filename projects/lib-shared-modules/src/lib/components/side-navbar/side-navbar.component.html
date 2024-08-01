@@ -1,11 +1,11 @@
 <mat-sidenav-container>
-  <mat-sidenav [opened]="true" mode="side" [disableClose]="true">
+  <mat-sidenav class="fixed-sidenav" [opened]="true" mode="side" [disableClose]="true">
     <mat-nav-list>
       @for (item of sidenavData; track item) {
         <a mat-list-item [routerLink]="[item.url]" [queryParamsHandling]="'preserve'" routerLinkActive="active">
           <span class="entry">
-            <mat-icon>{{item.icon}}</mat-icon>
-            <span>{{ item.label | translate}}</span>
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label | translate }}</span>
           </span>
         </a>
       }

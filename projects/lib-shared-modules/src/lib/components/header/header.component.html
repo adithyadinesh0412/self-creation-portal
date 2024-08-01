@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="flex justify-between items-center px-4 sticky top-0 z-50 ">
+<mat-toolbar color="primary" class="primary-toolbar flex justify-between items-center px-4 sticky top-0 z-50">
   <div class="flex items-center space-x-2">
     <a>
       @if (backButton) {
@@ -11,13 +11,13 @@
     <mat-icon class="cursor-pointer" (click)="logout()">power_settings_new</mat-icon>
   </div>
 </mat-toolbar>
-<mat-toolbar class="sub-header border-b">
-  <div class="title" [matTooltip]="headerData?.title | translate" >{{ headerData?.title || 'WORKSPACE'  | translate}}</div>
-    @if (headerData?.buttons) {
-      <div class="buttons-container">
-        @for (button of headerData?.buttons[mode]; track button) {
-          <button [disabled]="button.disable" [ngClass]="[ button.disable ? 'button-disable' : button.cssClass]" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
-        }
-      </div>
-    }
+<mat-toolbar class="sub-header flex border-b sticky justify-between items-center  top-16">
+  <div class="title" [matTooltip]="headerData?.title | translate">{{ headerData?.title || 'WORKSPACE' | translate }}</div>
+  @if (headerData?.buttons) {
+    <div class="buttons-container">
+      @for (button of headerData?.buttons[mode]; track button) {
+        <button [disabled]="button.disable" [ngClass]="[ button.disable ? 'button-disable' : button.cssClass]" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
+      }
+    </div>
+  }
 </mat-toolbar>

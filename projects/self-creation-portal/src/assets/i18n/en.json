@@ -104,5 +104,7 @@
     "RESUME_REVIEW" : "Resume review",
     "NO_REVIEWERS_FOUND":"No reviewers found. Contact your organization admin.",
     "NO_UP_FOR_REVIEW":"No resource/program to review at the moment",
-    "COMMENTS": "Comments"
+    "COMMENTS": "Comments",
+    "NO_CHANGE_REQUIRED": "No changes required at the moment.",
+    "NO_INPROGRESS_REVIEW":"No in progress review at the moment."
 }

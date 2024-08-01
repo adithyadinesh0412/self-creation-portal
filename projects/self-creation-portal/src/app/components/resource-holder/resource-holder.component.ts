@@ -323,9 +323,15 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     switch(event.label) {
       case 'CHANGES_REQUIRED':
         this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
+        if(this.filters.filteredLists.length === 0) {
+          this.noResultMessage = "NO_CHANGE_REQUIRED"
+        }
         break;
       case 'INPROGRESS':
         this.filters.filteredLists = this.reviewList.filter((item: any) => item.review_status === 'INPROGRESS');
+        if(this.filters.filteredLists.length === 0) {
+          this.noResultMessage = "NO_INPROGRESS_REVIEW"
+        }
         break;
     }
   }
