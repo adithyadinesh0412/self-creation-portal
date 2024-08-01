@@ -17,6 +17,7 @@ import { FormService } from '../../../public-api';
 export class SideNavbarComponent implements OnInit{
   @Input() sidenavData : any[] = [];
 
+
   constructor(private formService:FormService) {
 
   }

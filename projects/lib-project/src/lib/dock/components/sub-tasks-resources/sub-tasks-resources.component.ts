@@ -96,11 +96,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.viewOnly =true
           }
         }
-      
+
       })
-    ); 
+    );
   }
-  
+
 
   createSubTaskForm() {
     const getButtonStates = (taskDescriptionLength: number) => {
@@ -113,7 +113,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       console.log(task.children)
      let subtask = task.children.map((child: any) => this.fb.control(child.name))
         return {
-            buttons: task ? getButtonStates(task.description.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            buttons: task ? getButtonStates(task.name.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
             subTasks: this.fb.group({
               subtasks: this.fb.array(task?.children?.length > 0 ? subtask : [])
             }),
@@ -138,7 +138,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
                 this.taskData.push(createTaskObject());
             }
            })
-         )   
+         )
       }else{
         if (this.libProjectService?.projectData.tasks){
           this.libProjectService?.projectData.tasks.forEach((task: any) => {
@@ -232,7 +232,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       }
     }
   }
-  
+
 
   submit() {
     this.addSubtaskData();
@@ -241,7 +241,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    if(this.mode === 'edit'){
+    if(this.mode === 'edit' && Object.keys(this.libProjectService.projectData).length > 0){
       this.addSubtaskData();
       this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
       if (this.autoSaveSubscription) {
