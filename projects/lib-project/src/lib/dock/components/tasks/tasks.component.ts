@@ -102,6 +102,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                       }),
                       learning_resources:[element.learning_resources ?  element.learning_resources : []],
                       children: [element.children],
+                      type:[element.type],
                       sequence_no: [element.sequence_no]
                     });
                     this.tasks.push(task);
@@ -164,7 +165,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   addTask() {
     const taskGroup = this.fb.group({
       id: uuidv4(),
-      type: "content",
+      type: "simple",
       name: ['', Validators.required],
       is_mandatory: [false],
       allow_evidence: [false],
@@ -228,16 +229,15 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   submit() {
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    console.log(this.tasks)
     this.tasks.value.forEach((item: any, index: any) => {
       item.sequence_no = index + 1;
+      item.type = item.type ? item.type : "simple"
       if(item.allow_evidence == true && item.evidence_details.file_types.length == 0){
        item.evidence_details.file_types =  this.tasksData.fileType.options.map((item:any)=> item.value);
       }else if(item.allow_evidence == false){
         item.evidence_details = {}
       }
     });
-    console.log(this.tasks.value)
     this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
