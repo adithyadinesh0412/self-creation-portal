@@ -6,16 +6,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { FormService } from '../../../../../lib-shared-modules/src/lib/services/form/form.service';
-import { SIDE_NAV_DATA } from '../../../../../lib-shared-modules/src/lib/constants/formConstant';
-import { HeaderComponent, SideNavbarComponent } from 'lib-shared-modules';
+import { FormService, HeaderComponent, SIDE_NAV_DATA, SideNavbarComponent } from 'lib-shared-modules';
 import { CommonService } from '../../services/common-service/common.service';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-main-view',
   standalone: true,
-  imports: [HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, RouterModule],
+  imports: [CommonModule,HeaderComponent,SideNavbarComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule, RouterModule],
   templateUrl: './app-main-view.component.html',
   styleUrl: './app-main-view.component.scss'
 })

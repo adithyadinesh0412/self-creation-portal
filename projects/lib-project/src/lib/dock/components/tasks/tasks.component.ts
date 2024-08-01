@@ -82,7 +82,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === 'edit') {
                 this.startAutoSaving();
               }
-             
+
             }
             else {
               this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
@@ -139,7 +139,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         }
       })
     )
-   
+
     if(this.mode === 'edit'){
       this.subscription.add(
         this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
@@ -150,7 +150,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         })
       );
     }
-   
+
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
     this.libProjectService.checkValidationForSubmit()
   }
@@ -248,7 +248,9 @@ export class TasksComponent implements OnInit, OnDestroy {
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();
       }
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res) => console.log(res))
+      if( Object.keys(this.libProjectService.projectData).length > 0) {
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res) => console.log(res))
+      }
     }
     this.subscription.unsubscribe();
   }
