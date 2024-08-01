@@ -16,6 +16,7 @@ import { FormService } from '../../../public-api';
 })
 export class SideNavbarComponent implements OnInit{
   @Input() sidenavData : any[] = [];
+  updatedSideNav:any[] = []
 
   constructor(private formService:FormService) {
 
@@ -23,7 +24,7 @@ export class SideNavbarComponent implements OnInit{
 
   ngOnInit() {
     this.formService.getPermissions().subscribe((res:any) => {
-      this.sidenavData = this.formService.checkPermissions(this.sidenavData,res.result)
+      this.updatedSideNav = this.formService.checkPermissions(this.sidenavData,res.result)
       console.log(this.formService.checkPermissions(this.sidenavData,res.result))
     })
   }
