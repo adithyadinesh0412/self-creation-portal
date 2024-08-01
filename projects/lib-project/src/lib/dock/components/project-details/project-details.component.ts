@@ -73,13 +73,13 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                 }
                 if (params.mode === 'edit') {
                   this.startAutoSaving();
-                  this.libProjectService.projectData = {};
+                  // this.libProjectService.projectData = {};
                 }
                 if(params.mode === 'viewOnly'){
                    this.viewOnly =true
                 }
               }
-              
+
             } else {
               this.startAutoSaving();
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
@@ -227,7 +227,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
         clearInterval(this.intervalId);
         this.intervalId = null;
       }
-      if(this.projectId) {
+      if(this.projectId && Object.keys(this.libProjectService.projectData).length > 0) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
         this.libProjectService.saveProjectFunc(false);
       }
@@ -236,5 +236,5 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       }
     }
     this.subscription.unsubscribe();
-  } 
+  }
 }

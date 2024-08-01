@@ -98,6 +98,7 @@ export class LayoutComponent {
                   if (params.projectId) {
                     const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
                     this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
+                      this.libProjectService.projectData = {};
                       this.router.navigate([SUBMITTED_FOR_REVIEW]);
                     })
                   }
@@ -113,7 +114,7 @@ export class LayoutComponent {
             this.router.navigate([SUBMITTED_FOR_REVIEW]);
           })
           break;
-        } 
+        }
       }
       default:
             break;
