@@ -70,6 +70,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
+                    learning_resources:element.learning_resources? [element.learning_resources] : [],
                     children: [element.children],
                     sequence_no: [element.sequence_no]
                   });
@@ -99,6 +100,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                         file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                         min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                       }),
+                      learning_resources:[element.learning_resources ?  element.learning_resources : []],
                       children: [element.children],
                       sequence_no: [element.sequence_no]
                     });

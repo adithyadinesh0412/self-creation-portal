@@ -92,9 +92,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             })
           );
             }
-           if(params.mode === "viewOnly"){
+           if(params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView'){
               this.viewOnly =true
           }
+        }else{
+          this.createSubTaskForm()
         }
 
       })
@@ -110,18 +112,16 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     };
 
     const createTaskObject = (task?: any) => {
-      console.log(task.children)
-     let subtask = task.children.map((child: any) => this.fb.control(child.name))
+       let subtask =task?.children  ?  task.children.map((child: any) => this.fb.control(child.name)):[]
         return {
             buttons: task ? getButtonStates(task.name.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
             subTasks: this.fb.group({
               subtasks: this.fb.array(task?.children?.length > 0 ? subtask : [])
             }),
              resources : task?.learning_resources?.length > 0 ? task.learning_resources : [],
-             children: task.children
+             children: task?.children ? task.children : []
         };
     };
-
     if (this.libProjectService.projectData?.tasks?.length > 0) {
       if(this.mode === 'edit'){
         this.subscription.add(
