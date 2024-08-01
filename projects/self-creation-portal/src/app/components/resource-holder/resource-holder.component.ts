@@ -27,7 +27,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
 
   pagination = {
     totalCount: 0,
-    pageSize: 5,
+    pageSize: 10,
     pageSizeOptions: [5, 10, 20, 100],
     currentPage: 0
   };
@@ -215,7 +215,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
           }
         }
         this.filters.changeReqCount = result.changes_requested_count;
-        this.filters.inprogressCount  = 0;
         this.isDataLoaded = true;
       });
     }
@@ -223,6 +222,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       const result = this.reviewList;
       this.lists = this.addActionButtons(result)
       this.filters.filteredLists = this.lists;
+      this.filters.inprogressCount = this.reviewList.filter((item : any) => item.review_status === 'INPROGRESS').length;
       this.pagination.totalCount = result.length;  
       this.isDataLoaded = true;
     }
