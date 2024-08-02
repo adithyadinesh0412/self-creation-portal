@@ -126,7 +126,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       if(this.mode === 'edit'){
         this.subscription.add(
           this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
-            if(res.result.tasks){
+            if(res.result.tasks.length > 0){
               res.result.tasks.forEach((task: any) => {
                   this.taskData.push(createTaskObject(task));
               });
@@ -171,6 +171,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             componentInstance.saveLearningResource.subscribe((result: any) => {
               if (result) {
                 this.taskData[taskIndex].resources = this.taskData[taskIndex].resources.concat(result) // Save resources to the specific task
+                this.saveSubtask()
               }
             });
           break;
@@ -235,15 +236,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
 
   submit() {
-    this.addSubtaskData();
-    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+    this.saveSubtask();
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
 
   ngOnDestroy(){
     if(this.mode === 'edit' && Object.keys(this.libProjectService.projectData).length > 0){
-      this.addSubtaskData();
-      this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+     this.saveSubtask();
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();
       }
@@ -251,4 +250,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     }
     this.subscription.unsubscribe();
   }
+<<<<<<< HEAD
 }
+=======
+
+  saveSubtask(){
+    this.addSubtaskData();
+    this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+  }
+}
+>>>>>>> shikshalokam/release-1.0.0

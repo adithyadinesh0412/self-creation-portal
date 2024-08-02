@@ -65,7 +65,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     id: [element.id],
                     name: [element.name ? element.name : '', Validators.required],
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                    allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                    allow_evidences: [element.allow_evidences ? element.allow_evidences : false],
                     evidence_details: this.fb.group({
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
@@ -95,7 +95,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                       id: [element.id],
                       name: [element.name ? element.name : '', Validators.required],
                       is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
-                      allow_evidence: [element.allow_evidence ? element.allow_evidence : false],
+                      allow_evidences: [element.allow_evidences ? element.allow_evidences : false],
                       evidence_details: this.fb.group({
                         file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                         min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
@@ -163,12 +163,13 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   addTask() {
+    const taskIndex = this.tasks.length;
     const taskGroup = this.fb.group({
       id: uuidv4(),
       type: "simple",
-      name: ['', Validators.required],
+      name: ['', taskIndex === 0 ? Validators.required : Validators.nullValidator],
       is_mandatory: [false],
-      allow_evidence: [false],
+      allow_evidences: [false],
       evidence_details: this.fb.group({
         file_types: [[]],
         min_no_of_evidences: [1, [Validators.min(this.tasksData.minEvidences.validators.min), Validators.max(this.tasksData.minEvidences.validators.max)]]
@@ -198,6 +199,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.tasks.removeAt(index);
         this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
         this.libProjectService.checkValidationForSubmit()
+        this.saveTasks(this.tasks, this.tasksData)
         return true;
       } else {
         return false;
@@ -206,12 +208,13 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   checkValidation() {
-    this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
+    this.saveTasks(this.tasks, this.tasksData)
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
     this.libProjectService.checkValidationForSubmit()
   }
 
   startAutoSaving() {
+    this.saveTasks(this.tasks, this.tasksData)
     this.subscription.add(
       this.libProjectService
         .startAutoSave(this.projectId)
@@ -229,15 +232,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   submit() {
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.tasks.value.forEach((item: any, index: any) => {
-      item.sequence_no = index + 1;
-      item.type = item.type ? item.type : "simple"
-      if(item.allow_evidence == true && item.evidence_details.file_types.length == 0){
-       item.evidence_details.file_types =  this.tasksData.fileType.options.map((item:any)=> item.value);
-      }else if(item.allow_evidence == false){
-        item.evidence_details = {}
-      }
-    });
+    this.saveTasks(this.tasks, this.tasksData)
     this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
@@ -246,7 +241,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     if (this.mode === 'edit') {
       this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
       this.libProjectService.checkValidationForSubmit()
-      this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
+      this.saveTasks(this.tasks, this.tasksData)
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();
       }
@@ -258,7 +253,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   addingTask() {
-    const taskCantAddMessage = !this.tasksForm.valid
+    const taskCantAddMessage =  !this.isAnyTaskFilled()
       ? 'FILL_THE_DISCRIPTION_OF_THE_ALREADY_ADDED_FIRST'
       : this.tasks.length >= this.maxTaskLength
         ? 'TASK_LIMIT_REACHED'
@@ -285,6 +280,23 @@ export class TasksComponent implements OnInit, OnDestroy {
     } else if (inputValue > max) {
       event.target.value = max;
     }
+  }
+
+  saveTasks(tasks:any, taskData:any = []){
+    tasks.value.forEach((item: any, index: any) => {
+      item.sequence_no = index + 1;
+      item.type = item.type ? item.type : "simple"
+      if(item.allow_evidences == true && item.evidence_details.file_types.length == 0){
+       item.evidence_details.file_types = taskData.fileType.options.map((item:any)=> item.value);
+      }else if(item.allow_evidences == false){
+        item.evidence_details = {}
+      }
+    });
+    this.libProjectService.setProjectData({ 'tasks': tasks.value })
+  }
+
+  isAnyTaskFilled(): boolean {
+    return this.tasks.value.every((task:any) => task.name && task.name.trim() !== '')
   }
 
 }
