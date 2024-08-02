@@ -63,7 +63,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         this.mode = params.mode;
         this.projectId = params.projectId;
         if(params.mode){
-          if(Object.keys(this.libProjectService.projectData).length) {
+          if(Object.keys(this.libProjectService.projectData)?.length) {
             this.projectData = this.libProjectService.projectData;
             this.createSubTaskForm()
             this.addSubtaskData()
