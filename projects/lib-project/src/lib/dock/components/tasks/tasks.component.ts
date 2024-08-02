@@ -36,7 +36,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   viewOnly: boolean = false;
   mode: any = ""
   private autoSaveSubscription: Subscription = new Subscription();
-  maxTaskLength = this.libProjectService.projectConfig.max_task_count ? this.libProjectService.projectConfig.max_task_count : 10;
+  maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
   private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder, private libProjectService: LibProjectService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private _snackBar: MatSnackBar, private toastService: ToastService) {
     this.tasksForm = this.fb.group({

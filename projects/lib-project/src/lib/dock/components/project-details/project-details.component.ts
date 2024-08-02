@@ -6,12 +6,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogPopupComponent, FormService } from 'lib-shared-modules';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [CommonModule,DynamicFormModule, TranslateModule],
+  imports: [DynamicFormModule, TranslateModule],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -20,8 +19,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   projectId: string | number = '';
   intervalId:any;
   formDataForTitle:any;
-  viewOnly:boolean= false;
-  mode:any = ""
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   constructor(
@@ -32,9 +29,20 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private formService: FormService
   ) { }
   ngOnInit() {
+    this.startAutoSaving();
     this.libProjectService.projectData = {};
     this.getFormWithEntitiesAndMap();
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe(
+        (isProjectSave: boolean) => {
+          if (isProjectSave && this.router.url.includes('project-details')) {
+            this.saveForm();
+          }
+        }
+      )
+    );
   }
+
 
   getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
@@ -44,20 +52,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
-            this.mode = params.mode;
-            if(params.mode !== 'viewOnly'){
-              this.subscription.add(
-                this.libProjectService.isProjectSave.subscribe(
-                  (isProjectSave: boolean) => {
-                    if (isProjectSave && this.router.url.includes('project-details')) {
-                      this.saveForm();
-                    }
-                  }
-                )
-              );
-            }
             if (params.projectId) {
-              if(params.mode){
+              if (params.mode === 'edit') {
                 if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                   this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
                 } else {
@@ -71,17 +67,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                       })
                   );
                 }
-                if (params.mode === 'edit') {
-                  this.startAutoSaving();
-                  // this.libProjectService.projectData = {};
-                }
-                if(params.mode === 'viewOnly'){
-                   this.viewOnly =true
-                }
               }
-
             } else {
-              this.startAutoSaving();
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
             }
           })
@@ -115,15 +102,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
+      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
     this.libProjectService.checkValidationForSubmit();
+    console.log(this.dynamicFormData);
   }
 
   startAutoSaving() {
     this.intervalId = setInterval(() => {
-      if(!this.projectId && !this.libProjectService.projectData.id) {
+      if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
         this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
@@ -220,21 +208,19 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   };
 
   ngOnDestroy() {
-    if(this.mode === 'edit'){
-      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-      this.libProjectService.checkValidationForSubmit()
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-      }
-      if(this.projectId && Object.keys(this.libProjectService.projectData).length > 0) {
-        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-        this.libProjectService.saveProjectFunc(false);
-      }
-      else {
-        this.libProjectService.saveProjectFunc(false);
-      }
-    }
+    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.checkValidationForSubmit()
     this.subscription.unsubscribe();
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    if(this.projectId) {
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.saveProjectFunc(false);
+    }
+    else {
+      this.libProjectService.saveProjectFunc(false);
+    }
   }
 }
