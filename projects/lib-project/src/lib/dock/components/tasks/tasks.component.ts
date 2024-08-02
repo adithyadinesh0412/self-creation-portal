@@ -199,6 +199,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.tasks.removeAt(index);
         this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
         this.libProjectService.checkValidationForSubmit()
+        this.saveTasks(this.tasks, this.tasksData)
         return true;
       } else {
         return false;
