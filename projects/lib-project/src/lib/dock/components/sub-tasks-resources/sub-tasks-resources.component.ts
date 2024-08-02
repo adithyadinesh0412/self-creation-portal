@@ -250,13 +250,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     }
     this.subscription.unsubscribe();
   }
-<<<<<<< HEAD
-}
-=======
 
   saveSubtask(){
     this.addSubtaskData();
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
   }
 }
->>>>>>> shikshalokam/release-1.0.0
