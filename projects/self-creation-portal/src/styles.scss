@@ -157,3 +157,17 @@ color:$tertiary
 .placeholder-text-black .mat-mdc-select-placeholder{
   color:$tertiary
 }
+
+.custom-input-wrapper .mat-mdc-form-field-infix {
+  min-height: 1.875rem !important;
+  width: 14.375rem !important;
+}
+
+.custom-input-wrapper .mdc-text-field--outlined .mat-mdc-form-field-infix, 
+.custom-input-wrapper .mdc-text-field--no-label .mat-mdc-form-field-infix {
+  padding: 0.3125rem !important;
+}
+
+.custom-input-wrapper .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}

@@ -28,7 +28,7 @@
             <span>Objective can only include alphanumeric characters with spaces, -, _, &, <></span>
           }
           @if(input.errors?.['maxlength']){
-            <span>Note cannot exceed  {{dialogueData.note_length}} characters.</span>
+            <span>Note cannot exceed  {{dialogueData?.note_length}} characters.</span>
           }
         </div>
       }
