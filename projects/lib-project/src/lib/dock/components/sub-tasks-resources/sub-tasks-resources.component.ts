@@ -43,6 +43,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   projectData:any;
   viewOnly:boolean= false;
   mode:any = ""
+  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\_ <>&]+$"
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
