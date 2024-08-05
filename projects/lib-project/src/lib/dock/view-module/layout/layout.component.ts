@@ -31,7 +31,6 @@ export class LayoutComponent {
       //     element.disable = false;
       //   }
       // });
-      this.libProjectService.checkValidationForSubmit()
       this.headerData = data?.sidenavData.headerData
     });
   }
@@ -74,7 +73,6 @@ export class LayoutComponent {
   onButtonClick(buttonTitle: string) {
     switch (buttonTitle) {
       case "SAVE_AS_DRAFT":{
-        this.libProjectService.checkValidationForSubmit()
         this.libProjectService.saveProjectFunc(true);
         break;
       }
