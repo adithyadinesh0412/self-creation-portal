@@ -93,9 +93,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             })
           );
             }
-           if(params.mode === "viewOnly"){
-              this.viewOnly =true
-          }
+            if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
+              this.viewOnly = true
+            }
         }else{
           this.createSubTaskForm()
         }

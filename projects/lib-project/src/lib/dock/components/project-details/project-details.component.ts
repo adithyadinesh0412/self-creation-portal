@@ -19,6 +19,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   projectId: string | number = '';
   intervalId:any;
   formDataForTitle:any;
+  viewOnly:boolean= false;
+  mode:any;
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   constructor(
@@ -27,20 +29,36 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private formService: FormService
-  ) { }
-  ngOnInit() {
-    this.startAutoSaving();
-    this.libProjectService.projectData = {};
-    this.getFormWithEntitiesAndMap();
+  ) {
     this.subscription.add(
-      this.libProjectService.isProjectSave.subscribe(
-        (isProjectSave: boolean) => {
-          if (isProjectSave && this.router.url.includes('project-details')) {
-            this.saveForm();
+      this.route.queryParams.subscribe((params: any) => {
+        this.mode = params.mode
+      })
+    )
+   }
+  ngOnInit() {
+    if(this.mode === 'edit'){
+      this.startAutoSaving();
+      this.libProjectService.projectData = {};
+      this.getFormWithEntitiesAndMap();
+      this.subscription.add(
+        this.libProjectService.isProjectSave.subscribe(
+          (isProjectSave: boolean) => {
+            if (isProjectSave && this.router.url.includes('project-details')) {
+              this.saveForm();
+            }
           }
-        }
-      )
-    );
+        )
+      );
+    }else{
+      this.libProjectService.projectData = {};
+      this.getFormWithEntitiesAndMap();
+    }
+
+    if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
+      this.viewOnly = true
+    }
+   
   }
 
 
@@ -64,6 +82,19 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
+                      })
+                  );
+                }
+              }else{
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
                       })
                   );
                 }
@@ -208,19 +239,20 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   };
 
   ngOnDestroy() {
-    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.libProjectService.checkValidationForSubmit()
     this.subscription.unsubscribe();
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+    if(this.mode === 'edit'){
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+      if(this.projectId) {
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+        this.libProjectService.saveProjectFunc(false);
+      }
+      else {
+        this.libProjectService.saveProjectFunc(false);
+      }
     }
-    if(this.projectId) {
-      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-      this.libProjectService.saveProjectFunc(false);
-    }
-    else {
-      this.libProjectService.saveProjectFunc(false);
-    }
+  
   }
 }

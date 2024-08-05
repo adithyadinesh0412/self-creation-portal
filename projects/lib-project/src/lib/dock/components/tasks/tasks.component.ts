@@ -117,7 +117,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               })
             }
 
-            if (params.mode === 'viewOnly') {
+            if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
               this.viewOnly = true
             }
           }
