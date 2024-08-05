@@ -155,7 +155,6 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
 
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
   }
 
   get tasks() {
@@ -177,7 +176,6 @@ export class TasksComponent implements OnInit, OnDestroy {
     });
     this.tasks.push(taskGroup);
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
   }
 
   deleteTask(index: number) {
@@ -198,7 +196,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       } else if (result.data === "YES") {
         this.tasks.removeAt(index);
         this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-        this.libProjectService.checkValidationForSubmit()
+  
         this.saveTasks(this.tasks, this.tasksData)
         return true;
       } else {
@@ -210,7 +208,6 @@ export class TasksComponent implements OnInit, OnDestroy {
   checkValidation() {
     this.saveTasks(this.tasks, this.tasksData)
     this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
   }
 
   startAutoSaving() {
@@ -240,7 +237,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.mode === 'edit') {
       this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-      this.libProjectService.checkValidationForSubmit()
+
       this.saveTasks(this.tasks, this.tasksData)
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();

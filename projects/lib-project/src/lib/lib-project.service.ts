@@ -168,19 +168,6 @@ export class LibProjectService {
 
   }
 
-  checkValidationForSubmit(){
-    const currentProjectMetaData = this.dataSubject.getValue();
-    currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element:any) => {
-      if(element.title == "SEND_FOR_REVIEW"){
-        if(this.validForm.projectDetails == "VALID" && this.validForm.tasks == "VALID"){
-          element.disable = false;
-        }else{
-          element.disable = true;
-        }
-      }
-    });
-  }
-
   startAutoSave(projectID:string|number) {
     return interval(this.instanceConfig.auto_save_interval ? this.instanceConfig.auto_save_interval : 30000).pipe(
       switchMap(() => {
