@@ -105,7 +105,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
-    this.libProjectService.checkValidationForSubmit();
     console.log(this.dynamicFormData);
   }
 
@@ -140,7 +139,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   saveForm() {
     if (this.libProjectService.projectData.title) {
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-      this.libProjectService.checkValidationForSubmit()
+
       if (this.projectId) {
         this.libProjectService.updateProjectDraft(this.projectId).subscribe();
       }
@@ -195,7 +194,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
     this.libProjectService.setProjectData(data);
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.libProjectService.checkValidationForSubmit()
     }
   }
 
@@ -209,7 +207,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.libProjectService.checkValidationForSubmit()
     this.subscription.unsubscribe();
     if (this.intervalId) {
       clearInterval(this.intervalId);
