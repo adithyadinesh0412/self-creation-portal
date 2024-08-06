@@ -56,6 +56,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   pageStatus !: string;
   buttonsData: any = {};
   buttonsCSS : any;
+  activeRole:any;
 
   reviewList : any = [
     {
@@ -149,6 +150,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
       const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
+      this.activeRole = currentData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
       this.filters.filterData = currentData?.filterData || [];
       this.noResultMessage = currentData?.noResultMessage || '' ;
@@ -276,47 +278,69 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
   
   statusButtonClick(event: { label: string, item: any }) {
-    const { label, item } = event;
-    switch (label) {
-      case 'EDIT':
-        this.router.navigate([PROJECT_DETAILS_PAGE], {
-          queryParams: {
-            projectId: item.id,
-            mode: 'edit'
-          }
-        });
-        break;
-      case 'DELETE':
-        this.confirmAndDeleteProject(item)
-        break;
-      case 'VIEW':
-        this.router.navigate([PROJECT_DETAILS_PAGE], {
-          queryParams: {
-            projectId: item.id,
-            mode: 'viewOnly'
-          }
-        });
-        break;
-      case 'START_REVIEW':
-        this.router.navigate([PROJECT_DETAILS_PAGE], {
-          queryParams: {
-            projectId: item.id,
-            mode: 'view'
-          }
-        });
-        break;
-      case 'RESUME_REVIEW':
-        this.router.navigate([PROJECT_DETAILS_PAGE], {
-          queryParams: {
-            projectId: item.id,
-            mode: 'view'
-          }
-        })
-        break;
-      default:
-        break;
-    }
-  }
+    console.log(this.activeRole)
+     const { label, item } = event;
+     console.log(label)
+     console.log(item)
+     switch (label) {
+       case 'EDIT':
+         this.router.navigate([PROJECT_DETAILS_PAGE], {
+           queryParams: {
+             projectId: item.id,
+             mode: 'edit'
+           }
+         });
+         break;
+       case 'DELETE':
+         this.confirmAndDeleteProject(item)
+         break;
+       case 'VIEW':
+         if(item.status == "SUBMITTED" && this.activeRole == "creator"){
+           this.router.navigate([PROJECT_DETAILS_PAGE], {
+             queryParams: {
+               projectId: item.id,
+               mode: 'viewOnly'
+             }
+           });
+           break;
+         }else if(item.status == "SUBMITTED" && this.activeRole == "reviewer"){
+           this.router.navigate([PROJECT_DETAILS_PAGE], {
+             queryParams: {
+               projectId: item.id,
+               mode: 'reviewerView'
+             }
+           });
+           break;
+         }else{
+           this.router.navigate([PROJECT_DETAILS_PAGE], {
+             queryParams: {
+               projectId: item.id,
+               mode: 'viewOnly'
+             }
+           });
+           break;
+         }
+         
+       case 'START_REVIEW':
+         this.router.navigate([PROJECT_DETAILS_PAGE], {
+           queryParams: {
+             projectId: item.id,
+             mode: 'review'
+           }
+         });
+         break;
+       case 'RESUME_REVIEW':
+         this.router.navigate([PROJECT_DETAILS_PAGE], {
+           queryParams: {
+             projectId: item.id,
+             mode: 'review'
+           }
+         })
+         break;
+       default:
+         break;
+     }
+   }
 
   filterButtonClickEvent(event : { label: string }) {
     this.filters.activeFilterButton = event.label;
