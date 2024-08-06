@@ -217,10 +217,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
     if(this.projectId) {
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-      this.libProjectService.saveProjectFunc(false);
     }
-    else {
-      this.libProjectService.saveProjectFunc(false);
-    }
+    this.libProjectService.saveProjectFunc(false);
   }
 }

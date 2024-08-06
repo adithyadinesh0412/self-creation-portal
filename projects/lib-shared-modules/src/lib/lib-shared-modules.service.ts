@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { HttpProviderService } from './services/http-provider.service';
 import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,19 +13,16 @@ import { ToastService } from './services/toast/toast.service';
 export class LibSharedModulesService {
 
   private previousUrl !: string;
-  constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService,private toastService:ToastService) {
+  constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService,private toastService:ToastService, private route:ActivatedRoute) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.previousUrl = event.url; 
+        this.previousUrl = event.url;
       }
     });
   }
 
   goBack(): void {
-    this.location.back();
-    // if (this.previousUrl) {
-    //   this.router.navigateByUrl(this.previousUrl);
-    // }
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   logout(): void {
@@ -60,7 +57,6 @@ export class LibSharedModulesService {
         "message":message,
         "class":"error",
       }
-     this.toastService.openSnackBar(data) 
+     this.toastService.openSnackBar(data)
   }
 }
- 
