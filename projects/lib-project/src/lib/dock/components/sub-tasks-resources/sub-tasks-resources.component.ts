@@ -43,7 +43,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   projectData:any;
   viewOnly:boolean= false;
   mode:any = ""
-  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\_ <>&]+$"
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -93,9 +92,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             })
           );
             }
-           if(params.mode === "viewOnly"){
-              this.viewOnly =true
-          }
+            if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
+              this.viewOnly = true
+            }
         }else{
           this.createSubTaskForm()
         }
@@ -125,21 +124,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
       if(this.mode === 'edit'){
-        this.subscription.add(
-          this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
-            if(res.result.tasks.length > 0){
-              res.result.tasks.forEach((task: any) => {
-                  this.taskData.push(createTaskObject(task));
-              });
-            }else if (this.libProjectService?.projectData.tasks){
-              this.libProjectService?.projectData.tasks.forEach((task: any) => {
-                  this.taskData.push(createTaskObject(task));
-              });
-            }else{
-                this.taskData.push(createTaskObject());
-            }
-           })
-         )
+        if (this.libProjectService?.projectData.tasks){
+          this.libProjectService?.projectData.tasks.forEach((task: any) => {
+              this.taskData.push(createTaskObject(task));
+          });
+        }else{
+            this.taskData.push(createTaskObject());
+        }
       }else{
         if (this.libProjectService?.projectData.tasks){
           this.libProjectService?.projectData.tasks.forEach((task: any) => {
@@ -213,11 +204,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     if(this.projectData?.tasks) {
       for (let i = 0; i < this.projectData.tasks.length; i++) {
         let subtasks:any = []  // Move subtasks initialization here
-        console.log(this.projectData.tasks[i])
         this.projectData.tasks[i]['learning_resources'] = this.taskData[i]?.resources,
         this.projectData.tasks[i].type = this.taskData[i]?.resources.length ? "content" : "simple";
         for (let j = 0; j < this.taskData[i]?.subTasks.value.subtasks.length; j++) {
-          console.log(this.projectData?.tasks[i].children)
           subtasks.push(
             {
               "id": this.taskData[i]?.children?.[j]?.id ? this.taskData[i].children[j].id : uuidv4(),

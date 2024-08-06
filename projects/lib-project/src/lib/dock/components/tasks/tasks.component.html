@@ -43,7 +43,7 @@
                                 }
                                 </mat-error>
                         </div>
-                        <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary">
+                        <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary" [ngClass]="{'disable-fields': viewOnly}">
                             <mat-slide-toggle labelPosition="before" color="primary"
                                 [formControlName]="tasksData.mandatory.name" (change)="checkValidation()">
                                 {{tasksData.mandatory.label | translate}}

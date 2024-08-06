@@ -24,7 +24,7 @@
                                         $index) {
                                         <div class="flex items-center space-x-2 custom-input-wrapper">
                                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
-                                            <input matInput [value]="control.name" maxlength="256" [pattern]="pattern" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask" (change)="saveSubtask()">
+                                            <input matInput [value]="control.name" maxlength="256" pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-_ <>&]+$" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask" (change)="saveSubtask()">
                                             </mat-form-field>
                                             <mat-icon class="cursor-pointer"
                                                 (click)="onDeleteSubtask(i, j)" color="primary">delete</mat-icon>
