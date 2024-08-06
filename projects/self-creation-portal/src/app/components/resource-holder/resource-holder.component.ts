@@ -55,6 +55,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   noResultFound !: string;
   pageStatus !: string;
   buttonsData: any = {};
+  infoData: any = {};
   buttonsCSS : any;
 
   reviewList : any = [
@@ -156,6 +157,12 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.buttonsData = [
         ...(currentData.buttonsData ? currentData.buttonsData[0].buttons : []),
         ...(currentData.statusButtons || [])
+      ];
+      this.infoData = [
+        ...(currentData.buttonsData ? currentData.buttonsData[1].infoFields : []),
+        ...(currentData.statusButtons ? currentData.statusButtons.flatMap((statusButton: any) => 
+          statusButton.infoFields.map((infoField: any) => ({ ...infoField, status: statusButton.status }))
+        ) : [])
       ];
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
@@ -336,6 +343,50 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     }
   }
 
+  infoIconClickEvent(event: any) {
+    const cardItem = event.item;
+    const getFieldData = (field: any) => {
+      let value = cardItem[field.name] || '';
+      if (field.name.includes('organization')) {
+        value = cardItem.organization ? cardItem.organization.name : '';
+      } else {
+        value = this.commonService.formatValue(value);
+      }
+      return {
+        label: field.label,
+        value: value
+      };
+    };
+
+    const infoFields = this.infoData
+      .filter((field: any) => {
+        // Handle cases when reviewStatus is not present
+        if (!cardItem.review_status && (cardItem.status === 'SUBMITTED' || cardItem.status === 'IN_REVIEW')) {
+          return field.status === 'NOT_STARTED';
+        }
+        //when reviewStatus is present or there is no specific status requirement
+        return field.status === cardItem.review_status || !field.status;
+      }).map(getFieldData);
+      
+    // If no fields match the conditions, default to 'NOT_STARTED' fields
+    if (infoFields.length === 0) {
+      infoFields.push(...this.infoData
+        .filter((field: any) => field.status === 'NOT_STARTED').map(getFieldData)
+      );
+    }
+  
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data: {
+        header: "DETAILS",
+        fields: infoFields
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      return result ? true : false;
+    });
+  }
+  
   deleteProject(item: any) {
     this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
       if (this.lists.length === 1 && this.pagination.currentPage > 0) {

@@ -17,11 +17,16 @@ export class CardComponent {
   @Input() showActionButton: boolean = false;
   @Input() project:any;
   @Output() buttonClickEvent = new EventEmitter<{ label: string, item: any }>();
+  @Output() infoClickEvent = new EventEmitter<{item: any}>
 
   constructor() {}
 
   onButtonClick(label: string, item: any) {
     this.buttonClickEvent.emit({ label, item });
+  }
+
+  onInfoClick(item: any) {
+    this.infoClickEvent.emit({item});
   }
 
 }

@@ -108,5 +108,21 @@
     "NO_CHANGE_REQUIRED": "No changes required at the moment.",
     "NO_INPROGRESS_REVIEW":"No in progress review at the moment.",
     "OFFLINE_MSG_NETWORK":"You are offline, please connect to a network.",
-    "DETAILS":"Details"
+    "DETAILS":"Details",
+    "TITLE":"Title",
+    "CREATOR":"Creator",
+    "ORGANIZATION_NAME":"Organization name",
+    "CREATED_ON":"Created on",
+    "RESOURCE_TYPE":"Resource type",
+    "LAST_UPDATED_ON":"Last updated on",
+    "SUBMITTED_ON":"Submitted on",
+    "NOTE_TO_REVIEWER":"Note to reviewer",
+    "REVIEWED_BY":"Reviewed by",
+    "RESOURCE_PUBLISHED_ON":"Resource Published on",
+    "CHANGES_REQUESTED_ON":"Changes requested on",
+    "REVIEWED_STARTED_ON":"Reviewed started on",
+    "RESOURCE_REJECTED_ON":"Resource rejected on",
+    "RESOURCE_REPORTED_ON":"Resource reported on",
+    "REASON":"Reason",
+    "LAST_REVIWED_ON":"Last reviewed on"
 }

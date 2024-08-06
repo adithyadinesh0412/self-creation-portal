@@ -29,7 +29,7 @@ export class CommonService {
       sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || '',
-      page_status: pageStatus || ''
+      listing: pageStatus || ''
     };
   }
 
@@ -60,4 +60,15 @@ export class CommonService {
       });
     }
   }
+
+  formatDate(dateString: string): string  {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB');
+  };
+  
+  formatValue = (value: any): any => {
+    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)
+      ? this.formatDate(value)
+      : value;
+  };
 }

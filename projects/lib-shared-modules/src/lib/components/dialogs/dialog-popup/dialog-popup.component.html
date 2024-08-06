@@ -3,6 +3,14 @@
   <img class="cursor-pointer pr-4" [mat-dialog-close]="false" src="./../assets/icons/close-icon.png" alt="">
 </div>
 <div mat-dialog-content class="h-30">
+  @if(dialogueData?.fields){
+    @for(field of dialogueData?.fields; track field){
+      <div class="mb-4">
+        <div class="font-bold mb-1">{{ field.label |translate}}</div>
+        <div class="mb-2">{{ field?.value }}</div>
+      </div>
+    }
+  }
   <h3 class="text-sm font-bold p-4">{{dialogueData?.content |translate}}</h3>
   <form #dialogueForm="ngForm">
   @if(dialogueData?.form){

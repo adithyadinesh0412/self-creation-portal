@@ -62,8 +62,8 @@
                     }
                 </div>
                 <div class="flex-row flex-end ">
-                    <div class=" flex justify-center items-center">
-                        <mat-icon class="info-icon">info</mat-icon>
+                    <div class="flex justify-center items-center">
+                        <mat-icon class="info-icon cursor-pointer" (click)="onInfoClick(list)">info</mat-icon>
                     </div>
                     @if(showActionButton){
                         @for (button of list.actionButton; track button){
