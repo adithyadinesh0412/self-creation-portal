@@ -301,7 +301,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'view'
+            mode: 'review'
           }
         });
         break;
@@ -309,7 +309,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         this.router.navigate([PROJECT_DETAILS_PAGE], {
           queryParams: {
             projectId: item.id,
-            mode: 'view'
+            mode: 'review'
           }
         })
         break;
