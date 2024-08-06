@@ -60,7 +60,7 @@ export class TasksComponent implements OnInit, OnDestroy {
             if (Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
               if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
-                this.libProjectService.projectData.tasks.forEach((element: any) => {
+                this.libProjectService.projectData.tasks.forEach((element:any) => {
                   const task = this.fb.group({
                     id: [element.id],
                     name: [element.name ? element.name : '', Validators.required],
@@ -70,29 +70,30 @@ export class TasksComponent implements OnInit, OnDestroy {
                       file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
                       min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                     }),
-                    learning_resources:element.learning_resources? [element.learning_resources] : [],
-                    children: [element.children],
-                    sequence_no: [element.sequence_no]
+                    learning_resources:element?.learning_resources? [element.learning_resources] : [],
+                    children: [element?.children],
+                    type:[element?.type],
+                    sequence_no:[element?.sequence_no]
                   });
                   this.tasks.push(task);
                 })
               }
-              else {
+              else{
                 this.addTask();
               }
-              if(params.mode === 'edit') {
+              if(params.mode === 'edit'){
                 this.startAutoSaving();
               }
-
+             
             }
             else {
-              this.libProjectService.readProject(this.projectId).subscribe((res: any) => {
+              this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
                 this.tasksForm.reset()
                 this.libProjectService.projectData = res.result;
-                if (res && res.result.tasks && res.result.tasks.length) {
-                  res.result.tasks.forEach((element: any) => {
+                if(res && res.result.tasks && res.result.tasks.length) {
+                  res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({
-                      id: [element.id],
+                      id:[element.id],
                       name: [element.name ? element.name : '', Validators.required],
                       is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                       allow_evidences: [element.allow_evidences ? element.allow_evidences : false],
@@ -116,46 +117,42 @@ export class TasksComponent implements OnInit, OnDestroy {
                 }
               })
             }
-
-            if (params.mode === 'viewOnly') {
-              this.viewOnly = true
-            }
           }
         }
         else {
-          this.startAutoSaving();
           this.libProjectService
-            .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
-            .subscribe((res: any) => {
-              (this.projectId = res.result.id),
-                this.router.navigate([], {
-                  relativeTo: this.route,
-                  queryParams: {
-                    projectId: this.projectId,
-                    mode: 'edit',
-                  },
-                  queryParamsHandling: 'merge',
-                  replaceUrl: true,
-                });
+          .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
+          .subscribe((res: any) => {
+            (this.projectId = res.result.id),
+              this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {
+                  projectId: this.projectId,
+                  mode: 'edit',
+                },
+                queryParamsHandling: 'merge',
+                replaceUrl: true,
+              });
               this.libProjectService.projectData.id = res.result.id;
-            })
+          })
+        }
+
+        if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
+          this.viewOnly = true
+          // this.tasksForm.disable()
         }
       })
     )
-
-    if(this.mode === 'edit'){
-      this.subscription.add(
-        this.libProjectService.isProjectSave.subscribe((isProjectSave: boolean) => {
-          if (isProjectSave && this.router.url.includes('tasks')) {
-            console.log("from subject it's getting called")
-            this.submit();
-          }
-        })
-      );
-    }
-
-    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
+        if(isProjectSave && this.router.url.includes('tasks')) {
+          console.log("from subject it's getting called")
+          this.submit();
+        }
+      })
+    );
+    this.saveTasks()
+    this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
   }
 
   get tasks() {
@@ -176,12 +173,11 @@ export class TasksComponent implements OnInit, OnDestroy {
       })
     });
     this.tasks.push(taskGroup);
-    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
   }
 
   deleteTask(index: number) {
-    let content = (this.tasks.value[index].subtask && this.tasks.value[index].subtask.length) || (this.tasks.value[index].resources && this.tasks.value[index].resources.length) ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" : "DELETE_TASK_MESSAGE";
+    let content = (this.tasks.value[index].children &&  this.tasks.value[index].children.length) || (this.tasks.value[index].learning_resources && this.tasks.value[index].learning_resources.length) ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       disableClose: true,
       data: {
@@ -197,8 +193,8 @@ export class TasksComponent implements OnInit, OnDestroy {
         return true;
       } else if (result.data === "YES") {
         this.tasks.removeAt(index);
-        this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-        this.libProjectService.checkValidationForSubmit()
+        this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+        this.saveTasks()
         return true;
       } else {
         return false;
@@ -207,17 +203,15 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   checkValidation() {
-    this.saveTasks(this.tasks, this.tasksData)
-    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.libProjectService.checkValidationForSubmit()
+    this.saveTasks()
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
   }
 
   startAutoSaving() {
-    this.saveTasks(this.tasks, this.tasksData)
     this.subscription.add(
       this.libProjectService
-        .startAutoSave(this.projectId)
-        .subscribe((data) => console.log(data))
+      .startAutoSave(this.projectId)
+      .subscribe((data) => console.log(data))
     )
   }
 
@@ -230,25 +224,30 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-    this.saveTasks(this.tasks, this.tasksData)
-    this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
+    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.tasks.value.forEach((item:any, index:any) => {
+      item.sequence_no = index + 1;
+      item.type = item.type ? item.type : "simple"
+      if(item.allow_evidences == true && item.evidence_details.file_types.length == 0){
+       item.evidence_details.file_types = this.tasksData.fileType.options.map((item:any)=> item.value);
+      }else if(item.allow_evidences == false){
+        item.evidence_details = {}
+      }
+    });
+    this.saveTasks()
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
 
-  ngOnDestroy() {
-    if (this.mode === 'edit') {
-      this.libProjectService.validForm.tasks = this.tasks?.status ? this.tasks?.status : "INVALID"
-      this.libProjectService.checkValidationForSubmit()
-      this.saveTasks(this.tasks, this.tasksData)
-      if (this.autoSaveSubscription) {
-        this.autoSaveSubscription.unsubscribe();
-      }
-      if( Object.keys(this.libProjectService.projectData).length > 0) {
-        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res) => console.log(res))
-      }
+  ngOnDestroy(){
+    if(this.mode === 'edit'){
+      this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+      this.saveTasks()
+      this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
     }
     this.subscription.unsubscribe();
+    if (this.autoSaveSubscription) {
+      this.autoSaveSubscription.unsubscribe();
+    }
   }
 
   addingTask() {
@@ -263,7 +262,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         "message": taskCantAddMessage,
         "class": "error"
       }
-      this.toastService.openSnackBar(data)
+     this.toastService.openSnackBar(data)
     } else {
       this.addTask();
     }
@@ -281,17 +280,17 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveTasks(tasks:any, taskData:any = []){
-    tasks.value.forEach((item: any, index: any) => {
+  saveTasks(){
+    this.tasks.value.forEach((item: any, index: any) => {
       item.sequence_no = index + 1;
       item.type = item.type ? item.type : "simple"
       if(item.allow_evidences == true && item.evidence_details.file_types.length == 0){
-       item.evidence_details.file_types = taskData.fileType.options.map((item:any)=> item.value);
+       item.evidence_details.file_types = this.tasksData.fileType.options.map((item:any)=> item.value);
       }else if(item.allow_evidences == false){
         item.evidence_details = {}
       }
     });
-    this.libProjectService.setProjectData({ 'tasks': tasks.value })
+    this.libProjectService.setProjectData({ 'tasks': this.tasks.value })
   }
 
   isAnyTaskFilled(): boolean {
