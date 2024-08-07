@@ -161,9 +161,9 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         ...(currentData.statusButtons || [])
       ];
       this.infoData = [
-        ...(currentData.buttonsData ? currentData.buttonsData[1].infoFields : []),
-        ...(currentData.statusButtons ? currentData.statusButtons.flatMap((statusButton: any) => 
-          statusButton.infoFields.map((infoField: any) => ({ ...infoField, status: statusButton.status }))
+        ...(currentData.buttonsData ? currentData.buttonsData.flatMap((item: any) => item.infoFields || []) : []),
+        ...(currentData.statusButtons ? currentData.statusButtons.flatMap((statusButton: any) =>
+          (statusButton.infoFields || []).map((infoField: any) => ({ ...infoField, status: statusButton.status }))
         ) : [])
       ];
       this.getQueryParams();
@@ -369,34 +369,39 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
 
   infoIconClickEvent(event: any) {
     const cardItem = event.item;
+  
+    //to get field data from listapi to map in json
     const getFieldData = (field: any) => {
       let value = cardItem[field.name] || '';
       if (field.name.includes('organization')) {
         value = cardItem.organization ? cardItem.organization.name : '';
       } else {
-        value = this.commonService.formatValue(value);
+        value = this.commonService.formatDate(value);
       }
       return {
         label: field.label,
         value: value
       };
     };
-
-    const infoFields = this.infoData
-      .filter((field: any) => {
-        // Handle cases when reviewStatus is not present
-        if (!cardItem.review_status && (cardItem.status === 'SUBMITTED' || cardItem.status === 'IN_REVIEW')) {
-          return field.status === 'NOT_STARTED';
-        }
-        //when reviewStatus is present or there is no specific status requirement
-        return field.status === cardItem.review_status || !field.status;
-      }).map(getFieldData);
-      
+  
+    // Function to filter and map fields based on conditions
+    const filterAndMapFields = (status: string | null) => {
+      return this.infoData
+        .filter((field: any) => field.status === status || !field.status)
+        .map(getFieldData);
+    };
+  
+    //info fields to display as per the review_status
+    let infoFields = [];
+    if (!cardItem.review_status && (cardItem.status === 'SUBMITTED' || cardItem.status === 'IN_REVIEW')) {
+      infoFields = filterAndMapFields('NOT_STARTED');
+    } else {
+      infoFields = filterAndMapFields(cardItem.review_status);
+    }
+  
     // If no fields match the conditions, default to 'NOT_STARTED' fields
     if (infoFields.length === 0) {
-      infoFields.push(...this.infoData
-        .filter((field: any) => field.status === 'NOT_STARTED').map(getFieldData)
-      );
+      infoFields = filterAndMapFields('NOT_STARTED');
     }
   
     const dialogRef = this.dialog.open(DialogPopupComponent, {
@@ -405,7 +410,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         fields: infoFields
       }
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       return result ? true : false;
     });

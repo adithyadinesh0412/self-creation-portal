@@ -61,14 +61,9 @@ export class CommonService {
     }
   }
 
-  formatDate(dateString: string): string  {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB');
-  };
-  
-  formatValue = (value: any): any => {
+  formatDate(value: any): any {
     return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)
-      ? this.formatDate(value)
+      ? new Date(value).toLocaleDateString('en-GB')
       : value;
   };
 }
