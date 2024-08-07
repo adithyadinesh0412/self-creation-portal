@@ -54,76 +54,29 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
       this.viewOnly = true
       this.libProjectService.projectData = {};
-      this.getProjectDetailsForViewOnly()
+      this.getFormWithEntitiesAndMap();
     }
   }
 
- getProjectDetailsForViewOnly(){
-  this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
-    if (data) {
-      this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
-        this.subscription.add(
-          this.route.queryParams.subscribe((params: any) => {
-            if (params.projectId) {
-                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
-                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-                } else {
-                  this.subscription.add(
-                    this.libProjectService
-                      .readProject(this.projectId)
-                      .subscribe((res: any) => {
-                        this.libProjectService.setProjectData(res.result);
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
-                      })
-                  );
-                }
-            } 
-          })
-        );
-    }
-  })
- }
-
   getFormWithEntitiesAndMap(){
+    this.getFormDataAndSubscribe((data) => {
+      if (this.projectId) {
+          this.handleProjectData(data.controls);
+      } else {
+        this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+      }
+    });
+  }
+
+  getFormDataAndSubscribe(callback: (data: any) => void) {
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
-        this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
+        this.formDataForTitle = data.controls.find((item: any) => item.name === 'title');
         this.subscription.add(
           this.route.queryParams.subscribe((params: any) => {
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
-            if (params.projectId) {
-              if (params.mode === 'edit') {
-                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
-                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-                } else {
-                  this.subscription.add(
-                    this.libProjectService
-                      .readProject(this.projectId)
-                      .subscribe((res: any) => {
-                        this.libProjectService.setProjectData(res.result);
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
-                        this.libProjectService.upDateProjectTitle();
-                      })
-                  );
-                }
-              }else{
-                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
-                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-                } else {
-                  this.subscription.add(
-                    this.libProjectService
-                      .readProject(this.projectId)
-                      .subscribe((res: any) => {
-                        this.libProjectService.setProjectData(res.result);
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
-                      })
-                  );
-                }
-              }
-            } else {
-              this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-            }
+            callback(data);
           })
         );
       }
@@ -156,6 +109,24 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     if(this.libProjectService.projectData.tasks){
       const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
+    }
+  }
+
+  private handleProjectData(controls: any, updateTitle: boolean = true) {
+    if (Object.keys(this.libProjectService.projectData).length > 1) {
+      this.readProjectDeatilsAndMap(controls, this.libProjectService.projectData);
+    } else {
+      this.subscription.add(
+        this.libProjectService
+          .readProject(this.projectId)
+          .subscribe((res: any) => {
+            this.libProjectService.setProjectData(res.result);
+            this.readProjectDeatilsAndMap(controls, res.result);
+            if (updateTitle) {
+              this.libProjectService.upDateProjectTitle();
+            }
+          })
+      );
     }
   }
 
