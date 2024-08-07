@@ -124,5 +124,9 @@
     "RESOURCE_REJECTED_ON":"Resource rejected on",
     "RESOURCE_REPORTED_ON":"Resource reported on",
     "REASON":"Reason",
-    "LAST_REVIWED_ON":"Last reviewed on"
+    "LAST_REVIWED_ON":"Last reviewed on",
+    "REQUEST_CHANGES":"Request changes",
+    "REJECT":"Reject",
+    "ACCEPT":"Accept"
+    
 }

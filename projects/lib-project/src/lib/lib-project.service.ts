@@ -28,7 +28,6 @@ export class LibProjectService {
 
   constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService) {
     this.route.queryParams.subscribe((params: any) => {
-      console.log("project service file")
       this.mode = params.mode ? params.mode : "edit"
     })
   }
@@ -118,7 +117,6 @@ export class LibProjectService {
     };
     return this.httpService.delete(config.url).pipe(
       map((result : any) => {
-        console.log('Delete project successsfully', result);
         return result;
       })
     );
@@ -130,7 +128,6 @@ export class LibProjectService {
     };
     return this.httpService.get(config.url).pipe(
       map((result: any) => {
-        console.log(result)
         return result;
       })
     )
@@ -142,7 +139,6 @@ export class LibProjectService {
     };
     return this.httpService.get(config.url).pipe(
       map((result: any) => {
-        console.log(result)
         return result;
       })
     )
@@ -156,7 +152,6 @@ export class LibProjectService {
 
     return this.httpService.post(config.url, config.payload).pipe(
       map((result: any) => {
-        console.log(result)
         let data = {
           message : result.message,
           class : 'success'

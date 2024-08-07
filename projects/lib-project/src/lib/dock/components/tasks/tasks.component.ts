@@ -146,7 +146,6 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
         if(isProjectSave && this.router.url.includes('tasks')) {
-          console.log("from subject it's getting called")
           this.submit();
         }
       })
