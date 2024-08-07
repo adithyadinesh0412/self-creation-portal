@@ -46,8 +46,6 @@ export class AppMainViewComponent {
   }
 
   getPermissions() {
-    this.formService.getPermissions().subscribe((res) => {
-      console.log(res);
-    })
+    this.formService.getPermissions().subscribe((res) => {})
   }
 }

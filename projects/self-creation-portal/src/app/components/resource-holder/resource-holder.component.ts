@@ -278,10 +278,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
   
   statusButtonClick(event: { label: string, item: any }) {
-    console.log(this.activeRole)
      const { label, item } = event;
-     console.log(label)
-     console.log(item)
      switch (label) {
        case 'EDIT':
          this.router.navigate([PROJECT_DETAILS_PAGE], {
