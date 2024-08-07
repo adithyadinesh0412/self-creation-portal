@@ -117,7 +117,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
     }
   }
 
-  private handleProjectData(controls: any, updateTitle: boolean = true) {
+  handleProjectData(controls: any, updateTitle: boolean = true) {
     if (Object.keys(this.libProjectService.projectData).length > 1) {
       this.readProjectDeatilsAndMap(controls, this.libProjectService.projectData);
     } else {
