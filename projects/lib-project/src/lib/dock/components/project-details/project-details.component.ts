@@ -5,12 +5,14 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { CommentsBoxComponent, DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { from, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [DynamicFormModule, TranslateModule],
+  imports: [DynamicFormModule, TranslateModule,CommentsBoxComponent],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -59,29 +61,32 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
   }
 
   getFormWithEntitiesAndMap(){
-    this.getFormDataAndSubscribe((data) => {
+    this.getFormDataAndSubscribe().subscribe((data: any) => {
       if (this.projectId) {
-          this.handleProjectData(data.controls);
+        this.handleProjectData(data.controls);
       } else {
         this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
       }
     });
   }
 
-  getFormDataAndSubscribe(callback: (data: any) => void) {
-    this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
-      if (data) {
-        this.formDataForTitle = data.controls.find((item: any) => item.name === 'title');
-        this.subscription.add(
-          this.route.queryParams.subscribe((params: any) => {
-            this.projectId = params.projectId;
-            this.libProjectService.projectData.id = params.projectId;
-            callback(data);
-          })
-        );
-      }
-    });
-  }
+  getFormDataAndSubscribe() {
+    return from(this.formService.getFormWithEntities('PROJECT_DETAILS')).pipe(
+      switchMap((data: any) => {
+        if (data) {
+          this.formDataForTitle = data.controls.find((item: any) => item.name === 'title');
+          return this.route.queryParams.pipe(
+            map((params: any) => {
+              this.projectId = params.projectId;
+              this.libProjectService.projectData.id = params.projectId;
+              return data; // Return data directly
+            })
+          );
+        } else {
+          return of(null); // Return null or empty observable if data is not present
+        }
+      })
+    )};
 
   readProjectDeatilsAndMap(formControls:any,res: any) {
     formControls.forEach((element: any) => {
