@@ -5,14 +5,14 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { CommentsBoxComponent, DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 import { from, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [DynamicFormModule, TranslateModule,CommentsBoxComponent],
+  imports: [DynamicFormModule, TranslateModule],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
