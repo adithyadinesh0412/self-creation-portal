@@ -60,10 +60,5 @@ export class CommonService {
       });
     }
   }
-
-  formatDate(value: any): any {
-    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value)
-      ? new Date(value).toLocaleDateString('en-GB')
-      : value;
-  };
+  
 }

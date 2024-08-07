@@ -12,6 +12,7 @@ import { ResourceService } from '../../services/resource-service/resource.servic
 import { CommonService } from '../../services/common-service/common.service';
 import { LibProjectService } from 'lib-project';
 import { MatDialog } from '@angular/material/dialog';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   imports: [HeaderComponent,SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule, NoResultFoundComponent],
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
+  providers: [DatePipe]
 })
 export class ResourceHolderComponent implements OnInit, OnDestroy{
 
@@ -41,7 +43,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     showActionButton: false,
     changeReqCount : 0,
     inprogressCount  : 0,
-    activeFilterButton: '' as string
+    activeFilterButton: '' as string,
+    showInfoIcon: false
   };
 
   sortOptions = {
@@ -136,7 +139,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     private libProjectService:LibProjectService, 
     private router:Router, 
     private dialog : MatDialog,
-    private toastService:ToastService) {
+    private toastService:ToastService,
+    private datePipe: DatePipe) {
   }
 
   ngOnInit() {
@@ -157,7 +161,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.noResultMessage = currentData?.noResultMessage || '' ;
       this.pageStatus = currentData?.value || '';
       this.buttonsData = [
-        ...(currentData.buttonsData ? currentData.buttonsData[0].buttons : []),
+        ...(currentData.buttonsData ? currentData.buttonsData.flatMap((item : any) => item.buttons || []) : []),
         ...(currentData.statusButtons || [])
       ];
       this.infoData = [
@@ -169,6 +173,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
       this.filters.showActionButton = this.buttonsData;
+      this.filters.showInfoIcon = true;
     });
   }
 
@@ -375,8 +380,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       let value = cardItem[field.name] || '';
       if (field.name.includes('organization')) {
         value = cardItem.organization ? cardItem.organization.name : '';
-      } else {
-        value = this.commonService.formatDate(value);
+      } else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z?$/.test(value)) { 
+        value = this.datePipe.transform(value, 'dd/MM/yyyy');
       }
       return {
         label: field.label,
