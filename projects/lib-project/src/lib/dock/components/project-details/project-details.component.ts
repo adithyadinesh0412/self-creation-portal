@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
@@ -43,11 +43,20 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.startAutoSaving();
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
-      this.subscription.add(
+      this.subscription.add( // save draft functionality to save form.
         this.libProjectService.isProjectSave.subscribe(
           (isProjectSave: boolean) => {
             if (isProjectSave && this.router.url.includes('project-details')) {
               this.saveForm();
+            }
+          }
+        )
+      );
+      this.subscription.add( // Check validation before sending for review.
+        this.libProjectService.isSendForReviewValidation.subscribe(
+          (reviewValidation: boolean) => {
+            if(reviewValidation) {
+              this.formMarkTouched();
             }
           }
         )
@@ -62,8 +71,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
 
   ngAfterViewChecked() {
     if(this.mode == 'edit' && this.projectId) {
-      this.formMarkTouched();
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      if(this.libProjectService.projectData.tasks){
+        const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
+        this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
+      }
     }
   }
 
@@ -119,7 +131,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
+      const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
   }

@@ -25,7 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
-export class TasksComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class TasksComponent implements OnInit, OnDestroy {
 
   tasksForm: FormGroup;
   projectId: string | number = '';
@@ -150,16 +150,21 @@ export class TasksComponent implements OnInit, OnDestroy, AfterViewChecked {
         }
       })
     );
+    this.subscription.add( // Check validation before sending for review.
+      this.libProjectService.isSendForReviewValidation.subscribe(
+        (reviewValidation: boolean) => {
+          if(reviewValidation) {
+            if(this.mode == 'edit' && this.projectId) {
+              this.tasksForm.markAllAsTouched();
+              this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+              console.log(this.libProjectService.validForm)
+            }
+          }
+        }
+      )
+    );
     this.saveTasks()
     this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
-  }
-
-  ngAfterViewChecked(): void {
-    if(this.mode == 'edit' && this.projectId) {
-      this.tasksForm.markAllAsTouched();
-      this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-      console.log(this.libProjectService.validForm)
-    }
   }
 
   get tasks() {
