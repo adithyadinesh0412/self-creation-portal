@@ -27,7 +27,6 @@ export class SideNavbarComponent implements OnInit{
   ngOnInit() {
     this.formService.getPermissions().subscribe((res:any) => {
       this.sidenavData = this.formService.checkPermissions(this.sidenavData,res.result)
-      console.log(this.formService.checkPermissions(this.sidenavData,res.result))
     })
   }
 

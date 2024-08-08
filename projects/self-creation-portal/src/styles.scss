@@ -85,6 +85,7 @@ $buttonDisable:#80868b;
 $horizontalBlueLine:#dbedfa;
 $warn: #FF0000;
 $error:	#ff3333;
+$reject:#ec555d;
 $success:#008840;
 // Apply the custom theme to the Angular Material components
 @include mat.all-component-themes($custom-theme);
@@ -109,6 +110,16 @@ body{
   color: $secondary;
   border: 1px solid $primary;
   background-color: $primary;
+}
+.enable-reject-button{
+  color: $secondary;
+  border: 1px solid $reject;
+  background-color: $reject;
+}
+.enable-success-button{
+  color: $secondary;
+  border: 1px solid $success;
+  background-color: $success;
 }
 .button-disable{
 background-color: $buttonDisable;
