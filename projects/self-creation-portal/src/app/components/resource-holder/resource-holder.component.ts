@@ -53,12 +53,11 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   };
 
   lists:any = [];
-  isDataLoaded : boolean = false;
   noResultMessage!: string ;
   noResultFound !: string;
   pageStatus !: string;
   buttonsData: any = {};
-  infoData: any = {};
+  infoFieldsData: any = {};
   buttonsCSS : any;
   activeRole:any;
 
@@ -85,21 +84,21 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
-      const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
-      this.activeRole = currentData.activeRole;
+      const selectedSideNavData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
+      this.activeRole = selectedSideNavData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
-      this.filters.filterData = currentData?.filterData || [];
-      this.noResultMessage = currentData?.noResultMessage || '' ;
-      this.pageStatus = currentData?.value || '';
+      this.filters.filterData = selectedSideNavData?.filterData || [];
+      this.noResultMessage = selectedSideNavData?.noResultMessage || '' ;
+      this.pageStatus = selectedSideNavData?.value || '';
       this.buttonsData = [
-        ...(currentData.buttonsData ? currentData.buttonsData.flatMap((item : any) => item.buttons || []) : []),
-        ...(currentData.statusButtons || [])
+        ...(selectedSideNavData.buttonsData ? [].concat(...selectedSideNavData.buttonsData.map((item: any) => item.buttons || [])) : []),
+        ...(selectedSideNavData.statusButtons || [])
       ];
-      this.infoData = [
-        ...(currentData.buttonsData ? currentData.buttonsData.flatMap((item: any) => item.infoFields || []) : []),
-        ...(currentData.statusButtons ? currentData.statusButtons.flatMap((statusButton: any) =>
+      this.infoFieldsData = [
+        ...(selectedSideNavData.buttonsData ? [].concat(...selectedSideNavData.buttonsData.map((item: any) => item.infoFields || [])) : []),
+        ...(selectedSideNavData.statusButtons ? [].concat(...selectedSideNavData.statusButtons.map((statusButton: any) =>
           (statusButton.infoFields || []).map((infoField: any) => ({ ...infoField, status: statusButton.status }))
-        ) : [])
+        )) : [])
       ];
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
@@ -158,7 +157,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
   
   handleResponse(response: any) {
-    this.isDataLoaded = false;
     const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
     this.lists = this.addActionButtons(result.data);
     this.filters.filteredLists = this.lists;
@@ -171,7 +169,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     }
     this.filters.changeReqCount = result.changes_requested_count;
     this.filters.inprogressCount = result.in_progress_count;
-    this.isDataLoaded = true;
   }
 
   addActionButtons(cardItems: any): any {
@@ -315,7 +312,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       let value = cardItem[field.name] || '';
       if (field.name.includes('organization')) {
         value = cardItem.organization ? cardItem.organization.name : '';
-      } else if (typeof value === 'string' && this.commonService.isISODate(value)) { 
+      } else if (this.commonService.isISODate(value)) { 
         value = this.datePipe.transform(value, 'dd/MM/yyyy'); 
       }
       return {
@@ -326,7 +323,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   
     // Function to filter and map fields based on conditions
     const filterAndMapFields = (status: string | null) => {
-      return this.infoData
+      return this.infoFieldsData
         .filter((field: any) => field.status === status || !field.status)
         .map(getFieldData);
     };

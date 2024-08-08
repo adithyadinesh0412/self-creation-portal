@@ -20,7 +20,7 @@
     @else 
     {
         <div class="flex flex-col  justify-center items-center text-center">
-            @if(filters.filteredLists.length === 0 && isDataLoaded){
+            @if(filters.filteredLists.length === 0){
                 <lib-no-result-found [noResultMessage]="noResultMessage"></lib-no-result-found>
             }
         </div>
