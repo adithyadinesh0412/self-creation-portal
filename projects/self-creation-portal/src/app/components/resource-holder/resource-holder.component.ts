@@ -12,6 +12,7 @@ import { ResourceService } from '../../services/resource-service/resource.servic
 import { CommonService } from '../../services/common-service/common.service';
 import { LibProjectService } from 'lib-project';
 import { MatDialog } from '@angular/material/dialog';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   imports: [HeaderComponent,SideNavbarComponent, CardComponent, SearchComponent, PaginationComponent, FilterComponent, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule, MatListModule, MatCardModule,TranslateModule, NoResultFoundComponent],
   templateUrl: './resource-holder.component.html',
   styleUrl: './resource-holder.component.scss',
+  providers: [DatePipe]
 })
 export class ResourceHolderComponent implements OnInit, OnDestroy{
 
@@ -41,7 +43,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     showActionButton: false,
     changeReqCount : 0,
     inprogressCount  : 0,
-    activeFilterButton: '' as string
+    activeFilterButton: '' as string,
+    showInfoIcon: false
   };
 
   sortOptions = {
@@ -50,83 +53,14 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   };
 
   lists:any = [];
-  isDataLoaded : boolean = false;
   noResultMessage!: string ;
   noResultFound !: string;
   pageStatus !: string;
   buttonsData: any = {};
+  infoFieldsData: any = {};
   buttonsCSS : any;
   activeRole:any;
 
-  reviewList : any = [
-    {
-      "id": 3,
-      "title": "review",
-      "type": "projects",
-      "status": "SUBMITTED",
-      "submitted_on": null,
-      "last_reviewed_on": null,
-      "notes": "hey hello",
-      "review_status": null,
-      "creator": "yodi test",
-      "organization": {
-        "id": 24,
-        "name": "Shikshalokam",
-        "code": "sl"
-      }
-    },
-      {
-            "id": 4,
-            "title": "sample project",
-            "type": "projects",
-            "status": "SUBMITTED",
-            "submitted_on": null,
-            "last_reviewed_on": null,
-            "notes": "hey hello",
-            "review_status": null,
-            "creator": "yodi test",
-            "organization": {
-              "id": 24,
-              "name": "Shikshalokam",
-              "code": "sl"
-            }
-      },
-      {
-        "id": 5,
-        "title": "upforreview",
-        "type": "projects",
-        "status": "SUBMITTED",
-        "submitted_on": null,
-        "last_reviewed_on": null,
-        "notes": "hey hello",
-        "review_status": null,
-        "creator": "yodi test",
-        "organization": {
-          "id": 24,
-          "name": "Shikshalokam",
-          "code": "sl"
-        },
-      },
-      {
-            "id": 158,
-            "title": "Untitled project",
-            "type": "projects",
-            "status": "IN_REVIEW",
-            "submitted_on": null,
-            "last_reviewed_on": null,
-            "created_at": "2024-07-11T10:44:09.000Z",
-            "notes": "hey hello",
-            "review_status": "INPROGRESS",
-            "creator": "yodi test",
-            "organization": {
-              "id": 24,
-              "name": "Tunerlabs",
-              "code": "tl",
-              "description": "Tunerlabs"
-            }
-      }
-  ]
-     
   constructor(
     private route: ActivatedRoute, 
     private formService: FormService, 
@@ -135,7 +69,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     private libProjectService:LibProjectService, 
     private router:Router, 
     private dialog : MatDialog,
-    private toastService:ToastService) {
+    private toastService:ToastService,
+    private datePipe: DatePipe) {
   }
 
   ngOnInit() {
@@ -149,19 +84,26 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
-      const currentData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
-      this.activeRole = currentData.activeRole;
+      const selectedSideNavData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
+      this.activeRole = selectedSideNavData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
-      this.filters.filterData = currentData?.filterData || [];
-      this.noResultMessage = currentData?.noResultMessage || '' ;
-      this.pageStatus = currentData?.value || '';
+      this.filters.filterData = selectedSideNavData?.filterData || [];
+      this.noResultMessage = selectedSideNavData?.noResultMessage || '' ;
+      this.pageStatus = selectedSideNavData?.value || '';
       this.buttonsData = [
-        ...(currentData.buttonsData ? currentData.buttonsData[0].buttons : []),
-        ...(currentData.statusButtons || [])
+        ...(selectedSideNavData.buttonsData ? [].concat(...selectedSideNavData.buttonsData.map((item: any) => item.buttons || [])) : []),
+        ...(selectedSideNavData.statusButtons || [])
+      ];
+      this.infoFieldsData = [
+        ...(selectedSideNavData.buttonsData ? [].concat(...selectedSideNavData.buttonsData.map((item: any) => item.infoFields || [])) : []),
+        ...(selectedSideNavData.statusButtons ? [].concat(...selectedSideNavData.statusButtons.map((statusButton: any) =>
+          (statusButton.infoFields || []).map((infoField: any) => ({ ...infoField, status: statusButton.status }))
+        )) : [])
       ];
       this.getQueryParams();
       this.noResultFound = this.noResultMessage;
       this.filters.showActionButton = this.buttonsData;
+      this.filters.showInfoIcon = true;
     });
   }
 
@@ -203,31 +145,30 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
 
   getList() {
-    this.isDataLoaded = false;
-    if((this.pageStatus === 'drafts' ) || (this.pageStatus === 'submitted_for_review')) {
+    if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review') {
       this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
-        const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
-        this.lists = this.addActionButtons(result.data)
-        this.filters.filteredLists = this.lists;
-        this.pagination.totalCount = result.count;
-        if (this.lists.length === 0) {
-          this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
-          if (this.pagination.currentPage > 0) {
-            this.pagination.currentPage -= 1;
-          }
-        }
-        this.filters.changeReqCount = result.changes_requested_count;
-        this.isDataLoaded = true;
+        this.handleResponse(response);
+      });
+    } else if (this.pageStatus === 'up_for_review') {
+      this.resourceService.getUpForReviewList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
+        this.handleResponse(response);
       });
     }
-    else if(this.pageStatus === 'up_for_review') {
-      const result = this.reviewList;
-      this.lists = this.addActionButtons(result)
-      this.filters.filteredLists = this.lists;
-      this.filters.inprogressCount = this.reviewList.filter((item : any) => item.review_status === 'INPROGRESS').length;
-      this.pagination.totalCount = result.length;  
-      this.isDataLoaded = true;
+  }
+  
+  handleResponse(response: any) {
+    const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
+    this.lists = this.addActionButtons(result.data);
+    this.filters.filteredLists = this.lists;
+    this.pagination.totalCount = result.count;
+    if (this.lists.length === 0) {
+      this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
+      if (this.pagination.currentPage > 0) {
+        this.pagination.currentPage -= 1;
+      }
     }
+    this.filters.changeReqCount = result.changes_requested_count;
+    this.filters.inprogressCount = result.in_progress_count;
   }
 
   addActionButtons(cardItems: any): any {
@@ -340,23 +281,78 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
    }
 
   filterButtonClickEvent(event : { label: string }) {
-    this.filters.activeFilterButton = event.label;
-    switch(event.label) {
-      case 'CHANGES_REQUIRED':
-        this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
-        if(this.filters.filteredLists.length === 0) {
-          this.noResultMessage = "NO_CHANGE_REQUIRED"
-        }
-        break;
-      case 'INPROGRESS':
-        this.filters.filteredLists = this.reviewList.filter((item: any) => item.review_status === 'INPROGRESS');
-        if(this.filters.filteredLists.length === 0) {
-          this.noResultMessage = "NO_INPROGRESS_REVIEW"
-        }
-        break;
+    if(this.filters.activeFilterButton === event.label) {
+      this.filters.activeFilterButton = '';
+      this.filters.filteredLists = this.lists;
+      this.noResultMessage = this.noResultFound;
+    } else {
+      this.filters.activeFilterButton = event.label;
+      switch(event.label) {
+        case 'CHANGES_REQUIRED':
+          this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
+          if(this.filters.filteredLists.length === 0) {
+            this.noResultMessage = "NO_CHANGE_REQUIRED"
+          }
+          break;
+        case 'INPROGRESS':
+          this.filters.filteredLists = this.lists.filter((item: any) => item.review_status === 'INPROGRESS');
+          if(this.filters.filteredLists.length === 0) {
+            this.noResultMessage = "NO_INPROGRESS_REVIEW"
+          }
+          break;
+      }
     }
   }
 
+  infoIconClickEvent(event: any) {
+    const cardItem = event.item;
+  
+    //to get field data from listapi to map in json
+    const getFieldData = (field: any) => {
+      let value = cardItem[field.name] || '';
+      if (field.name.includes('organization')) {
+        value = cardItem.organization ? cardItem.organization.name : '';
+      } else if (this.commonService.isISODate(value)) { 
+        value = this.datePipe.transform(value, 'dd/MM/yyyy'); 
+      }
+      return {
+        label: field.label,
+        value: value
+      };
+    };
+  
+    // Function to filter and map fields based on conditions
+    const filterAndMapFields = (status: string | null) => {
+      return this.infoFieldsData
+        .filter((field: any) => field.status === status || !field.status)
+        .map(getFieldData);
+    };
+  
+    //info fields to display as per the review_status
+    let infoFields = [];
+    if (!cardItem.review_status && (cardItem.status === 'SUBMITTED' || cardItem.status === 'IN_REVIEW')) {
+      infoFields = filterAndMapFields('NOT_STARTED');
+    } else {
+      infoFields = filterAndMapFields(cardItem.review_status);
+    }
+  
+    // If no fields match the conditions, default to 'NOT_STARTED' fields
+    if (infoFields.length === 0) {
+      infoFields = filterAndMapFields('NOT_STARTED');
+    }
+  
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      data: {
+        header: "DETAILS",
+        fields: infoFields
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      return result ? true : false;
+    });
+  }
+  
   deleteProject(item: any) {
     this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
       if (this.lists.length === 1 && this.pagination.currentPage > 0) {

@@ -29,7 +29,7 @@ export class CommonService {
       sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || '',
-      page_status: pageStatus || ''
+      listing: pageStatus || ''
     };
   }
 
@@ -59,5 +59,14 @@ export class CommonService {
         queryParams: {}
       });
     }
+  }
+
+  //Check for ISO date format
+  isISODate(value: string): boolean {
+    if (typeof value !== 'string') {
+      return false;
+    }
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z?$/;
+    return isoDateRegex.test(value);
   }
 }
