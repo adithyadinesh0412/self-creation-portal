@@ -124,6 +124,10 @@ border: 1px solid $buttonDisable;
 color:$tertiary
 }
 
+.text-warning {
+  color: $warn;
+}
+
 .success .mdc-snackbar__surface {
   background-color: white !important;
   border-width: 2px 2px 2px 12px;
@@ -166,7 +170,7 @@ color:$tertiary
   min-height: 2.375rem !important;
 }
 
-.custom-input-wrapper .mdc-text-field--outlined .mat-mdc-form-field-infix, 
+.custom-input-wrapper .mdc-text-field--outlined .mat-mdc-form-field-infix,
 .custom-input-wrapper .mdc-text-field--no-label .mat-mdc-form-field-infix {
   padding: 0.3125rem !important;
 }

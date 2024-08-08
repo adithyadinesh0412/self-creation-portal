@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
@@ -14,7 +14,7 @@ import { DialogPopupComponent, FormService } from 'lib-shared-modules';
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
-export class ProjectDetailsComponent implements OnDestroy, OnInit {
+export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked {
   dynamicFormData: any;
   projectId: string | number = '';
   intervalId:any;
@@ -59,6 +59,13 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.viewOnly = true
     }
 
+  }
+
+  ngAfterViewChecked() {
+    if(this.mode == 'edit' && this.projectId) {
+      this.formMarkTouched();
+      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    }
   }
 
 
@@ -250,5 +257,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.saveProjectFunc(false);
     }
 
+  }
+
+  formMarkTouched() {
+    this.formLib?.myForm.markAllAsTouched()
+    this.formLib?.subform?.myForm.markAllAsTouched()
   }
 }

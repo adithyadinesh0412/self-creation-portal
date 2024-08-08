@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
@@ -33,7 +33,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sub-tasks-resources.component.html',
   styleUrl: './sub-tasks-resources.component.scss'
 })
-export class SubTasksResourcesComponent implements OnInit,OnDestroy{
+export class SubTasksResourcesComponent implements OnInit,OnDestroy, AfterViewChecked{
   myForm: FormGroup = this.fb.group({});
   resources:any;
   taskData : any[] = [];
@@ -101,6 +101,12 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
       })
     );
+  }
+
+  ngAfterViewChecked(): void {
+    if(this.projectId && this.mode == 'edit') {
+      this.myForm.markAllAsTouched()
+    }
   }
 
 

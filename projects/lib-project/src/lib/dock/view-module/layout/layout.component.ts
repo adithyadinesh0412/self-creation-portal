@@ -98,6 +98,8 @@ export class LayoutComponent {
                     this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
                       this.libProjectService.projectData = {};
                       this.router.navigate([SUBMITTED_FOR_REVIEW]);
+                    },(error:any)=> {
+                      console.log(error)
                     })
                   }
                 })
@@ -117,5 +119,10 @@ export class LayoutComponent {
       default:
             break;
     }
+  }
+
+  navChangeEvent(data:any) {
+    console.log(data)
+    console.log(this.libProjectService.validForm);
   }
 }
