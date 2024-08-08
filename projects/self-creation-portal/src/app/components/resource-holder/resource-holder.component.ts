@@ -62,75 +62,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   buttonsCSS : any;
   activeRole:any;
 
-  reviewList : any = [
-    {
-      "id": 3,
-      "title": "review",
-      "type": "projects",
-      "status": "SUBMITTED",
-      "submitted_on": null,
-      "last_reviewed_on": null,
-      "notes": "hey hello",
-      "review_status": null,
-      "creator": "yodi test",
-      "organization": {
-        "id": 24,
-        "name": "Shikshalokam",
-        "code": "sl"
-      }
-    },
-      {
-            "id": 4,
-            "title": "sample project",
-            "type": "projects",
-            "status": "SUBMITTED",
-            "submitted_on": null,
-            "last_reviewed_on": null,
-            "notes": "hey hello",
-            "review_status": null,
-            "creator": "yodi test",
-            "organization": {
-              "id": 24,
-              "name": "Shikshalokam",
-              "code": "sl"
-            }
-      },
-      {
-        "id": 5,
-        "title": "upforreview",
-        "type": "projects",
-        "status": "SUBMITTED",
-        "submitted_on": null,
-        "last_reviewed_on": null,
-        "notes": "hey hello",
-        "review_status": null,
-        "creator": "yodi test",
-        "organization": {
-          "id": 24,
-          "name": "Shikshalokam",
-          "code": "sl"
-        },
-      },
-      {
-            "id": 158,
-            "title": "Untitled project",
-            "type": "projects",
-            "status": "IN_REVIEW",
-            "submitted_on": null,
-            "last_reviewed_on": null,
-            "created_at": "2024-07-11T10:44:09.000Z",
-            "notes": "hey hello",
-            "review_status": "INPROGRESS",
-            "creator": "yodi test",
-            "organization": {
-              "id": 24,
-              "name": "Tunerlabs",
-              "code": "tl",
-              "description": "Tunerlabs"
-            }
-      }
-  ]
-     
   constructor(
     private route: ActivatedRoute, 
     private formService: FormService, 
@@ -215,31 +146,32 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
 
   getList() {
-    this.isDataLoaded = false;
-    if((this.pageStatus === 'drafts' ) || (this.pageStatus === 'submitted_for_review')) {
+    if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review') {
       this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
-        const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
-        this.lists = this.addActionButtons(result.data)
-        this.filters.filteredLists = this.lists;
-        this.pagination.totalCount = result.count;
-        if (this.lists.length === 0) {
-          this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
-          if (this.pagination.currentPage > 0) {
-            this.pagination.currentPage -= 1;
-          }
-        }
-        this.filters.changeReqCount = result.changes_requested_count;
-        this.isDataLoaded = true;
+        this.handleResponse(response);
+      });
+    } else if (this.pageStatus === 'up_for_review') {
+      this.resourceService.getUpForReviewList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
+        this.handleResponse(response);
       });
     }
-    else if(this.pageStatus === 'up_for_review') {
-      const result = this.reviewList;
-      this.lists = this.addActionButtons(result)
-      this.filters.filteredLists = this.lists;
-      this.filters.inprogressCount = this.reviewList.filter((item : any) => item.review_status === 'INPROGRESS').length;
-      this.pagination.totalCount = result.length;  
-      this.isDataLoaded = true;
+  }
+  
+  handleResponse(response: any) {
+    this.isDataLoaded = false;
+    const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
+    this.lists = this.addActionButtons(result.data);
+    this.filters.filteredLists = this.lists;
+    this.pagination.totalCount = result.count;
+    if (this.lists.length === 0) {
+      this.noResultMessage = this.filters.search ? "NO_RESULT_FOUND" : this.noResultFound;
+      if (this.pagination.currentPage > 0) {
+        this.pagination.currentPage -= 1;
+      }
     }
+    this.filters.changeReqCount = result.changes_requested_count;
+    this.filters.inprogressCount = result.in_progress_count;
+    this.isDataLoaded = true;
   }
 
   addActionButtons(cardItems: any): any {
@@ -352,20 +284,26 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
    }
 
   filterButtonClickEvent(event : { label: string }) {
-    this.filters.activeFilterButton = event.label;
-    switch(event.label) {
-      case 'CHANGES_REQUIRED':
-        this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
-        if(this.filters.filteredLists.length === 0) {
-          this.noResultMessage = "NO_CHANGE_REQUIRED"
-        }
-        break;
-      case 'INPROGRESS':
-        this.filters.filteredLists = this.reviewList.filter((item: any) => item.review_status === 'INPROGRESS');
-        if(this.filters.filteredLists.length === 0) {
-          this.noResultMessage = "NO_INPROGRESS_REVIEW"
-        }
-        break;
+    if(this.filters.activeFilterButton === event.label) {
+      this.filters.activeFilterButton = '';
+      this.filters.filteredLists = this.lists;
+      this.noResultMessage = this.noResultFound;
+    } else {
+      this.filters.activeFilterButton = event.label;
+      switch(event.label) {
+        case 'CHANGES_REQUIRED':
+          this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
+          if(this.filters.filteredLists.length === 0) {
+            this.noResultMessage = "NO_CHANGE_REQUIRED"
+          }
+          break;
+        case 'INPROGRESS':
+          this.filters.filteredLists = this.lists.filter((item: any) => item.review_status === 'INPROGRESS');
+          if(this.filters.filteredLists.length === 0) {
+            this.noResultMessage = "NO_INPROGRESS_REVIEW"
+          }
+          break;
+      }
     }
   }
 
@@ -377,8 +315,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       let value = cardItem[field.name] || '';
       if (field.name.includes('organization')) {
         value = cardItem.organization ? cardItem.organization.name : '';
-      } else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z?$/.test(value)) { 
-        value = this.datePipe.transform(value, 'dd/MM/yyyy');
+      } else if (typeof value === 'string' && this.commonService.isISODate(value)) { 
+        value = this.datePipe.transform(value, 'dd/MM/yyyy'); 
       }
       return {
         label: field.label,
