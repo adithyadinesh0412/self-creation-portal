@@ -6,7 +6,7 @@
           <span class="entry">
             <mat-icon>{{ item.icon }}</mat-icon>
             <span>{{ item.label | translate }}</span>
-            <mat-icon class="text-warning error-icon" *ngIf="item.isTabNotValid">info</mat-icon>
+            <mat-icon class="text-warning error-icon" *ngIf="tabValidation && tabValidation[item.page] == 'INVALID'">info</mat-icon>
           </span>
         </a>
       }

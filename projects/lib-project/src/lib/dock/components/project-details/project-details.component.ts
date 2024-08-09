@@ -6,9 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogPopupComponent, FormService } from 'lib-shared-modules';
-import { from, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-
 @Component({
   selector: 'lib-project-details',
   standalone: true,
@@ -16,7 +13,7 @@ import { switchMap, map } from 'rxjs/operators';
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
-export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked {
+export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked{
   dynamicFormData: any;
   projectId: string | number = '';
   intervalId:any;
@@ -43,7 +40,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.startAutoSaving();
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
-      this.subscription.add( // save draft functionality to save form.
+      this.subscription.add(
         this.libProjectService.isProjectSave.subscribe(
           (isProjectSave: boolean) => {
             if (isProjectSave && this.router.url.includes('project-details')) {
@@ -57,6 +54,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           (reviewValidation: boolean) => {
             if(reviewValidation) {
               this.formMarkTouched();
+              this.libProjectService.triggerSendForReview();
             }
           }
         )
@@ -65,10 +63,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
       this.viewOnly = true
       this.libProjectService.projectData = {};
-      this.getFormWithEntitiesAndMap();
+      this.getProjectDetailsForViewOnly()
     }
   }
-
   ngAfterViewChecked() {
     if(this.mode == 'edit' && this.projectId) {
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
@@ -78,35 +75,76 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
     }
   }
-
+ getProjectDetailsForViewOnly(){
+  this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
+    if (data) {
+      this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
+        this.subscription.add(
+          this.route.queryParams.subscribe((params: any) => {
+            if (params.projectId) {
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                      })
+                  );
+                }
+            }
+          })
+        );
+    }
+  })
+ }
   getFormWithEntitiesAndMap(){
-    this.getFormDataAndSubscribe().subscribe((data: any) => {
-      if (this.projectId) {
-        this.handleProjectData(data.controls);
-      } else {
-        this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+    this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
+      if (data) {
+        this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
+        this.subscription.add(
+          this.route.queryParams.subscribe((params: any) => {
+            this.projectId = params.projectId;
+            this.libProjectService.projectData.id = params.projectId;
+            if (params.projectId) {
+              if (params.mode === 'edit') {
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                        this.libProjectService.upDateProjectTitle();
+                      })
+                  );
+                }
+              }else{
+                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                } else {
+                  this.subscription.add(
+                    this.libProjectService
+                      .readProject(this.projectId)
+                      .subscribe((res: any) => {
+                        this.libProjectService.setProjectData(res.result);
+                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                      })
+                  );
+                }
+              }
+            } else {
+              this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+            }
+          })
+        );
       }
     });
   }
-
-  getFormDataAndSubscribe() {
-    return from(this.formService.getFormWithEntities('PROJECT_DETAILS')).pipe(
-      switchMap((data: any) => {
-        if (data) {
-          this.formDataForTitle = data.controls.find((item: any) => item.name === 'title');
-          return this.route.queryParams.pipe(
-            map((params: any) => {
-              this.projectId = params.projectId;
-              this.libProjectService.projectData.id = params.projectId;
-              return data; // Return data directly
-            })
-          );
-        } else {
-          return of(null); // Return null or empty observable if data is not present
-        }
-      })
-    )};
-
   readProjectDeatilsAndMap(formControls:any,res: any) {
     formControls.forEach((element: any) => {
       if (Array.isArray(res[element.name])) {
@@ -131,29 +169,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
+      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
   }
-
-  handleProjectData(controls: any, updateTitle: boolean = true) {
-    if (Object.keys(this.libProjectService.projectData).length > 1) {
-      this.readProjectDeatilsAndMap(controls, this.libProjectService.projectData);
-    } else {
-      this.subscription.add(
-        this.libProjectService
-          .readProject(this.projectId)
-          .subscribe((res: any) => {
-            this.libProjectService.setProjectData(res.result);
-            this.readProjectDeatilsAndMap(controls, res.result);
-            if (updateTitle) {
-              this.libProjectService.upDateProjectTitle();
-            }
-          })
-      );
-    }
-  }
-
   startAutoSaving() {
     this.intervalId = setInterval(() => {
       if(!this.projectId) {
@@ -163,7 +182,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
     }, 30000);
   }
-
   createProject(payload?:any) { // title should be send from calling methods only, due to title can be filled before project creation
       this.libProjectService
       .createOrUpdateProject(payload)
@@ -181,11 +199,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.libProjectService.projectData.id = res.result.id;
       })
   }
-
   saveForm() {
     if (this.libProjectService.projectData.title) {
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-
       if (this.projectId) {
         this.libProjectService.updateProjectDraft(this.projectId).subscribe();
       }
@@ -203,7 +219,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           exitButton: 'CONTINUE',
         },
       });
-
       return dialogRef
         .afterClosed()
         .toPromise()
@@ -227,9 +242,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           }
         });
     }
-
   }
-
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (!this.isEvent(data)) {
@@ -240,15 +253,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
   }
-
-
   isEvent(data:any) {
     return typeof data === 'object' && data !== null &&
            'type' in data && 'target' in data &&
            typeof data.preventDefault === 'function' &&
            typeof data.stopPropagation === 'function';
   };
-
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     this.subscription.unsubscribe();
@@ -259,12 +269,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
       if(this.projectId) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+        this.libProjectService.saveProjectFunc(false);
       }
-      this.libProjectService.saveProjectFunc(false);
+      else {
+        this.libProjectService.saveProjectFunc(false);
+      }
+      this.libProjectService.checkSendForReviewValidation(false);
     }
-
   }
-
   formMarkTouched() {
     this.formLib?.myForm.markAllAsTouched()
     this.formLib?.subform?.myForm.markAllAsTouched()
