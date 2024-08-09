@@ -15,7 +15,7 @@ export class LayoutComponent {
   selctedCardItem : any;
   headerData:any
   sidenavData:any
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,  private dialog: MatDialog) {
   }
   ngOnInit(){
     this.libProjectService.validForm={
