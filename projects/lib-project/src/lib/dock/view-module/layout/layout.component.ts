@@ -14,16 +14,18 @@ export class LayoutComponent {
   subHeader : any;
   selctedCardItem : any;
   headerData:any
-  sidenavData:any
+  sidenavData:any;
+  tabValidation:any;
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,) {
   }
   ngOnInit(){
-    this.libProjectService.validForm={
-      projectDetails: "INVALID",
-      tasks:"INVALID",
-      subTasks:"VALID"
+    this.tabValidation={
+      projectDetails: "VALID",
+      tasks:"VALID",
+      subTasks:"VALID",
+      certificates:'VALID'
     }
-    this. setConfig()
+    this.setConfig()
     this.getProjectdata()
     this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.sidenavData= data?.sidenavData.sidenav
@@ -79,7 +81,7 @@ export class LayoutComponent {
       }
       case "SEND_FOR_REVIEW":{
         this.libProjectService.checkSendForReviewValidation(true);
-        this.libProjectService.triggerSendForReview()
+        this.tabValidation = this.libProjectService.validForm;
         break;
       }
       default:
@@ -89,6 +91,5 @@ export class LayoutComponent {
 
   navChangeEvent(data:any) {
     console.log(data)
-    console.log(this.libProjectService.validForm);
   }
 }

@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 export class SideNavbarComponent implements OnInit{
   @Input() sidenavData : any[] = [];
   @Output() navChange = new EventEmitter<String>();
+  @Input() tabValidation:any;
 
 
   constructor(private formService:FormService) {
@@ -25,9 +26,6 @@ export class SideNavbarComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.formService.getPermissions().subscribe((res:any) => {
-      this.sidenavData = this.formService.checkPermissions(this.sidenavData,res.result)
-    })
   }
 
   currentTab(data:any) {

@@ -23,7 +23,8 @@ export class LibProjectService {
   validForm={
     projectDetails: "INVALID",
     tasks:"INVALID",
-    subTasks:"VALID"
+    subTasks:"VALID",
+    certificates:"VALID"
   }
   viewOnly:boolean= false;
   mode:any="edit"
