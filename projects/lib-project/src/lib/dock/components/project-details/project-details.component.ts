@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
@@ -16,7 +16,7 @@ import { switchMap, map } from 'rxjs/operators';
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
-export class ProjectDetailsComponent implements OnDestroy, OnInit {
+export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked {
   dynamicFormData: any;
   projectId: string | number = '';
   intervalId:any;
@@ -43,11 +43,20 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.startAutoSaving();
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
-      this.subscription.add(
+      this.subscription.add( // save draft functionality to save form.
         this.libProjectService.isProjectSave.subscribe(
           (isProjectSave: boolean) => {
             if (isProjectSave && this.router.url.includes('project-details')) {
               this.saveForm();
+            }
+          }
+        )
+      );
+      this.subscription.add( // Check validation before sending for review.
+        this.libProjectService.isSendForReviewValidation.subscribe(
+          (reviewValidation: boolean) => {
+            if(reviewValidation) {
+              this.formMarkTouched();
             }
           }
         )
@@ -57,6 +66,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
+    }
+  }
+
+  ngAfterViewChecked() {
+    if(this.mode == 'edit' && this.projectId) {
+      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      if(this.libProjectService.projectData.tasks){
+        const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
+        this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
+      }
     }
   }
 
@@ -112,7 +131,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
+      const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
       this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
     }
   }
@@ -240,12 +259,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit {
       }
       if(this.projectId) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-        this.libProjectService.saveProjectFunc(false);
       }
-      else {
-        this.libProjectService.saveProjectFunc(false);
-      }
+      this.libProjectService.saveProjectFunc(false);
     }
-  
+
+  }
+
+  formMarkTouched() {
+    this.formLib?.myForm.markAllAsTouched()
+    this.formLib?.subform?.myForm.markAllAsTouched()
   }
 }

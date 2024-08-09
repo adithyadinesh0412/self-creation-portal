@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService } from 'lib-shared-modules';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -84,7 +84,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === 'edit'){
                 this.startAutoSaving();
               }
-             
+
             }
             else {
               this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
@@ -149,6 +149,19 @@ export class TasksComponent implements OnInit, OnDestroy {
           this.submit();
         }
       })
+    );
+    this.subscription.add( // Check validation before sending for review.
+      this.libProjectService.isSendForReviewValidation.subscribe(
+        (reviewValidation: boolean) => {
+          if(reviewValidation) {
+            if(this.mode == 'edit' && this.projectId) {
+              this.tasksForm.markAllAsTouched();
+              this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+              console.log(this.libProjectService.validForm)
+            }
+          }
+        }
+      )
     );
     this.saveTasks()
     this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"

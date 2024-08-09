@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LibProjectService } from '../../../lib-project.service'
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -84,17 +84,31 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           }
 
           if (params.mode === "edit") {
-             this.subscription.add(
+            this.subscription.add(
             this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
               if(isProjectSave && this.router.url.includes('sub-tasks')) {
                 this.submit();
               }
-            })
+            }));
+            this.subscription.add( // Check validation before sending for review.
+            this.libProjectService.isSendForReviewValidation.subscribe(
+              (reviewValidation: boolean) => {
+                if(reviewValidation) {
+                  if(this.mode == 'edit' && this.projectId) {
+                    if(this.projectId && this.mode == 'edit') {
+                      this.myForm.markAllAsTouched()
+                    }
+                    this.libProjectService.validForm.subTasks =  this.subtasks?.status? this.subtasks?.status: "INVALID"
+                    console.log(this.libProjectService.validForm)
+                  }
+                }
+              }
+            )
           );
-            }
-            if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
-              this.viewOnly = true
-            }
+          }
+          if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
+            this.viewOnly = true
+          }
         }else{
           this.createSubTaskForm()
         }
@@ -103,6 +117,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     );
   }
 
+  get subtasks() {
+    return this.subtask.get('subtasks') as FormArray;
+  }
 
   createSubTaskForm() {
     const getButtonStates = (taskDescriptionLength: number) => {

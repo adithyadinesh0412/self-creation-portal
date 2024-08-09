@@ -15,12 +15,13 @@ export class LayoutComponent {
   selctedCardItem : any;
   headerData:any
   sidenavData:any
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private dialog : MatDialog,private router:Router,) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,) {
   }
   ngOnInit(){
     this.libProjectService.validForm={
       projectDetails: "INVALID",
-      tasks:"INVALID"
+      tasks:"INVALID",
+      subTasks:"VALID"
     }
     this. setConfig()
     this.getProjectdata()
@@ -77,42 +78,9 @@ export class LayoutComponent {
         break;
       }
       case "SEND_FOR_REVIEW":{
-        if(this.libProjectService.projectConfig.show_reviewer_list){
-          this.libProjectService.getReviewerData().subscribe((list:any) =>{
-            const dialogRef = this.dialog.open(ReviewModelComponent, {
-              disableClose: true,
-              data : {
-                header: "SEND_FOR_REVIEW",
-                reviewdata: list.result.data,
-                sendForReview: "SEND_FOR_REVIEW",
-                note_length: this.libProjectService.instanceConfig.note_length ? this.libProjectService.instanceConfig.note_length : 200
-              }
-            });
-            dialogRef.afterClosed().subscribe(result => {
-              if(result.sendForReview == "SEND_FOR_REVIEW"){
-                this.libProjectService
-                .createOrUpdateProject(this.libProjectService.projectData,this.libProjectService.projectData.id).subscribe((res) => {
-                this.route.queryParams.subscribe((params: any) => {
-                  if (params.projectId) {
-                    const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
-                    this.libProjectService.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
-                      this.libProjectService.projectData = {};
-                      this.router.navigate([SUBMITTED_FOR_REVIEW]);
-                    })
-                  }
-                })
-              })
-              }
-              return true;
-            });
-          })
-          break;
-        }else{
-          this.libProjectService.sendForReview({},this.libProjectService.projectData.id).subscribe((res:any) =>{
-            this.router.navigate([SUBMITTED_FOR_REVIEW]);
-          })
-          break;
-        }
+        this.libProjectService.checkSendForReviewValidation(true);
+        this.libProjectService.triggerSendForReview()
+        break;
       }
       case "ACCEPT":{
         console.log(buttonTitle)
@@ -165,7 +133,12 @@ export class LayoutComponent {
         break;
       }
       default:
-            break;
+        break;
     }
+  }
+
+  navChangeEvent(data:any) {
+    console.log(data)
+    console.log(this.libProjectService.validForm);
   }
 }
