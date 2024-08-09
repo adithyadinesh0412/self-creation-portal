@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { FormService, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS } from 'lib-shared-modules';
+import { DialogPopupComponent, FormService, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS } from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -113,6 +113,56 @@ export class LayoutComponent {
           })
           break;
         }
+      }
+      case "ACCEPT":{
+        console.log(buttonTitle)
+        
+        const dialogRef = this.dialog.open(DialogPopupComponent, {
+          disableClose: true,
+          data: {
+            header: "Accept Resource?",
+            content: "Accepting this resource will publish it. Do you want to proceed?",
+            cancelButton: "Cancel",
+            exitButton: "Accept"
+          }
+        });
+        dialogRef.afterClosed().toPromise().then(result => {
+          if (result.data === "NO") {
+            return true;
+          } else if (result.data === "YES") {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        break;
+      }
+      case "REJECT":{
+        console.log(buttonTitle)
+        const dialogRef = this.dialog.open(DialogPopupComponent, {
+          disableClose: true,
+          data: {
+            header: "Reject Resource?",
+            content: " Rejecting this resource will prevent it from being published. Do you want to proceed?",
+            cancelButton: "Cancel",
+            exitButton: "Reject"
+          }
+        });
+    
+        dialogRef.afterClosed().toPromise().then(result => {
+          if (result.data === "NO") {
+            return true;
+          } else if (result.data === "YES") {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        break;
+      }
+      case "REQUEST_CHANGES":{
+        console.log(buttonTitle)
+        break;
       }
       default:
             break;
