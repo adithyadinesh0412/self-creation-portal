@@ -35,4 +35,10 @@
     fill: $primary !important;
 }
 
+::ng-deep .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked{
+    background-color: $primary !important;
+}
 
+::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
+    color: $primary !important;
+}
