@@ -23,7 +23,7 @@
     "@angular/router": "^17.3.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
-    "authentication_frontend_library": "0.0.59",
+    "authentication_frontend_library": "0.0.60",
     "dynamic-form-ramkumar": "0.0.37",
     "ng-otp-input": "^1.9.3",
     "ngx-quill": "^26.0.5",

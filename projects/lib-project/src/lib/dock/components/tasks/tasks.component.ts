@@ -157,7 +157,7 @@ export class TasksComponent implements OnInit, OnDestroy {
             if(this.mode == 'edit' && this.projectId) {
               this.tasksForm.markAllAsTouched();
               this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-              console.log(this.libProjectService.validForm)
+              this.libProjectService.triggerSendForReview();
             }
           }
         }
@@ -255,6 +255,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
       this.saveTasks()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      this.libProjectService.checkSendForReviewValidation(false);
     }
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {

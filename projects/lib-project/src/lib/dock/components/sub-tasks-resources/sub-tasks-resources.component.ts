@@ -94,13 +94,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.libProjectService.isSendForReviewValidation.subscribe(
               (reviewValidation: boolean) => {
                 if(reviewValidation) {
-                  if(this.mode == 'edit' && this.projectId) {
-                    if(this.projectId && this.mode == 'edit') {
-                      this.myForm.markAllAsTouched()
-                    }
+                    this.myForm.markAllAsTouched()
                     this.libProjectService.validForm.subTasks =  this.subtasks?.status? this.subtasks?.status: "INVALID"
-                    console.log(this.libProjectService.validForm)
-                  }
+                    this.libProjectService.triggerSendForReview();
                 }
               }
             )
@@ -254,6 +250,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         this.autoSaveSubscription.unsubscribe();
       }
     this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+    this.libProjectService.checkSendForReviewValidation(false);
     }
     this.subscription.unsubscribe();
   }

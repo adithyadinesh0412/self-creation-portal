@@ -42,6 +42,13 @@ export class AppMainViewComponent {
   getnavData(){
      this.formService.getForm(SIDE_NAV_DATA).subscribe((form) =>{
       this.sidenavData = form?.result?.data?.fields?.controls
+      let userRoles:any = localStorage.getItem('user_roles')
+      userRoles = JSON.parse(userRoles);
+      this.sidenavData = this.sidenavData.filter((item:any) =>
+        item.roles.some((role:any) =>
+            userRoles.some((innerRole:any) => innerRole.title === role)
+        )
+    );
     })
   }
 
