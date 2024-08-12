@@ -81,6 +81,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
         this.subscription.add(
           this.route.queryParams.subscribe((params: any) => {
+            this.projectId = params.projectId;
+            this.libProjectService.projectData.id = params.projectId;
             if (params.projectId) {
                 if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                   this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
