@@ -29,12 +29,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private dialog: MatDialog,
     private formService: FormService
   ) {
+    this.startAutoSaving()
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : ""
       })
     )
-    this.startAutoSaving()
    }
   ngOnInit() {
     if(this.mode === 'edit' || this.mode === ""){
@@ -180,7 +180,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
-        this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
+        if(this.mode === 'edit') {
+          this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
+        }
       }
     }, 30000);
   }
