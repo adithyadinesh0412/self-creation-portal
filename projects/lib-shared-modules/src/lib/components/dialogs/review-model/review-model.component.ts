@@ -46,6 +46,7 @@ export class ReviewModelComponent {
     return {
             sendForReview: sendForReview,
             selectedValues : selectedValues ,
+            reviewerNote:this.reviewerNote
     }
 }
 

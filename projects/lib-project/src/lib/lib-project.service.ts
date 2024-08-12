@@ -81,7 +81,7 @@ export class LibProjectService {
           dialogRef.afterClosed().subscribe((result:any) => {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
               this.createOrUpdateProject(this.projectData,this.projectData.id).subscribe((res) => {
-              const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
+              const reviewer_ids = (result.selectedValues.length === list.result.data.length)  ? (result.reviewerNote  ? { "notes": result.reviewerNote }   : {})  : {"reviewer_ids": result.selectedValues.map((item: any) => item.id), ...(result.reviewerNote && { "notes": result.reviewerNote }) };
               this.sendForReview(reviewer_ids,this.projectData.id).subscribe((res:any) =>{
                 let data = {
                   message : res.message,
