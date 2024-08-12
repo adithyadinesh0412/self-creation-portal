@@ -244,13 +244,12 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    if(this.mode === 'edit' && Object.keys(this.libProjectService.projectData).length > 0){
+    if(this.mode === 'edit' && this.libProjectService.projectData.id){
      this.saveSubtask();
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();
       }
     this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-    this.libProjectService.checkSendForReviewValidation(false);
     }
     this.subscription.unsubscribe();
   }

@@ -81,16 +81,15 @@ export class LibProjectService {
           dialogRef.afterClosed().subscribe((result:any) => {
             if(result.sendForReview == "SEND_FOR_REVIEW"){
               this.createOrUpdateProject(this.projectData,this.projectData.id).subscribe((res) => {
-              this.route.queryParams.subscribe((params: any) => {
-                if (params.projectId) {
-                  const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
-                  this.sendForReview(reviewer_ids,params.projectId).subscribe((res:any) =>{
-                    this.projectData = {};
-                    this.router.navigate([SUBMITTED_FOR_REVIEW]);
-                  },(error:any)=> {
-                    console.log(error)
-                  })
+              const reviewer_ids = (result.selectedValues.length === list.result.data.length)? {} : { "reviewer_ids" : result.selectedValues.map((item:any) => item.id) } ;
+              this.sendForReview(reviewer_ids,this.projectData.id).subscribe((res:any) =>{
+                let data = {
+                  message : res.message,
+                  class : 'success'
                 }
+                this.toastService.openSnackBar(data)
+                this.projectData = {};
+                this.router.navigate([SUBMITTED_FOR_REVIEW]);
               })
             })
             }
@@ -106,6 +105,7 @@ export class LibProjectService {
     else {
       this.openSnackBar("Fill all the mandatory fields.","error")
     }
+    this.checkSendForReviewValidation(false);
   }
 
   createOrUpdateProject(projectData?:any,projectId?:string|number) {
@@ -202,17 +202,7 @@ export class LibProjectService {
        payload:reviewers
     };
 
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        let data = {
-          message : result.message,
-          class : 'success'
-        }
-        this.toastService.openSnackBar(data)
-        return result;
-      })
-    )
-
+    return this.httpService.post(config.url, config.payload)
   }
 
   startAutoSave(projectID:string|number) {
