@@ -37,7 +37,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
    }
   ngOnInit() {
     if(this.mode === 'edit' || this.mode === ""){
-      this.startAutoSaving();
+      this.subscription.add(
+        this.startAutoSaving()
+      )
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
       this.subscription.add(
@@ -75,31 +77,34 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
     }
   }
- getProjectDetailsForViewOnly(){
-  this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
-    if (data) {
-      this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
-        this.subscription.add(
-          this.route.queryParams.subscribe((params: any) => {
-            if (params.projectId) {
-                if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
-                  this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
-                } else {
-                  this.subscription.add(
-                    this.libProjectService
-                      .readProject(this.projectId)
-                      .subscribe((res: any) => {
-                        this.libProjectService.setProjectData(res.result);
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
-                      })
-                  );
-                }
-            }
-          })
-        );
-    }
-  })
- }
+  getProjectDetailsForViewOnly(){
+    this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
+      if (data) {
+        this.formDataForTitle = data.controls.find((item:any) => item.name === 'title');
+          this.subscription.add(
+            this.route.queryParams.subscribe((params: any) => {
+              this.projectId = params.projectId;
+              this.libProjectService.projectData.id = params.projectId;
+              if (params.projectId) {
+                  if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
+                    this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+                  } else {
+                    this.subscription.add(
+                      this.libProjectService
+                        .readProject(this.projectId)
+                        .subscribe((res: any) => {
+                          this.libProjectService.setProjectData(res.result);
+                          this.readProjectDeatilsAndMap(data.controls,res.result);
+                        })
+                    );
+                  }
+              }
+            })
+          );
+      }
+    })
+  }
+
   getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
@@ -261,21 +266,17 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   };
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
-    this.subscription.unsubscribe();
     if(this.mode === 'edit'){
       if (this.intervalId) {
         clearInterval(this.intervalId);
         this.intervalId = null;
       }
-      if(this.projectId) {
+      if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-        this.libProjectService.saveProjectFunc(false);
       }
-      else {
-        this.libProjectService.saveProjectFunc(false);
-      }
-      this.libProjectService.checkSendForReviewValidation(false);
+      this.libProjectService.saveProjectFunc(false);
     }
+    this.subscription.unsubscribe();
   }
   formMarkTouched() {
     this.formLib?.myForm.markAllAsTouched()

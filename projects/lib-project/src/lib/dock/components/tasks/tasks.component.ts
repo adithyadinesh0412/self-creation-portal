@@ -251,11 +251,10 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    if(this.mode === 'edit'){
+    if(this.mode === 'edit' && this.libProjectService.projectData.id){
       this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
       this.saveTasks()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
-      this.libProjectService.checkSendForReviewValidation(false);
     }
     this.subscription.unsubscribe();
     if (this.autoSaveSubscription) {
