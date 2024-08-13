@@ -53,7 +53,17 @@ export class CommonService {
 
   clearQueryParams() {
     const queryParams = this.route.snapshot.queryParams;
-    if (Object.keys(queryParams).length > 0) {
+    const currentPath = this.router.url.split('?')[0];
+    const sidenavPaths = [
+      '/home/drafts',
+      '/home/up-for-review',
+      '/home/submitted-for-review'
+    ];
+    // Check if the current path matches any of the tab paths, if matches then clear params and redirect to route
+    const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
+  
+    if ((currentPath.includes('solution') && issidenavPaths && Object.keys(queryParams).length > 0) || 
+      (!currentPath.includes('solution') && Object.keys(queryParams).length > 0)) {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {}
