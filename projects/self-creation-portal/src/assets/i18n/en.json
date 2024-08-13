@@ -127,6 +127,7 @@
     "LAST_REVIWED_ON":"Last reviewed on",
     "REQUEST_CHANGES":"Request changes",
     "REJECT":"Reject",
-    "ACCEPT":"Accept"
+    "ACCEPT":"Accept",
+    "ADD_REVIEW_COMMENTS":"Add review comments"
     
 }
