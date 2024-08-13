@@ -29,6 +29,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private dialog: MatDialog,
     private formService: FormService
   ) {
+    this.startAutoSaving()
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : ""
@@ -37,9 +38,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
    }
   ngOnInit() {
     if(this.mode === 'edit' || this.mode === ""){
-      this.subscription.add(
-        this.startAutoSaving()
-      )
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
       this.subscription.add(
@@ -84,7 +82,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.subscription.add(
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
-              this.libProjectService.projectData.id = params.projectId;
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                     this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
@@ -183,7 +180,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
-        this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
+        if(this.mode === 'edit') {
+          this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
+        }
       }
     }, 30000);
   }
@@ -266,11 +265,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   };
   ngOnDestroy() {
     this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
     if(this.mode === 'edit'){
-      if (this.intervalId) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-      }
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }

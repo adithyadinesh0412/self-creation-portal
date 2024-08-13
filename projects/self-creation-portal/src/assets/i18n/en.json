@@ -128,6 +128,7 @@
     "REQUEST_CHANGES":"Request changes",
     "REJECT":"Reject",
     "ACCEPT":"Accept",
-    "RESUME_EDITING":"Resume editing"
+    "RESUME_EDITING":"Resume editing",
+    "ADD_REVIEW_COMMENTS":"Add review comments"
     
 }

@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 
@@ -13,7 +14,7 @@ import 'quill/dist/quill.snow.css';
   selector: 'lib-comments-box',
   standalone: true,
   imports: [CommonModule,MatIconModule,MatButtonModule,FormsModule,
-    QuillEditorComponent],
+    QuillEditorComponent,TranslateModule],
   templateUrl: './comments-box.component.html',
   styleUrl: './comments-box.component.scss'
 })
