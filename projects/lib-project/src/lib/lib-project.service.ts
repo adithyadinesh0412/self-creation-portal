@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpProviderService, ReviewModelComponent, SUBMITTED_FOR_REVIEW, ToastService } from 'lib-shared-modules';
+import { HttpProviderService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SUBMITTED_FOR_REVIEW, ToastService, UtilService } from 'lib-shared-modules';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,7 +31,7 @@ export class LibProjectService {
   projectConfig:any
   instanceConfig:any
 
-  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService,private dialog : MatDialog) {
+  constructor(private httpService:HttpProviderService, private Configuration:ConfigService, private route:ActivatedRoute,private router:Router, private _snackBar:MatSnackBar,private toastService:ToastService,private dialog : MatDialog,private utilService:UtilService) {
     this.route.queryParams.subscribe((params: any) => {
       this.mode = params.mode ? params.mode : "edit"
     })
@@ -215,7 +215,7 @@ export class LibProjectService {
 
   updateComment(){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.UPDATE_COMMENT}}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT}}`,
       payload:{}
     };
     return this.httpService.post(config.url, config.payload).pipe(
@@ -227,7 +227,7 @@ export class LibProjectService {
 
   getCommentList(){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.COMMENT_LIST}}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST}}`,
     };
     return this.httpService.get(config.url).pipe(
       map((result: any) => {
@@ -235,5 +235,48 @@ export class LibProjectService {
       })
     );
   }
+
+  approveProject(){
+    let data = {
+      id:this.projectData.id,
+      payload:{}
+    }
+    this.utilService.approveResource(data).subscribe((res:any)=>{
+      this.openSnackBar(res.message,"success")
+      this.router.navigate(['/home'])
+    })
+  }
+
+  startOrResumeReview() {
+    this.utilService.startOrResumeReview(this.projectData.id).subscribe((data) => { })
+    this.router.navigate([PROJECT_DETAILS_PAGE], {
+      queryParams: {
+        projectId: this.projectData.id,
+        mode: 'review'
+      }
+    });
+  }
+
+  rejectProject(){
+    let data={
+      id:this.projectData.id,
+      payload:{}
+    }
+      this.utilService.rejectOrReportedReview(data).subscribe((res:any)=>{
+      this.openSnackBar(res.message,"success")
+      this.router.navigate(['/home'])
+      })
+  }
+
+  sendForRequestChange(){
+    let data = {
+      id : this.projectData.id,
+      payload:{}
+    }
+    this.utilService.updateReview(data).subscribe((data)=>{
+        this.router.navigate(['/home'])
+    })
+  }
+
 
 }
