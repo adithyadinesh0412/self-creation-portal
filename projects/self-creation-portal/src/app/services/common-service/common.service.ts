@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTE_PATHS } from 'lib-shared-modules'
 
 @Injectable({
   providedIn: 'root'
@@ -55,16 +56,15 @@ export class CommonService {
     const queryParams = this.route.snapshot.queryParams;
     const currentPath = this.router.url.split('?')[0];
     const parentRoutes = this.route.parent?.snapshot.url.map(segment => segment.path).join('/') || '';
-    const childRoutes = this.route.routeConfig?.children?.map(route => `${parentRoutes}/${route.path}`) || [];
-    
-    // Filter relevant sidenav paths that match the routes
-    const sidenavPaths = childRoutes.filter(routePath => 
-      ['drafts', 'up-for-review', 'submitted-for-review'].some(sidenav => routePath.includes(sidenav))
-    );
-    
-    const targetPaths = ['solution/project/project-details'].map(path => `${parentRoutes}/${path}`);
-   
-    // Check if the current path matches any of the tab paths, if matches then clear params and redirect to route
+
+    const sidenavPaths = [
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.DRAFTS}`,
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW}`,
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.SUBMITTED_FOR_REVIEW}`
+    ];
+    const targetPaths = [
+      `${parentRoutes}/${ROUTE_PATHS.PROJECT_ROUTES.PROJECT_DETAILS}`
+    ];
     const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
     const istargetpaths = targetPaths.some(target => currentPath.startsWith(target))
  

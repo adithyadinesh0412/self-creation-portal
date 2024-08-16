@@ -11,4 +11,14 @@ export const resourceStatus = {
 export const reviewStatus = {
     NOT_STARTED: 'NOT_STARTED',
     INPROGRESS: 'IN_PROGRESS'
-}
+};
+export const ROUTE_PATHS = {
+    SIDENAV: {
+      DRAFTS: 'drafts',
+      UP_FOR_REVIEW: 'up-for-review',
+      SUBMITTED_FOR_REVIEW: 'submitted-for-review',
+    },
+    PROJECT_ROUTES: {
+      PROJECT_DETAILS: PROJECT_DETAILS_PAGE,
+    }
+};
