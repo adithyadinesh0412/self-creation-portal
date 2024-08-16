@@ -193,7 +193,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
               }
             }
             
-            if(button.status === cardItem.review_status){
+            if((button.status === cardItem.status) || (button.status === cardItem.review_status)){
               button.buttons.forEach((button : any) => {
                 cardItem.actionButton.push(this.buttonsCSS[button]);
               })
@@ -289,7 +289,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.filters.activeFilterButton = event.label;
       switch(event.label) {
         case 'CHANGES_REQUIRED':
-          this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'COMMENTS');
+          this.filters.filteredLists = this.lists.filter((item : any) => item.status === 'COMMENTS');
           if(this.filters.filteredLists.length === 0) {
             this.noResultMessage = "NO_CHANGE_REQUIRED"
           }

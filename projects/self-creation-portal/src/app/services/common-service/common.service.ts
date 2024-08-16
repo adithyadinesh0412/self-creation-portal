@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PROJECT_DETAILS_PAGE } from 'lib-shared-modules';
 
 @Injectable({
   providedIn: 'root'
@@ -57,15 +56,20 @@ export class CommonService {
     const currentPath = this.router.url.split('?')[0];
     const parentRoutes = this.route.parent?.snapshot.url.map(segment => segment.path).join('/') || '';
     const childRoutes = this.route.routeConfig?.children?.map(route => `${parentRoutes}/${route.path}`) || [];
+    
     // Filter relevant sidenav paths that match the routes
     const sidenavPaths = childRoutes.filter(routePath => 
       ['drafts', 'up-for-review', 'submitted-for-review'].some(sidenav => routePath.includes(sidenav))
     );
+    
+    const targetPaths = ['solution/project/project-details'].map(path => `${parentRoutes}/${path}`);
+   
     // Check if the current path matches any of the tab paths, if matches then clear params and redirect to route
     const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
-  
-    if ((currentPath.includes(PROJECT_DETAILS_PAGE) && issidenavPaths && Object.keys(queryParams).length > 0) || 
-      (!currentPath.includes(PROJECT_DETAILS_PAGE) && Object.keys(queryParams).length > 0)) {
+    const istargetpaths = targetPaths.some(target => currentPath.startsWith(target))
+ 
+    if ((istargetpaths && issidenavPaths && Object.keys(queryParams).length > 0) || 
+      (!istargetpaths && Object.keys(queryParams).length > 0)) {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {}

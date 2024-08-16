@@ -8,42 +8,42 @@
                         <div class="chip-container capitalize item-center text-center bg-chipPurple">
                             {{list.type | translate}}
                         </div>
-                        @if(list.review_status === 'NOT_STARTED'){
-                            <div class="chip-container capitalize item-center text-center bg-tertiary">
-                                {{list.review_status | translate}}
+                        @if((list.status === resourceStatus.SUBMITTED) || (list.review_status === reviewStatus.NOT_STARTED)){
+                            <div class="chip-container capitalize item-center text-center bg-tertiary border border-chipBorder text-secondary">
+                                {{( reviewStatus.NOT_STARTED || list.review_status )| translate}}
                             </div>
                         }
-                        @if(list.review_status === 'PUBLISHED'){
+                        @if(list.status === resourceStatus.PUBLISHED){
                             <div class="chip-container capitalize item-center text-center bg-chipPublished text-white">
-                                {{list.review_status | translate}}
+                                {{list.status | translate}}
                             </div>
                         }
-                        @if(list.review_status === 'REJECTED' || list.review_status === 'REJECTED_AND_REPORTED') {
+                        @if(list.status === resourceStatus.REJECTED || list.status === resourceStatus.REJECTED_AND_REPORTED) {
                             <div class="chip-container capitalize item-center text-center bg-chipRejected text-white">
                                 <div class="flex justify-center items-center">
-                                    @if(list.review_status === 'REJECTED') {
+                                    @if(list.status === resourceStatus.REJECTED) {
                                         <mat-icon class="text-sm icon-padding" matPrefix>block</mat-icon>
                                     }
-                                    @if(list.review_status === 'REJECTED_AND_REPORTED') {
+                                    @if(list.status === resourceStatus.REJECTED_AND_REPORTED) {
                                         <mat-icon class="text-sm icon-padding" matPrefix>warning</mat-icon>
                                     }
-                                {{list.review_status | translate}}
+                                {{list.status | translate}}
                                 </div>
                             </div>
                         }
-                        @if(list.review_status === 'COMMENTS'){
+                        @if(list.is_comments === true){
                             <div class="chip-container capitalize item-center text-center bg-chipComment text-black">
                                 <div class="flex justify-center items-center">
                                     <img src="assets/icons/comments-icon.png" alt="" class="mr-2">
-                                    {{list.review_status | translate}}
+                                    {{resourceStatus.COMMENTS | translate}}
                                 </div>
                             </div>
                         }
-                        @if(list.review_status === 'INPROGRESS'){
+                        @if((list.status === resourceStatus.IN_REVIEW) ||(list.review_status === reviewStatus.INPROGRESS)){
                             <div class="chip-container capitalize  item-center text-center bg-chipInprogress text-black">
                                 <div class="inline-flex items-center justify-center">
                                     <img src="assets/icons/inprogress-icon.png" alt="" class="mr-2">
-                                   {{list.review_status | translate}}
+                                   {{(reviewStatus.INPROGRESS || list.review_status) | translate}}
                                 </div>
                             </div>
                         }
