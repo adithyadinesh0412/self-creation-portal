@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService } from 'lib-shared-modules';
+import { DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform } from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -95,15 +95,7 @@ export class LayoutComponent {
         break;
       }
       case "START_REVIEW":{
-        this.subscription.add(
-          this.utilService.startOrResumeReview(this.libProjectService.projectData.id).subscribe((data)=>{})
-        )
-        this.router.navigate([PROJECT_DETAILS_PAGE], {
-          queryParams: {
-            projectId:  this.libProjectService.projectData.id ,
-            mode: 'review'
-          }
-        });
+        this.libProjectService.startOrResumeReview()
         break;
       }
       case "ACCEPT":{
@@ -120,21 +112,8 @@ export class LayoutComponent {
         dialogRef.afterClosed().toPromise().then(result => {
           if (result.data === "CANCEL") {
             return true;
-          } else if (result.data === "ACCEPT") {
-            let data = {
-              id:this.libProjectService.projectData.id
-            }
-            this.subscription.add(
-              this.utilService.approveResource(data).subscribe((res:any)=>{
-                let data = {
-                  message : res.message,
-                  class : 'success'
-                }
-                this.toastService.openSnackBar(data)
-                this.router.navigate(['/home'])
-              })
-            )
-           
+          } else if (result.data === "ACCEPT") { 
+            this.libProjectService.approveProject()
             return true;
           } else {
             return false;
@@ -151,25 +130,7 @@ export class LayoutComponent {
             content: "REJECT_RESOURCES_CONTENT",
             cancelButton: "CANCEL",
             reportContent:true,
-            form:[{
-              "name": "title",
-              "label": "Add a reason",
-              "value": "",
-              "class": "",
-              "type": "text",
-              "placeHolder": "Reason for reporting the content",
-              "position": "floating",
-              "errorMessage": {
-                  "required": "Enter valid reason",
-                  "pattern": "Reason can only include alphanumeric characters with spaces, -, _, &, <>",
-                  "maxLength": "Reason must not exceed 256 characters"
-              },
-              "validators": {
-                  "required": true,
-                  "maxLength": 255,
-                  "pattern": "^(?! )(?!.* {3})[\\p{L}a-zA-Z0-9\\-_ <>&]+$"
-              }
-          }],
+            form:[rejectform],
             exitButton: "REJECT"
           }
         });
@@ -178,20 +139,7 @@ export class LayoutComponent {
           if (result.data === "CANCEL") {
             return true;
           } else if (result.data === "REJECT") {
-            let data={
-              id:this.libProjectService.projectData.id,
-              payload:{}
-            }
-            this.subscription.add(
-              this.utilService.rejectOrReportedReview(data).subscribe((res:any)=>{
-                let data = {
-                  message : res.message,
-                  class : 'success'
-                }
-                this.toastService.openSnackBar(data)
-                this.router.navigate(['/home'])
-              })
-            )
+            this.libProjectService.rejectProject()
             return true;
           } else {
             return false;
@@ -200,15 +148,7 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
-        let data = {
-          id : this.libProjectService.projectData.id,
-          payload:{}
-        }
-        this.subscription.add(
-          this.utilService.updateReview(data).subscribe((data)=>{
-            this.router.navigate(['/home'])
-          })
-        )
+        this.libProjectService.sendForRequestChange()      
         break;
       }
       default:
