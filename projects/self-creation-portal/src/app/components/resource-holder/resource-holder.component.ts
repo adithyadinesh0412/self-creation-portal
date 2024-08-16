@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE, ToastService } from 'lib-shared-modules';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE, ToastService, UtilService } from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceService } from '../../services/resource-service/resource.service';
@@ -70,7 +70,8 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     private router:Router, 
     private dialog : MatDialog,
     private toastService:ToastService,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private utilService:UtilService) {
   }
 
   ngOnInit() {
@@ -260,6 +261,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
          }
          
        case 'START_REVIEW':
+        this.utilService.startOrResumeReview(item.id).subscribe((data)=>{})
          this.router.navigate([PROJECT_DETAILS_PAGE], {
            queryParams: {
              projectId: item.id,

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { DialogPopupComponent, FormService, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS } from 'lib-shared-modules';
+import { DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, UtilService } from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -16,7 +16,7 @@ export class LayoutComponent {
   headerData:any
   sidenavData:any;
   tabValidation:any;
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService) {
   }
   ngOnInit(){
     this.tabValidation={
@@ -84,22 +84,38 @@ export class LayoutComponent {
         this.tabValidation = this.libProjectService.validForm;
         break;
       }
+      case "START_REVIEW":{
+        this.utilService.startOrResumeReview(this.libProjectService.projectData.id).subscribe((data)=>{
+        })
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+          queryParams: {
+            projectId:  this.libProjectService.projectData.id ,
+            mode: 'review'
+          }
+        });
+        break;
+      }
       case "ACCEPT":{
-        console.log(buttonTitle)
-        
         const dialogRef = this.dialog.open(DialogPopupComponent, {
+          autoFocus: false,
           disableClose: true,
           data: {
             header: "Accept Resource?",
             content: "Accepting this resource will publish it. Do you want to proceed?",
-            cancelButton: "Cancel",
-            exitButton: "Accept"
+            cancelButton: "CANCEL",
+            exitButton: "ACCEPT"
           }
         });
         dialogRef.afterClosed().toPromise().then(result => {
-          if (result.data === "NO") {
+          if (result.data === "CANCEL") {
             return true;
-          } else if (result.data === "YES") {
+          } else if (result.data === "ACCEPT") {
+            let data = {
+              id:this.libProjectService.projectData.id
+            }
+            this.utilService.approveResource(data).subscribe((data)=>{
+              this.router.navigate(['/home'])
+            })
             return true;
           } else {
             return false;
@@ -108,21 +124,48 @@ export class LayoutComponent {
         break;
       }
       case "REJECT":{
-        console.log(buttonTitle)
         const dialogRef = this.dialog.open(DialogPopupComponent, {
+          autoFocus: false,
           disableClose: true,
           data: {
             header: "Reject Resource?",
             content: " Rejecting this resource will prevent it from being published. Do you want to proceed?",
-            cancelButton: "Cancel",
-            exitButton: "Reject"
+            cancelButton: "CANCEL",
+            reportContent:true,
+            form:[{
+              "name": "title",
+              "label": "Add a reason",
+              "value": "",
+              "class": "",
+              "type": "text",
+              "placeHolder": "Reason for reporting the content",
+              "position": "floating",
+              "errorMessage": {
+                  "required": "Enter valid reason",
+                  "pattern": "Reason can only include alphanumeric characters with spaces, -, _, &, <>",
+                  "maxLength": "Reason must not exceed 256 characters"
+              },
+              "validators": {
+                  "required": true,
+                  "maxLength": 255,
+                  "pattern": "^(?! )(?!.* {3})[\\p{L}a-zA-Z0-9\\-_ <>&]+$"
+              }
+          }],
+            exitButton: "REJECT"
           }
         });
     
         dialogRef.afterClosed().toPromise().then(result => {
-          if (result.data === "NO") {
+          if (result.data === "CANCEL") {
             return true;
-          } else if (result.data === "YES") {
+          } else if (result.data === "REJECT") {
+            let data={
+              id:this.libProjectService.projectData.id,
+              payload:{}
+            }
+            this.utilService.rejectOrReportedReview(data).subscribe((data)=>{
+              this.router.navigate(['/home'])
+            })
             return true;
           } else {
             return false;
@@ -131,7 +174,6 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
-        console.log(buttonTitle)
         break;
       }
       default:

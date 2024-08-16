@@ -215,7 +215,7 @@ export class LibProjectService {
 
   updateComment(){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.UPDATE_COMMENT}}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT}}`,
       payload:{}
     };
     return this.httpService.post(config.url, config.payload).pipe(
@@ -227,7 +227,7 @@ export class LibProjectService {
 
   getCommentList(){
     const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.COMMENT_LIST}}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST}}`,
     };
     return this.httpService.get(config.url).pipe(
       map((result: any) => {
@@ -235,5 +235,20 @@ export class LibProjectService {
       })
     );
   }
+
+  // approveResource(){
+  //   const config = {
+  //     url : `${this.Configuration.urlConFig.RESOURCE_URLS.APPROVE_PROJECT}/${this.projectData.id}`,
+  //     payload:{
+
+  //       "comment": {
+  //         "comment": "Check spelling",
+  //         "context": "page",
+  //         "page": "draft"
+  //         }}
+  //   };
+  //   return this.httpService.post(config.url, config.payload)
+  // }
+
 
 }
