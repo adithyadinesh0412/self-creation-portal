@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTE_PATHS } from 'lib-shared-modules'
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +54,22 @@ export class CommonService {
 
   clearQueryParams() {
     const queryParams = this.route.snapshot.queryParams;
-    if (Object.keys(queryParams).length > 0) {
+    const currentPath = this.router.url.split('?')[0];
+    const parentRoutes = this.route.parent?.snapshot.url.map(segment => segment.path).join('/') || '';
+
+    const sidenavPaths = [
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.DRAFTS}`,
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW}`,
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.SUBMITTED_FOR_REVIEW}`
+    ];
+    const targetPaths = [
+      `${parentRoutes}/${ROUTE_PATHS.PROJECT_ROUTES.PROJECT_DETAILS}`
+    ];
+    const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
+    const istargetpaths = targetPaths.some(target => currentPath.startsWith(target))
+ 
+    if ((istargetpaths && issidenavPaths && Object.keys(queryParams).length > 0) || 
+      (!istargetpaths && Object.keys(queryParams).length > 0)) {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {}

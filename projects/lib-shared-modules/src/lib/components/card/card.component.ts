@@ -5,6 +5,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { resourceStatus, reviewStatus } from '../../constants/urlConstants';
 @Component({
   selector: 'lib-card',
   standalone: true,
@@ -19,6 +20,9 @@ export class CardComponent {
   @Output() buttonClickEvent = new EventEmitter<{ label: string, item: any }>();
   @Output() infoClickEvent = new EventEmitter<{item: any}>
   @Input() showInfoIcon: boolean = false; 
+
+  resourceStatus = resourceStatus;
+  reviewStatus = reviewStatus;
 
   constructor() {}
 

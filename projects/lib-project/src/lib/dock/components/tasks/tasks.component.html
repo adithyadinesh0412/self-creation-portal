@@ -29,7 +29,7 @@
                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
                                 <mat-label> {{"TASK" | translate}} {{i+1}}</mat-label>
                                 <textarea matInput [formControlName]="tasksData.description.name" (change)="checkValidation()"
-                                    [placeholder]="tasksData.description.placeholder"  [required]="i === 0" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern"></textarea>
+                                    [placeholder]="tasksData.description.placeholder"  [required]="i === 0" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
                             </mat-form-field>
 
                                 <mat-error class="error-container">
@@ -43,13 +43,13 @@
                                 }
                                 </mat-error>
                         </div>
-                        <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary" [ngClass]="{'disable-fields': viewOnly}">
-                            <mat-slide-toggle labelPosition="before" color="primary"
+                        <div class="sm:flex md:flex lg:flex xl:flex gap-2 text-tertiary overlay" [ngClass]="{'disable-fields': viewOnly}">
+                            <mat-slide-toggle (change)="disableSlide($event)"  labelPosition="before" color="primary"
                                 [formControlName]="tasksData.mandatory.name" (change)="checkValidation()">
                                 {{tasksData.mandatory.label | translate}}
                             </mat-slide-toggle>
 
-                            <mat-slide-toggle labelPosition="before" color="primary"
+                            <mat-slide-toggle  (change)="disableSlide($event)" labelPosition="before" color="primary"
                                 [formControlName]="tasksData.allowEvidence.name" (change)="checkValidation()">
                                 {{tasksData.allowEvidence.label | translate}}
                             </mat-slide-toggle>

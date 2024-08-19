@@ -108,20 +108,6 @@ export class FormService {
     }
   }
 
-  updateComment(resourceId:string|number,payload:any,commentId:string|number = ''){
-    const config = {
-      url : `${this.configService.urlConFig.PROJECT_URLS.UPDATE_COMMENT+commentId+"?resource_id="+resourceId}`,
-      payload:payload
-    };
-    return this.httpService.post(config.url, config.payload)
-  }
-
-  getCommentList(){
-    const config = {
-      url : `${this.configService.urlConFig.PROJECT_URLS.COMMENT_LIST}`,
-    };
-    return this.httpService.get(config.url)
-  }
 
   // checkRolePermissions(data:any,roles:any) {
   //     if(data && data[0]?.roles) {

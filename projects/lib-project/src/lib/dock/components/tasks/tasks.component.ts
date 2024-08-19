@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { v4 as uuidv4 } from 'uuid';
 import { CommentsBoxComponent } from 'lib-shared-modules';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'lib-tasks',
@@ -312,6 +313,12 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   isAnyTaskFilled(): boolean {
     return this.tasks.value.every((task:any) => task.name && task.name.trim() !== '')
+  }
+
+ disableSlide(event: MatSlideToggleChange) {
+    if (this.viewOnly) {
+      event.source.checked = !event.checked;
+    }
   }
 
 }

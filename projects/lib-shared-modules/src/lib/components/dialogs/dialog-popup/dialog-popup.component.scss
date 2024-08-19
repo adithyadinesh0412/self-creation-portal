@@ -27,3 +27,9 @@
     display: flex;
     height: 2.000rem;
 }
+
+::ng-deep .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background{
+    background-color: $primary !important;
+    border-color: $primary !important;
+}
+

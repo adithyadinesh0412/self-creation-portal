@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 import { FormService } from '../../services/form/form.service';
+import { UtilService } from '../../../public-api';
 
 
 
@@ -120,7 +121,7 @@ export class CommentsBoxComponent {
     }
   }
 
-  constructor(private formService:FormService) { }
+  constructor(private utilService:UtilService) { }
 
   ngOnInit() {
     // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
@@ -168,7 +169,7 @@ export class CommentsBoxComponent {
     this.chatFlag = !this.chatFlag;
     this.comment.emit(this.quillInput)
     this.commentPayload.comment = this.quillInput;
-    this.formService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
+    this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
   }
 
 }

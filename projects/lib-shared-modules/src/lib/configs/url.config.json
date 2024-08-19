@@ -3,9 +3,15 @@
         "CREATE_OR_UPDATE_PROJECT": "scp/v1/projects/update",
         "READ_PROJECT":"scp/v1/projects/details/",
         "GET_REVIEWER_LIST":"scp/v1/projects/reviewerList",
-        "SEND_FOR_REVIEW":"scp/v1/projects/submitForReview",
+        "SEND_FOR_REVIEW":"scp/v1/projects/submitForReview"
+    },
+    "RESOURCE_URLS":{
+        "START_REVIEW":"scp/v1/reviews/start",
         "UPDATE_COMMENT":"scp/v1/comments/update",
-        "COMMENT_LIST":"scp/v1/comments/list?resource_id={resource_id}"
+        "COMMENT_LIST":"scp/v1/comments/list",
+        "APPROVE_PROJECT":"scp/v1/reviews/approve",
+        "UPDATE_REVIEW":"scp/v1/reviews/update",
+        "REJECT_OR_REPORTED":"scp/v1/reviews/rejectOrReport"
     },
     "FORM_URLS": {
         "READ_FORM": "scp/v1/form/read",
