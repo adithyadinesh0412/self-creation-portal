@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
+import { FormService } from '../../services/form/form.service';
+import { UtilService } from '../../../public-api';
 
 
 
@@ -21,6 +23,8 @@ import 'quill/dist/quill.snow.css';
 export class CommentsBoxComponent {
   userId:any = 0;
   isResolvable:boolean = false;
+  @Input() commentPayload:any;
+  @Input() resourceId:string|number = '';
   @Input() messages:any =   [
     {
       "id": 2,
@@ -117,7 +121,7 @@ export class CommentsBoxComponent {
     }
   }
 
-  constructor() { }
+  constructor(private utilService:UtilService) { }
 
   ngOnInit() {
     // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
@@ -164,6 +168,8 @@ export class CommentsBoxComponent {
     console.log(this.quillInput)
     this.chatFlag = !this.chatFlag;
     this.comment.emit(this.quillInput)
+    this.commentPayload.comment = this.quillInput;
+    this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
   }
 
 }

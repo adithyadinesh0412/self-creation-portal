@@ -5,11 +5,11 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { CommentsBoxComponent, DialogPopupComponent, FormService } from 'lib-shared-modules';
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [DynamicFormModule, TranslateModule],
+  imports: [DynamicFormModule, TranslateModule,CommentsBoxComponent],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -20,6 +20,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formDataForTitle:any;
   viewOnly:boolean= false;
   mode:any="";
+  commentData:any;
+  resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
   constructor(
@@ -61,6 +63,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       );
     }
     if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
+      this.subscription.add(this.route.data.subscribe((data) => {
+        this.commentData = data;
+      }));
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
