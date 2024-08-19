@@ -13,6 +13,7 @@ import { LibProjectService } from '../../../lib-project.service'
 import { Subscription } from 'rxjs/internal/Subscription';
 import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common';
+import { CommentsBoxComponent } from 'lib-shared-modules';
 
 @Component({
   selector: 'lib-sub-tasks-resources',
@@ -28,7 +29,8 @@ import { CommonModule } from '@angular/common';
     MatDialogModule,
     TranslateModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    CommentsBoxComponent
   ],
   templateUrl: './sub-tasks-resources.component.html',
   styleUrl: './sub-tasks-resources.component.scss'
@@ -42,7 +44,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   projectId:string|number = '';
   projectData:any;
   viewOnly:boolean= false;
-  mode:any = ""
+  mode:any = "";
+  commentData:any;
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -103,7 +106,10 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           );
           }
           if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
-            this.viewOnly = true
+            this.viewOnly = true;
+            this.subscription.add(this.route.data.subscribe((data) => {
+              this.commentData = data;
+            }));
           }
         }else{
           this.createSubTaskForm()

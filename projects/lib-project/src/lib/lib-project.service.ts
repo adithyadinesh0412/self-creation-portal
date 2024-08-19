@@ -189,11 +189,7 @@ export class LibProjectService {
     const config = {
       url: this.Configuration.urlConFig.INSTANCES.CONFIG_LIST,
     };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.get(config.url)
   }
 
   sendForReview(reviewers:any,projectId:any){

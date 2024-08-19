@@ -6,3 +6,6 @@
   <dynamic-form [formJson]="dynamicFormData" [viewOnly]="viewOnly" #formLib (change)="getDynamicFormData($event)"></dynamic-form>
 </div>
 }
+@if(commentData) {
+  <lib-comments-box [commentPayload]="commentData" [resourceId]="projectId"></lib-comments-box>
+}
