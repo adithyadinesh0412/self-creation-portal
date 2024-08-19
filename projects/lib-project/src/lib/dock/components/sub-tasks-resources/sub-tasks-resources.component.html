@@ -30,7 +30,7 @@
                                                 (click)="onDeleteSubtask(i, j)" color="primary">delete</mat-icon>
                                           </div>
                                           @if(control.errors) {
-                                            <mat-error class="error-container">  
+                                            <mat-error class="error-container">
                                                     <div class="error-message">
                                                         <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
                                                         @if(control?.errors?.['maxlength']){ <span>Subtask cannot exceed 256 characters.</span> }
@@ -66,3 +66,6 @@
         </div>
     </div>
 </div>
+@if(commentData) {
+    <lib-comments-box [commentPayload]="commentData" [resourceId]="projectId"></lib-comments-box>
+}

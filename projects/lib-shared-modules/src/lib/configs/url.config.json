@@ -4,7 +4,7 @@
         "READ_PROJECT":"scp/v1/projects/details/",
         "GET_REVIEWER_LIST":"scp/v1/projects/reviewerList",
         "SEND_FOR_REVIEW":"scp/v1/projects/submitForReview",
-        "UPDATE_COMMENT":"scp/v1/comments/update/{id}?resource_id={resource_id}",
+        "UPDATE_COMMENT":"scp/v1/comments/update",
         "COMMENT_LIST":"scp/v1/comments/list?resource_id={resource_id}"
     },
     "FORM_URLS": {

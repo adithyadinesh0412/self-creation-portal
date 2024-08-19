@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path:'',
     redirectTo:'project',
-    pathMatch:'full'
+    pathMatch:'full',
   },
   {
     path:'project',
@@ -19,21 +19,44 @@ const routes: Routes = [
     children:[
       {
         path:'project-details',
-        component:ProjectDetailsComponent
+        component:ProjectDetailsComponent,
+        data:{
+          "comment": "",
+          "page":1,
+          "content":"page",
+          "status": "OPEN"
+        }
       },
       {
         path:'tasks',
-        component:TasksComponent
+        component:TasksComponent,
+        data:{
+          "comment": "",
+          "page":2,
+          "content":"page",
+          "status": "OPEN"
+        }
       },
       {
           path:'sub-tasks',
-          component:SubTasksResourcesComponent
+          component:SubTasksResourcesComponent,
+          data:{
+            "comment": "",
+            "page":3,
+            "content":"page",
+            "status": "OPEN"
+          }
       },
       {
         path:'certificate',
-        component:CertificatesComponent
+        component:CertificatesComponent,
+        data:{
+          "comment": "",
+          "page":4,
+          "content":"page",
+          "status": "OPEN"
+        }
       }
-
     ]
   }
 ];

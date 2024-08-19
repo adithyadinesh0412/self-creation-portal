@@ -189,11 +189,7 @@ export class LibProjectService {
     const config = {
       url: this.Configuration.urlConFig.INSTANCES.CONFIG_LIST,
     };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.get(config.url)
   }
 
   sendForReview(reviewers:any,projectId:any){
@@ -209,29 +205,6 @@ export class LibProjectService {
     return interval(this.instanceConfig.auto_save_interval ? this.instanceConfig.auto_save_interval : 30000).pipe(
       switchMap(() => {
         return this.createOrUpdateProject(this.projectData, this.projectData.id);
-      })
-    );
-  }
-
-  updateComment(){
-    const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.UPDATE_COMMENT}}`,
-      payload:{}
-    };
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        return result;
-      })
-    );
-  }
-
-  getCommentList(){
-    const config = {
-      url : `${this.Configuration.urlConFig.PROJECT_URLS.COMMENT_LIST}}`,
-    };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
       })
     );
   }

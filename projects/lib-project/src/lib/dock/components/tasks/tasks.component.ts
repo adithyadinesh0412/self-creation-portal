@@ -17,11 +17,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { v4 as uuidv4 } from 'uuid';
+import { CommentsBoxComponent } from 'lib-shared-modules';
 
 @Component({
   selector: 'lib-tasks',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, SideNavbarComponent, MatFormFieldModule, MatIconModule, FormsModule, ReactiveFormsModule, MatInputModule, MatSlideToggleModule, MatSelectModule, MatButtonModule, TranslateModule, MatTooltipModule],
+  imports: [CommonModule, HeaderComponent, SideNavbarComponent, MatFormFieldModule, MatIconModule, FormsModule, ReactiveFormsModule, MatInputModule, MatSlideToggleModule, MatSelectModule, MatButtonModule, TranslateModule, MatTooltipModule,CommentsBoxComponent],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
@@ -34,7 +35,8 @@ export class TasksComponent implements OnInit, OnDestroy {
   SHIFT_TASK_UP = 'SHIFT_TASK_UP';
   SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
   viewOnly: boolean = false;
-  mode: any = ""
+  mode: any = "";
+  commentData:any;
   private autoSaveSubscription: Subscription = new Subscription();
   maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
   private subscription: Subscription = new Subscription();
@@ -139,6 +141,9 @@ export class TasksComponent implements OnInit, OnDestroy {
 
         if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
           this.viewOnly = true
+          this.subscription.add(this.route.data.subscribe((data) => {
+            this.commentData = data;
+          }));
           // this.tasksForm.disable()
         }
       })
