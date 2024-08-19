@@ -184,25 +184,39 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
-            if(!cardItem.review_status) {
-              if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED') || (cardItem.status === 'IN_REVIEW'))) {
+            // if(!cardItem.review_status) {
+            //   // if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED') || (cardItem.status === 'IN_REVIEW'))) {
+            //   //   button.buttons.forEach((btn: string) => {
+            //   //   if (btn) {
+            //   //     cardItem.actionButton.push(this.buttonsCSS[btn]);
+            //   //   }
+            //   // });
+            //   // }
+              if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED'))) {
                 button.buttons.forEach((btn: string) => {
                 if (btn) {
                   cardItem.actionButton.push(this.buttonsCSS[btn]);
                 }
               });
               }
-            }
+            // }
             
-            if((button.status === cardItem.status) || (button.status === cardItem.review_status)){
+            if((button.status === cardItem.status)){
               button.buttons.forEach((button : any) => {
                 cardItem.actionButton.push(this.buttonsCSS[button]);
+              })
+            }
+
+            if(((button.status === cardItem.review_status) && this.activeRole == "reviewer")){
+              button.buttons.forEach((button : any) => {
+                cardItem.actionButton.push(this.buttonsCSS[button])
               })
             }
           }
         });
       }
     });
+    console.log(cardItems)
     return cardItems
   }
  
@@ -291,7 +305,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.filters.activeFilterButton = event.label;
       switch(event.label) {
         case 'CHANGES_REQUIRED':
-          this.filters.filteredLists = this.lists.filter((item : any) => item.status === 'COMMENTS');
+          this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'REQUESTED_FOR_CHANGES');
           if(this.filters.filteredLists.length === 0) {
             this.noResultMessage = "NO_CHANGE_REQUIRED"
           }
