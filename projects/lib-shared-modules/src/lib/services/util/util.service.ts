@@ -43,7 +43,7 @@ export class UtilService {
 
   updateComment(resourceId:string|number,payload:any,commentId:string|number = ''){
     const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT+commentId+"?resource_id="+resourceId}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT+(commentId ? '/':'')+commentId+"?resource_id="+resourceId}`,
       payload:payload
     };
     return this.httpService.post(config.url, config.payload)
@@ -54,6 +54,10 @@ export class UtilService {
       url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST+"?resource_id="+resourceId}`,
     };
     return this.httpService.get(config.url)
+  }
+
+  filterCommentByContext(comment:any,page:string) {
+    return comment.filter((element:any) => element.page === page);
   }
 
 }

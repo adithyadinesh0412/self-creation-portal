@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpProviderService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SUBMITTED_FOR_REVIEW, ToastService, UtilService,ROUTE_PATHS } from 'lib-shared-modules';
-import { BehaviorSubject, map, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -200,9 +200,22 @@ export class LibProjectService {
     );
   }
 
+  getCommentList(): Observable<any> {
+    return this.utilService.getCommentList(this.projectData.id).pipe(
+      map((commentListRes: any) => {
+        commentListRes.result.comments.forEach((comment: any) => {
+          comment.status = "OPEN";
+        });
+        return commentListRes.result.comments;
+      })
+    );
+  }
+
   approveProject(){
-    this.utilService.approveResource(this.projectData.id,{}).subscribe((res:any)=>{
-      this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
+    this.getCommentList().subscribe((res) => {
+      this.utilService.approveResource(this.projectData.id,{comment:res}).subscribe((res:any)=>{
+        this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
+      })
     })
   }
 
@@ -217,14 +230,18 @@ export class LibProjectService {
   }
 
   rejectProject(reason:any){
-      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {}).subscribe((res:any)=>{
+    this.getCommentList().subscribe((res) => {
+      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {comment:res}).subscribe((res:any)=>{
         this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
+    })
   }
 
   sendForRequestChange(){
-    this.utilService.updateReview(this.projectData.id,{}).subscribe((data:any)=>{
-      this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
+    this.getCommentList().subscribe((res) => {
+      this.utilService.updateReview(this.projectData.id,{comment:res}).subscribe((data:any)=>{
+        this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
+      })
     })
   }
 

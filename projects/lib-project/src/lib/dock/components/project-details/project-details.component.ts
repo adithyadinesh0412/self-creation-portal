@@ -69,11 +69,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
     }
-    if (this.mode === 'review') {
-      this.subscription.add(this.route.data.subscribe((data) => {
-        this.commentData = data;
-      }));
-    }   
   }
   ngAfterViewChecked() {
     if(this.mode == 'edit' && this.projectId) {
@@ -83,12 +78,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
       }
     }
-    if (this.mode === 'review') {
-      this.subscription.add(this.route.data.subscribe((data) => {
-        this.commentData = data;
-      }));
-    }  
   }
+
   getProjectDetailsForViewOnly(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
@@ -97,12 +88,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
               if(this.mode === 'review'){
-                this.utilService.getCommentList(this.projectId).subscribe((data:any)=>{
-                  console.log(data)
-                  this.comments = data.result.comments
-
-                })
-                
+                this.subscription.add(this.route.data.subscribe((data:any) => {
+                  this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+                    this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+                    this.commentData = data;
+                  })
+                }));
               }
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1

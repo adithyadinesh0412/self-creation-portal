@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,58 +20,12 @@ import { UtilService } from '../../../public-api';
   templateUrl: './comments-box.component.html',
   styleUrl: './comments-box.component.scss'
 })
-export class CommentsBoxComponent {
+export class CommentsBoxComponent implements OnInit {
   userId:any = 0;
   isResolvable:boolean = false;
   @Input() commentPayload:any;
   @Input() resourceId:string|number = '';
-  @Input() messages:any =   [
-    {
-      "id": 2,
-      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-      "context": "page",
-      "page": 1,
-      "status": "RESOLVED",
-      "parent_id": 1,
-      "commenter": {
-        "id": 24,
-        "name": "Priyanka"
-      },
-      "is_read": true,
-      "resolved_by": 25,
-      "resolver": {
-        "id": 25,
-        "name": "Adithya"
-      },
-      "resolved_at": "2024-04-11T06:43:43.995Z"
-    },
-    {
-      "comment": "Add valid title The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-      "context": "page",
-      "page": 1,
-      "status": "UNRESOLVED",
-      "parent_id": null,
-      "commenter": {
-        "id": 25,
-        "name": "Ram"
-      },
-      "is_read": true
-    },
-    {
-      "id": 2,
-      "comment": "Check spelling The certificate templates are completely configurable. The adopter is free to add more number of templates or make changes to the available templates to fit their needs. ",
-      "context": "page",
-      "page": 1,
-      "status": "RESOLVED",
-      "parent_id": 1,
-      "commenter": {
-        "id": 24,
-        "name": "Priyanka"
-      },
-      "is_read": true,
-      "resolved_by": 25
-    }
-  ];
+  @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
   value: any;
   chatFlag: boolean = false;
@@ -92,6 +46,7 @@ export class CommentsBoxComponent {
   quillInput =""
   hasFocus = false;
   subject: any;
+  draft:any = '';
 
 
   quillConfig={
@@ -127,6 +82,7 @@ export class CommentsBoxComponent {
     // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
     this.userId = 25;
     this.isResolvable = this.messages?.length > 0 && this.messages[this.messages.length - 1]?.resolved_at ? true : false;
+    this.checkCommentIsDraft();
   }
 
   test=(event:any)=>{
@@ -150,6 +106,12 @@ export class CommentsBoxComponent {
     console.log("Blurred");
   }
 
+  checkCommentIsDraft() {
+    if(this.messages?.length) {
+      this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
+      this.draft = this.messages.pop()
+    }
+  }
 
   openChatBot() {
     this.chatFlag=!this.chatFlag;
@@ -159,17 +121,20 @@ export class CommentsBoxComponent {
     this.value = '';
   }
 
-  logChange($event:any) {
-    console.log(this.editor);
-    console.log($event);
-  }
-
   saveComment() {
     console.log(this.quillInput)
     this.chatFlag = !this.chatFlag;
     this.comment.emit(this.quillInput)
+    if(this.draft) {
+      this.draft.comment = this.quillInput;
+      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+    }
+    else {
+      this.commentPayload.comment = this.quillInput;
+      this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
+    }
     this.commentPayload.comment = this.quillInput;
-    this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
+
   }
 
 }
