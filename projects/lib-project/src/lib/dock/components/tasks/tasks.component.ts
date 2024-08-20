@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService } from 'lib-shared-modules';
+import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService, UtilService } from 'lib-shared-modules';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -38,10 +38,11 @@ export class TasksComponent implements OnInit, OnDestroy {
   viewOnly: boolean = false;
   mode: any = "";
   commentData:any;
+  comments:any = [];
   private autoSaveSubscription: Subscription = new Subscription();
   maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
   private subscription: Subscription = new Subscription();
-  constructor(private fb: FormBuilder, private libProjectService: LibProjectService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private _snackBar: MatSnackBar, private toastService: ToastService) {
+  constructor(private fb: FormBuilder, private libProjectService: LibProjectService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private _snackBar: MatSnackBar, private toastService: ToastService, private utilService:UtilService) {
     this.tasksForm = this.fb.group({
       tasks: this.fb.array([])
     });
@@ -58,6 +59,14 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.projectId = params.projectId;
         this.libProjectService.projectData.id = params.projectId;
         this.mode = params.mode;
+        if(this.mode === 'review'){
+          this.subscription.add(this.route.data.subscribe((data:any) => {
+            this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+              this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+              this.commentData = data;
+            })
+          }));
+        }
         if (params.projectId) {
           if (params.mode) {
             if (Object.keys(this.libProjectService.projectData).length > 1) {
@@ -142,9 +151,6 @@ export class TasksComponent implements OnInit, OnDestroy {
 
         if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
           this.viewOnly = true
-          this.subscription.add(this.route.data.subscribe((data) => {
-            this.commentData = data;
-          }));
           // this.tasksForm.disable()
         }
       })
