@@ -207,7 +207,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         });
       }
     });
-    console.log(cardItems)
     return cardItems
   }
  
@@ -302,7 +301,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
           }
           break;
         case 'INPROGRESS':
-          this.filters.filteredLists = this.lists.filter((item: any) => item.status === 'IN_REVIEW');
+          this.filters.filteredLists = this.lists.filter((item: any) => item.status === 'INPROGRESS');
           if(this.filters.filteredLists.length === 0) {
             this.noResultMessage = "NO_INPROGRESS_REVIEW"
           }
