@@ -216,8 +216,8 @@ export class LibProjectService {
     });
   }
 
-  rejectProject(reason:any){
-      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {}).subscribe((res:any)=>{
+  rejectProject(reason:any, isReported:any){
+      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {},isReported ).subscribe((res:any)=>{
         this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
   }
