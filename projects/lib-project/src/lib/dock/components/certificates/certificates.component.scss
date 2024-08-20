@@ -1,0 +1,10 @@
+@import  "../../../../../../self-creation-portal/src/styles.scss";
+.required::after {
+    content: '*';
+    color: $warn;
+    font-size: x-large;
+}
+
+::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
+    color: $primary !important;
+}
