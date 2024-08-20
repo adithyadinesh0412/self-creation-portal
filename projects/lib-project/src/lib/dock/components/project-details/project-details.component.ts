@@ -5,7 +5,7 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { CommentsBoxComponent, DialogPopupComponent, FormService } from 'lib-shared-modules';
+import { CommentsBoxComponent, DialogPopupComponent, FormService, UtilService } from 'lib-shared-modules';
 @Component({
   selector: 'lib-project-details',
   standalone: true,
@@ -21,6 +21,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   viewOnly:boolean= false;
   mode:any="";
   commentData:any;
+  comments:any = [];
   resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -29,7 +30,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private formService: FormService
+    private formService: FormService,
+    private utilService:UtilService
   ) {
     this.startAutoSaving()
     this.subscription.add(
@@ -63,13 +65,15 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       );
     }
     if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
-      this.subscription.add(this.route.data.subscribe((data) => {
-        this.commentData = data;
-      }));
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
     }
+    if (this.mode === 'review') {
+      this.subscription.add(this.route.data.subscribe((data) => {
+        this.commentData = data;
+      }));
+    }   
   }
   ngAfterViewChecked() {
     if(this.mode == 'edit' && this.projectId) {
@@ -79,6 +83,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
       }
     }
+    if (this.mode === 'review') {
+      this.subscription.add(this.route.data.subscribe((data) => {
+        this.commentData = data;
+      }));
+    }  
   }
   getProjectDetailsForViewOnly(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
@@ -87,6 +96,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.subscription.add(
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
+              if(this.mode === 'review'){
+                this.utilService.getCommentList(this.projectId).subscribe((data:any)=>{
+                  console.log(data)
+                  this.comments = data.result.comments
+
+                })
+                
+              }
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                     this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);

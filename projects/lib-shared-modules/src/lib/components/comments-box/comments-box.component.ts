@@ -126,7 +126,7 @@ export class CommentsBoxComponent {
   ngOnInit() {
     // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
     this.userId = 25;
-    this.isResolvable = this.messages[this.messages.length - 1].resolved_at ? true : false;
+    this.isResolvable = this.messages?.length > 0 && this.messages[this.messages.length - 1]?.resolved_at ? true : false;
   }
 
   test=(event:any)=>{

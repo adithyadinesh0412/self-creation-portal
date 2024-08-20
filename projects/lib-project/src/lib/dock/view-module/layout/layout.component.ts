@@ -139,7 +139,7 @@ export class LayoutComponent {
           if (result.data === "CANCEL") {
             return true;
           } else if (result.data === "REJECT") {
-            this.libProjectService.rejectProject()
+            this.libProjectService.rejectProject(result?.title)
             return true;
           } else {
             return false;

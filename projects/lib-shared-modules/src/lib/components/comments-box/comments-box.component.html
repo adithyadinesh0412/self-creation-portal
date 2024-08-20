@@ -16,10 +16,12 @@
         <mat-icon *ngIf="chatFlag" (click)="openChatBot()">expand_circle_down</mat-icon>
       </div>
     </section>
-    <section class="flex justify-between items-center p-3 bg-white">
-      <p>Comments by {{messages[0]?.commenter.name}}</p>
-      <button class="btn mr-5" [ngClass]="{'save-button': !isResolvable, 'button-disabled': isResolvable}" mat-flat-button [disabled]="isResolvable">Resolve</button>
-    </section>
+    @if(messages?.length && messages[0]?.commenter){
+      <section class="flex justify-between items-center p-3 bg-white">
+        <p>Comments by {{messages[0]?.commenter?.name}}</p>
+        <button class="btn mr-5" [ngClass]="{'save-button': !isResolvable, 'button-disabled': isResolvable}" mat-flat-button [disabled]="isResolvable">Resolve</button>
+      </section>
+    }
     @if(messages?.length){
       <section class="p-3 chat-window z-[100]">
         <!-- comment history should be listed here  -->

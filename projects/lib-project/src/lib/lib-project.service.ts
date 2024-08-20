@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpProviderService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SUBMITTED_FOR_REVIEW, ToastService, UtilService } from 'lib-shared-modules';
+import { HttpProviderService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SUBMITTED_FOR_REVIEW, ToastService, UtilService,ROUTE_PATHS } from 'lib-shared-modules';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -57,7 +57,7 @@ export class LibProjectService {
     return this.createOrUpdateProject(this.projectData, projectId).pipe(
       map((res: any) => {
         this.setProjectData(res.result);
-        this.openSnackBar();
+        this.openSnackBarAndRedirect();
         this.saveProjectFunc(false);
         this.upDateProjectTitle();
         return res;
@@ -103,7 +103,7 @@ export class LibProjectService {
       }
     }
     else {
-      this.openSnackBar("Fill all the mandatory fields.","error")
+      this.openSnackBarAndRedirect("Fill all the mandatory fields.","error")
     }
     this.checkSendForReviewValidation(false);
   }
@@ -133,19 +133,18 @@ export class LibProjectService {
       url: this.Configuration.urlConFig.FORM_URLS.READ_FORM,
       payload: formBody,
     };
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.post(config.url, config.payload)
   }
 
-  openSnackBar(message?:string,panelClass?:string) {
+  openSnackBarAndRedirect(message?:string,panelClass?:string, url:any='') {
     let data = {
       "message": message ? message : 'YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT',
       "class": panelClass ? panelClass :"success",
     }
    this.toastService.openSnackBar(data)
+   if(url?.length){
+    this.router.navigate([`/home/${url}`]);
+   }
   }
 
   upDateProjectTitle(title?:string){
@@ -167,22 +166,14 @@ export class LibProjectService {
     const config = {
       url : `${this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT}/${projectId}`
     };
-    return this.httpService.delete(config.url).pipe(
-      map((result : any) => {
-        return result;
-      })
-    );
+    return this.httpService.delete(config.url)
   }
 
   getReviewerData(){
     const config = {
       url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
     };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.get(config.url)
   }
 
   setConfig(){
@@ -209,37 +200,9 @@ export class LibProjectService {
     );
   }
 
-  updateComment(){
-    const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT}}`,
-      payload:{}
-    };
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        return result;
-      })
-    );
-  }
-
-  getCommentList(){
-    const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST}}`,
-    };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    );
-  }
-
   approveProject(){
-    let data = {
-      id:this.projectData.id,
-      payload:{}
-    }
-    this.utilService.approveResource(data).subscribe((res:any)=>{
-      this.openSnackBar(res.message,"success")
-      this.router.navigate(['/home'])
+    this.utilService.approveResource(this.projectData.id,{}).subscribe((res:any)=>{
+      this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
     })
   }
 
@@ -253,24 +216,15 @@ export class LibProjectService {
     });
   }
 
-  rejectProject(){
-    let data={
-      id:this.projectData.id,
-      payload:{}
-    }
-      this.utilService.rejectOrReportedReview(data).subscribe((res:any)=>{
-      this.openSnackBar(res.message,"success")
-      this.router.navigate(['/home'])
+  rejectProject(reason:any){
+      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {}).subscribe((res:any)=>{
+        this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
   }
 
   sendForRequestChange(){
-    let data = {
-      id : this.projectData.id,
-      payload:{}
-    }
-    this.utilService.updateReview(data).subscribe((data)=>{
-        this.router.navigate(['/home'])
+    this.utilService.updateReview(this.projectData.id,{}).subscribe((data:any)=>{
+      this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
     })
   }
 
