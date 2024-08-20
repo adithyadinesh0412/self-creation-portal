@@ -59,6 +59,6 @@
     <button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.cancelButton }">{{dialogueData.cancelButton |translate}}</button>
   }
   @if(dialogueData.exitButton){
-    <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title }">{{dialogueData.exitButton |translate}}</button>
+    <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title , isReported :(reportContent ?reportContent :false) }">{{dialogueData.exitButton |translate}}</button>
   }
 </div>

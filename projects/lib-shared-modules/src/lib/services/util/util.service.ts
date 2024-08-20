@@ -33,9 +33,9 @@ export class UtilService {
     return this.httpService.post(config.url, config.payload)
   }
 
-  rejectOrReportedReview(resourceId:string|number,payload:any){
+  rejectOrReportedReview(resourceId:string|number,payload:any,isReported:boolean=false){
     const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.REJECT_OR_REPORTED}/${resourceId}`,
+      url : `${this.Configuration.urlConFig.RESOURCE_URLS.REJECT_OR_REPORTED}/${resourceId}${isReported === true ? `?isReported=${isReported}` : ''}`,
       payload:payload
     }
     return this.httpService.post(config.url, config.payload)
