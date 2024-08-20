@@ -34,4 +34,11 @@ export class PaginationComponent {
       this.emitPageChange(0);
     }
   }
+
+  setToPage(page:any){
+    if (this.paginator) {
+      this.paginator.pageIndex = page;
+      this.emitPageChange(page);
+    }
+  }
 }

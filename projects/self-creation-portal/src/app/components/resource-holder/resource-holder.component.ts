@@ -111,7 +111,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    this.getList();
+    // this.getList();
     this.updateQueryParams(); 
   }
   
@@ -359,7 +359,10 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         "message": 'RESOURCE_DELETED_SUCCESSFULLY',
         "class": "success"
       })
-      this.getList();
+      if(this.paginationComponent) {
+      this.paginationComponent.setToPage(this.pagination.currentPage);
+    }
+      this.updateQueryParams(); 
     })
   }
 
