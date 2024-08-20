@@ -13,12 +13,12 @@
         "UPDATE_REVIEW":"scp/v1/reviews/update",
         "REJECT_OR_REPORTED":"scp/v1/reviews/rejectOrReport"
     },
-    "FORM_URLS": {
+    "FORM_URLS": { 
         "READ_FORM": "scp/v1/form/read",
         "READ_ENTITY_TYPE": "scp/v1/entity-types/read"
     },
     "LOGOUT_URLS": {
-        "LOGOUT_API": "elevate-user/v1/account/logout"
+        "LOGOUT_API": "/user/v1/account/logout"
     },
     "PERMISSIONS":{
         "PERMISSION_LIST":"scp/v1/permissions/list"

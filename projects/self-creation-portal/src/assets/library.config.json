@@ -1,10 +1,10 @@
 {
     "projectName": "Self Creation Portal",
     "landingPageTitle": "Create account to connect, solve & share.",
-    "baseUrl": "https://dev.elevate-apis.shikshalokam.org",
+    "baseUrl": "https://scp-dev.elevate-apis.shikshalokam.org/",
     "redirectRouteOnLoginSuccess": "home/create-new",
-    "loginApiPath": "/elevate-interface/v2/account/login",
-    "signUpApiPath": "/elevate-interface/v2/account/create",
+    "loginApiPath": "/user/v1/account/login",
+    "signUpApiPath": "/user/v1/account/create",
     "resetPasswordApiPath": "/elevate-user/v2/account/resetPassword",
     "otpGenerationApiPathForRegistration": "/elevate-user/v1/account/registrationOtp",
     "otpGenerationApiPathForResetPassword": "/elevate-user/v1/account/generateOtp",

@@ -133,11 +133,7 @@ export class LibProjectService {
       url: this.Configuration.urlConFig.FORM_URLS.READ_FORM,
       payload: formBody,
     };
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.post(config.url, config.payload)
   }
 
   openSnackBar(message?:string,panelClass?:string) {
@@ -167,22 +163,14 @@ export class LibProjectService {
     const config = {
       url : `${this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT}/${projectId}`
     };
-    return this.httpService.delete(config.url).pipe(
-      map((result : any) => {
-        return result;
-      })
-    );
+    return this.httpService.delete(config.url)
   }
 
   getReviewerData(){
     const config = {
       url: this.Configuration.urlConFig.PROJECT_URLS.GET_REVIEWER_LIST,
     };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    )
+    return this.httpService.get(config.url)
   }
 
   setConfig(){
@@ -209,37 +197,10 @@ export class LibProjectService {
     );
   }
 
-  updateComment(){
-    const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT}}`,
-      payload:{}
-    };
-    return this.httpService.post(config.url, config.payload).pipe(
-      map((result: any) => {
-        return result;
-      })
-    );
-  }
-
-  getCommentList(){
-    const config = {
-      url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST}}`,
-    };
-    return this.httpService.get(config.url).pipe(
-      map((result: any) => {
-        return result;
-      })
-    );
-  }
-
   approveProject(){
-    let data = {
-      id:this.projectData.id,
-      payload:{}
-    }
-    this.utilService.approveResource(data).subscribe((res:any)=>{
+    this.utilService.approveResource(this.projectData.id,{}).subscribe((res:any)=>{
       this.openSnackBar(res.message,"success")
-      this.router.navigate(['/home'])
+      this.router.navigate(['/home/up-for-review'])
     })
   }
 
@@ -253,24 +214,17 @@ export class LibProjectService {
     });
   }
 
-  rejectProject(){
-    let data={
-      id:this.projectData.id,
-      payload:{}
-    }
-      this.utilService.rejectOrReportedReview(data).subscribe((res:any)=>{
+  rejectProject(reason:any){
+      this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {}).subscribe((res:any)=>{
       this.openSnackBar(res.message,"success")
-      this.router.navigate(['/home'])
+      this.router.navigate(['/home/up-for-review'])
       })
   }
 
   sendForRequestChange(){
-    let data = {
-      id : this.projectData.id,
-      payload:{}
-    }
-    this.utilService.updateReview(data).subscribe((data)=>{
-        this.router.navigate(['/home'])
+    this.utilService.updateReview(this.projectData.id,{}).subscribe((data:any)=>{
+      this.openSnackBar(data.message,"success")
+      this.router.navigate(['/home/up-for-review'])
     })
   }
 
