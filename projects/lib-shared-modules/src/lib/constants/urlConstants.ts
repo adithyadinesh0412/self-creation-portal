@@ -10,7 +10,8 @@ export const resourceStatus = {
 };
 export const reviewStatus = {
     NOT_STARTED: 'NOT_STARTED',
-    INPROGRESS: 'IN_PROGRESS'
+    INPROGRESS: 'IN_PROGRESS',
+    REQUEST_FOR_CHANGES:'REQUESTED_FOR_CHANGES'
 };
 export const ROUTE_PATHS = {
     SIDENAV: {
