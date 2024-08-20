@@ -197,11 +197,11 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
               cardItem.actionButton.push(this.buttonsCSS[button]);
             })
           }
-          if(((button.status === cardItem.review_status) && this.activeRole == "reviewer")){
-            button.buttons.forEach((button : any) => {
-              cardItem.actionButton.push(this.buttonsCSS[button])
-            })
-          }
+          // if(((button.status === cardItem.review_status) && this.activeRole == "reviewer")){
+          //   button.buttons.forEach((button : any) => {
+          //     cardItem.actionButton.push(this.buttonsCSS[button])
+          //   })
+          // }
         }
       });
     }
