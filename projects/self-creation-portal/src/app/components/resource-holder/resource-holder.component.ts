@@ -111,7 +111,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    debugger
     this.getList();
     this.updateQueryParams(); 
   }
@@ -147,7 +146,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
 
   getList() {
-    debugger
     if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review') {
       this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
         this.handleResponse(response);
@@ -220,7 +218,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-      debugger
+
       this.getList();
     });
   }
@@ -361,7 +359,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         "message": 'RESOURCE_DELETED_SUCCESSFULLY',
         "class": "success"
       })
-      debugger
       this.getList();
     })
   }
