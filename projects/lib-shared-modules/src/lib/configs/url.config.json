@@ -18,7 +18,7 @@
         "READ_ENTITY_TYPE": "scp/v1/entity-types/read"
     },
     "LOGOUT_URLS": {
-        "LOGOUT_API": "elevate-user/v1/account/logout"
+        "LOGOUT_API": "user/v1/account/logout"
     },
     "PERMISSIONS":{
         "PERMISSION_LIST":"scp/v1/permissions/list"

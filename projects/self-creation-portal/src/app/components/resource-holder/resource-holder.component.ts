@@ -184,14 +184,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
-            // if(!cardItem.review_status) {
-            //   // if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED') || (cardItem.status === 'IN_REVIEW'))) {
-            //   //   button.buttons.forEach((btn: string) => {
-            //   //   if (btn) {
-            //   //     cardItem.actionButton.push(this.buttonsCSS[btn]);
-            //   //   }
-            //   // });
-            //   // }
               if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED'))) {
                 button.buttons.forEach((btn: string) => {
                 if (btn) {
@@ -199,7 +191,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
                 }
               });
               }
-            // }
             
             if((button.status === cardItem.status)){
               button.buttons.forEach((button : any) => {
@@ -311,7 +302,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
           }
           break;
         case 'INPROGRESS':
-          this.filters.filteredLists = this.lists.filter((item: any) => item.review_status === 'INPROGRESS');
+          this.filters.filteredLists = this.lists.filter((item: any) => item.status === 'IN_REVIEW');
           if(this.filters.filteredLists.length === 0) {
             this.noResultMessage = "NO_INPROGRESS_REVIEW"
           }
