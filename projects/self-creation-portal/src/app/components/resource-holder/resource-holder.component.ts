@@ -111,6 +111,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
+    debugger
     this.getList();
     this.updateQueryParams(); 
   }
@@ -146,6 +147,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
 
   getList() {
+    debugger
     if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review') {
       this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
         this.handleResponse(response);
@@ -218,6 +220,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
+      debugger
       this.getList();
     });
   }
@@ -289,36 +292,15 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     if(this.filters.activeFilterButton === event.label) {
       this.filters.activeFilterButton = '';
       this.filters.status = '';
-      this.pagination.currentPage = 0;
-      if(this.paginationComponent) {
-      this.paginationComponent.resetToFirstPage();
-       }
-      this.updateQueryParams();
-      // this.filters.filteredLists = this.lists;
-      // this.noResultMessage = this.noResultFound;
     } else {
       this.filters.activeFilterButton = event.label;
       this.filters.status = event.label;
-      this.pagination.currentPage = 0;
-      if(this.paginationComponent) {
-      this.paginationComponent.resetToFirstPage();
-       }
-      this.updateQueryParams();
-       // switch(event.label) {
-      //   case 'CHANGES_REQUIRED':
-      //     this.filters.filteredLists = this.lists.filter((item : any) => item.status === 'COMMENTS');
-      //     if(this.filters.filteredLists.length === 0) {
-      //       this.noResultMessage = "NO_CHANGE_REQUIRED"
-      //     }
-      //     break;
-      //   case 'INPROGRESS':
-      //     this.filters.filteredLists = this.lists.filter((item: any) => item.review_status === 'INPROGRESS');
-      //     if(this.filters.filteredLists.length === 0) {
-      //       this.noResultMessage = "NO_INPROGRESS_REVIEW"
-      //     }
-      //     break;
-      // }
     }
+    this.pagination.currentPage = 0;
+    if(this.paginationComponent) {
+    this.paginationComponent.resetToFirstPage();
+     }
+    this.updateQueryParams();
   }
 
   infoIconClickEvent(event: any) {
@@ -379,6 +361,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         "message": 'RESOURCE_DELETED_SUCCESSFULLY',
         "class": "success"
       })
+      debugger
       this.getList();
     })
   }
