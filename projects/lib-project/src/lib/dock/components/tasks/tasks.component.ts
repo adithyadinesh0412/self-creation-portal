@@ -293,15 +293,11 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   adjustValue(event: any): void {
-    const inputValue = event.target.value;
+    const inputValue = parseInt(event.target.value, this.tasksData.minEvidences.validators.max);
     const min = this.tasksData.minEvidences.validators.min;
     const max = this.tasksData.minEvidences.validators.max;
-
-    if (inputValue < min) {
-      event.target.value = min;
-    } else if (inputValue > max) {
-      event.target.value = max;
-    }
+    const clampedValue = Math.min(Math.max(inputValue, min), max);
+    event.target.value = clampedValue.toString();
   }
 
   saveTasks(){
