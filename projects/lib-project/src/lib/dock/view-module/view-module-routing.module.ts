@@ -22,9 +22,9 @@ const routes: Routes = [
         component:ProjectDetailsComponent,
         data:{
           "comment": "",
-          "page":1,
-          "content":"page",
-          "status": "OPEN"
+          "page":"1",
+          "context":"page",
+          "status": "DRAFT"
         }
       },
       {
@@ -32,9 +32,9 @@ const routes: Routes = [
         component:TasksComponent,
         data:{
           "comment": "",
-          "page":2,
-          "content":"page",
-          "status": "OPEN"
+          "page":"2",
+          "context":"page",
+          "status": "DRAFT"
         }
       },
       {
@@ -42,9 +42,9 @@ const routes: Routes = [
           component:SubTasksResourcesComponent,
           data:{
             "comment": "",
-            "page":3,
-            "content":"page",
-            "status": "OPEN"
+            "page":"3",
+            "context":"page",
+            "status": "DRAFT"
           }
       },
       {
@@ -52,9 +52,9 @@ const routes: Routes = [
         component:CertificatesComponent,
         data:{
           "comment": "",
-          "page":4,
-          "content":"page",
-          "status": "OPEN"
+          "page":"4",
+          "context":"page",
+          "status": "DRAFT"
         }
       }
     ]

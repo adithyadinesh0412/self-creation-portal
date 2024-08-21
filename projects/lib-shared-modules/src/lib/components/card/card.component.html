@@ -4,22 +4,22 @@
         <mat-card-content>
             <div class="flex-row mr-10">
                 <div class="flex-column">
-                    <div class="flex-row">
-                        <div class="chip-container capitalize item-center text-center bg-chipPurple">
+                    <div class="flex justify-normal gap-2">
+                        <div class="chip-container item-center text-center bg-chipPurple">
                             {{list.type | translate}}
                         </div>
                         @if((list.status === resourceStatus.SUBMITTED) || (list.review_status === reviewStatus.NOT_STARTED)){
-                            <div class="chip-container capitalize item-center text-center bg-tertiary border border-chipBorder text-secondary">
+                            <div class="chip-container item-center text-center bg-tertiary border border-chipBorder text-secondary">
                                 {{( reviewStatus.NOT_STARTED || list.review_status )| translate}}
                             </div>
                         }
                         @if(list.status === resourceStatus.PUBLISHED){
-                            <div class="chip-container capitalize item-center text-center bg-chipPublished text-white">
+                            <div class="chip-container item-center text-center bg-chipPublished text-white">
                                 {{list.status | translate}}
                             </div>
                         }
                         @if(list.status === resourceStatus.REJECTED || list.status === resourceStatus.REJECTED_AND_REPORTED) {
-                            <div class="chip-container capitalize item-center text-center bg-chipRejected text-white">
+                            <div class="chip-container item-center text-center bg-chipRejected text-white">
                                 <div class="flex justify-center items-center">
                                     @if(list.status === resourceStatus.REJECTED) {
                                         <mat-icon class="text-sm icon-padding" matPrefix>block</mat-icon>
@@ -32,15 +32,15 @@
                             </div>
                         }
                         @if(list.is_comments && list.is_comments === true){
-                            <div class="chip-container capitalize item-center text-center bg-chipComment text-black">
+                            <div class="chip-container item-center text-center bg-chipComment text-black">
                                 <div class="flex justify-center items-center">
                                     <img src="assets/icons/comments-icon.png" alt="" class="mr-2">
                                     {{resourceStatus.COMMENTS | translate}}
                                 </div>
                             </div>
                         }
-                        @if((list.status === resourceStatus.IN_REVIEW) || (list.review_status === reviewStatus.INPROGRESS)){
-                            <div class="chip-container capitalize  item-center text-center bg-chipInprogress text-black">
+                        @if(((list.status === resourceStatus.IN_REVIEW) || (list.review_status === reviewStatus.INPROGRESS)) && (list.review_status !== reviewStatus.REQUEST_FOR_CHANGES)){
+                            <div class="chip-container  item-center text-center bg-chipInprogress text-black">
                                 <div class="inline-flex items-center justify-center">
                                     <img src="assets/icons/inprogress-icon.png" alt="" class="mr-2">
                                    {{(reviewStatus.INPROGRESS || list.review_status) | translate}}
@@ -49,7 +49,7 @@
                         }
                     </div>
                     <div class="flex flex-column">
-                        <p class="text capitalize overflow-ellipsis" [matTooltip]="list.title | translate">{{list.title | translate}}</p>
+                        <p class="text overflow-ellipsis" [matTooltip]="list.title | translate">{{list.title | translate}}</p>
                         <div class="flex items-center text-sm text-[$borderGray]">
                             By <span class="ml-1 overflow-ellipsis">{{ list.creator | translate }}</span>
                         </div>

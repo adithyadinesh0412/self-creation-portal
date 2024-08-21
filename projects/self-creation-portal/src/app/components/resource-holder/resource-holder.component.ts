@@ -111,7 +111,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
-    this.getList();
+    // this.getList();
     this.updateQueryParams(); 
   }
   
@@ -130,7 +130,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
       this.filters.current.type = event.values;
     } else if (filterName === 'status') {
       this.filters.status = event.values;
-    } 
+    }
     this.pagination.currentPage = 0;
     if(this.paginationComponent) {
       this.paginationComponent.resetToFirstPage();
@@ -184,31 +184,30 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if(button.buttons){
-              if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED'))) {
-                button.buttons.forEach((btn: string) => {
-                if (btn) {
-                  cardItem.actionButton.push(this.buttonsCSS[btn]);
-                }
-              });
+            if (button.status === 'NOT_STARTED' && ((cardItem.status === 'SUBMITTED'))) {
+              button.buttons.forEach((btn: string) => {
+              if (btn) {
+                cardItem.actionButton.push(this.buttonsCSS[btn]);
               }
-            
-            if((button.status === cardItem.status)){
-              button.buttons.forEach((button : any) => {
-                cardItem.actionButton.push(this.buttonsCSS[button]);
-              })
+            });
             }
 
-            if(((button.status === cardItem.review_status) && this.activeRole == "reviewer")){
-              button.buttons.forEach((button : any) => {
-                cardItem.actionButton.push(this.buttonsCSS[button])
-              })
-            }
+          if((button.status === cardItem.status)){
+            button.buttons.forEach((button : any) => {
+              cardItem.actionButton.push(this.buttonsCSS[button]);
+            })
           }
-        });
-      }
-    });
-    return cardItems
-  }
+          // if(((button.status === cardItem.review_status) && this.activeRole == "reviewer")){
+          //   button.buttons.forEach((button : any) => {
+          //     cardItem.actionButton.push(this.buttonsCSS[button])
+          //   })
+          // }
+        }
+      });
+    }
+  });
+  return cardItems
+}
  
   //updateQueryParams to router
   updateQueryParams() {
@@ -219,6 +218,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
+
       this.getList();
     });
   }
@@ -289,25 +289,16 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   filterButtonClickEvent(event : { label: string }) {
     if(this.filters.activeFilterButton === event.label) {
       this.filters.activeFilterButton = '';
-      this.filters.filteredLists = this.lists;
-      this.noResultMessage = this.noResultFound;
+      this.filters.status = '';
     } else {
       this.filters.activeFilterButton = event.label;
-      switch(event.label) {
-        case 'CHANGES_REQUIRED':
-          this.filters.filteredLists = this.lists.filter((item : any) => item.review_status === 'REQUESTED_FOR_CHANGES');
-          if(this.filters.filteredLists.length === 0) {
-            this.noResultMessage = "NO_CHANGE_REQUIRED"
-          }
-          break;
-        case 'INPROGRESS':
-          this.filters.filteredLists = this.lists.filter((item: any) => item.status === 'INPROGRESS');
-          if(this.filters.filteredLists.length === 0) {
-            this.noResultMessage = "NO_INPROGRESS_REVIEW"
-          }
-          break;
-      }
+      this.filters.status = event.label;
     }
+    this.pagination.currentPage = 0;
+    if(this.paginationComponent) {
+    this.paginationComponent.resetToFirstPage();
+     }
+    this.updateQueryParams();
   }
 
   infoIconClickEvent(event: any) {
@@ -368,7 +359,10 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
         "message": 'RESOURCE_DELETED_SUCCESSFULLY',
         "class": "success"
       })
-      this.getList();
+      if(this.paginationComponent) {
+      this.paginationComponent.setToPage(this.pagination.currentPage);
+    }
+      this.updateQueryParams(); 
     })
   }
 
