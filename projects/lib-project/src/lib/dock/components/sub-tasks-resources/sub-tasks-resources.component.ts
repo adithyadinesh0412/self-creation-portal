@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent, UtilService } from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,10 +46,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   viewOnly:boolean= false;
   mode:any = "";
   commentData:any;
+  comments:any = [];
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
-  constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router) {
+  constructor(private dialog : MatDialog,private fb: FormBuilder,private libProjectService:LibProjectService, private route:ActivatedRoute, private router:Router, private utilService:UtilService) {
     this.subtask = this.fb.group({
       subtasks: this.fb.array([])
     });
@@ -65,6 +66,14 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       this.route.queryParams.subscribe((params:any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
+        if(this.mode === 'review'){
+          this.subscription.add(this.route.data.subscribe((data:any) => {
+            this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+              this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+              this.commentData = data;
+            })
+          }));
+        }
         if(params.mode){
           if(Object.keys(this.libProjectService.projectData)?.length) {
             this.projectData = this.libProjectService.projectData;
@@ -107,9 +116,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           }
           if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
             this.viewOnly = true;
-            this.subscription.add(this.route.data.subscribe((data) => {
-              this.commentData = data;
-            }));
           }
         }else{
           this.createSubTaskForm()
