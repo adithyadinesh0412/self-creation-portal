@@ -51,6 +51,48 @@
       }
     </form>
   }
+  <!-- attachSignature & attachLogo -->
+  @if(dialogueData?.inputfields || dialogueData?.subcontent){
+    <div class="p-3 flex pb-3">
+      <div class="left-content w-1/2 pr-3">
+        <div class="text-lg p-1">{{dialogueData?.subheader | translate}}</div>
+        @for(field of dialogueData?.inputfields; track field){
+          <div class="p-1">
+          <div class="">{{ field.label |translate}}</div>
+          <div class="">
+            <input type="text" class="w-4/5 p-2 border border-gray-300 rounded" [placeholder]="field.value" [(ngModel)]="field.value"/>
+          </div>
+          </div>
+        }
+        <p class="p-1 text-[$buttonDisable]">Make sure your file:</p>
+        @for(subfield of dialogueData?.subcontent; track subfield){
+          <div class="flex items-center p-1">
+            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blueCircle text-white text-xs">
+              {{subfield.no}}</span>
+              <p class="ml-1 text-sm text-[$buttonDisable]">{{ subfield.option }}</p>
+          </div>
+        }
+      </div>
+      <div class="right-content w-1/2">
+        <div class="drag-drop-content relative bg-cardLightBlue border-2 border-dashed border border-borderGray w-full pt-[100%]">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="flex-col">
+              <div class="flex items-center justify-center pb-2">
+                <img src="assets/images/file.png" alt="No Result">
+              </div>
+              <p>Drag & drop file to upload</p>
+              <p class="px-20">or</p>
+              <button  type="button" class="flex items-center button border rounded bg-lightGreen text-sm text-white w-48 min-w-[192px] p-2">
+                <mat-icon class="cursor-pointer text-sm">vertical_align_top</mat-icon>
+                <span>{{"UPLOAD_BUTTON" | translate}}</span>
+              </button>
+              <p class="text-xs flex items-center justify-center pt-1">upload PNG upto 50kb</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
  
 </div>
 <div class="border-t"></div> 
@@ -60,5 +102,8 @@
   }
   @if(dialogueData.exitButton){
     <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title , isReported :(reportContent ?reportContent :false) }">{{dialogueData.exitButton |translate}}</button>
+  }
+  @if(dialogueData.attachButton){
+    <button class="btn text-primary border-blueCircle w-30 min-w-[135px]">{{dialogueData.attachButton | translate}}</button>
   }
 </div>

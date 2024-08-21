@@ -46,17 +46,19 @@
                     <div class="mt-4">
                         <p class="required">{{ "ATTACH_LOGOS" | translate}}</p>
                         <div class="mt-2 flex items-center text-primary pb-2">
-                            <mat-icon>add_circle</mat-icon><span class="px-2">Add image1</span>
+                            <mat-icon class="cursor-pointer"  (click)="attachLogo()">add_circle</mat-icon><span class="px-2">Add image1</span>
                         </div>
                     </div>
                     <div class="mt-4">
                         <p class="required">{{ "ATTACH_SIGNATURES" | translate}}</p>
                         <div class="mt-2 flex items-center text-primary pb-2">
-                            <mat-icon>add_circle</mat-icon><span class="px-2">Add image1</span>
+                            <mat-icon class="cursor-pointer" (click)="attachSignature()">add_circle</mat-icon><span class="px-2">Add image1</span>
                         </div>
                     </div>
                 </div>
-                <div class="right-content w-1/2"></div>
+                <div class="certificate-content w-1/2">
+                    <!-- certificate image content to place here -->
+                </div>
             </div>
             <div class="mt-6">
                 <p>

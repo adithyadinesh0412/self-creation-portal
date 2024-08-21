@@ -151,5 +151,13 @@
     "SET_CERTIFICATE_CRITERIA_DESCRIPTION":"You can set the minimum number of evidences required for each task or project to qualify for the certificate",
     "ENABLE_PROJECT_LEVEL_EVIDENCE":"Enable minimum number of evidences at project level",
     "NUMBER_OF_EVIDENCE_REQUIRED":"Number of evidence required",
-    "ENABLE_TASK_EVIDENCE":"Enable minimum number fo evidences for task ''Task name that can go upto 2lines or more'' "
+    "ENABLE_TASK_EVIDENCE":"Enable minimum number fo evidences for task ''Task name that can go upto 2lines or more'' ",
+    "ATTACH_SIGNATURE":"Attach Signature",
+    "ADD_SIGNATURE_DETALS":"Add signature details",
+    "ATTACH_LOGO":"Attach logo",
+    "ATTACH_LOGOS_DETAIlS":"Attach Logos",
+    "ATTACH":"Attach",
+    "SIGNATURE_NAME":"Signature Name",
+    "SIGNATURE_DESIGNATION":"Signature Designation",
+    "UPLOAD_BUTTON":"Select file to upload"
 }
