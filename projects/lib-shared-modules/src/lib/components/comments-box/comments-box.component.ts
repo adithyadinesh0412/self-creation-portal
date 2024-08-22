@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, AfterViewChecked, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 import { FormService } from '../../services/form/form.service';
-import { UtilService } from '../../../public-api';
+import { ToastService, UtilService } from '../../../public-api';
 
 
 
@@ -20,14 +20,15 @@ import { UtilService } from '../../../public-api';
   templateUrl: './comments-box.component.html',
   styleUrl: './comments-box.component.scss'
 })
-export class CommentsBoxComponent implements OnInit {
+export class CommentsBoxComponent implements OnInit, OnDestroy {
   userId:any = 0;
-  isResolvable:boolean = false;
+  @Input() mode:string='';
   @Input() commentPayload:any;
   @Input() resourceId:string|number = '';
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
   value: any;
+  resolveDisable:boolean = false;
   chatFlag: boolean = true;
 
   @ViewChild('editor') editor:any;
@@ -40,6 +41,7 @@ export class CommentsBoxComponent implements OnInit {
       [{ header: [1, 2, false] }],
       ['bold', 'italic', 'underline'],
       ['formula'],
+      [{ 'font': [] }],
       ['image', 'code-block']
     ]
   };
@@ -54,21 +56,9 @@ export class CommentsBoxComponent implements OnInit {
     toolbar: {
       container: [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['code-block'],
         [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        //[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-        //[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-        //[{ 'direction': 'rtl' }],                         // text direction
-
-        //[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        //[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-        //[{ 'font': [] }],
-        //[{ 'align': [] }],
-
-        ['clean'],                                         // remove formatting button
-
+        [{ 'list': 'bullet' }],
+        [{ 'font': [] }],                                        // remove formatting button
         ['link'],
         //['link', 'image', 'video']
       ],
@@ -76,13 +66,11 @@ export class CommentsBoxComponent implements OnInit {
     }
   }
 
-  constructor(private utilService:UtilService) { }
+  constructor(private utilService:UtilService,private toastService:ToastService) { }
 
   ngOnInit() {
-    // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
-    this.userId = 25;
-    this.isResolvable = this.messages?.length > 0 && this.messages[this.messages.length - 1]?.resolved_at ? true : false;
-    this.checkCommentIsDraft();
+    this.userId = localStorage.getItem('id');
+    this.checkCommentIsDraftAndResolvable();
   }
 
   test=(event:any)=>{
@@ -95,7 +83,7 @@ export class CommentsBoxComponent implements OnInit {
     }
     if(event.range == null){
       this.onBlur();
-    }   
+    }
   }
 
 
@@ -105,24 +93,34 @@ export class CommentsBoxComponent implements OnInit {
   onBlur = () =>{
     console.log("Blurred");
     if(this.quillInput.length){
-      this.saveComment()
+      // this.saveComment()
     }
   }
 
-  checkCommentIsDraft() {
+  checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
       this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
-      this.draft = this.messages.pop()
+      this.draft = this.quillInput.length > 0 ? this.messages.pop() : '';
+      if(this.messages[this.messages.length-1].resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
+        this.resolveDisable = true;
+      }
     }
+  }
+
+  resolveComment() {
+    this.utilService.updateComment(this.resourceId,{...this.messages[this.messages.length-1],...{status:"RESOLVED"}},this.messages[this.messages.length-1].id).subscribe((res:any) =>{
+      this.toastService.openSnackBar({
+        message : res.message,
+        class : 'success'
+      })
+      this.resolveDisable = true;
+    });
   }
 
   openChatBot() {
     this.chatFlag=!this.chatFlag;
   }
 
-  sendMessage() {
-    this.value = '';
-  }
 
   saveComment() {
     console.log(this.quillInput)
@@ -138,6 +136,12 @@ export class CommentsBoxComponent implements OnInit {
     }
     this.commentPayload.comment = this.quillInput;
 
+  }
+
+  ngOnDestroy(): void {
+    if(this.quillInput.length > 0) {
+      this.saveComment();
+    }
   }
 
 }

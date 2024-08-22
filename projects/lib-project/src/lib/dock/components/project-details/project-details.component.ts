@@ -20,8 +20,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formDataForTitle:any;
   viewOnly:boolean= false;
   mode:any="";
-  commentData:any;
-  comments:any = [];
+  commentPayload:any;
+  commentsList:any = [];
+  projectInReview:boolean = false;
   resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -88,15 +89,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
               if(this.mode === 'review'){
-                this.subscription.add(this.route.data.subscribe((data:any) => {
-                  this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-                    this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-                    this.commentData = data;
-                    if(this.comments?.length > 0){
-                      this.libProjectService.checkValidationForRequestChanges()
-                    }
-                  })
-                }));
+                this.getCommentConfigs()
               }
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
@@ -119,6 +112,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     })
   }
 
+  getCommentConfigs() {
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+        this.projectInReview = true;
+      })
+    }));
+  }
+
   getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
       if (data) {
@@ -139,6 +142,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
+                        // comments list and configuration
+                        if(res.result.status == "IN_REVIEW") {
+                          this.getCommentConfigs()
+                        }
                       })
                   );
                 }
@@ -152,6 +159,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
+                        // comments list and configuration
+                        if(res.result.status == "IN_REVIEW") {
+                          this.getCommentConfigs()
+                        }
                       })
                   );
                 }
