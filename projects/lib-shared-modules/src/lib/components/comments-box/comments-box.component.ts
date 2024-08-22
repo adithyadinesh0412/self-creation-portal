@@ -28,7 +28,7 @@ export class CommentsBoxComponent implements OnInit {
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
   value: any;
-  chatFlag: boolean = false;
+  chatFlag: boolean = true;
 
   @ViewChild('editor') editor:any;
 
@@ -95,7 +95,7 @@ export class CommentsBoxComponent implements OnInit {
     }
     if(event.range == null){
       this.onBlur();
-    }
+    }   
   }
 
 
@@ -104,6 +104,9 @@ export class CommentsBoxComponent implements OnInit {
   }
   onBlur = () =>{
     console.log("Blurred");
+    if(this.quillInput.length){
+      this.saveComment()
+    }
   }
 
   checkCommentIsDraft() {

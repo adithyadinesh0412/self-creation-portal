@@ -92,6 +92,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                   this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
                     this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
                     this.commentData = data;
+                    if(this.comments?.length > 0){
+                      this.libProjectService.checkValidationForRequestChanges()
+                    }
                   })
                 }));
               }
@@ -105,6 +108,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
                           this.readProjectDeatilsAndMap(data.controls,res.result);
+                          this.libProjectService.upDateProjectTitle();
                         })
                     );
                   }
@@ -262,10 +266,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
-    if (!this.isEvent(data)) {
     if(this.libProjectService.projectData.title != data.title) {
-      this.libProjectService.upDateProjectTitle(data.title);
+      this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
     }
+    if (!this.isEvent(data)) {
     this.libProjectService.setProjectData(data);
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
@@ -292,5 +296,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formMarkTouched() {
     this.formLib?.myForm.markAllAsTouched()
     this.formLib?.subform?.myForm.markAllAsTouched()
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
+    }
   }
 }
