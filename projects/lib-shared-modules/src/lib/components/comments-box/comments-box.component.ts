@@ -22,12 +22,11 @@ import { UtilService } from '../../../public-api';
 })
 export class CommentsBoxComponent implements OnInit {
   userId:any = 0;
-  isResolvable:boolean = false;
+  @Input() isResolvable:boolean = false;
   @Input() commentPayload:any;
   @Input() resourceId:string|number = '';
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
-  value: any;
   chatFlag: boolean = false;
 
   @ViewChild('editor') editor:any;
@@ -79,10 +78,9 @@ export class CommentsBoxComponent implements OnInit {
   constructor(private utilService:UtilService) { }
 
   ngOnInit() {
-    // this.userId = localStorage.getItem('id') ? localStorage.getItem('id'):25;
-    this.userId = 25;
+    this.userId = localStorage.getItem('id');
     this.isResolvable = this.messages?.length > 0 && this.messages[this.messages.length - 1]?.resolved_at ? true : false;
-    this.checkCommentIsDraft();
+    this.checkCommentIsDraftAndResolvable();
   }
 
   test=(event:any)=>{
@@ -106,20 +104,21 @@ export class CommentsBoxComponent implements OnInit {
     console.log("Blurred");
   }
 
-  checkCommentIsDraft() {
+  checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
       this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
       this.draft = this.messages.pop()
     }
   }
 
+  resolveComment() {
+    this.utilService.updateComment(this.resourceId,{...this.messages[this.messages.length-1],...{status:"RESOLVED"}},this.messages[this.messages.length-1].id).subscribe((res) => console.log(res));
+  }
+
   openChatBot() {
     this.chatFlag=!this.chatFlag;
   }
 
-  sendMessage() {
-    this.value = '';
-  }
 
   saveComment() {
     console.log(this.quillInput)

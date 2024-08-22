@@ -20,8 +20,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formDataForTitle:any;
   viewOnly:boolean= false;
   mode:any="";
-  commentData:any;
-  comments:any = [];
+  commentPayload:any;
+  commentsList:any = [];
+  isPageComment:boolean = false;
   resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -37,6 +38,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : ""
+        this.isPageComment = params.comment ? true : false;
       })
     )
    }
@@ -88,12 +90,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
               if(this.mode === 'review'){
-                this.subscription.add(this.route.data.subscribe((data:any) => {
-                  this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-                    this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-                    this.commentData = data;
-                  })
-                }));
+                this.getCommentConfigs()
               }
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
@@ -113,6 +110,15 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           );
       }
     })
+  }
+
+  getCommentConfigs() {
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+      })
+    }));
   }
 
   getFormWithEntitiesAndMap(){
@@ -154,6 +160,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
               }
             } else {
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+            }
+            if(this.isPageComment) {
+              this.getCommentConfigs()
             }
           })
         );
