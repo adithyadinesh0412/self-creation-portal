@@ -37,8 +37,9 @@ export class TasksComponent implements OnInit, OnDestroy {
   SHIFT_TASK_DOWN = 'SHIFT_TASK_DOWN'
   viewOnly: boolean = false;
   mode: any = "";
-  commentData:any;
-  comments:any = [];
+  commentPayload:any;
+  commentsList:any = [];
+  projectInReview:boolean = false;
   private autoSaveSubscription: Subscription = new Subscription();
   maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
   private subscription: Subscription = new Subscription();
@@ -60,20 +61,13 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.libProjectService.projectData.id = params.projectId;
         this.mode = params.mode;
         if(this.mode === 'review'){
-          this.subscription.add(this.route.data.subscribe((data:any) => {
-            this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-              this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-              this.commentData = data;
-              if(this.comments?.length > 0){
-                this.libProjectService.checkValidationForRequestChanges()
-              }
-            })
-          }));
+          this. getCommentConfigs()
         }
         if (params.projectId) {
           if (params.mode) {
             if (Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
+              console.log(this.libProjectService.projectData)
               if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
                 this.libProjectService.projectData.tasks.forEach((element:any) => {
                   const task = this.fb.group({
@@ -99,6 +93,9 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === 'edit'){
                 this.startAutoSaving();
               }
+              if(this.libProjectService?.projectData?.status == "IN_REVIEW") {
+                this.getCommentConfigs()
+              }
 
             }
             else {
@@ -123,6 +120,9 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
+                  if(res.result.status == "IN_REVIEW") {
+                    this.getCommentConfigs()
+                  }
                 }
                 else {
                   this.addTask();
@@ -152,7 +152,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           })
         }
 
-        if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
+        if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView' || this.mode === 'creatorView') {
           this.viewOnly = true
           // this.tasksForm.disable()
         }
@@ -340,6 +340,21 @@ export class TasksComponent implements OnInit, OnDestroy {
     if(quillInput){
         this.libProjectService.checkValidationForRequestChanges()
     }
+  }
+
+  getCommentConfigs(){
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+        this.projectInReview = true;
+
+        if(commentListRes.result?.comments?.length > 0){
+          this.libProjectService.checkValidationForRequestChanges()
+        }
+        
+      })
+    }));
   }
 
 }

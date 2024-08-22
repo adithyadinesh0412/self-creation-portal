@@ -254,6 +254,14 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
              }
            });
            break;
+         }else if(item.status == "IN_REVIEW" && this.activeRole == "creator"){
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: 'creatorView'
+            }
+          });
+          break;
          }else{
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
