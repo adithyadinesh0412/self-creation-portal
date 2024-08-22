@@ -64,6 +64,9 @@ export class TasksComponent implements OnInit, OnDestroy {
             this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
               this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
               this.commentData = data;
+              if(this.comments?.length > 0){
+                this.libProjectService.checkValidationForRequestChanges()
+              }
             })
           }));
         }
@@ -320,6 +323,12 @@ export class TasksComponent implements OnInit, OnDestroy {
  disableSlide(event: MatSlideToggleChange) {
     if (this.viewOnly) {
       event.source.checked = !event.checked;
+    }
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
     }
   }
 
