@@ -105,6 +105,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
                           this.readProjectDeatilsAndMap(data.controls,res.result);
+                          this.libProjectService.upDateProjectTitle();
                         })
                     );
                   }
@@ -292,5 +293,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formMarkTouched() {
     this.formLib?.myForm.markAllAsTouched()
     this.formLib?.subform?.myForm.markAllAsTouched()
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+      console.log("suma")
+    }
   }
 }
