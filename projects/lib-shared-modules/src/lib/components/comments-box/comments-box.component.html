@@ -16,9 +16,10 @@
         <mat-icon *ngIf="chatFlag" (click)="openChatBot()">expand_circle_down</mat-icon>
       </div>
     </section>
-    @if(messages?.length && messages[0]?.commenter){
+    @if(mode !== "review"){
       <section class="flex justify-between items-center p-3 bg-white">
         <p>Comments by {{messages[0]?.commenter?.name}}</p>
+        <!-- [0] represents the reviewer initiates the message, so the reviewer with be the commenter -->
         <button class="btn mr-5 save-button" [ngClass]="{'button-disabled': resolveDisable}" mat-flat-button [disabled]="resolveDisable" (click)="resolveComment()">Resolve</button>
       </section>
     }
@@ -34,8 +35,8 @@
                 <p [innerHTML]="message?.comment"></p>
                 <p class="text-end">{{message?.created_at | date : 'shortTime'}}</p>
               </div>
+              <p class="text-end color-primary my-2 resolve-text" *ngIf="message?.resolved_at">Resolved<mat-icon class="mr-5">check_circle</mat-icon></p>
             </div>
-            <p class="text-end color-primary my-2" *ngIf="message?.resolved_at">Resolved<mat-icon class="mr-5">check_circle</mat-icon></p>
           </section>
         }
       </section>

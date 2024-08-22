@@ -76,6 +76,7 @@ quill-editor {
 }
 .chatbox {
   width: 30%;
+  max-height: 80%;
   position: fixed;
   bottom: 0;
   right: 2rem;
@@ -108,6 +109,10 @@ quill-editor {
 
 .message-container {
   justify-content: end;
+  flex-direction: column;
+  .resolve-text {
+    width: 75%;
+  }
 }
 .message-body {
   color: white;

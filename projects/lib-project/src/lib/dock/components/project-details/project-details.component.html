@@ -6,6 +6,6 @@
   <dynamic-form [formJson]="dynamicFormData" [viewOnly]="viewOnly" #formLib (change)="getDynamicFormData($event)"></dynamic-form>
 </div>
 }
-@if(commentPayload || isPageComment) {
-  <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList"></lib-comments-box>
+@if(commentPayload || projectInReview) {
+  <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList" [mode]="mode"></lib-comments-box>
 }
