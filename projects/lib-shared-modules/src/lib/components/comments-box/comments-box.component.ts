@@ -27,7 +27,8 @@ export class CommentsBoxComponent implements OnInit {
   @Input() resourceId:string|number = '';
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
-  chatFlag: boolean = false;
+  resolveDisable:boolean = false;
+  chatFlag: boolean = true;
 
   @ViewChild('editor') editor:any;
 
@@ -107,7 +108,10 @@ export class CommentsBoxComponent implements OnInit {
   checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
       this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
-      this.draft = this.messages.pop()
+      this.draft = this.quillInput.length > 0 ? this.messages.pop() : '';
+      if(this.messages[this.messages.length-1].resolver) {
+        this.resolveDisable = true;
+      }
     }
   }
 
