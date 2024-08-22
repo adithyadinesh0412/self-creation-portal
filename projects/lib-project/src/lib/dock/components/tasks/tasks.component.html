@@ -69,7 +69,7 @@
                                 <input matInput [readonly]="viewOnly || !task.get(tasksData?.allowEvidence.name)?.value" [formControlName]="tasksData.minEvidences.name" (change)="checkValidation()"
                                     [disabled]="!task.get(tasksData?.allowEvidence.name)?.value" placeholder="1" type="number"
                                     [min]="tasksData.minEvidences.validators.min" [max]="tasksData.minEvidences.validators.max"
-                                    class="w-14 block border text-center" (input)="adjustValue($event)" />
+                                    class="w-14 block border text-center" (input)="adjustValue($event,task)" />
                             </div>
 
 
