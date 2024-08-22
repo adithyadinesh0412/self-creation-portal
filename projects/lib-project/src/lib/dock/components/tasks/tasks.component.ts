@@ -295,12 +295,25 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  adjustValue(event: any): void {
-    const inputValue = parseInt(event.target.value, this.tasksData.minEvidences.validators.max);
+  adjustValue(event: any, task:any): void {
+    const inputValue = parseInt(event.target.value, this.tasksData.minEvidences.validators.max); // Convert the input value to a number
     const min = this.tasksData.minEvidences.validators.min;
     const max = this.tasksData.minEvidences.validators.max;
-    const clampedValue = Math.min(Math.max(inputValue, min), max);
-    event.target.value = clampedValue.toString();
+    let adjustedValue = inputValue;
+    if (inputValue < min) {
+      adjustedValue = min;
+    } else if (inputValue > max) {
+      adjustedValue = max;
+    }
+
+   // Update the form control value with the adjusted value
+   const evidenceDetailsControl = task.get('evidence_details').get('min_no_of_evidences');
+   if (evidenceDetailsControl) {
+     evidenceDetailsControl.setValue(adjustedValue);
+   }
+
+   event.target.value = adjustedValue;
+   this.libProjectService.setProjectData({ 'tasks': this.tasks.value });
   }
 
   saveTasks(){
