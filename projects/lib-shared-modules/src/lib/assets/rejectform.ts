@@ -12,7 +12,7 @@ export const rejectform = {
       "maxLength": "Reason must not exceed 256 characters"
     },
     "validators": {
-      "required": true,
+      "required": false,
       "maxLength": 255,
       "pattern": "^(?! )(?!.* {3})[\\p{L}a-zA-Z0-9\\-\\_\\- <>&]+$"
     }
