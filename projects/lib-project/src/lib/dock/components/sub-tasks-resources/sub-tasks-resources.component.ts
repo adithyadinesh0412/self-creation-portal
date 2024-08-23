@@ -141,7 +141,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     const createTaskObject = (task?: any) => {
        let subtask =task?.children  ?  task.children.map((child: any) => this.fb.control(child.name)):[]
         return {
-            buttons: task ? getButtonStates(task.name.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            buttons: task ? getButtonStates(task.name?.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
             subTasks: this.fb.group({
               subtasks: this.fb.array(task?.children?.length > 0 ? subtask : [])
             }),
