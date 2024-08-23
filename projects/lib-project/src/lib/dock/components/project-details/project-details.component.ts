@@ -88,7 +88,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.subscription.add(
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
-              console.log(this.libProjectService.projectData)
               if(this.mode === 'review' || this.libProjectService.projectData.status == "IN_REVIEW"){
                 this.getCommentConfigs()
               }
