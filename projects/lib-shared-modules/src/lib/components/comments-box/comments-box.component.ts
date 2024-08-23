@@ -99,9 +99,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
-      this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
+      this.quillInput = this.messages[this.messages.length-1]?.status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
       this.draft = this.quillInput.length > 0 ? this.messages.pop() : '';
-      if(this.messages[this.messages.length-1].resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
+      if(this.messages[this.messages.length-1]?.resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
         this.resolveDisable = true;
       }
     }
