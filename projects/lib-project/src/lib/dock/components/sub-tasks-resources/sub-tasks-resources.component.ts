@@ -71,6 +71,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
               this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
               this.commentData = data;
+              if(this.comments?.length > 0){
+                this.libProjectService.checkValidationForRequestChanges()
+              }
             })
           }));
         }
@@ -269,5 +272,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   saveSubtask(){
     this.addSubtaskData();
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
+    }
   }
 }

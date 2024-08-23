@@ -20,8 +20,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formDataForTitle:any;
   viewOnly:boolean= false;
   mode:any="";
-  commentData:any;
-  comments:any = [];
+  commentPayload:any;
+  commentsList:any = [];
+  projectInReview:boolean = false;
   resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -88,12 +89,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
               if(this.mode === 'review'){
-                this.subscription.add(this.route.data.subscribe((data:any) => {
-                  this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-                    this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-                    this.commentData = data;
-                  })
-                }));
+                this.getCommentConfigs()
               }
               if (params.projectId) {
                   if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
@@ -105,6 +101,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
                           this.readProjectDeatilsAndMap(data.controls,res.result);
+                          this.libProjectService.upDateProjectTitle();
                         })
                     );
                   }
@@ -113,6 +110,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           );
       }
     })
+  }
+
+  getCommentConfigs() {
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+        this.projectInReview = true;
+      })
+    }));
   }
 
   getFormWithEntitiesAndMap(){
@@ -135,6 +142,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
+                        // comments list and configuration
+                        if(res.result.status == "IN_REVIEW") {
+                          this.getCommentConfigs()
+                        }
                       })
                   );
                 }
@@ -148,6 +159,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
+                        // comments list and configuration
+                        if(res.result.status == "IN_REVIEW") {
+                          this.getCommentConfigs()
+                        }
                       })
                   );
                 }
@@ -262,10 +277,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
-    if (!this.isEvent(data)) {
     if(this.libProjectService.projectData.title != data.title) {
-      this.libProjectService.upDateProjectTitle(data.title);
+      this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
     }
+    if (!this.isEvent(data)) {
     this.libProjectService.setProjectData(data);
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
@@ -292,5 +307,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   formMarkTouched() {
     this.formLib?.myForm.markAllAsTouched()
     this.formLib?.subform?.myForm.markAllAsTouched()
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
+    }
   }
 }
