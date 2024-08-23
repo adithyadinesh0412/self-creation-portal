@@ -16,7 +16,7 @@
         <mat-icon *ngIf="chatFlag" (click)="openChatBot()">expand_circle_down</mat-icon>
       </div>
     </section>
-    @if(mode !== "review"){
+    @if(mode !== "review" && messages?.length){
       <section class="flex justify-between items-center p-3 bg-white">
         <p>Comments by {{messages[0]?.commenter?.name}}</p>
         <!-- [0] represents the reviewer initiates the message, so the reviewer with be the commenter -->

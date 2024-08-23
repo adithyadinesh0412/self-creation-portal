@@ -89,6 +89,6 @@
         </form>
     </div>
 </div>
-@if(commentData) {
-    <lib-comments-box [commentPayload]="commentData" [resourceId]="projectId"  [messages]="comments" (comment)="saveComment($event)"></lib-comments-box>
+@if(commentPayload || projectInReview) {
+    <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList" [mode]="mode"></lib-comments-box>
 }

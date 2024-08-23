@@ -65,7 +65,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         )
       );
     }
-    if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView') {
+    if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView' || this.mode === 'creatorView') {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
@@ -88,7 +88,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.subscription.add(
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
-              if(this.mode === 'review'){
+              if(this.mode === 'review' || this.libProjectService.projectData.status == "IN_REVIEW"){
                 this.getCommentConfigs()
               }
               if (params.projectId) {
@@ -118,6 +118,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
         this.commentPayload = data;
         this.projectInReview = true;
+
+        if(commentListRes.result?.comments?.length > 0){
+          this.libProjectService.checkValidationForRequestChanges()
+        }
+        
       })
     }));
   }
