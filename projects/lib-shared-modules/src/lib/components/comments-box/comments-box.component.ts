@@ -128,7 +128,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     this.comment.emit(this.quillInput)
     if(this.draft) {
       this.draft.comment = this.quillInput;
-      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+        this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
     }
     else {
       this.commentPayload.comment = this.quillInput;
@@ -139,7 +139,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.quillInput.length > 0) {
+    if(this.quillInput.length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
   }
