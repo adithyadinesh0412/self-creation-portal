@@ -98,6 +98,11 @@ export class LibProjectService {
         })
       }else{
         this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
+          let data = {
+            message : res.message,
+            class : 'success'
+          }
+          this.toastService.openSnackBar(data)
           this.router.navigate([SUBMITTED_FOR_REVIEW]);
         })
       }
