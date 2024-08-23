@@ -5,6 +5,17 @@
     font-size: x-large;
 }
 
+input:focus{
+    outline: none;
+}
+
+.disabled-class {
+    cursor:not-allowed;
+    pointer-events: none;
+    opacity: 0.5; 
+    color:$buttonDisable;
+}
+
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
     color: $primary !important;
 }

@@ -1,5 +1,5 @@
 <div class="flex">
-    <div class="w-full">
+    <div class="w-full" [formGroup]="certificateForm">
         <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
             <span>{{"CERTIFICATE" | translate}}</span>
         </div>
@@ -8,12 +8,12 @@
                 <span class="required">{{"CERTIFICATE_DESCRIPTION" | translate}}</span>
                 <span class="px-1 text-base text-[$buttonDisable]">({{"CERTIFICATE_SUB_DESCRIPTION" | translate}})</span>
             </p>
-            <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="selectedOption">
-                <mat-radio-button value="1" checked="true" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
+            <mat-radio-group color="primary" aria-label="Select an option" formControlName="selectedOption">
+                <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
                 <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
             </mat-radio-group>
         </div>
-        @if(selectedOption === '1') {
+        @if(certificateForm.get('selectedOption')?.value === '1') {
         <div class="px-10  text-tertiary">
             <p class="text-lg">{{ "CERTIFICATE_DETAILS" | translate}}
                 <span class="px-1 text-base text-[$buttonDisable]">({{"CERTIFICATE_SUB_DETAILS" | translate}})</span>
@@ -27,37 +27,68 @@
                     </p>
                     <div class="mt-2">
                     @for(type of certificateType; track type) {
-                        <div class="container inline-block border border-borderGray rounded-lg px-4 py-0.5 shadow-[0_0.25rem_0.625rem_-0.375rem_var(--tertiary-color)]">
-                            <mat-select [placeholder]="certificateType[0].label | translate">
+                        <div class="container w-3/4 inline-block border border-borderGray rounded-lg px-4 py-1.5 shadow-[0_0.25rem_0.625rem_-0.375rem_var(--tertiary-color)]">
+                            <mat-select formControlName="certificateType" [placeholder]="certificateType[0].label | translate" (selectionChange)="onCertificateTypeChange($event.value)">
                                 @for(option of type.option; track option){
                                 <mat-option [value]="option.value">{{option.label | translate}}</mat-option>
                                 }
                             </mat-select>
                         </div>
+                        @if(certificateForm.get('certificateType')?.invalid && certificateForm.get('certificateType')?.touched ){
+                            <div class="text-red-600 mt-2">{{ "CERTIFICATE_TYPE_REQUIRED" | translate }}</div>
+                        }
                     }
                     </div>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4" [ngClass]="{'disabled-class': !certificateTypeSelected}">
                         <p class="required">{{ "CERTIFICATE_ISSUER_NAME" | translate}}</p>
-                        <div class="mt-2  border border-borderGray rounded-lg px-4 py-0.5 ">
-                            <input type="text" matInput  placeholder="Enter project title"> 
+                        <div class="mt-2  w-3/4 border border-borderGray rounded-lg px-4 py-1.5 ">
+                            <input type="text" [disabled]="!certificateTypeSelected"  matInput  formControlName="issuerName" placeholder="Enter project title" > 
                         </div>
+                        @if(certificateForm.get('issuerName')?.invalid && certificateForm.get('issuerName')?.touched ){
+                            <div class="text-red-600 mt-2">{{ "CERTIFICATE_ISSUER_NAME_REQUIRED" | translate }}</div>
+                        }
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4" [ngClass]="{'disabled-class': !certificateTypeSelected}">
                         <p class="required">{{ "ATTACH_LOGOS" | translate}}</p>
-                        <div class="mt-2 flex items-center text-primary pb-2">
-                            <mat-icon class="cursor-pointer"  (click)="attachLogo()">add_circle</mat-icon><span class="px-2">Add image1</span>
+                        <div class="mt-2 flex items-center  pb-2">
+                            <mat-icon class="cursor-pointer text-primary" 
+                              (click)="certificateTypeSelected && attachLogo()">add_circle</mat-icon><span class="px-2 text-primary">Add image1</span>
                         </div>
+                        @for(logo of attachedLogos; track logo; let i= $index){
+                            <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2 w-2/4">
+                                <section class="flex items-center gap-2 min-w-0 flex-grow">
+                                    <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
+                                    <p class="overflow-ellipsis">{{logo.name}}</p>
+                                </section>
+                                <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeLogo(i)">cancel</mat-icon>
+                            </div>
+                        }
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-4"  [ngClass]="{'disabled-class': !certificateTypeSelected}">
                         <p class="required">{{ "ATTACH_SIGNATURES" | translate}}</p>
-                        <div class="mt-2 flex items-center text-primary pb-2">
-                            <mat-icon class="cursor-pointer" (click)="attachSignature()">add_circle</mat-icon><span class="px-2">Add image1</span>
+                        <div class="mt-2 flex items-center  pb-2">
+                            <mat-icon class="cursor-pointer text-primary"
+                            (click)="certificateTypeSelected && attachSignature()">add_circle</mat-icon><span class="px-2 text-primary">Add image1</span>
                         </div>
+                        @for(sign of attachedSignatures; track sign; let i= $index){
+                            <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2  w-2/4">
+                                <section class="flex items-center gap-2 min-w-0 flex-grow">
+                                    <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
+                                    <p class="overflow-ellipsis text-wrap">{{sign.name}}</p>
+                                </section>
+                                <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeSignature(i)">cancel</mat-icon>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div class="certificate-content w-1/2">
                     <!-- certificate image content to place here -->
+                    <div class="px-10 mt-10">
+                        <button type="button" class="btn btn-primary" (click)="onSubmit()">
+                          {{ 'SUBMIT' | translate }}
+                        </button>
+                      </div>
                 </div>
             </div>
             <div class="mt-6">
@@ -68,7 +99,7 @@
             </div>
             <div class="mt-4">
                 <p>{{ "ENABLE_PROJECT_LEVEL_EVIDENCE" | translate}}</p>
-                <mat-radio-group color="primary" aria-label="Select an option">
+                <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableTaskEvidence">
                     <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
                     <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
                 </mat-radio-group>
@@ -77,7 +108,7 @@
                 <div class="mt-4">
                     <p class="text-[$buttonDisable]">{{ "NUMBER_OF_EVIDENCE_REQUIRED" | translate}}</p>
                     <div class="mt-2 w-1/2 border border-borderGray rounded-lg px-4 py-0.5 ">
-                        <input type="text" matInput  placeholder="1"> 
+                        <input type="text" matInput formControlName="evidenceRequired" placeholder="1"> 
                     </div>
                     <div class="mt-4">
                         <p>{{ "ENABLE_TASK_EVIDENCE" | translate}}</p>

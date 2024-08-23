@@ -159,5 +159,8 @@
     "ATTACH":"Attach",
     "SIGNATURE_NAME":"Signature Name",
     "SIGNATURE_DESIGNATION":"Signature Designation",
-    "UPLOAD_BUTTON":"Select file to upload"
+    "UPLOAD_BUTTON":"Select file to upload",
+    "CERTIFICATE_TYPE_REQUIRED":"Certificate type is required",
+    "CERTIFICATE_ISSUER_NAME_REQUIRED":"Certificate issuer name is required",
+    "SELECT_CERTIFICATE_TYPE":"Select certificate type"
 }

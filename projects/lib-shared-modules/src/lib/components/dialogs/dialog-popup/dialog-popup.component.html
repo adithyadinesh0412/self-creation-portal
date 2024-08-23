@@ -74,19 +74,35 @@
         }
       </div>
       <div class="right-content w-1/2">
-        <div class="drag-drop-content relative bg-cardLightBlue border-2 border-dashed border border-borderGray w-full pt-[100%]">
+        <div class="drag-drop-content relative bg-cardLightBlue border-2 border-dashed border border-borderGray w-full pt-[100%]"
+        (drop)="onFileDropped($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)">
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="flex-col">
+            <div class="flex-col flex items-center justify-center">
               <div class="flex items-center justify-center pb-2">
                 <img src="assets/images/file.png" alt="No Result">
               </div>
-              <p>Drag & drop file to upload</p>
-              <p class="px-20">or</p>
-              <button  type="button" class="flex items-center button border rounded bg-lightGreen text-sm text-white w-48 min-w-[192px] p-2">
+              <p class="flex items-center justify-center ">Drag & drop file to upload</p>
+              <p class="flex items-center justify-center ">or</p>
+              <input
+                type="file"
+                accept="png"
+                (change)="onFileSelected($event)"
+                class="hidden"
+                #fileInput
+              />
+              <button  type="button" class="flex justify-center items-center button border rounded bg-lightGreen text-sm text-white w-48 min-w-[192px] p-2"
+              (click)="fileInput.click()">
                 <mat-icon class="cursor-pointer text-sm">vertical_align_top</mat-icon>
                 <span>{{"UPLOAD_BUTTON" | translate}}</span>
               </button>
               <p class="text-xs flex items-center justify-center pt-1">upload PNG upto 50kb</p>
+              @if(selectedFileName){
+                <p class="flex items-center justify-center text-red-500 text-xs pt-2">Selected File: {{ selectedFileName }}</p>
+              }
+              @if(errorMessage){
+                <p class="flex items-center justify-center text-red-500 text-xs pt-2">{{ errorMessage }}</p>
+              }
+              
             </div>
           </div>
         </div>
@@ -104,6 +120,6 @@
     <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title , isReported :(reportContent ?reportContent :false) }">{{dialogueData.exitButton |translate}}</button>
   }
   @if(dialogueData.attachButton){
-    <button class="btn text-primary border-blueCircle w-30 min-w-[135px]">{{dialogueData.attachButton | translate}}</button>
+    <button class="btn text-primary border-blueCircle w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.attachButton}" (click)="onAttach()">{{dialogueData.attachButton | translate}}</button>
   }
 </div>

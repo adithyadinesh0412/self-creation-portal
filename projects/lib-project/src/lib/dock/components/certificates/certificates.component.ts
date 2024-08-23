@@ -1,25 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DialogPopupComponent } from 'lib-shared-modules';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'lib-certificates',
   standalone: true,
-  imports: [TranslateModule, MatIconModule, MatRadioModule, MatSelectModule, MatFormFieldModule, FormsModule, CommonModule, MatDialogModule],
+  imports: [TranslateModule, MatIconModule, MatRadioModule, MatSelectModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, CommonModule, MatDialogModule],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
-export class CertificatesComponent {
-  selectedOption: string = '1'; 
+export class CertificatesComponent implements OnInit{
+  certificateForm !: FormGroup 
+  attachedLogos: Array<{ name: string }> = [];
+  attachedSignatures: Array<{ name: string }> = [];
+  certificateTypeSelected = false;
   certificateType = [ 
     {
-        "label": "ONE_LOGO_ONE_SIGNATURE",
+        "label": "SELECT_CERTIFICATE_TYPE",
         "value": "type",
         "option": [
             {
@@ -43,7 +46,27 @@ export class CertificatesComponent {
   ] 
   evidenceNumber = [1, 2, 3];
 
-  constructor(private dialog : MatDialog){}
+  constructor(private dialog : MatDialog, private fb: FormBuilder,){}
+
+  ngOnInit() {
+    this.initForm();
+  }
+
+  initForm() {
+    this.certificateForm = this.fb.group({
+      selectedOption: [''],
+      certificateType: ['', Validators.required],
+      issuerName: ['', Validators.required],
+      evidenceRequired: ['', Validators.required],
+      enableTaskEvidence: ['1'],
+      attachedLogos: this.fb.array([]),
+      attachedSignatures: this.fb.array([]),
+    });
+  }
+
+  onCertificateTypeChange(value: string): void {
+    this.certificateTypeSelected = !!value;
+  }
 
   attachLogo(){
     const dialogRef = this.dialog.open(DialogPopupComponent, {
@@ -60,8 +83,8 @@ export class CertificatesComponent {
       }
     })
     dialogRef.afterClosed().subscribe(result => {
-      if(result.data === ""){
-        return true
+      if (result && result.fileName) {
+        this.attachedLogos.push({ name: result.fileName });
       } else {
         return false
       }
@@ -69,7 +92,6 @@ export class CertificatesComponent {
   }
 
   attachSignature(){
-    console.log("clcik")
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       disableClose: true,
       data : {
@@ -90,52 +112,40 @@ export class CertificatesComponent {
       }
     })
     dialogRef.afterClosed().subscribe(result => {
-      if(result.data === ""){
-        return true
+      if (result && result.fileName) {
+        this.attachedSignatures.push({ name: result.fileName });
       } else {
         return false
       }
     })
   }
 
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
-    // You can add styles here for when the file is being dragged over the area
+  removeLogo(index: number) {
+    this.attachedLogos.splice(index, 1);
   }
 
-  onDragLeave(event: DragEvent) {
-    event.preventDefault();
-    // Revert styles when dragging leaves the area
+  removeSignature(index: number) {
+    this.attachedSignatures.splice(index, 1);
   }
 
-  onFileDropped(event: DragEvent) {
-    event.preventDefault();
-    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
-      this.uploadFile(event.dataTransfer.files);
+  get attachedLogosData(): FormArray {
+    return this.certificateForm.get('attachedLogos') as FormArray;
+  }
+  
+  get attachedSignaturesData(): FormArray {
+    return this.certificateForm.get('attachedSignatures') as FormArray;
+  }
+
+  onSubmit(): void {
+    if (this.certificateForm.valid) {
+      const formData = {
+        ...this.certificateForm.value,
+        attachedLogos: this.attachedLogos,
+        attachedSignatures: this.attachedSignatures,
+      };
+      console.log('Form Data:', formData);
+    } else {
+      console.log('Form is invalid');
     }
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.uploadFile(input.files);
-    }
-  }
-
-  uploadFile(files: FileList) {
-    const file = files[0]; // Assuming single file upload
-    console.log('File selected:', file);
-
-    // Implement the actual upload logic here
-    if (file.size > 50000) {
-      alert('File size exceeds 50kb limit.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Call your upload service
-    // this.fileUploadService.uploadFile(formData).subscribe(...);
   }
 }
