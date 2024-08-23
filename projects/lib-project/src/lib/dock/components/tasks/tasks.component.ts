@@ -60,9 +60,6 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.projectId = params.projectId;
         this.libProjectService.projectData.id = params.projectId;
         this.mode = params.mode;
-        if(this.mode === 'review'){
-          this. getCommentConfigs()
-        }
         if (params.projectId) {
           if (params.mode) {
             if (Object.keys(this.libProjectService.projectData).length > 1) {

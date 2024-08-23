@@ -67,9 +67,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       this.route.queryParams.subscribe((params:any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
-        if(this.mode === 'review'){
-          this.getCommentConfigs()
-        }
         if(params.mode){
           if(Object.keys(this.libProjectService.projectData)?.length) {
             this.projectData = this.libProjectService.projectData;
@@ -78,7 +75,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === "edit") {
               this.startAutoSaving();
             }
-            if(this.libProjectService?.projectData?.status == "IN_REVIEW") {
+            if(this.libProjectService?.projectData?.status == "IN_REVIEW") {      
               this.getCommentConfigs()
             }
           }
@@ -90,9 +87,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.addSubtaskData()
               if (params.mode === "edit") {
               this.startAutoSaving();
-            }
-            if(res.result.status == "IN_REVIEW") {
-              this.getCommentConfigs()
             }
             })
           }
