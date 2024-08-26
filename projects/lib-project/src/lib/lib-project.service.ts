@@ -67,7 +67,7 @@ export class LibProjectService {
 
   triggerSendForReview() {
     if(this.validForm.projectDetails === "VALID" && this.validForm.tasks === "VALID" &&this.validForm.subTasks === "VALID") {
-      if(this.projectConfig.show_reviewer_list){
+      if(this.projectConfig.show_reviewer_list && this.projectData.status !== "IN_REVIEW"){
         this.getReviewerData().subscribe((list:any) =>{
           const dialogRef = this.dialog.open(ReviewModelComponent, {
             disableClose: true,
@@ -98,6 +98,11 @@ export class LibProjectService {
         })
       }else{
         this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
+          let data = {
+            message : res.message,
+            class : 'success'
+          }
+          this.toastService.openSnackBar(data)
           this.router.navigate([SUBMITTED_FOR_REVIEW]);
         })
       }
@@ -229,6 +234,15 @@ export class LibProjectService {
     });
   }
 
+  editProject(){
+    this.router.navigate([PROJECT_DETAILS_PAGE], {
+      queryParams: {
+        projectId: this.projectData.id,
+        mode: 'edit'
+      }
+    });
+  }
+
   rejectProject(reason:any, isReported:any){
     this.utilService.rejectOrReportedReview(this.projectData.id,reason? {notes:reason} : {},isReported ).subscribe((res:any)=>{
       this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
@@ -236,6 +250,7 @@ export class LibProjectService {
   }
 
   sendForRequestChange(){
+    this.utilService.saveComment = false;
     this.getCommentList().subscribe((res) => {
       this.utilService.updateReview(this.projectData.id,{comment:res}).subscribe((data:any)=>{
         this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)

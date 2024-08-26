@@ -45,8 +45,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   projectData:any;
   viewOnly:boolean= false;
   mode:any = "";
-  commentData:any;
-  comments:any = [];
+  commentPayload:any;
+  commentsList:any = [];
+  projectInReview:boolean = false;
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -66,17 +67,6 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       this.route.queryParams.subscribe((params:any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
-        if(this.mode === 'review'){
-          this.subscription.add(this.route.data.subscribe((data:any) => {
-            this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-              this.comments = this.comments.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-              this.commentData = data;
-              if(this.comments?.length > 0){
-                this.libProjectService.checkValidationForRequestChanges()
-              }
-            })
-          }));
-        }
         if(params.mode){
           if(Object.keys(this.libProjectService.projectData)?.length) {
             this.projectData = this.libProjectService.projectData;
@@ -84,6 +74,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.addSubtaskData()
             if (params.mode === "edit") {
               this.startAutoSaving();
+            }
+            if(this.libProjectService?.projectData?.status == "IN_REVIEW") {      
+              this.getCommentConfigs()
             }
           }
           else {
@@ -117,7 +110,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             )
           );
           }
-          if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView') {
+          if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView' || this.mode === 'creatorView') {
             this.viewOnly = true;
           }
         }else{
@@ -142,7 +135,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     const createTaskObject = (task?: any) => {
        let subtask =task?.children  ?  task.children.map((child: any) => this.fb.control(child.name)):[]
         return {
-            buttons: task ? getButtonStates(task.name.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            buttons: task ? getButtonStates(task.name?.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
             subTasks: this.fb.group({
               subtasks: this.fb.array(task?.children?.length > 0 ? subtask : [])
             }),
@@ -278,5 +271,20 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     if(quillInput){
         this.libProjectService.checkValidationForRequestChanges()
     }
+  }
+
+  getCommentConfigs(){
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+        this.projectInReview = true;
+
+        if(commentListRes.result?.comments?.length > 0){
+          this.libProjectService.checkValidationForRequestChanges()
+        }
+        
+      })
+    }));
   }
 }

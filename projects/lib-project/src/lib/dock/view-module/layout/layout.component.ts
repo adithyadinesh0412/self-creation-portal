@@ -98,6 +98,10 @@ export class LayoutComponent {
         this.libProjectService.startOrResumeReview()
         break;
       }
+      case "EDIT":{
+        this.libProjectService.editProject()
+        break;
+      }
       case "ACCEPT":{
         const dialogRef = this.dialog.open(DialogPopupComponent, {
           autoFocus: false,

@@ -11,7 +11,9 @@ export const resourceStatus = {
 export const reviewStatus = {
     NOT_STARTED: 'NOT_STARTED',
     INPROGRESS: 'IN_PROGRESS',
-    REQUEST_FOR_CHANGES:'REQUESTED_FOR_CHANGES'
+    REQUEST_FOR_CHANGES:'REQUESTED_FOR_CHANGES',
+    CHANGES_UPDATED:'CHANGES_UPDATED'
+
 };
 export const ROUTE_PATHS = {
     SIDENAV: {

@@ -6,6 +6,7 @@ import { HttpProviderService } from '../http-provider.service';
   providedIn: 'root'
 })
 export class UtilService {
+  saveComment :boolean= true;
 
   constructor( private Configuration:ConfigService,private httpService:HttpProviderService) { }
 

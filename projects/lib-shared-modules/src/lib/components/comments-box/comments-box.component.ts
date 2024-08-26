@@ -99,9 +99,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
-      this.quillInput = this.messages[this.messages.length-1].status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
+      this.quillInput = this.messages[this.messages.length-1]?.status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
       this.draft = this.quillInput.length > 0 ? this.messages.pop() : '';
-      if(this.messages[this.messages.length-1].resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
+      if(this.messages[this.messages.length-1]?.resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
         this.resolveDisable = true;
       }
     }
@@ -132,14 +132,15 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
     else {
       this.commentPayload.comment = this.quillInput;
-      this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res) => console.log(res));
+      this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res:any) => {
+        this.draft = res.result;
+      });
     }
     this.commentPayload.comment = this.quillInput;
-
   }
 
   ngOnDestroy(): void {
-    if(this.quillInput.length > 0) {
+    if(this.quillInput.length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
   }
