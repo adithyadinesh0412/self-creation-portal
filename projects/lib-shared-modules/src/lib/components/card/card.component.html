@@ -8,7 +8,7 @@
                         <div class="chip-container item-center text-center bg-chipPurple">
                             {{list.type | translate}}
                         </div>
-                        @if((list.status === resourceStatus.SUBMITTED) || (list.review_status === reviewStatus.NOT_STARTED)){
+                        @if((list.status === resourceStatus.SUBMITTED) || (list.review_status === reviewStatus.NOT_STARTED) || (list.review_status === reviewStatus.CHANGES_UPDATED)){
                             <div class="chip-container item-center text-center bg-tertiary border border-chipBorder text-secondary">
                                 {{( reviewStatus.NOT_STARTED || list.review_status )| translate}}
                             </div>
