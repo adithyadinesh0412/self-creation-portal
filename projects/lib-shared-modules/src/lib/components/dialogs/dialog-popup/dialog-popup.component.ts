@@ -19,8 +19,59 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 export class DialogPopupComponent {
   reportContent: boolean = false;
   title: string = '';
+  errorMessage: string = '';
+  selectedFileName: string = '';
+
   constructor(
     public dialogRef: MatDialogRef<DialogPopupComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
+  }
+
+  onDragOver(event: DragEvent){
+    event.preventDefault();
+  }
+
+  onDragLeave(event: DragEvent){
+    event.preventDefault();
+  }
+
+  onFileDropped(event: DragEvent){
+    event.preventDefault();
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.validateAndUploadFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.validateAndUploadFile(input.files[0]);
+    }
+  }
+
+  validateAndUploadFile(file: File) {
+    this.errorMessage = '';
+
+    if (file.type !== 'image/png') {
+      this.errorMessage = 'Only PNG files are allowed.';
+      return;
+    }
+
+    if (file.size > 50000) { 
+      this.errorMessage = 'File size exceeds 50KB limit.';
+      return;
+    }
+    this.selectedFileName = file.name;
+    this.uploadFile(file);
+  }
+
+  uploadFile(file: File) {
+    console.log('File selected:', file);
+    const formData = new FormData();
+    formData.append('file', file);
+  }
+
+  onAttach() {
+    this.dialogRef.close({ fileName: this.selectedFileName });
   }
 }

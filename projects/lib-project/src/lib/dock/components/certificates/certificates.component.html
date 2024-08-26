@@ -1,1 +1,166 @@
-<p>content will be added here</p>
+<div class="flex">
+    <div class="w-full" [formGroup]="certificateForm">
+      <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
+        <span>{{ "CERTIFICATE" | translate }}</span>
+      </div>
+      <div class="px-10 mt-20 mb-4 text-lg text-tertiary">
+        @for(item of certificateDetails; track item) {
+            @if(item.name === "addcertificate") {
+                <p>
+                    <span class="required">{{ item.label }}</span>
+                    <span class="px-1 text-base text-[$buttonDisable]">({{ item.sublabel}})</span>
+                  </p>
+                  <mat-radio-group color="primary" aria-label="Select an option" [formControlName]="item.formControlName">
+                     @for(option of item.options; track option) {
+                        <mat-radio-button [value]="option.value" class="-mx-1 mr-6">{{ option.label}}</mat-radio-button>
+                     }
+                  </mat-radio-group>
+            }
+            
+        }
+      </div>
+  
+      @if(certificateForm.get('selectedOption')?.value === selectedYes) {
+        <div class="px-10 text-tertiary">
+            <p class="text-lg">{{ "CERTIFICATE_DETAILS" | translate}}
+                <span class="px-1 text-base text-[$buttonDisable]">({{"CERTIFICATE_SUB_DETAILS" | translate}})</span>
+            </p>
+                 <div class="flex">
+                    <div class="left-content w-1/2">
+                        @for(ele of certificateDetails; track ele){
+                            @if(ele.name === "certificatetype"){
+                                <div class="mt-4">
+                                    <div class="mt-0">
+                                            <div class="">
+                                                <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline">
+                                                    <mat-label> {{ ele.label}}</mat-label>
+                                                    <mat-select [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" (selectionChange)="onCertificateTypeChange($event.value)">
+                                                        @for(type of ele.options; track type){
+                                                        <mat-option [value]="type.value">{{type.label}}</mat-option>
+                                                        }
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            @if(certificateForm.get(ele.formControlName)?.invalid && certificateForm.get(ele.formControlName)?.touched ){
+                                                <mat-error class="error-container text-red-600  flex w-full">
+                                                    <div class="error-message">
+                                                        <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                                        @if(certificateForm.get(ele.formControlName)?.hasError('required')) {
+                                                            <span>{{ ele.errorMessage?.required }}</span>
+                                                          }
+                                                    </div>
+                                                </mat-error>
+                                            }
+                                        </div>
+                                </div>
+                            }
+                                <div [ngClass]="{'disabled-class': !certificateTypeSelected}">
+                                    <div class="mt-4">
+                                        @if(ele.name === "name"){
+                                        <div class="mt-4">
+                                            <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline">
+                                                <mat-label> {{ ele.label}}</mat-label>
+                                                <input type="text" class="w-full"  [disabled]="!certificateTypeSelected"  matInput   
+                                                [value]="ele.value"  [maxlength]="ele.validators.maxLength" 
+                                                [pattern]="ele.validators.pattern"
+                                                [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" > 
+                                            </mat-form-field>
+                                        </div>
+                                            <mat-error class="error-container text-red-600 flex w-full">
+                                                @if(certificateForm.get(ele.formControlName)?.touched && certificateForm.get(ele.formControlName)?.invalid ){
+                                                <div class="error-message">
+                                                  <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                                  @if(certificateForm.get(ele.formControlName)?.errors?.['required']){<span>{{ ele.errorMessage?.required}}</span> }
+                                                  @if(certificateForm.get(ele.formControlName)?.errors?.['maxlength']){
+                                                    <span>{{ ele.errorMessage?.maxLength }}</span>
+                                                  }
+                                                  @if(certificateForm.get(ele.formControlName)?.errors?.['pattern']){
+                                                    <span>{{ ele.errorMessage?.pattern }}</span>
+                                                  }
+                                                </div>
+                                                }
+                                              </mat-error>
+                                        }
+                                    </div>
+                                    <div class="mt-4">
+                                        @if(ele.name === "attachlogo"){
+                                        <p class="required">{{ ele.label}}</p>
+                                        <div class="mt-2 flex items-center  pb-2">
+                                            <mat-icon class="cursor-pointer text-primary" 
+                                              (click)="certificateTypeSelected && attachLogos()">{{ele.icon}}</mat-icon><span class="px-2 text-primary">{{ele.textForLink}}</span>
+                                        </div>
+                                        @for(logo of attachLogo; track logo; let i= $index){
+                                            <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2 w-2/4">
+                                                <section class="flex items-center gap-2 min-w-0 flex-grow">
+                                                    <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
+                                                    <p class="overflow-ellipsis">{{logo.name}}</p>
+                                                </section>
+                                                <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeLogo(i)">cancel</mat-icon>
+                                            </div>
+                                        }
+                                        }
+                                    </div>
+                                    <div class="mt-4">
+                                        @if(ele.name === "attachsign"){
+                                        <p class="required">{{ ele.label}}</p>
+                                        <div class="mt-2 flex items-center  pb-2">
+                                            <mat-icon class="cursor-pointer text-primary"
+                                            (click)="certificateTypeSelected && attachSignature()">{{ele.icon}}</mat-icon><span class="px-2 text-primary">{{ele.textForLink}}</span>
+                                        </div>
+                                        @for(sign of attachSign; track sign; let i= $index){
+                                            <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2  w-2/4">
+                                                <section class="flex items-center gap-2 min-w-0 flex-grow">
+                                                    <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
+                                                    <p class="overflow-ellipsis text-wrap">{{sign.name}}</p>
+                                                </section>
+                                                <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeSignature(i)">cancel</mat-icon>
+                                            </div>
+                                        }
+                                        }
+                                    </div>
+                                </div>
+                    }
+                    </div>
+                    <div class="certificate-content w-1/2">
+                        <!-- certificate image content to place here -->
+                        <div class="px-10 mt-10">
+                            <button type="button" class="btn btn-primary" (click)="onSubmit()">
+                            {{ 'SUBMIT' | translate }}
+                            </button>
+                      </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <p>
+                        <span class="text-lg text-tertiary">{{ "SET_CERTIFICATE_CRITERIA" | translate}}</span>
+                        <span class="px-1 text-base text-[$buttonDisable]">({{"SET_CERTIFICATE_CRITERIA_DESCRIPTION" | translate}})</span>
+                    </p>
+                </div>
+                @for(item of certificateDetails; track item){
+                    <div class="mt-6 w-1/2">
+                        @if(item.name === "attachprojectevidence"){
+                        <p>{{ item.label}}</p>
+                        <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableTaskEvidence">
+                            <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
+                            <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
+                        </mat-radio-group>
+                        }
+                        @if(item.name === "noofevidence"){
+                                <mat-form-field floatLabel="always" class="w-full mt-2" appearance="outline">
+                                    <mat-label> {{ item.label}}</mat-label>
+                                    <input type="text" class="w-full" matInput formControlName="evidenceRequired" [placeholder]="item.placeHolder || ''"> 
+                                </mat-form-field>
+                        }
+                        @if(item.name === "attachtaskevidence"){
+                                <p class="mt-2">{{ item.label}}</p>
+                                <mat-radio-group color="primary" aria-label="Select an option">
+                                    <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
+                                    <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                        }
+                    </div> 
+                }
+        </div>
+      }
+    </div>
+</div>

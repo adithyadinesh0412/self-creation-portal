@@ -19,3 +19,8 @@ export const TASK_DETAILS: IFORM = {
 	"type": "tasksDetails",
 	"sub_type": "tasksDetailsForm"
 }
+
+export const CERTIFICATE_DETAILS: IFORM = {
+	"type": "certificateDetails",
+	"sub_type": "certificateDetailsForm"
+}
