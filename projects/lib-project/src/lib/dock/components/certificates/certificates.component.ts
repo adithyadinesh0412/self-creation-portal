@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, F
 import { CommonModule } from '@angular/common';
 import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
 @Component({
   selector: 'lib-certificates',
   standalone: true,
@@ -18,15 +19,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 })
 export class CertificatesComponent implements OnInit{
   certificateDetails : any;
+  selectedYes:any;
   certificateForm !: FormGroup 
   attachLogo: Array<{ name: string }> = [];
   attachSign: Array<{ name: string }> = [];
   certificateTypeSelected = false;
-  filespecifications = [
-    { no: '1', option: "HEIGHT_SPECIFICATION" },
-    { no: '2', option: "SIZE_SPECIFICATIION" },
-    { no: '3', option: "FILE_SPECIFICATION" } 
-  ]
   evidenceNumber = [1, 2, 3];
 
   constructor(private dialog : MatDialog, private fb: FormBuilder, private formService: FormService,){}
@@ -58,35 +55,24 @@ export class CertificatesComponent implements OnInit{
   }
 
   attachLogos(){
+    const attachLogoData = this.certificateDetails.find((field: any) => field.name === 'attachlogo');
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       disableClose: true,
-      data : {
-        header: "ATTACH_LOGO",
-        subheader: "ATTACH_LOGOS_DETAIlS",
-        subcontent: this.filespecifications,
-        attachButton: "ATTACH"
-      }
-    })
+      data: attachLogoData.dialogData 
+    });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.fileName) {
         this.attachLogo.push({ name: result.fileName });
-      } 
-    })
+      }
+    });
   }
 
   attachSignature(){
+    const attachSignData = this.certificateDetails.find((field: any) => field.name === 'attachsign');
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       disableClose: true,
-      data : {
-        header: "ATTACH_SIGNATURE",
-        subheader: "ADD_SIGNATURE_DETALS",
-        inputfields: [
-          { label: "SIGNATURE_NAME", value: "", type: "text" },
-          { label: "SIGNATURE_DESIGNATION", value: "" , type: "text" },
-        ],
-        subcontent: this.filespecifications,
-        attachButton: "ATTACH"
-      }
+      data: attachSignData.dialogData
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.fileName) {
@@ -103,12 +89,16 @@ export class CertificatesComponent implements OnInit{
     this.attachSign.splice(index, 1);
   }
 
+  getAttachedData(controlName: string): FormArray {
+    return this.certificateForm.get(controlName) as FormArray;
+  }
+
   get attachedLogosData(): FormArray {
-    return this.certificateForm.get('attachedLogos') as FormArray;
+    return this.getAttachedData('attachedLogos');
   }
   
   get attachedSignaturesData(): FormArray {
-    return this.certificateForm.get('attachedSignatures') as FormArray;
+    return this.getAttachedData('attachedSignatures');
   }
 
   onSubmit(): void {
@@ -128,7 +118,11 @@ export class CertificatesComponent implements OnInit{
   getCertificateForm(){
     this.formService.getCertificateForm().then((data : any) => {
       this.certificateDetails = data.controls
+      this.selectedYes = this.certificateDetails
+      .find((field: any) => field.name === 'addcertificate')
+      ?.options.find((option: any) => option.label === 'Yes')?.value;
       return data
     })
   }
+
 }

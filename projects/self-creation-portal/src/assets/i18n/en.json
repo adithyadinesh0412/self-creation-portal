@@ -166,5 +166,6 @@
     "HEIGHT_SPECIFICATION":"112px height X 46px base",
     "SIZE_SPECIFICATIION":"Size <= 50kb",
     "FILE_SPECIFICATION":"File type = PNG only",
-    "FILE_SPECIFICATION_HEADER":"Make sure your file:"
+    "FILE_SPECIFICATION_HEADER":"Make sure your file:",
+    "UPLOAD_PNG_UPTO_50KB":"upload PNG upto 50kb"
 }
