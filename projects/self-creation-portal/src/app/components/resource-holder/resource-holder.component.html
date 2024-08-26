@@ -12,7 +12,7 @@
    </div>
     @for (list of filters.filteredLists; track list) {
         <div class="pb-1">
-        <lib-card [list]="list" [showActionButton]="filters.showActionButton" (buttonClickEvent)="statusButtonClick($event)"
+        <lib-card [list]="list" [showActionButton]="filters.showActionButton"  [activeRole]="activeRole" (buttonClickEvent)="statusButtonClick($event)"
         (infoClickEvent)="infoIconClickEvent($event)" [showInfoIcon]="filters.showInfoIcon"></lib-card>
         </div>
     } 

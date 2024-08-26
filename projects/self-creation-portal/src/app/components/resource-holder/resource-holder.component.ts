@@ -176,42 +176,40 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     if (!this.buttonsData) {
       return cardItems;
     }
-    cardItems.forEach((cardItem : any) => {
+    cardItems.forEach((cardItem: any) => {
       cardItem.actionButton = [];
       if (this.buttonsData) {
-        this.buttonsData.forEach((button: any) => {
+        this.buttonsData.some((button: any) => {
           if (this.buttonsCSS[button]) {
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if (button.buttons) {
-            if (button.status === cardItem.status) {
-              button.buttons.forEach((btn: string) => {
-                if (btn) {
-                  cardItem.actionButton.push(this.buttonsCSS[btn]);
-                }
-              });
-            }else if (button.status === 'NOT_STARTED' && cardItem.status === 'SUBMITTED') {
-              cardItem.actionButton = [];
-              button.buttons.forEach((btn: string) => {
-                if (btn) {
-                  cardItem.actionButton.push(this.buttonsCSS[btn]);
-                }
-              });
-            } else if (button.status === 'CHANGES_UPDATED' && cardItem.review_status === 'CHANGES_UPDATED') {
-              cardItem.actionButton = [];
-              button.buttons.forEach((btn: string) => {
-                if (btn) {
-                  cardItem.actionButton.push(this.buttonsCSS[btn]);
-                }
-              });
+            if(button.status === cardItem.review_status){
+              this.applyButtons(button, cardItem);
+              return true;
+            }else if(button.status === cardItem.status){
+              this.applyButtons(button, cardItem);
+              return true;
             }
-        }
-      });
+          }
+          return false;
+        });
+      }
+    });
+    return cardItems;
+  }
+
+applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
+  if (clearExisting) {
+    cardItem.actionButton = [];
+  }
+  button.buttons.forEach((btn: string) => {
+    if (btn) {
+      cardItem.actionButton.push(this.buttonsCSS[btn]);
     }
   });
-  return cardItems
 }
- 
+
   //updateQueryParams to router
   updateQueryParams() {
     const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
@@ -257,7 +255,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
              }
            });
            break;
-         }else if(item.status == "IN_REVIEW" && this.activeRole == "creator"){
+         }else if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
@@ -265,7 +263,16 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
             }
           });
           break;
-         }else{
+         }
+         else if(item.review_status == "CHANGES_UPDATED" && this.activeRole == "creator" ){
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: 'viewOnly'
+            }
+          });
+          break;
+        }else{
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
