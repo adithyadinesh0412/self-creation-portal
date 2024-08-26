@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { ConfigService } from '../../configs/config.service';
 import { HttpProviderService } from '../http-provider.service';
-import { PROJECT_DETAILS } from '../../constants/formConstant';
+import { PROJECT_DETAILS, CERTIFICATE_DETAILS } from '../../constants/formConstant';
 
 
 
@@ -108,6 +108,23 @@ export class FormService {
     }
   }
 
+  getCertificateForm(){
+    return new Promise((resolve, reject) => {
+      try{
+        this.getForm(CERTIFICATE_DETAILS).subscribe((formResponse : any) => {
+          let formData = formResponse?.result?.data?.fields || [];
+          let entityNames = this.getEntityNames(formData);
+          this.getEntities(entityNames).subscribe((entities:any) => {
+            let data = this.populateEntity(formData, entities);
+            resolve(data)
+          });
+        })
+      }
+      catch(error){
+        reject(error)
+      }
+    });
+  }
 
   // checkRolePermissions(data:any,roles:any) {
   //     if(data && data[0]?.roles) {

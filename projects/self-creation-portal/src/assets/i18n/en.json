@@ -149,9 +149,9 @@
     "ATTACH_SIGNATURES":"Attach signature(s)",
     "SET_CERTIFICATE_CRITERIA":"Set certificate criteria",
     "SET_CERTIFICATE_CRITERIA_DESCRIPTION":"You can set the minimum number of evidences required for each task or project to qualify for the certificate",
-    "ENABLE_PROJECT_LEVEL_EVIDENCE":"Enable minimum number of evidences at project level",
+    "ENABLE_PROJECT_LEVEL_EVIDENCE":"Do you want to include Project level evidence(s) for certificate criteria",
     "NUMBER_OF_EVIDENCE_REQUIRED":"Number of evidence required",
-    "ENABLE_TASK_EVIDENCE":"Enable minimum number fo evidences for task ''Task name that can go upto 2lines or more'' ",
+    "ENABLE_TASK_EVIDENCE":"Do you want to include certificate criterial for task, ''Task name that can go upto 2 lines or more''  ",
     "ATTACH_SIGNATURE":"Attach Signature",
     "ADD_SIGNATURE_DETALS":"Add signature details",
     "ATTACH_LOGO":"Attach logo",
@@ -162,5 +162,9 @@
     "UPLOAD_BUTTON":"Select file to upload",
     "CERTIFICATE_TYPE_REQUIRED":"Certificate type is required",
     "CERTIFICATE_ISSUER_NAME_REQUIRED":"Certificate issuer name is required",
-    "SELECT_CERTIFICATE_TYPE":"Select certificate type"
+    "SELECT_CERTIFICATE_TYPE":"Select certificate type",
+    "HEIGHT_SPECIFICATION":"112px height X 46px base",
+    "SIZE_SPECIFICATIION":"Size <= 50kb",
+    "FILE_SPECIFICATION":"File type = PNG only",
+    "FILE_SPECIFICATION_HEADER":"Make sure your file:"
 }

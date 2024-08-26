@@ -3,64 +3,53 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DialogPopupComponent } from 'lib-shared-modules';
+import { DialogPopupComponent, FormService } from 'lib-shared-modules';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'lib-certificates',
   standalone: true,
-  imports: [TranslateModule, MatIconModule, MatRadioModule, MatSelectModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, CommonModule, MatDialogModule],
+  imports: [TranslateModule, MatIconModule, MatRadioModule, MatSelectModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, CommonModule, MatDialogModule, MatInputModule],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss'
 })
 export class CertificatesComponent implements OnInit{
+  certificateDetails : any;
   certificateForm !: FormGroup 
-  attachedLogos: Array<{ name: string }> = [];
-  attachedSignatures: Array<{ name: string }> = [];
+  attachLogo: Array<{ name: string }> = [];
+  attachSign: Array<{ name: string }> = [];
   certificateTypeSelected = false;
-  certificateType = [ 
-    {
-        "label": "SELECT_CERTIFICATE_TYPE",
-        "value": "type",
-        "option": [
-            {
-                "label": "ONE_LOGO_ONE_SIGNATURE",
-                "value": "ONE_LOGO_ONE_SIGNATURE"
-            },
-            {
-                "label": "ONE_LOGO_TWO_SIGNATURES",
-                "value": "ONE_LOGO_TWO_SIGNATURES"
-            },
-            {
-                "label": "TWO_LOGOS_ONE_SIGNATURE",
-                "value": "TWO_LOGOS_ONE_SIGNATURE"
-            },
-            {
-                "label": "ONE_LOGOS_TWO_SIGNATURES",
-                "value": "ONE_LOGOS_TWO_SIGNATURES"
-            }
-        ],
-    },
-  ] 
+  filespecifications = [
+    { no: '1', option: "HEIGHT_SPECIFICATION" },
+    { no: '2', option: "SIZE_SPECIFICATIION" },
+    { no: '3', option: "FILE_SPECIFICATION" } 
+  ]
   evidenceNumber = [1, 2, 3];
 
-  constructor(private dialog : MatDialog, private fb: FormBuilder,){}
+  constructor(private dialog : MatDialog, private fb: FormBuilder, private formService: FormService,){}
 
   ngOnInit() {
     this.initForm();
+    this.getCertificateForm();
   }
 
   initForm() {
     this.certificateForm = this.fb.group({
       selectedOption: [''],
       certificateType: ['', Validators.required],
-      issuerName: ['', Validators.required],
+      issuerName: ['', [
+        Validators.required,
+        Validators.maxLength(255),
+        Validators.pattern(/^(?! )(?!.* {3})[\p{L}a-zA-Z0-9\-_ <>&]+$/)
+      ]
+      ],
       evidenceRequired: ['', Validators.required],
-      enableTaskEvidence: ['1'],
-      attachedLogos: this.fb.array([]),
-      attachedSignatures: this.fb.array([]),
+      enableTaskEvidence: [''],
+      attachLogo: this.fb.array([]),
+      attachSign: this.fb.array([])
     });
   }
 
@@ -68,26 +57,20 @@ export class CertificatesComponent implements OnInit{
     this.certificateTypeSelected = !!value;
   }
 
-  attachLogo(){
+  attachLogos(){
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       disableClose: true,
       data : {
         header: "ATTACH_LOGO",
         subheader: "ATTACH_LOGOS_DETAIlS",
-        subcontent:[
-          { no: '1', option: '112px height X 46px base' },
-          { no: '2', option: 'Size <= 50kb' },
-          { no: '3', option: 'File type = PNG only' } 
-        ],
+        subcontent: this.filespecifications,
         attachButton: "ATTACH"
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.fileName) {
-        this.attachedLogos.push({ name: result.fileName });
-      } else {
-        return false
-      }
+        this.attachLogo.push({ name: result.fileName });
+      } 
     })
   }
 
@@ -97,35 +80,27 @@ export class CertificatesComponent implements OnInit{
       data : {
         header: "ATTACH_SIGNATURE",
         subheader: "ADD_SIGNATURE_DETALS",
-        header2:"ATTACH_LOGO",
-        subheader2:"ATTACH_LOGOS_DETAIlS",
         inputfields: [
           { label: "SIGNATURE_NAME", value: "", type: "text" },
           { label: "SIGNATURE_DESIGNATION", value: "" , type: "text" },
         ],
-        subcontent:[
-          { no: '1', option: '112px height X 46px base' },
-          { no: '2', option: 'Size <= 50kb' },
-          { no: '3', option: 'File type = PNG only' } 
-        ],
+        subcontent: this.filespecifications,
         attachButton: "ATTACH"
       }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.fileName) {
-        this.attachedSignatures.push({ name: result.fileName });
-      } else {
-        return false
-      }
+        this.attachSign.push({ name: result.fileName });
+      } 
     })
   }
 
   removeLogo(index: number) {
-    this.attachedLogos.splice(index, 1);
+    this.attachLogo.splice(index, 1);
   }
 
   removeSignature(index: number) {
-    this.attachedSignatures.splice(index, 1);
+    this.attachSign.splice(index, 1);
   }
 
   get attachedLogosData(): FormArray {
@@ -137,15 +112,23 @@ export class CertificatesComponent implements OnInit{
   }
 
   onSubmit(): void {
+    this.certificateForm.markAllAsTouched();
     if (this.certificateForm.valid) {
       const formData = {
         ...this.certificateForm.value,
-        attachedLogos: this.attachedLogos,
-        attachedSignatures: this.attachedSignatures,
+        attachLogo: this.attachLogo,
+        attachSign: this.attachSign,
       };
       console.log('Form Data:', formData);
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  getCertificateForm(){
+    this.formService.getCertificateForm().then((data : any) => {
+      this.certificateDetails = data.controls
+      return data
+    })
   }
 }

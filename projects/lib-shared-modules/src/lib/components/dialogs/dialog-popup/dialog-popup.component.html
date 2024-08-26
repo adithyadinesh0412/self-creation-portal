@@ -64,12 +64,12 @@
           </div>
           </div>
         }
-        <p class="p-1 text-[$buttonDisable]">Make sure your file:</p>
+        <p class="p-1 text-[$buttonDisable]">{{"FILE_SPECIFICATION_HEADER" | translate}}</p>
         @for(subfield of dialogueData?.subcontent; track subfield){
           <div class="flex items-center p-1">
             <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blueCircle text-white text-xs">
               {{subfield.no}}</span>
-              <p class="ml-1 text-sm text-[$buttonDisable]">{{ subfield.option }}</p>
+              <p class="ml-1 text-sm text-[$buttonDisable]">{{ subfield.option | translate }}</p>
           </div>
         }
       </div>
@@ -79,7 +79,7 @@
           <div class="absolute inset-0 flex items-center justify-center">
             <div class="flex-col flex items-center justify-center">
               <div class="flex items-center justify-center pb-2">
-                <img src="assets/images/file.png" alt="No Result">
+                <img src="assets/images/file-upload.png" alt="No Result">
               </div>
               <p class="flex items-center justify-center ">Drag & drop file to upload</p>
               <p class="flex items-center justify-center ">or</p>
