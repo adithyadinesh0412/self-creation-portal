@@ -17,6 +17,7 @@ export class CardComponent {
   @Input() list: any;
   @Input() showActionButton: boolean = false;
   @Input() project:any;
+  @Input() activeRole:any;
   @Output() buttonClickEvent = new EventEmitter<{ label: string, item: any }>();
   @Output() infoClickEvent = new EventEmitter<{item: any}>
   @Input() showInfoIcon: boolean = false; 
