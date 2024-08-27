@@ -146,7 +146,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   }
 
   getList() {
-    if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review') {
+    if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review' || this.pageStatus === 'browse_existing') {
       this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
         this.handleResponse(response);
       });
@@ -272,7 +272,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
             }
           });
           break;
-        }else{
+        }else if(item.status){
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
@@ -280,6 +280,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
              }
            });
            break;
+         }else{
+          break;
          }
          
        case 'START_REVIEW':
