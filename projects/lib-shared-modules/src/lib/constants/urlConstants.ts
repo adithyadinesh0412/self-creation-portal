@@ -16,6 +16,9 @@ export const reviewStatus = {
 
 };
 export const ROUTE_PATHS = {
+    CREATE_NEW : {
+      CREATE_NEW: 'create-new'
+    },
     SIDENAV: {
       DRAFTS: 'drafts',
       UP_FOR_REVIEW: 'up-for-review',
