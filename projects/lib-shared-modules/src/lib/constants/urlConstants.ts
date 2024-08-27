@@ -20,6 +20,7 @@ export const ROUTE_PATHS = {
       CREATE_NEW: 'create-new'
     },
     SIDENAV: {
+      BROWSE_EXISTING: 'browse-existing',
       DRAFTS: 'drafts',
       UP_FOR_REVIEW: 'up-for-review',
       SUBMITTED_FOR_REVIEW: 'submitted-for-review',
