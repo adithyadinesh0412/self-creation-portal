@@ -382,7 +382,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
       if(this.paginationComponent) {
       this.paginationComponent.setToPage(this.pagination.currentPage);
     }
-      this.updateQueryParams(); 
+    this.getList();
+    this.updateQueryParams(); 
     })
   }
 

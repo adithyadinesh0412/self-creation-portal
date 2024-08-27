@@ -58,6 +58,7 @@ export class CommonService {
     const parentRoutes = this.route.parent?.snapshot.url.map(segment => segment.path).join('/') || '';
   
     const sidenavPaths = [
+      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.BROWSE_EXISTING}`,
       `${parentRoutes}/${ROUTE_PATHS.SIDENAV.DRAFTS}`,
       `${parentRoutes}/${ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW}`,
       `${parentRoutes}/${ROUTE_PATHS.SIDENAV.SUBMITTED_FOR_REVIEW}`
@@ -65,25 +66,15 @@ export class CommonService {
     const targetPaths = [
         `${parentRoutes}/${ROUTE_PATHS.PROJECT_ROUTES.PROJECT_DETAILS}`
     ];
-    const createNewPath = `${parentRoutes}/${ROUTE_PATHS.CREATE_NEW.CREATE_NEW}`;
     
     const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
     const istargetpaths = targetPaths.some(target => currentPath.startsWith(target))
-    const isCreateNew = currentPath.endsWith(createNewPath);
-  
-    if ((istargetpaths && issidenavPaths && Object.keys(queryParams).length > 0) || 
+    if ((istargetpaths && issidenavPaths && Object.keys(queryParams).length > 0) ||
     (!istargetpaths && Object.keys(queryParams).length > 0)) {
-      this.router.navigate([], {  
-        relativeTo: this.route,
-        queryParams: {}
-      }).then(() => {
-      // After clearing query params, navigate to "create-new" if applicable
-      if (isCreateNew) {
-        setTimeout(() => {
-          this.router.navigate([createNewPath], { relativeTo: this.route });
-        }, 0);
-      }
-      });
+      this.router.navigate([currentPath], {  
+            relativeTo: this.route,
+            queryParams: {}
+      })
     }
   }
 
