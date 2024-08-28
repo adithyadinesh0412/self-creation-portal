@@ -7,7 +7,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule,TranslateService } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -25,8 +26,13 @@ export class AppComponent {
     "title" : "Creation Portal"
   }
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private router: Router, private viewportScroller: ViewportScroller) {
     this.initializeTranslation();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.scrollToTop();
+      }
+    });
   }
 
   private initializeTranslation(): void {
@@ -34,5 +40,9 @@ export class AppComponent {
   }
 
   onButtonClick(buttonTitle: string) {
+  }
+
+  scrollToTop(): void {
+    this.viewportScroller.scrollToPosition([0, 0]);
   }
 }
