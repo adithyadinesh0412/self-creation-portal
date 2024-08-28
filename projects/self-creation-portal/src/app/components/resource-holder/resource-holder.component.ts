@@ -408,5 +408,13 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
         }
       });
   }
+
+
+navigateToCreateNew(){
+    console.log("yess")
+    this.router.navigate([PROJECT_DETAILS_PAGE], {
+     
+    })
+  }
  
 }
