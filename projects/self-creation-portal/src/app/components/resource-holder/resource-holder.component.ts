@@ -81,6 +81,7 @@ export class ResourceHolderComponent implements OnInit{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
+      this.pagination.pageSize =form.result.data.fields?.configuration?.itemsPerPage;
       const selectedSideNavData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.activeRole = selectedSideNavData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
@@ -407,11 +408,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   }
 
 
-navigateToCreateNew(){
-    console.log("yess")
-    this.router.navigate([PROJECT_DETAILS_PAGE], {
-     
-    })
+  navigateToCreateNew() {
+    this.router.navigate(['home/create-new'], {})
   }
  
 }
