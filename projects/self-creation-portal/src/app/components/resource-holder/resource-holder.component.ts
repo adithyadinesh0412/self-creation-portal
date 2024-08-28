@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './resource-holder.component.scss',
   providers: [DatePipe]
 })
-export class ResourceHolderComponent implements OnInit, OnDestroy{
+export class ResourceHolderComponent implements OnInit{
 
   @ViewChild(PaginationComponent) paginationComponent!: PaginationComponent;
 
@@ -76,10 +76,6 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
 
   ngOnInit() {
     this.loadSidenavData();
-  }
-
-  ngOnDestroy() {
-    this.commonService.clearQueryParams();
   }
 
   loadSidenavData(){
@@ -382,7 +378,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
       if(this.paginationComponent) {
       this.paginationComponent.setToPage(this.pagination.currentPage);
     }
-      this.updateQueryParams(); 
+    this.getList();
+    this.updateQueryParams(); 
     })
   }
 
