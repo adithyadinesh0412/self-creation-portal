@@ -52,32 +52,6 @@ export class CommonService {
     });
   }
 
-  clearQueryParams() {
-    const queryParams = this.route.snapshot.queryParams;
-    const currentPath = this.router.url.split('?')[0];
-    const parentRoutes = this.route.parent?.snapshot.url.map(segment => segment.path).join('/') || '';
-  
-    const sidenavPaths = [
-      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.BROWSE_EXISTING}`,
-      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.DRAFTS}`,
-      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW}`,
-      `${parentRoutes}/${ROUTE_PATHS.SIDENAV.SUBMITTED_FOR_REVIEW}`
-    ];
-    const targetPaths = [
-        `${parentRoutes}/${ROUTE_PATHS.PROJECT_ROUTES.PROJECT_DETAILS}`
-    ];
-    
-    const issidenavPaths = sidenavPaths.some(tabPath => currentPath.startsWith(tabPath));
-    const istargetpaths = targetPaths.some(target => currentPath.startsWith(target))
-    if ((istargetpaths && issidenavPaths && Object.keys(queryParams).length > 0) ||
-    (!istargetpaths && Object.keys(queryParams).length > 0)) {
-      this.router.navigate([currentPath], {  
-            relativeTo: this.route,
-            queryParams: {}
-      })
-    }
-  }
-
   //Check for ISO date format
   isISODate(value: string): boolean {
     if (typeof value !== 'string') {

@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormService, HeaderComponent, SIDE_NAV_DATA, SideNavbarComponent } from 'lib-shared-modules';
 import { CommonService } from '../../services/common-service/common.service';
 import { CommonModule } from '@angular/common';
@@ -27,8 +27,8 @@ export class AppMainViewComponent {
   }
 
   public sidenavData: any;
-
-  constructor(private formService:FormService) {
+  clearQueryParamsOnNavigate: boolean = true;
+  constructor(private formService:FormService, private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit(){
@@ -54,5 +54,19 @@ export class AppMainViewComponent {
 
   getPermissions() {
     this.formService.getPermissions().subscribe((res) => {})
+  }
+
+  onSideNavNavigate(item: any): void {
+    if (this.clearQueryParamsOnNavigate) {
+      this.clearQueryParams();
+    }
+    this.router.navigate([item.url], { relativeTo: this.route });
+  }
+
+  clearQueryParams() {
+    this.router.navigate([], {  
+      relativeTo: this.route,
+      queryParams: {}
+    });
   }
 }
