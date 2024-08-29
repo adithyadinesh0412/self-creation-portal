@@ -60,6 +60,7 @@ export class ResourceHolderComponent implements OnInit{
   infoFieldsData: any = {};
   buttonsCSS : any;
   activeRole:any;
+  areQueryParamsEmpty:boolean = false;
 
   constructor(
     private route: ActivatedRoute, 
@@ -81,6 +82,7 @@ export class ResourceHolderComponent implements OnInit{
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
+      this.pagination.pageSize =form.result.data.fields?.configuration?.itemsPerPage;
       const selectedSideNavData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.activeRole = selectedSideNavData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
@@ -213,10 +215,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   }
 
   getQueryParams() {
+    
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-
       this.getList();
+      this.areQueryParamsEmpty = Object.keys(params).length === 0;
     });
   }
   
@@ -404,6 +407,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           return false
         }
       });
+  }
+
+
+  navigateToCreateNew() {
+    this.router.navigate(['home/create-new'], {})
   }
  
 }
