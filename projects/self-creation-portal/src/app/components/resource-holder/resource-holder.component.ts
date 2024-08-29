@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './resource-holder.component.scss',
   providers: [DatePipe]
 })
-export class ResourceHolderComponent implements OnInit, OnDestroy{
+export class ResourceHolderComponent implements OnInit{
 
   @ViewChild(PaginationComponent) paginationComponent!: PaginationComponent;
 
@@ -60,6 +60,7 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
   infoFieldsData: any = {};
   buttonsCSS : any;
   activeRole:any;
+  areQueryParamsEmpty:boolean = false;
 
   constructor(
     private route: ActivatedRoute, 
@@ -78,13 +79,10 @@ export class ResourceHolderComponent implements OnInit, OnDestroy{
     this.loadSidenavData();
   }
 
-  ngOnDestroy() {
-    this.commonService.clearQueryParams();
-  }
-
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
+      this.pagination.pageSize =form.result.data.fields?.configuration?.itemsPerPage;
       const selectedSideNavData = form?.result?.data.fields.controls.find((item: any) => item.url === currentUrl);
       this.activeRole = selectedSideNavData.activeRole;
       this.buttonsCSS = form?.result?.data.fields.buttons;
@@ -217,10 +215,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   }
 
   getQueryParams() {
+    
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-
       this.getList();
+      this.areQueryParamsEmpty = Object.keys(params).length === 0;
     });
   }
   
@@ -382,7 +381,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
       if(this.paginationComponent) {
       this.paginationComponent.setToPage(this.pagination.currentPage);
     }
-      this.updateQueryParams(); 
+    this.getList();
+    this.updateQueryParams(); 
     })
   }
 
@@ -407,6 +407,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           return false
         }
       });
+  }
+
+
+  navigateToCreateNew() {
+    this.router.navigate(['home/create-new'], {})
   }
  
 }

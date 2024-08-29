@@ -19,6 +19,7 @@ export class SideNavbarComponent implements OnInit{
   @Input() sidenavData : any[] = [];
   @Output() navChange = new EventEmitter<String>();
   @Input() tabValidation:any;
+  @Input() clearQueryParamsOnNavigate: boolean = false
 
 
   constructor(private formService:FormService) {

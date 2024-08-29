@@ -17,6 +17,7 @@ export const reviewStatus = {
 };
 export const ROUTE_PATHS = {
     SIDENAV: {
+      BROWSE_EXISTING: 'browse-existing',
       DRAFTS: 'drafts',
       UP_FOR_REVIEW: 'up-for-review',
       SUBMITTED_FOR_REVIEW: 'submitted-for-review',
