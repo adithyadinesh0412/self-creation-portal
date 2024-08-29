@@ -75,11 +75,11 @@ quill-editor {
   color: white !important;
 }
 .chatbox {
-  width: 30%;
+  width: 28%;
   max-height: 80%;
   position: fixed;
   bottom: 0;
-  right: 2rem;
+  right: 3rem;
   box-shadow: -1px 10px 5px 5px lightgray;
   font-size: 0.8rem !important;
   z-index: 100;
@@ -95,6 +95,8 @@ quill-editor {
   color: white !important;
 }
 .comment-open {
+  width: 28%;
+  font-size: 0.8rem !important;
   background: $primary;
   display: flex;
   justify-content: space-between;
@@ -103,7 +105,7 @@ quill-editor {
   padding: .7rem 2rem;
   color: white;
   position: fixed;
-  right: 2rem;
+  right: 3rem;
   bottom: 0;
 }
 
