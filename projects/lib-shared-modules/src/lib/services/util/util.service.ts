@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ConfigService } from '../../configs/config.service';
 import { HttpProviderService } from '../http-provider.service';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,26 @@ export class UtilService {
 
   filterCommentByContext(comment:any,page:string) {
     return comment.filter((element:any) => element.page === page);
+  }
+
+  getImageUploadUrl(file: any) {
+    return this.httpService.get(this.Configuration.urlConFig.UPLOAD.SIGNED_URL+"?"+ file.name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase()).pipe(
+      map((result: any) => {
+        return this.uploadSignedURL(file, result.result).subscribe(() => {
+          // this.imgData.isUploaded = true;
+          // this.createSession.myForm.value.image = result.result.filePath;
+          // this.onSubmit();
+        })
+      }))
+  }
+
+  uploadSignedURL(file: any, path: any) {
+    var options = {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+    };
+    return this.httpService.put(path.signedUrl, file,options);
   }
 
 }

@@ -27,7 +27,7 @@ export class HttpProviderService {
     }
 
 
-    put(endpoint: string, body: any, options?: { headers?: HttpHeaders, params?: HttpParams }) {
+    put(endpoint: string, body: any, options?: { headers?: HttpHeaders|any, params?: HttpParams }) {
       const updatedOptions = this.addXRequestedWithHeader(options);
       return this.http.put(endpoint, body, updatedOptions)
         .pipe(catchError(this.handleError));
