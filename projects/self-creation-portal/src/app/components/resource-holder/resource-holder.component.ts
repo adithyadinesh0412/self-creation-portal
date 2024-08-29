@@ -60,6 +60,7 @@ export class ResourceHolderComponent implements OnInit{
   infoFieldsData: any = {};
   buttonsCSS : any;
   activeRole:any;
+  areQueryParamsEmpty:boolean = false;
 
   constructor(
     private route: ActivatedRoute, 
@@ -214,10 +215,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   }
 
   getQueryParams() {
+    
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
-
       this.getList();
+      this.areQueryParamsEmpty = Object.keys(params).length === 0;
     });
   }
   

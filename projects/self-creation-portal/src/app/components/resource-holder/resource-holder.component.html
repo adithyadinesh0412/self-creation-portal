@@ -23,13 +23,12 @@
             @if(filters.filteredLists.length === 0){
                 <lib-no-result-found [noResultMessage]="noResultMessage"></lib-no-result-found>
             }
-           
-             <!-- @if(pageStatus === 'browse_existing'){
+             @if(areQueryParamsEmpty && pageStatus === 'browse_existing'){
                 <button class="px-4 py-2 mt-2" mat-raised-button color="primary" (click)="navigateToCreateNew()">
                     <mat-icon class="add-icon">note_add</mat-icon>
                     Create New
                   </button>
-             }    -->
+             } 
             
         </div>
     } 
