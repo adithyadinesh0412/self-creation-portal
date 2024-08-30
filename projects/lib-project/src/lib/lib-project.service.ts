@@ -97,14 +97,19 @@ export class LibProjectService {
           });
         })
       }else{
-        this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
-          let data = {
-            message : res.message,
-            class : 'success'
-          }
-          this.toastService.openSnackBar(data)
-          this.router.navigate([SUBMITTED_FOR_REVIEW]);
+        this.resolveCommentList().subscribe((res) => {
+          this.utilService.updateComment(this.projectData.id,res).subscribe((res:any)=>{
+            this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
+              let data = {
+                message : res.message,
+                class : 'success'
+              }
+              this.toastService.openSnackBar(data)
+              this.router.navigate([SUBMITTED_FOR_REVIEW]);
+            })
+          })
         })
+        
       }
     }
     else {
@@ -271,4 +276,14 @@ export class LibProjectService {
     return this.httpService.get( this.Configuration.urlConFig.CERTIFICATE.LIST)
   }
 
+  resolveCommentList(): Observable<any> {
+    return this.utilService.getCommentList(this.projectData.id).pipe(
+      map((commentListRes: any) => {
+        commentListRes.result.comments.forEach((comment: any) => {
+          comment.status = "RESOLVED";
+        });
+        return commentListRes.result.comments;
+      })
+    );
+  }
 }
