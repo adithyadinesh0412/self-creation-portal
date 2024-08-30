@@ -21,40 +21,44 @@ const routes: Routes = [
         path:'project-details',
         component:ProjectDetailsComponent,
         data:{
-          "comment": "",
+          "text": "",
           "page":"1",
           "context":"page",
-          "status": "DRAFT"
+          "status": "DRAFT",
+          "parent_id":0
         }
       },
       {
         path:'tasks',
         component:TasksComponent,
         data:{
-          "comment": "",
+          "text": "",
           "page":"2",
           "context":"page",
-          "status": "DRAFT"
+          "status": "DRAFT",
+          "parent_id":0
         }
       },
       {
           path:'sub-tasks',
           component:SubTasksResourcesComponent,
           data:{
-            "comment": "",
+            "text": "",
             "page":"3",
             "context":"page",
-            "status": "DRAFT"
+            "status": "DRAFT",
+            "parent_id":0
           }
       },
       {
         path:'certificate',
         component:CertificatesComponent,
         data:{
-          "comment": "",
+          "text": "",
           "page":"4",
           "context":"page",
-          "status": "DRAFT"
+          "status": "DRAFT",
+          "parent_id":0
         }
       }
     ]

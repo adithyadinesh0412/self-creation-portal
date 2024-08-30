@@ -30,6 +30,6 @@
         "LIST":"scp/v1/certificates/list"
     },
     "UPLOAD":{
-        "SIGNED_URL":"scp/v1/cloud-services/getSignedUrl"
+        "SIGNED_URL":"scp/v1/cloud-services/file/getSignedUrl"
     }
 }
