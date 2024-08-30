@@ -4,7 +4,7 @@
       <mat-icon class="mr-2">chat</mat-icon>
       <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
     </div>
-    <mat-icon *ngIf="!chatFlag" (click)="openChatBot()">open_in_full</mat-icon>
+    <mat-icon *ngIf="!chatFlag" (click)="openChatBot()" class="cursor-pointer">zoom_out_map</mat-icon>
   </section>
   <div *ngIf="chatFlag" class="chatbox">
     <section class="header">
@@ -13,7 +13,7 @@
         <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
       </div>
       <div>
-        <mat-icon *ngIf="chatFlag" (click)="openChatBot()">expand_circle_down</mat-icon>
+        <mat-icon *ngIf="chatFlag" (click)="openChatBot()" class="cursor-pointer">do_not_disturb_on</mat-icon>
       </div>
     </section>
     @if(mode !== "review" && messages?.length){
