@@ -267,4 +267,8 @@ export class LibProjectService {
     });
   }
 
+  getCertificatesList() {
+    return this.httpService.get( this.Configuration.urlConFig.CERTIFICATE.LIST)
+  }
+
 }

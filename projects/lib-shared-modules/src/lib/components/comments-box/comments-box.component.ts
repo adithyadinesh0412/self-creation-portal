@@ -99,7 +99,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
-      this.quillInput = this.messages[this.messages.length-1]?.status == "DRAFT" ? this.messages[this.messages.length-1].comment : '';
+      this.quillInput = this.messages[this.messages.length-1]?.status == "DRAFT" ? this.messages[this.messages.length-1].text : '';
       this.draft = this.quillInput.length > 0 ? this.messages.pop() : '';
       if(this.messages[this.messages.length-1]?.resolver && Object.keys(this.messages[this.messages.length-1].resolver).length > 0) {
         this.resolveDisable = true;
@@ -126,12 +126,13 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     console.log(this.quillInput)
     this.chatFlag = !this.chatFlag;
     this.comment.emit(this.quillInput)
+    this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
     if(this.draft) {
-      this.draft.comment = this.quillInput;
-      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+      this.draft.text = this.quillInput;
+      this.utilService.updateComment(this.resourceId,[this.draft],this.draft.id).subscribe((res) => console.log(res));
     }
     else {
-      this.commentPayload.comment = this.quillInput;
+      this.commentPayload.text = this.quillInput;
       this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res:any) => {
         this.draft = res.result;
       });

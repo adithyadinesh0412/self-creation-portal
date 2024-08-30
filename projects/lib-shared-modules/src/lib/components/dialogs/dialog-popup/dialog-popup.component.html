@@ -96,22 +96,22 @@
                 <span>{{"UPLOAD_BUTTON" | translate}}</span>
               </button>
               <p class="text-xs flex items-center justify-center pt-1">{{ "UPLOAD_PNG_UPTO_50KB" | translate}}</p>
-              @if(selectedFileName){
-                <p class="flex items-center justify-center text-red-500 text-xs pt-2">Selected File: {{ selectedFileName }}</p>
+              @if(selectedFile){
+                <p class="flex items-center justify-center text-red-500 text-xs pt-2">Selected File: {{ selectedFile.name }}</p>
               }
               @if(errorMessage){
                 <p class="flex items-center justify-center text-red-500 text-xs pt-2">{{ errorMessage }}</p>
               }
-              
+
             </div>
           </div>
         </div>
       </div>
     </div>
   }
- 
+
 </div>
-<div class="border-t"></div> 
+<div class="border-t"></div>
 <div class="flex flex-row justify-end items-center">
   @if(dialogueData.cancelButton){
     <button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.cancelButton }">{{dialogueData.cancelButton |translate}}</button>

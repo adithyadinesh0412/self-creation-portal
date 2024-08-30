@@ -118,6 +118,7 @@ quill-editor {
 }
 .message-body {
   color: white;
+  justify-content: end !important;
   background: $primary;
   width: 70%;
   border-radius: 0.8rem;
@@ -135,4 +136,8 @@ quill-editor {
 .sender-message-body {
   background: white !important;
   color: black !important;
+}
+.user-message {
+  position: relative;
+  left: 30%;
 }

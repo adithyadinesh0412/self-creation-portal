@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex pb-10">
     <div class="w-full" [formGroup]="certificateForm">
       <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
         <span>{{ "CERTIFICATE" | translate }}</span>
@@ -16,10 +16,10 @@
                      }
                   </mat-radio-group>
             }
-            
+
         }
       </div>
-  
+
       @if(certificateForm.get('selectedOption')?.value === selectedYes) {
         <div class="px-10 text-tertiary">
             <p class="text-lg">{{ "CERTIFICATE_DETAILS" | translate}}
@@ -60,10 +60,10 @@
                                         <div class="mt-4">
                                             <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline">
                                                 <mat-label> {{ ele.label}}</mat-label>
-                                                <input type="text" class="w-full"  [disabled]="!certificateTypeSelected"  matInput   
-                                                [value]="ele.value"  [maxlength]="ele.validators.maxLength" 
+                                                <input type="text" class="w-full"  [disabled]="!certificateTypeSelected"  matInput
+                                                [value]="ele.value"  [maxlength]="ele.validators.maxLength"
                                                 [pattern]="ele.validators.pattern"
-                                                [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" > 
+                                                [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" >
                                             </mat-form-field>
                                         </div>
                                             <mat-error class="error-container text-red-600 flex w-full">
@@ -86,7 +86,7 @@
                                         @if(ele.name === "attachlogo"){
                                         <p class="required">{{ ele.label}}</p>
                                         <div class="mt-2 flex items-center  pb-2">
-                                            <mat-icon class="cursor-pointer text-primary" 
+                                            <mat-icon class="cursor-pointer text-primary"
                                               (click)="certificateTypeSelected && attachLogos()">{{ele.icon}}</mat-icon><span class="px-2 text-primary">{{ele.textForLink}}</span>
                                         </div>
                                         @for(logo of attachLogo; track logo; let i= $index){
@@ -124,7 +124,7 @@
                     <div class="certificate-content w-1/2">
                         <!-- certificate image content to place here -->
                         <div class="px-10 mt-10">
-                            <button type="button" class="btn btn-primary" (click)="onSubmit()">
+                            <button type="button" class="btn btn-primary" (click)="submit()">
                             {{ 'SUBMIT' | translate }}
                             </button>
                       </div>
@@ -136,29 +136,37 @@
                         <span class="px-1 text-base text-[$buttonDisable]">({{"SET_CERTIFICATE_CRITERIA_DESCRIPTION" | translate}})</span>
                     </p>
                 </div>
-                @for(item of certificateDetails; track item){
+                @for(item of certificateDetails; track item;let i = $index){
                     <div class="mt-6 w-1/2">
                         @if(item.name === "attachprojectevidence"){
                         <p>{{ item.label}}</p>
-                        <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableTaskEvidence">
+                        <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableProjectEvidence">
                             <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
-                            <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
+                            <mat-radio-button value="0" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
                         </mat-radio-group>
                         }
                         @if(item.name === "noofevidence"){
-                                <mat-form-field floatLabel="always" class="w-full mt-2" appearance="outline">
-                                    <mat-label> {{ item.label}}</mat-label>
-                                    <input type="text" class="w-full" matInput formControlName="evidenceRequired" [placeholder]="item.placeHolder || ''"> 
-                                </mat-form-field>
+                            <mat-form-field floatLabel="always" class="w-full mt-2" appearance="outline">
+                                <mat-label> {{ item.label}}</mat-label>
+                                <input type="number" class="w-full" matInput formControlName="evidenceRequired" [placeholder]="item.placeHolder || ''">
+                            </mat-form-field>
                         }
-                        @if(item.name === "attachtaskevidence"){
-                                <p class="mt-2">{{ item.label}}</p>
-                                <mat-radio-group color="primary" aria-label="Select an option">
-                                    <mat-radio-button value="1" class="-mx-1 mr-6">{{ 'YES' | translate }}</mat-radio-button>
-                                    <mat-radio-button value="2" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                        }
-                    </div> 
+                    </div>
+                }
+                @for(item of projectData?.tasks; track item;let i = $index){
+                    @if(item?.evidence_details?.min_no_of_evidences) {
+                        <div class="mt-6 w-1/2">
+                            <p class="mt-2"> {{taskForm[0]?.label}}&nbsp;{{item?.name}}</p>
+                            <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" value="1" #taskEvidenceCriteria>
+                                <mat-radio-button value="1" class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)">{{ 'YES' | translate }}</mat-radio-button>
+                                <mat-radio-button value="0" class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)">{{ 'No' | translate }}</mat-radio-button>
+                            </mat-radio-group>
+                            <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline" >
+                                <mat-label> {{taskForm[1]?.label}}{{item?.name}}</mat-label>
+                                <input type="number" #taskCriteriaInput class="w-full" matInput (change)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [value]="item?.evidence_details.min_no_of_evidences" [placeholder]="taskForm[1]?.placeHolder || ''">
+                            </mat-form-field>
+                        </div>
+                    }
                 }
         </div>
       }

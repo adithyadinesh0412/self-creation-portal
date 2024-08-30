@@ -20,11 +20,11 @@ export class DialogPopupComponent {
   reportContent: boolean = false;
   title: string = '';
   errorMessage: string = '';
-  selectedFileName: string = '';
+  selectedFile: File | undefined;
 
   constructor(
     public dialogRef: MatDialogRef<DialogPopupComponent>,
-    @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
+    @Inject(MAT_DIALOG_DATA)  public dialogueData: any) {
   }
 
   onDragOver(event: DragEvent){
@@ -57,11 +57,11 @@ export class DialogPopupComponent {
       return;
     }
 
-    if (file.size > 50000) { 
+    if (file.size > 50000) {
       this.errorMessage = 'File size exceeds 50KB limit.';
       return;
     }
-    this.selectedFileName = file.name;
+    this.selectedFile = file;
     this.uploadFile(file);
   }
 
@@ -72,6 +72,6 @@ export class DialogPopupComponent {
   }
 
   onAttach() {
-    this.dialogRef.close({ fileName: this.selectedFileName });
+    this.dialogRef.close({ file: this.selectedFile });
   }
 }
