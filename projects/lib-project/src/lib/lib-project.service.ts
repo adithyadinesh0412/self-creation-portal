@@ -97,7 +97,7 @@ export class LibProjectService {
           });
         })
       }else{
-        this.getCommentList().subscribe((res) => {
+        this.getResolveComment().subscribe((res) => {
           this.utilService.updateComment(this.projectData.id,res).subscribe((res:any)=>{
             this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
               let data = {
@@ -276,6 +276,22 @@ export class LibProjectService {
 
   getCertificatesList() {
     return this.httpService.get( this.Configuration.urlConFig.CERTIFICATE.LIST)
+  }
+
+  getResolveComment(){
+    let userId = localStorage.getItem('id');
+    return this.utilService.getCommentList(this.projectData.id).pipe(
+      map((commentListRes: any) => {
+        commentListRes.result.comments.forEach((comment: any) => {
+          if (  comment?.commenter.id != userId) {
+            comment.status = "RESOLVED";
+          }else{
+            comment.status = "OPEN";
+          }
+        });
+        return commentListRes.result.comments;
+      })
+    );
   }
 
 }
