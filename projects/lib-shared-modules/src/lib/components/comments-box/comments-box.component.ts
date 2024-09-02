@@ -93,7 +93,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   onBlur = () =>{
     console.log("Blurred");
     if(this.quillInput.length){
-      // this.saveComment()
+      this.saveComment()
     }
   }
 
@@ -122,17 +122,22 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
 
-  saveComment() {
+  saveComment(save :any ="") {
     console.log(this.quillInput)
-    this.chatFlag = !this.chatFlag;
+    if(save?.length){
+      this.chatFlag = !this.chatFlag;
+    }
+    
     this.comment.emit(this.quillInput)
     this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
     if(this.draft) {
       this.draft.text = this.quillInput;
-      this.utilService.updateComment(this.resourceId,[this.draft],this.draft.id).subscribe((res) => console.log(res));
+      console.log(this.draft)
+      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
     }
     else {
       this.commentPayload.text = this.quillInput;
+      console.log(this.commentPayload)
       this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res:any) => {
         this.draft = res.result;
       });
@@ -141,6 +146,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    console.log(this.quillInput.length, this.utilService.saveComment)
     if(this.quillInput.length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }

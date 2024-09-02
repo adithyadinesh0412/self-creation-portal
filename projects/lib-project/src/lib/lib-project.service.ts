@@ -97,7 +97,7 @@ export class LibProjectService {
           });
         })
       }else{
-        this.resolveCommentList().subscribe((res) => {
+        this.getCommentList().subscribe((res) => {
           this.utilService.updateComment(this.projectData.id,res).subscribe((res:any)=>{
             this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
               let data = {
@@ -214,7 +214,9 @@ export class LibProjectService {
     return this.utilService.getCommentList(this.projectData.id).pipe(
       map((commentListRes: any) => {
         commentListRes.result.comments.forEach((comment: any) => {
-          comment.status = "OPEN";
+          if (comment.status === "DRAFT") {
+            comment.status = "OPEN";
+          }
         });
         return commentListRes.result.comments;
       })
@@ -276,14 +278,4 @@ export class LibProjectService {
     return this.httpService.get( this.Configuration.urlConFig.CERTIFICATE.LIST)
   }
 
-  resolveCommentList(): Observable<any> {
-    return this.utilService.getCommentList(this.projectData.id).pipe(
-      map((commentListRes: any) => {
-        commentListRes.result.comments.forEach((comment: any) => {
-          comment.status = "RESOLVED";
-        });
-        return commentListRes.result.comments;
-      })
-    );
-  }
 }
