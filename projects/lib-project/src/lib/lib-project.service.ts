@@ -100,11 +100,7 @@ export class LibProjectService {
         this.getResolveComment().subscribe((res) => {
           this.utilService.updateComment(this.projectData.id,res).subscribe((res:any)=>{
             this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
-              let data = {
-                message : res.message,
-                class : 'success'
-              }
-              this.toastService.openSnackBar(data)
+              this.toastService.openSnackBar({message : res.message,class : 'success'})
               this.router.navigate([SUBMITTED_FOR_REVIEW]);
             })
           })
@@ -212,7 +208,7 @@ export class LibProjectService {
 
 
   approveProject(){
-    this.getOpenCommentList().subscribe((res) => {
+    this.getcommentsListAsOpen().subscribe((res) => {
       this.utilService.approveResource(this.projectData.id,{comment:res}).subscribe((res:any)=>{
         this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
@@ -246,7 +242,7 @@ export class LibProjectService {
 
   sendForRequestChange(){
     this.utilService.saveComment = false;
-    this.getOpenCommentList().subscribe((res) => {
+    this.getcommentsListAsOpen().subscribe((res) => {
       this.utilService.updateReview(this.projectData.id,{comment:res}).subscribe((data:any)=>{
         this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
@@ -282,7 +278,7 @@ export class LibProjectService {
     );
   }
   
-  getOpenCommentList(): Observable<any> {
+  getcommentsListAsOpen(): Observable<any> {
     return this.getComments().pipe(
       map((comments: any[]) => {
         comments.forEach((comment: any) => {
