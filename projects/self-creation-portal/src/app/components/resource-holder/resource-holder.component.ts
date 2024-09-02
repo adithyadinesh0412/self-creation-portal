@@ -155,7 +155,6 @@ export class ResourceHolderComponent implements OnInit{
         listType = 'UP_FOR_REVIEW_LIST';
         break;
       case 'browse_existing':
-        this.pageStatus = ''
         listType = 'BROWSE_EXISTING_LIST';
         break;
     }

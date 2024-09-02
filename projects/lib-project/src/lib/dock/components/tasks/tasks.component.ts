@@ -90,7 +90,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === 'edit'){
                 this.startAutoSaving();
               }
-              if(this.libProjectService?.projectData?.status == "IN_REVIEW") {
+              if((this.mode === 'review' || this.mode === 'edit') && this.libProjectService.projectData.status == "IN_REVIEW"){
                 this.getCommentConfigs()
               }
 
@@ -117,7 +117,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if(res.result.status == "IN_REVIEW") {
+                  if((this.mode === 'review' || this.mode === 'edit') && res.result.status == "IN_REVIEW"){
                     this.getCommentConfigs()
                   }
                 }
@@ -343,6 +343,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.subscription.add(this.route.data.subscribe((data:any) => {
       this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
         this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+       console.log(data)
         this.commentPayload = data;
         this.projectInReview = true;
 
