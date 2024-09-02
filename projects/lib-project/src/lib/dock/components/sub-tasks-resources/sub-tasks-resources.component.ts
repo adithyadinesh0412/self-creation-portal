@@ -75,9 +75,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === "edit") {
               this.startAutoSaving();
             }
-            if(this.libProjectService?.projectData?.status == "IN_REVIEW") {      
+            if((this.mode === 'review' || this.mode === 'edit') && this.libProjectService.projectData.status == "IN_REVIEW"){
               this.getCommentConfigs()
-            }
+            }  
           }
           else {
             this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
