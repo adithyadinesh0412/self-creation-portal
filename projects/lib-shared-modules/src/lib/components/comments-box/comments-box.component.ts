@@ -119,11 +119,10 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
 
-  saveComment(save :any ="") {
-    if(save?.length){
+  saveComment(closeChatBox:boolean = false) {
+    if(closeChatBox){
       this.chatFlag = !this.chatFlag;
     }
-    
     this.comment.emit(this.quillInput)
     this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
     if(this.draft) {
