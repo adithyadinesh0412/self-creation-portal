@@ -17,7 +17,6 @@ export class LayoutComponent {
   headerData:any
   sidenavData:any;
   tabValidation:any;
-  status:any = "DRAFT"
   mode:any
   buttonList:any[]=[]
   private subscription: Subscription = new Subscription();
@@ -29,6 +28,7 @@ export class LayoutComponent {
     )
   }
   ngOnInit(){
+    this.libProjectService.projectData = {}
     this.tabValidation={
       projectDetails: "VALID",
       tasks:"VALID",
@@ -45,13 +45,14 @@ export class LayoutComponent {
         //     element.disable = false;
         //   }
         // });
+        
         this.headerData = data?.sidenavData.headerData
-        this.status = this.libProjectService.projectData?.status ? this.libProjectService.projectData.status :"DRAFT"
-        if (Array.isArray(data?.sidenavData.headerData.buttons[this.mode])) {
-          this.buttonList = data?.sidenavData.headerData.buttons[this.mode]
-        } else {
-          if(this.status){
-            this.buttonList = data?.sidenavData.headerData.buttons[this.mode][this.status]
+        if(this.libProjectService.projectData){
+          this.buttonList = []
+          if (Array.isArray(data?.sidenavData.headerData.buttons[this.mode])) {
+            this.buttonList = data?.sidenavData.headerData.buttons[this.mode]
+          } else {
+            this.buttonList = data?.sidenavData.headerData.buttons[this.mode][this.libProjectService.projectData?.status ? this.libProjectService.projectData.status :"DRAFT"]
           }
         }
 

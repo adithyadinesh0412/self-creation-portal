@@ -57,7 +57,7 @@ export class LibProjectService {
     return this.createOrUpdateProject(this.projectData, projectId).pipe(
       map((res: any) => {
         this.setProjectData(res.result);
-        this.openSnackBarAndRedirect();
+        this.openSnackBarAndRedirect(res.message);
         this.saveProjectFunc(false);
         this.upDateProjectTitle();
         return res;
@@ -269,9 +269,7 @@ export class LibProjectService {
     return this.getComments().pipe(
       map((comments: any[]) => {
         comments.forEach((comment: any) => {
-          if (comment?.commenter.id !== userId) {
-            comment.status = 'RESOLVED';
-          } else {
+          if (comment?.commenter.id === userId) {
             comment.status = 'OPEN';
           }
         });
