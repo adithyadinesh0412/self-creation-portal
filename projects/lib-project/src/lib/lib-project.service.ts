@@ -97,14 +97,15 @@ export class LibProjectService {
           });
         })
       }else{
-        this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
-          let data = {
-            message : res.message,
-            class : 'success'
-          }
-          this.toastService.openSnackBar(data)
-          this.router.navigate([SUBMITTED_FOR_REVIEW]);
+        this.getResolveComment().subscribe((res) => {
+          this.utilService.updateComment(this.projectData.id,res).subscribe((res:any)=>{
+            this.sendForReview({},this.projectData.id).subscribe((res:any) =>{
+              this.toastService.openSnackBar({message : res.message,class : 'success'})
+              this.router.navigate([SUBMITTED_FOR_REVIEW]);
+            })
+          })
         })
+        
       }
     }
     else {
@@ -213,19 +214,9 @@ export class LibProjectService {
     );
   }
 
-  getCommentList(): Observable<any> {
-    return this.utilService.getCommentList(this.projectData.id).pipe(
-      map((commentListRes: any) => {
-        commentListRes.result.comments.forEach((comment: any) => {
-          comment.status = "OPEN";
-        });
-        return commentListRes.result.comments;
-      })
-    );
-  }
 
   approveProject(){
-    this.getCommentList().subscribe((res) => {
+    this.getcommentsListAsOpen().subscribe((res) => {
       this.utilService.approveResource(this.projectData.id,{comment:res}).subscribe((res:any)=>{
         this.openSnackBarAndRedirect(res.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
@@ -259,7 +250,7 @@ export class LibProjectService {
 
   sendForRequestChange(){
     this.utilService.saveComment = false;
-    this.getCommentList().subscribe((res) => {
+    this.getcommentsListAsOpen().subscribe((res) => {
       this.utilService.updateReview(this.projectData.id,{comment:res}).subscribe((data:any)=>{
         this.openSnackBarAndRedirect(data.message,"success",ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW)
       })
@@ -268,15 +259,51 @@ export class LibProjectService {
 
   checkValidationForRequestChanges(){
     const currentProjectMetaData = this.dataSubject.getValue();
-    currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element:any) => {
-      if(element.title == "REQUEST_CHANGES"){
-        element.disable = false;
-      }
-    });
+    if (Array.isArray(currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode])) {
+      currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element: any) => {
+        if (element.title === "REQUEST_CHANGES") {
+          element.disable = false;
+        }
+      });
+    }
   }
 
   getCertificatesList() {
     return this.httpService.get( this.Configuration.urlConFig.CERTIFICATE.LIST)
   }
 
+  getResolveComment(): Observable<any> {
+    const userId = localStorage.getItem('id');
+    return this.getComments().pipe(
+      map((comments: any[]) => {
+        comments.forEach((comment: any) => {
+          if (comment?.commenter.id !== userId) {
+            comment.status = 'RESOLVED';
+          } else {
+            comment.status = 'OPEN';
+          }
+        });
+        return comments;
+      })
+    );
+  }
+  
+  getcommentsListAsOpen(): Observable<any> {
+    return this.getComments().pipe(
+      map((comments: any[]) => {
+        comments.forEach((comment: any) => {
+          if (comment.status === 'DRAFT') {
+            comment.status = 'OPEN';
+          }
+        });
+        return comments;
+      })
+    );
+  }
+  
+  getComments(): Observable<any[]> {
+    return this.utilService.getCommentList(this.projectData.id).pipe(
+      map((response: any) => response.result.comments || [])
+    );
+  }
 }

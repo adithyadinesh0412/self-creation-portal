@@ -13,6 +13,7 @@ import { CommonService } from '../../services/common-service/common.service';
 import { LibProjectService } from 'lib-project';
 import { MatDialog } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
+import { RESOURCE_URLS } from '../../services/configs/url.config.json';
 
 
 @Component({
@@ -144,15 +145,22 @@ export class ResourceHolderComponent implements OnInit{
   }
 
   getList() {
-    if (this.pageStatus === 'drafts' || this.pageStatus === 'submitted_for_review' || this.pageStatus === 'browse_existing') {
-      this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus).subscribe(response => {
-        this.handleResponse(response);
-      });
-    } else if (this.pageStatus === 'up_for_review') {
-      this.resourceService.getUpForReviewList(this.pagination, this.filters, this.sortOptions).subscribe(response => {
-        this.handleResponse(response);
-      });
+    let listType: keyof typeof RESOURCE_URLS.ENDPOINTS = 'RESOURCE_LIST';
+    switch (this.pageStatus) {
+      case 'drafts':
+      case 'submitted_for_review':
+        listType = 'RESOURCE_LIST';
+        break;
+      case 'up_for_review':
+        listType = 'UP_FOR_REVIEW_LIST';
+        break;
+      case 'browse_existing':
+        listType = 'BROWSE_EXISTING_LIST';
+        break;
     }
+    this.resourceService.getResourceList(this.pagination, this.filters, this.sortOptions, this.pageStatus,listType).subscribe(response => {
+      this.handleResponse(response);
+    });
   }
   
   handleResponse(response: any) {

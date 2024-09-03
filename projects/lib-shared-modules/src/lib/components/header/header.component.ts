@@ -22,6 +22,7 @@ export class HeaderComponent {
   mode:any = "edit";
   private subscription: Subscription = new Subscription();
   @Output() buttonClick: EventEmitter<string> =  new EventEmitter<string>();
+  @Input()  buttons: any;
 
   constructor( private libsharedservice: LibSharedModulesService, private router: Router, private route: ActivatedRoute,) {
     this.subscription.add(
@@ -29,7 +30,7 @@ export class HeaderComponent {
         this.mode = params.mode ? params.mode : "edit"
      })
     )
-   
+    
   }
 
   backArrowButton() {

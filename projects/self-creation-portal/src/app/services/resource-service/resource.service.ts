@@ -11,16 +11,9 @@ export class ResourceService {
 
   constructor(private httpService: HttpProviderService, private commonService: CommonService) { }
 
-  getResourceList(pagination: any, filters: any, sortOptions: any, pageStatus: string = ''): Observable<any> {
-    const endpoint = RESOURCE_URLS.RESOURCE_LIST;
+  getResourceList(pagination: any, filters: any, sortOptions: any, pageStatus: string = '', list: keyof typeof RESOURCE_URLS.ENDPOINTS = 'RESOURCE_LIST' ): Observable<any> {
+    const endpoint = `${RESOURCE_URLS.BASE}${RESOURCE_URLS.ENDPOINTS[list]}`
     const params = this.commonService.generateParams(pagination, filters, sortOptions, pageStatus);
-    const url = this.commonService.createUrlWithParams(endpoint, params);
-    return this.httpService.get(url);
-  }
-
-  getUpForReviewList(pagination: any, filters: any, sortOptions: any): Observable<any> {
-    const endpoint = RESOURCE_URLS.UP_FOR_REVIEW_LIST;
-    const params = this.commonService.generateParams(pagination, filters, sortOptions);
     const url = this.commonService.createUrlWithParams(endpoint, params);
     return this.httpService.get(url);
   }
