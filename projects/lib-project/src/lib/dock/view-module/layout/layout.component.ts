@@ -45,7 +45,6 @@ export class LayoutComponent {
         //     element.disable = false;
         //   }
         // });
-        console.log(data?.sidenavData.headerData)
         this.headerData = data?.sidenavData.headerData
         this.status = this.libProjectService.projectData?.status ? this.libProjectService.projectData.status :"DRAFT"
         if (Array.isArray(data?.sidenavData.headerData.buttons[this.mode])) {
