@@ -251,11 +251,13 @@ export class LibProjectService {
 
   checkValidationForRequestChanges(){
     const currentProjectMetaData = this.dataSubject.getValue();
-    currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element:any) => {
-      if(element.title == "REQUEST_CHANGES"){
-        element.disable = false;
-      }
-    });
+    if (Array.isArray(currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode])) {
+      currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode].forEach((element: any) => {
+        if (element.title === "REQUEST_CHANGES") {
+          element.disable = false;
+        }
+      });
+    }
   }
 
   getCertificatesList() {
