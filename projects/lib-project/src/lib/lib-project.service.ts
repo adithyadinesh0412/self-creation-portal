@@ -121,6 +121,14 @@ export class LibProjectService {
       }
       projectData[key]= projectData[key]?.value ? projectData[key].value : projectData[key];
     }
+    // if(this.projectData.certificate) {
+    //   for (let key in this.projectData.certificate.criteria.C3.conditions) {
+    //     if(!this.projectData.certificate.criteria.C3.conditions[key].value) {
+    //       delete this.projectData.certificate.criteria.C3.conditions[key]
+    //     }
+    //   }
+
+    // }
     const config = {
       url: projectId ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT+'/'+projectId : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectData ? projectData : ''

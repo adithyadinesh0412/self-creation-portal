@@ -52,6 +52,10 @@ export class UtilService {
     return this.httpService.post(config.url, config.payload)
   }
 
+  downloadFiles(url:string) {
+    return this.http.get(url, { responseType: 'text' })
+  }
+
   getCommentList(resourceId:string|number){
     const config = {
       url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST+"?resource_id="+resourceId}`,

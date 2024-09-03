@@ -20,7 +20,7 @@ export class DialogPopupComponent {
   reportContent: boolean = false;
   title: string = '';
   errorMessage: string = '';
-  selectedFile: File | undefined;
+  selectedFiles: File | undefined;
 
   constructor(
     public dialogRef: MatDialogRef<DialogPopupComponent>,
@@ -61,7 +61,7 @@ export class DialogPopupComponent {
       this.errorMessage = 'File size exceeds 50KB limit.';
       return;
     }
-    this.selectedFile = file;
+    this.selectedFiles = file;
     this.uploadFile(file);
   }
 
@@ -72,6 +72,6 @@ export class DialogPopupComponent {
   }
 
   onAttach() {
-    this.dialogRef.close({ file: this.selectedFile });
+    this.dialogRef.close({ file: this.selectedFiles });
   }
 }

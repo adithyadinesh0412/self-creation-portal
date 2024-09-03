@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
@@ -44,109 +44,88 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class CertificatesComponent implements OnInit {
   certificateDetails: any;
-  selectedYes: any;
+  selectedYes: any = "2";
   certificateForm!: FormGroup;
-  attachLogo: Array<{ name: string }> = [];
-  attachSign: Array<{ name: string }> = [];
-  certificateTypeSelected = false;
+  attachLogo:any= [];
+  attachSign:any = [];
+  certificateTypeSelected:string|any = '';
   evidenceNumber = [1, 2, 3];
   mode: string = '';
   viewOnly: boolean = true;
   projectId: string | number = '';
-  projectData: any;
+  tasks:any; // only to render tasks in html page
   commentPayload: any;
   commentsList: any = [];
+  svgContent = '';
   projectInReview: boolean = false;
   taskForm: any;
-  taskCriteria:any =  {
-    scope: 'task',
-    key: 'attachments',
-    function: 'count',
-    filter: {
-      key: 'type',
-      value: 'all',
-    },
-    operator: '>=',
-    value: 1,
-    taskDetails: [],
-  }
-  criteria: any = {
-    validationText: 'Complete validation message',
-    expression: 'C1&&C2&&C3',
-    conditions: {
-      C1: {
-        validationText: 'Project Should be submitted.',
-        expression: 'C1',
-        conditions: {
-          C1: {
-            scope: 'project',
-            key: 'status',
-            operator: '==',
-            value: 'submitted',
-          },
-        },
+  certificateList:any = [];
+  certificate:any = {
+      base_template_id: 5,
+      base_template_url: "",
+      code: "",
+      name: "",
+      logos: {
+      no_of_logos: 1,
+      stateLogo1: "",
+      stateLogo2: ""
       },
-      C2: {
-        validationText: 'Evidence project level validation',
-        expression: 'C1',
-        conditions: {
-          C1: {
-            scope: 'project',
-            key: 'attachments',
-            function: 'count',
-            filter: {
-              key: 'type',
-              value: 'all',
-            },
-            operator: '>=',
-            value: 4,
-          },
-        },
+      signature: {
+        no_of_signature: 2,
+        signatureImg1: "",
+        signatureTitleName1: "",
+        signatureTitleDesignation1: "",
+        signatureImg2: "",
+        signatureTitleName2: "",
+        signatureTitleDesignation2: ""
       },
-      C3: {
-        validationText: 'Evidence task level validation',
+      issuer: "SPD",
+      criteria: {
+        validationText: 'Complete validation message',
         expression: 'C1&&C2&&C3',
         conditions: {
           C1: {
-            scope: 'task',
-            key: 'attachments',
-            function: 'count',
-            filter: {
-              key: 'type',
-              value: 'all',
+            validationText: 'Project Should be submitted.',
+            expression: 'C1',
+            conditions: {
+              C1: {
+                scope: 'project',
+                key: 'status',
+                operator: '==',
+                value: 'submitted',
+              },
             },
-            operator: '>=',
-            value: 2,
-            taskDetails: ['63c534e8fc54e000088c3d30'],
           },
           C2: {
-            scope: 'task',
-            key: 'attachments',
-            function: 'count',
-            filter: {
-              key: 'type',
-              value: 'all',
+            validationText: 'Evidence project level validation',
+            expression: 'C1',
+            conditions: {
+              C1: {
+                scope: 'project',
+                key: 'attachments',
+                function: 'count',
+                filter: {
+                  key: 'type',
+                  value: 'all',
+                },
+                operator: '>=',
+                value: 4,
+              },
             },
-            operator: '>=',
-            value: 2,
-            taskDetails: ['63c534e8fc54e000088c3d31'],
           },
           C3: {
-            scope: 'task',
-            key: 'attachments',
-            function: 'count',
-            filter: {
-              key: 'type',
-              value: 'all',
-            },
-            operator: '>=',
-            value: 2,
-            taskDetails: ['63c534e8fc54e000088c3d2'],
-          }
+            validationText: 'Evidence task level validation',
+            expression: 'C1&&C2&&C3',
+            conditions: {},
+          },
         },
-      },
-    },
-  };
+      }
+    }
+  credentialSubject = {
+    recipientName:"Ramkumar"
+  }
+  @ViewChild('certificateContainer', { static: true }) certificateContainer: ElementRef | any;
+
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -158,6 +137,7 @@ export class CertificatesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private utilService: UtilService,
+    private renderer: Renderer2,
   ) {}
 
   ngOnInit() {
@@ -168,7 +148,6 @@ export class CertificatesComponent implements OnInit {
         this.mode = params.mode;
         this.projectId = params.projectId;
         if (Object.keys(this.libProjectService.projectData)?.length) {
-          this.projectData = this.libProjectService.projectData;
           if (params.mode === 'edit') {
             this.startAutoSaving();
           }
@@ -180,7 +159,16 @@ export class CertificatesComponent implements OnInit {
             .readProject(params.projectId)
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
-              this.projectData = res?.result;
+              this.libProjectService.projectData = res?.result;
+              this.tasks = res.result.tasks.filter((task:any) => {
+                if(task.evidence_details.min_no_of_evidences) {
+                  return task;
+                }
+              });
+              // set certificate data in parent project data when certificate data is not project
+              if(!this.libProjectService.projectData.certificate) {
+                this.libProjectService.projectData.certificate = this.certificate
+              }
               this.getCertificateForm();
               if (params.mode === 'edit') {
                 this.startAutoSaving();
@@ -221,10 +209,12 @@ export class CertificatesComponent implements OnInit {
         }
       })
     );
+    this.getProjectDetails();
   }
 
   getCertificateForm() {
     this.formService.getCertificateForm().then((data: any) => {
+      this.createCriteriaForTasks()
       // Separate the removed items
       this.taskForm = data.controls.filter(
         (item: any) => item.scope === 'task'
@@ -233,11 +223,13 @@ export class CertificatesComponent implements OnInit {
       this.certificateDetails = data.controls.filter(
         (item: any) => item.scope !== 'task'
       );
-      this.selectedYes = this.certificateDetails
-        .find((field: any) => field.name === 'addcertificate')
-        ?.options.find((option: any) => option.label === 'Yes')?.value;
       return data;
+
     });
+  }
+
+  certificateEnabling(value:string) {
+    this.selectedYes = value;
   }
 
   startAutoSaving() {
@@ -251,7 +243,7 @@ export class CertificatesComponent implements OnInit {
   initForm() {
     this.certificateForm = this.fb.group({
       selectedOption: [''],
-      certificateType: ['', Validators.required],
+      certificateType: ['one_logo_one_sign', Validators.required],
       issuerName: [
         '',
         [
@@ -260,8 +252,8 @@ export class CertificatesComponent implements OnInit {
           Validators.pattern(/^(?! )(?!.* {3})[\p{L}a-zA-Z0-9\-_ <>&]+$/),
         ],
       ],
-      evidenceRequired: ['', Validators.required],
-      enableProjectEvidence: ['1'],
+      evidenceRequired: ['1', Validators.required],
+      enableProjectEvidence: [''],
       attachLogo: this.fb.array([]),
       attachSign: this.fb.array([]),
     });
@@ -270,11 +262,13 @@ export class CertificatesComponent implements OnInit {
   getCertificateList() {
     this.libProjectService
       .getCertificatesList()
-      .subscribe((res) => console.log(res));
+      .subscribe((res:any) => this.certificateList = res.result.data);
   }
 
   onCertificateTypeChange(value: string): void {
-    this.certificateTypeSelected = !!value;
+    console.log(value);
+    this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
+    this.getProjectDetails()
   }
 
   attachLogos() {
@@ -305,8 +299,8 @@ export class CertificatesComponent implements OnInit {
       if (result && result.file) {
         this.utilService.getImageUploadUrl(result.file).subscribe((res) => {
           console.log(res);
+          this.attachSign.push(res);
         })
-        this.attachSign.push({ name: result.file });
       }
     });
   }
@@ -333,22 +327,56 @@ export class CertificatesComponent implements OnInit {
     );
   }
 
-  setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
-    let criteria;
-    console.log(criterialValue,taskCriteria,item)
-    for (let key in this.criteria.C3.conditions) {
-      if (this.criteria.C3.conditions[key].taskDetails && this.criteria.C3.conditions[key].taskDetails.includes(item.id)) {
-        criteria = this.criteria.C3.conditions[key]
-        delete this.criteria.C3.conditions[key]; // Remove the item if taskDetails matches the target
-        break; // Exit loop since we found and removed the item
+  getProjectDetails() {
+    this.utilService.downloadFiles(this.certificateTypeSelected.url).subscribe((res) => {
+      console.log(res);
+      // this.svgContent = res;
+      if (this.certificateContainer) {
+        this.renderer.setProperty(
+          this.certificateContainer.nativeElement,
+          'innerHTML',
+          res
+        );
+
+        const svgElement = this.certificateContainer.nativeElement.querySelector('svg');
+        if (svgElement) {
+          this.renderer.setStyle(svgElement, 'object-fit', 'contain');
+          this.renderer.setStyle(svgElement, 'width', '100%');
+        }
       }
-    }
-    if(taskCriteria) {
+    });
+  }
 
-    }
-    else {
+  viewCertificate() {
 
-    }
+  }
+
+  createCriteriaForTasks() {
+    this.tasks.forEach((task:any) => {
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.expression = this.libProjectService.projectData.certificate.criteria.conditions.C3.expression ? this.libProjectService.projectData.certificate.criteria.conditions.C3.expression +'&&'+task.id : task.id
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] = {
+        scope: 'task',
+        key: 'attachments',
+        function: 'count',
+        filter: {
+          key: 'type',
+          value: 'all',
+        },
+        operator: '>=',
+        value: task.evidence_details.min_no_of_evidences,
+        taskDetails: [task.id],
+      }
+    });
+    // set certificate data in parent project data when certificate data is not project
+    // if(!this.libProjectService.projectData.certificate) {
+    //   this.libProjectService.projectData.certificate = this.certificate
+    // }
+  }
+
+  setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
+    console.log(criterialValue,taskCriteria,item)
+    this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
+    console.log(this.libProjectService.projectData.certificate)
   }
 
   removeLogo(index: number) {
@@ -372,6 +400,7 @@ export class CertificatesComponent implements OnInit {
   }
 
   submit(): void {
+    this.getProjectDetails();
     this.certificateForm.markAllAsTouched();
     if (this.certificateForm.valid) {
       const formData = {
