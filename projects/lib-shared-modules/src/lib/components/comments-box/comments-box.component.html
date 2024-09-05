@@ -1,7 +1,7 @@
 <body>
   <section class="comment-open" *ngIf="!chatFlag">
     <div class="flex justify-between mr-10">
-      <mat-icon class="mr-2">chat</mat-icon>
+      <mat-icon class="mr-2">chat_bubble</mat-icon>
       <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
     </div>
     <mat-icon *ngIf="!chatFlag" (click)="openChatBot()" class="cursor-pointer">zoom_out_map</mat-icon>
@@ -9,7 +9,7 @@
   <div *ngIf="chatFlag" class="chatbox">
     <section class="header">
       <div class="flex justify-between">
-        <mat-icon class="mr-5">chat</mat-icon>
+        <mat-icon class="mr-5">chat_bubble</mat-icon>
         <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
       </div>
       <div>
