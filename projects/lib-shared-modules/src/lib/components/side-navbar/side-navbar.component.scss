@@ -39,3 +39,13 @@ mat-nav-list {
 .error-icon {
     padding-right: 1rem;
 }
+
+.sidebar-footer {
+    position: absolute;
+    width: 100%;
+    font-size: medium;
+  }
+
+::ng-deep mat-nav-list{
+    height: 72vh !important
+}
