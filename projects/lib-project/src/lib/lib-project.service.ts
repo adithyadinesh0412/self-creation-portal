@@ -176,14 +176,6 @@ export class LibProjectService {
         ? projectData[key].value
         : projectData[key];
     }
-    // if(this.projectData.certificate) {
-    //   for (let key in this.projectData.certificate.criteria.C3.conditions) {
-    //     if(!this.projectData.certificate.criteria.C3.conditions[key].value) {
-    //       delete this.projectData.certificate.criteria.C3.conditions[key]
-    //     }
-    //   }
-
-    // }
     const config = {
       url: projectId
         ? this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT +
@@ -202,7 +194,8 @@ export class LibProjectService {
   }
 
   checkCertificateValidations() {
-    if (this.projectData.certificate.issuer === '') {
+    if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
+      this.validForm.certificates = "INVALID"
       this.toastService.openSnackBar({
         message: 'Please fill issuer Name',
         class: 'error',
@@ -213,9 +206,10 @@ export class LibProjectService {
       !this.projectData.certificate.logos.no_of_logos ||
       (this.projectData.certificate.logos.no_of_logos > 0 &&
         this.projectData.certificate.logos.stateLogo1 === '') ||
-      (this.projectData.certificate.logos.no_of_logos > 0 &&
+      (this.projectData.certificate.logos.no_of_logos > 1 &&
         this.projectData.certificate.logos.stateLogo2 === '')
     ) {
+      this.validForm.certificates = "INVALID"
       this.toastService.openSnackBar({
         message: 'Please upload certificate logo',
         class: 'error',
@@ -226,8 +220,9 @@ export class LibProjectService {
     if (!this.projectData.certificate.signature.no_of_signature ||
       (this.projectData.certificate.signature.no_of_signature > 0 &&
         this.projectData.certificate.logos.signatureImg1 === '') ||
-      (this.projectData.certificate.signature.no_of_signature > 0 &&
+      (this.projectData.certificate.signature.no_of_signature > 1 &&
         this.projectData.certificate.logos.signatureImg2 === '')) {
+          this.validForm.certificates = "INVALID"
       this.toastService.openSnackBar({
         message: 'Please upload certificate Signature',
         class: 'error',
