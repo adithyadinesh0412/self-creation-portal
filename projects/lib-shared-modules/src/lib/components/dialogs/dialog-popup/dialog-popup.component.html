@@ -11,7 +11,7 @@
       </div>
     }
   }
-  <h3 class="text-sm font-bold p-4">{{dialogueData?.content |translate}}</h3>
+  <h3 class="text-sm font-bold p-4" *ngIf="dialogueData?.content">{{dialogueData?.content |translate}}</h3>
   @if(dialogueData.reportContent){
     <div class="pb-6 flex items-center">
       <mat-checkbox [(ngModel)]="reportContent"> Report content</mat-checkbox>
@@ -88,6 +88,7 @@
                 accept="png"
                 (change)="onFileSelected($event)"
                 class="hidden"
+                multiple
                 #fileInput
               />
               <button  type="button" class="flex justify-center items-center button border rounded bg-lightGreen text-sm text-white w-48 min-w-[192px] p-2"
@@ -96,8 +97,8 @@
                 <span>{{"UPLOAD_BUTTON" | translate}}</span>
               </button>
               <p class="text-xs flex items-center justify-center pt-1">{{ "UPLOAD_PNG_UPTO_50KB" | translate}}</p>
-              @if(selectedFile){
-                <p class="flex items-center justify-center text-red-500 text-xs pt-2">Selected File: {{ selectedFile.name }}</p>
+              @if(selectedFiles){
+                <p class="flex items-center justify-center text-red-500 text-xs pt-2">Selected File: {{ selectedFiles.name }}</p>
               }
               @if(errorMessage){
                 <p class="flex items-center justify-center text-red-500 text-xs pt-2">{{ errorMessage }}</p>
@@ -109,6 +110,10 @@
       </div>
     </div>
   }
+    <div class="m-3 flex justify-center">
+      <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
+      </div>
+    </div>
 
 </div>
 <div class="border-t"></div>
