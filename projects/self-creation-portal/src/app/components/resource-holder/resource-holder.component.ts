@@ -80,7 +80,13 @@ export class ResourceHolderComponent implements OnInit{
     this.loadSidenavData();
   }
 
-  //calling the sidenavformdata api for each selected sidenavitem
+  /**
+  *  Loads and initializes the sidenav data based on the current route.
+  * - Retrieves sidenav data from the form service and updates the component state.
+  * - Sets pagination, active role, button styles, filters, and status messages.
+  * - merges button actions and info fields, including status-specific data.
+  * - Calls `getQueryParams()` to retrieve route parameters and updates the no-result message.
+  */
   loadSidenavData(){
     const currentUrl = this.route.snapshot.routeConfig?.path;
     this.formService.getForm(SIDE_NAV_DATA).subscribe(form => {
@@ -110,7 +116,8 @@ export class ResourceHolderComponent implements OnInit{
 
   /**
    * This function is used for pagechanges
-   * @param event 
+   * @param event -The page changes event which contains the pageSize and page
+   * @returns resourcelist api response with applied pagination
    */
   onPageChange(event: any) {
     this.pagination.pageSize = event.pageSize;
@@ -121,7 +128,8 @@ export class ResourceHolderComponent implements OnInit{
   
   /**
    * This function is used for the search functionality
-   * @param event 
+   * @param event - The search event which contains the searchtext
+   * @returns resourcelist api response with searchtext
    */
   receiveSearchResults(event: string) {
     this.filters.search = event.trim().toLowerCase();
@@ -134,7 +142,8 @@ export class ResourceHolderComponent implements OnInit{
 
   /**
    * This function is used for the filter functionality
-   * @param event 
+   * @param event -The filter change event, which contains the filter name and selected values.
+   * return the resourcelist api response with applied filter
    */
   onFilterChange(event: any) {
     const filterName = event.filterName;
@@ -152,7 +161,9 @@ export class ResourceHolderComponent implements OnInit{
   
   /**
    * This function is used for the sorting functionality
-   * @param event 
+   * @param event - An object containing the `sort_by` field to be sorted and the `sort_order` 
+   * (either 'asc' for ascending or 'desc' for descending) as emitted by the child component.
+   * @returns - the resource list api with applied sorting
    */
   onSortOptionsChanged(event: { sort_by: string, sort_order: string }) {
     this.sortOptions = event;
@@ -161,6 +172,10 @@ export class ResourceHolderComponent implements OnInit{
     this.updateQueryParams(); 
   }
 
+  /**
+   * This function is used to call the resourcelist api using the pageStatus along with the listType
+   * @returns - the resourcelist api response as per pageStatus and the listType
+   */
   getList() {
     let listType: keyof typeof RESOURCE_URLS.ENDPOINTS = 'RESOURCE_LIST';
     switch (this.pageStatus) {
@@ -182,7 +197,8 @@ export class ResourceHolderComponent implements OnInit{
   
   /**
    * This functions used to call the resourcelist api response
-   * @param response 
+   * @param response -resourcelist api response
+   * @returns response for resourcelist api
    */
   handleResponse(response: any) {
     const result = response.result || { data: [], count: 0, changes_requested_count: 0 };
@@ -201,7 +217,7 @@ export class ResourceHolderComponent implements OnInit{
 
   /**
    * This functions is used to add buttons from json to resourcelist api response
-   * @param cardItems 
+   * @param cardItems - this is resourcelist item
    * @returns cardItems with the buttons for each item
    */
   addActionButtons(cardItems: any): any {
@@ -242,13 +258,19 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   });
 }
 
-  //updateQueryParams to router
+  /**
+   * This function is used to updates the queryparams to route as per params passing through the api call
+   * @returns -the resourcelist api with updatedqueryparams from routes
+   */
   updateQueryParams() {
     const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
     this.commonService.updateQueryParams(queryParams);
   }
   
-  //fetching the api response using queryparams details
+  /**
+   * This function is used to call the api response with queryparams present in the router
+   * @return - the resourcelist api using applied queryparams
+   */
   getQueryParams() {
     this.route.queryParams.subscribe(params => {
       this.commonService.applyQueryParams(params, this.pagination, this.filters, this.sortOptions);
@@ -260,6 +282,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   /**
    * This functions is used to add the buttons click event as per its label it will call the actions
    * @param event -listresource api response.
+   * @returns event click action for each label
    */
   statusButtonClick(event: { label: string, item: any }) {
      const { label, item } = event;
@@ -344,8 +367,9 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
    }
 
   /**
-   * This functions is used to call the buttons in the filter ui ans as per the label it will call the actions
-   * @param event 
+   * This functions is used to call the buttons in the filter ui and as per the button-label it will call the actions
+   * @param event - this is filter button click event 
+   * @returns -resourcelist api response with filterstatus
    */
   filterButtonClickEvent(event : { label: string }) {
     if(this.filters.activeFilterButton === event.label) {
@@ -365,6 +389,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   /**
    * This functions is used for the infoicon click 
    * @param event - onclicking the event is calling data in the card
+   * @return resourcelist api response on infoiconclick for each item 
    */
   infoIconClickEvent(event: any) {
     const cardItem = event.item;
@@ -418,6 +443,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   /**
    * This functions delete the resource using delete resource api.
    * @param item - listresource api response.
+   * @returns delete the resourceid item from listresourceapi
  */
   deleteProject(item: any) {
     this.libProjectService.deleteProject(item.id).subscribe((response : any) => {
@@ -439,6 +465,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   /**
    * This functions is used to open dialog popup on clicking delete button on carditem
    * @param item -this is resourcelist item
+   * @return open the dialogpopup to delete the resource
    */
   confirmAndDeleteProject(item: any) {
     const dialogRef = this.dialog.open(DialogPopupComponent, {

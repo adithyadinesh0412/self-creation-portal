@@ -23,6 +23,7 @@
 quill-editor {
   height: 8rem !important;
   width: 100%;
+  overflow-y: auto !important;
 }
 .chat-window {
   background: #e1e8ed;
@@ -122,6 +123,9 @@ quill-editor {
   background: $primary;
   width: 70%;
   border-radius: 0.8rem;
+  max-width: 25em !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
 }
 .color-primary {
   color: $primary;
