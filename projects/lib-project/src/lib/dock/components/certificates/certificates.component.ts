@@ -111,7 +111,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                   value: 'all',
                 },
                 operator: '>=',
-                value: 4,
+                value: '',
               },
             },
           },
@@ -173,14 +173,13 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
               if(task.evidence_details.min_no_of_evidences) {
                 if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
-                  task.value = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                  task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
                 }
                 return task;
               }
             });
             // set certificate data in parent project data when certificate data is not project
             if(!this.libProjectService.projectData.certificate) {
-              this.libProjectService.projectData.certificate = this.certificate
               this.selectedYes = "2"
             }
             else {
@@ -199,51 +198,30 @@ export class CertificatesComponent implements OnInit, OnDestroy{
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
               this.tasks = res.result.tasks.filter((task:any) => {
-                if(task.evidence_details.min_no_of_evidences) {
-                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
-                    task.value = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                if(task.evidence_details?.min_no_of_evidences) {
+                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
+                    task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
                   }
                   return task;
                 }
               });
               // set certificate data in parent project data when certificate data is not project
               if(!this.libProjectService.projectData.certificate) {
-                this.libProjectService.projectData.certificate = this.certificate
                 this.selectedYes = "2"
               }
               else {
                 this.certificate = this.libProjectService.projectData.certificate;
                 this.selectedYes = "1"
+                this.setIssuerName(this.libProjectService.projectData.certificate.issuer)
+                this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
+                this.updateSignaturePreview()
+                this.setLogoPreview();
               }
               this.getCertificateForm();
               if (params.mode === 'edit') {
                 this.startAutoSaving();
               }
             });
-        }
-
-        if (params.mode === 'edit') {
-          this.subscription.add(
-            this.libProjectService.isProjectSave.subscribe(
-              (isProjectSave: boolean) => {
-                if (isProjectSave && this.router.url.includes('sub-tasks')) {
-                  this.submit();
-                }
-              }
-            )
-          );
-          this.subscription.add(
-            // Check validation before sending for review.
-            this.libProjectService.isSendForReviewValidation.subscribe(
-              (reviewValidation: boolean) => {
-                if (reviewValidation) {
-                  this.certificateForm.markAllAsTouched();
-                  // this.libProjectService.validForm.subTasks =  this.subtasks?.status? this.subtasks?.status: "INVALID"
-                  this.libProjectService.triggerSendForReview();
-                }
-              }
-            )
-          );
         }
         if (
           params.mode === 'viewOnly' ||
@@ -261,6 +239,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     this.libProjectService.projectData.certificate.issuer = value;
     this.updateCertificatePreview('stateTitle',value,'text')
   }
+
 
   getCertificateForm() {
     this.formService.getCertificateForm().then((data: any) => {
@@ -281,6 +260,11 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     this.selectedYes = value;
     if(this.selectedYes == "2") {
       delete this.libProjectService.projectData.certificate
+    }
+    else {
+      if(!this.libProjectService.projectData.certificate) {
+        this.libProjectService.projectData.certificate = this.certificate
+      }
     }
   }
 
@@ -365,8 +349,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
               stateLogo1: attachmentType === 1 ? urlData:this.libProjectService.projectData.certificate.logos.stateLogo1,
               stateLogo2: attachmentType === 2 ? urlData:this.libProjectService.projectData.certificate.logos.stateLogo2,
             }
-            this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo1,'image')
-            this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
+            this.setLogoPreview()
           })
         })
       }
@@ -374,6 +357,11 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.toastService.openSnackBar({message : "Please Add Logo",class : 'error'})
       }
     });
+  }
+
+  setLogoPreview() {
+    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo1,'image')
+    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
   }
 
   attachSignature(signatureType:number) {
@@ -402,10 +390,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
               signatureTitleName2: signatureType === 2 ? result.additionalData.inputfields[0].value:this.libProjectService.projectData.certificate.signature.signatureTitleName2,
               signatureTitleDesignation2: signatureType === 2 ? result.additionalData.inputfields[1].value:this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,
             }
-            this.updateCertificatePreview('signatureTitle1a',this.libProjectService.projectData.certificate.signature.signatureTitleName1+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1,'text')
-            this.updateCertificatePreview('signatureTitle2a',this.libProjectService.projectData.certificate.signature.signatureTitleName2+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,'text')
-            this.updateCertificatePreview('signatureImg1',this.libProjectService.projectData.certificate.signature.signatureImg1,'image')
-            this.updateCertificatePreview('signatureImg2',this.libProjectService.projectData.certificate.signature.signatureImg2,'image')
+            this.updateSignaturePreview()
           })
         })
       }
@@ -413,6 +398,13 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.toastService.openSnackBar({message : "Please Add Signature",class : 'error'})
       }
     });
+  }
+
+  updateSignaturePreview() {
+    this.updateCertificatePreview('signatureTitle1a',this.libProjectService.projectData.certificate.signature.signatureTitleName1+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1,'text')
+    this.updateCertificatePreview('signatureTitle2a',this.libProjectService.projectData.certificate.signature.signatureTitleName2+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,'text')
+    this.updateCertificatePreview('signatureImg1',this.libProjectService.projectData.certificate.signature.signatureImg1,'image')
+    this.updateCertificatePreview('signatureImg2',this.libProjectService.projectData.certificate.signature.signatureImg2,'image')
   }
 
   getCommentConfigs() {
@@ -458,6 +450,8 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   viewCertificate() {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      // height: '70%',
+      // width: '80%',
       disableClose: true,
       data: {certificate:this.certificateContainer},
     });
@@ -508,6 +502,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
   }
 
+  setProjectEvidenceCriteriaValue(criterialValue:any) {
+    this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = criterialValue;
+  }
+
   removeAttachments(type:string,index:number|string) {
     switch(type) {
       case "logo": {
@@ -549,21 +547,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   getFileName(url:string) {
     return url.substring(url.lastIndexOf('/') + 1)
-  }
-
-  submit(): void {
-    this.certificateAddIntoHtml();
-    this.certificateForm.markAllAsTouched();
-    if (this.certificateForm.valid) {
-      const formData = {
-        ...this.certificateForm.value,
-        attachLogo: this.attachLogo,
-        attachSign: this.attachSign,
-      };
-      console.log('Form Data:', formData);
-    } else {
-      console.log('Form is invalid');
-    }
   }
 
   ngOnDestroy(): void {
