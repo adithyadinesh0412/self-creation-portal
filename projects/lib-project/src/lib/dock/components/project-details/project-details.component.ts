@@ -102,6 +102,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                           this.libProjectService.setProjectData(res.result);
                           this.readProjectDeatilsAndMap(data.controls,res.result);
                           this.libProjectService.upDateProjectTitle();
+                          this.libProjectService.status = res.result?.status ? res.result?.status :"DRAFT"
                         })
                     );
                   }
@@ -145,6 +146,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
+                        this.libProjectService.status = res.result?.status ? res.result?.status :"DRAFT"
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
@@ -163,6 +165,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
+                        this.libProjectService.status = res.result?.status ? res.result?.status :"DRAFT"
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
                         if(res.result.status == "IN_REVIEW") {
@@ -174,6 +177,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
               }
             } else {
               this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
+               this.libProjectService.status = data?.status ? data?.status :"DRAFT"
             }
           })
         );
@@ -264,6 +268,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             if(result.title){
               this.libProjectService.upDateProjectTitle(result.title);
               this.libProjectService.setProjectData({title:result.title});
+              this.libProjectService.status = result?.status ? result?.status :"DRAFT"
               if (this.projectId) {
                 this.libProjectService.updateProjectDraft(this.projectId).subscribe();
               }
@@ -287,6 +292,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     }
     if (!this.isEvent(data)) {
     this.libProjectService.setProjectData(data);
+    this.libProjectService.status = data?.status ? data?.status :"DRAFT"
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
   }

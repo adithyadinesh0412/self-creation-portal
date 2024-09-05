@@ -37,6 +37,7 @@ export class LibProjectService {
   mode: any = 'edit';
   projectConfig: any;
   instanceConfig: any;
+  status:any;
 
   constructor(
     private httpService: HttpProviderService,
@@ -202,7 +203,7 @@ export class LibProjectService {
   }
 
   checkCertificateValidations() {
-    if (this.projectData.certificate.issuer === '') {
+    if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
       this.toastService.openSnackBar({
         message: 'Please fill issuer Name',
         class: 'error',
@@ -417,7 +418,9 @@ export class LibProjectService {
     return this.getComments().pipe(
       map((comments: any[]) => {
         comments.forEach((comment: any) => {
-          if (comment?.commenter.id === userId) {
+          if (comment?.commenter.id !== userId) {
+            // comment.status = 'RESOLVED';
+          } else {
             comment.status = 'OPEN';
           }
         });

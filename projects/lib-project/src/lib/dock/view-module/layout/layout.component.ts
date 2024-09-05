@@ -28,7 +28,7 @@ export class LayoutComponent {
     )
   }
   ngOnInit(){
-    this.libProjectService.projectData = {}
+    this.libProjectService.status = ""
     this.tabValidation={
       projectDetails: "VALID",
       tasks:"VALID",
@@ -52,7 +52,7 @@ export class LayoutComponent {
           if (Array.isArray(data?.sidenavData.headerData.buttons[this.mode])) {
             this.buttonList = data?.sidenavData.headerData.buttons[this.mode]
           } else {
-            this.buttonList = data?.sidenavData.headerData.buttons[this.mode][this.libProjectService.projectData?.status ? this.libProjectService.projectData.status :"DRAFT"]
+            this.buttonList = data?.sidenavData.headerData.buttons[this.mode][this.libProjectService?.status]
           }
         }
 
