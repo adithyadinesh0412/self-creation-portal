@@ -20,8 +20,7 @@
         }
       </div>
 
-      @if(selectedYes === "1" && certificateList.length) {
-        <div class="px-10 text-tertiary">
+        <div class="px-10 text-tertiary" [ngClass]="{hidden: selectedYes === '2'}">
             <p class="text-lg">{{ "CERTIFICATE_DETAILS" | translate}}
                 <span class="px-1 text-base text-[$buttonDisable]">({{"CERTIFICATE_SUB_DETAILS" | translate}})</span>
             </p>
@@ -153,11 +152,16 @@
                     </div>
                     <div class="certificate-content w-1/2">
                         <!-- certificate image content to place here -->
-                        <div class="px-10 mt-10 flex justify-center">
-                            <ng-container *ngTemplateOutlet="reusableSection"></ng-container>
-                            <button type="button" class="btn primary-button-enable" (click)="viewCertificate()">
-                            {{ 'VIEW_FULL_SCREEN' | translate }}
-                            </button>
+                        <div class="px-10 mt-10">
+                            <div class="mt-4 m-3 flex justify-center">
+                                <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <button type="button" class="btn primary-button-enable" (click)="viewCertificate()">
+                                    {{ 'VIEW_FULL_SCREEN' | translate }}
+                                    </button>
+                            </div>
                       </div>
                     </div>
                 </div>
@@ -200,14 +204,10 @@
                     }
                 }
         </div>
-      }
     </form>
 </div>
 
-<ng-template #reusableSection>
-    <div class="mt-4 m-3 flex justify-center">
-        <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
-        </div>
+<div class="mt-4 m-3 flex justify-center">
+    <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
     </div>
-</ng-template>
-<ng-container *ngTemplateOutlet="reusableSection"></ng-container>
+</div>

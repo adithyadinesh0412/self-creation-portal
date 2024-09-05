@@ -169,7 +169,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.projectId = params.projectId;
         if (Object.keys(this.libProjectService.projectData)?.length) {
           if (params.mode === 'edit') {
-            // this.startAutoSaving();
+            this.startAutoSaving();
             this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
               if(task.evidence_details.min_no_of_evidences) {
                 if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
@@ -217,7 +217,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
               }
               this.getCertificateForm();
               if (params.mode === 'edit') {
-                // this.startAutoSaving();
+                this.startAutoSaving();
               }
             });
         }
