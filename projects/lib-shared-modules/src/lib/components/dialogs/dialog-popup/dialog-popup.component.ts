@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,15 +16,27 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
   templateUrl: './dialog-popup.component.html',
   styleUrl: './dialog-popup.component.scss'
 })
-export class DialogPopupComponent {
+export class DialogPopupComponent implements OnInit {
   reportContent: boolean = false;
   title: string = '';
   errorMessage: string = '';
   selectedFiles: File | undefined;
+  @ViewChild('certificateContainer', { static: true }) certificateContainer: ElementRef | any;
 
   constructor(
-    public dialogRef: MatDialogRef<DialogPopupComponent>,
+    public dialogRef: MatDialogRef<DialogPopupComponent>, private renderer: Renderer2,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) {
+      console.log(dialogueData)
+  }
+
+  ngOnInit(): void {
+    if(this.dialogueData.certificate) {
+      this.renderer.setProperty(
+        this.certificateContainer?.nativeElement,
+        'innerHTML',
+        this.dialogueData.certificate.nativeElement.innerHTML
+      );
+    }
   }
 
   onDragOver(event: DragEvent){
@@ -72,6 +84,7 @@ export class DialogPopupComponent {
   }
 
   onAttach() {
-    this.dialogRef.close({ file: this.selectedFiles });
+    console.log(this.dialogueData)
+    this.dialogRef.close({ file: this.selectedFiles, additionalData: this.dialogueData});
   }
 }

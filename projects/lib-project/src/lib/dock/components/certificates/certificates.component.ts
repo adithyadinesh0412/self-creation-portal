@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import {
   DialogPopupComponent,
   FormService,
+  ToastService,
   UtilService,
 } from 'lib-shared-modules';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -42,7 +43,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
 })
-export class CertificatesComponent implements OnInit {
+export class CertificatesComponent implements OnInit, OnDestroy{
   certificateDetails: any;
   selectedYes: any = "2";
   certificateForm!: FormGroup;
@@ -60,8 +61,9 @@ export class CertificatesComponent implements OnInit {
   projectInReview: boolean = false;
   taskForm: any;
   certificateList:any = [];
+  intervalId:any;
   certificate:any = {
-      base_template_id: 5,
+      base_template_id: 1,
       base_template_url: "",
       code: "",
       name: "",
@@ -120,36 +122,72 @@ export class CertificatesComponent implements OnInit {
           },
         },
       }
-    }
-  credentialSubject = {
-    recipientName:"Ramkumar"
   }
-  @ViewChild('certificateContainer', { static: true }) certificateContainer: ElementRef | any;
+  @ViewChild('certificateContainer', { static: false }) certificateContainer: ElementRef | any;
 
   private subscription: Subscription = new Subscription();
-  private autoSaveSubscription: Subscription = new Subscription();
 
   constructor(
     private dialog: MatDialog,
     private fb: FormBuilder,
     private formService: FormService,
-    private libProjectService: LibProjectService,
+    public libProjectService: LibProjectService,
     private route: ActivatedRoute,
     private router: Router,
     private utilService: UtilService,
     private renderer: Renderer2,
+    private toastService:ToastService
   ) {}
 
   ngOnInit() {
     this.initForm();
     this.getCertificateList();
+    if(this.mode === 'edit' || this.mode === ""){
+      this.libProjectService.projectData = {};
+      this.subscription.add(
+        this.libProjectService.isProjectSave.subscribe(
+          (isProjectSave: boolean) => {
+            if (isProjectSave && this.router.url.includes('certificate')) {
+              this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res) =>console.log(res))
+            }
+          }
+        )
+      );
+      this.subscription.add( // Check validation before sending for review.
+        this.libProjectService.isSendForReviewValidation.subscribe(
+          (reviewValidation: boolean) => {
+            if(reviewValidation) {
+              this.libProjectService.triggerSendForReview();
+            }
+          }
+        )
+      );
+    }
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
         if (Object.keys(this.libProjectService.projectData)?.length) {
           if (params.mode === 'edit') {
-            this.startAutoSaving();
+            // this.startAutoSaving();
+            this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
+              if(task.evidence_details.min_no_of_evidences) {
+                if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
+                  task.value = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                }
+                return task;
+              }
+            });
+            // set certificate data in parent project data when certificate data is not project
+            if(!this.libProjectService.projectData.certificate) {
+              this.libProjectService.projectData.certificate = this.certificate
+              this.selectedYes = "2"
+            }
+            else {
+              this.certificate = this.libProjectService.projectData.certificate;
+              this.selectedYes = "1"
+            }
+            this.getCertificateForm()
           }
           if (this.libProjectService?.projectData?.status == 'IN_REVIEW') {
             this.getCommentConfigs();
@@ -162,16 +200,24 @@ export class CertificatesComponent implements OnInit {
               this.libProjectService.projectData = res?.result;
               this.tasks = res.result.tasks.filter((task:any) => {
                 if(task.evidence_details.min_no_of_evidences) {
+                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
+                    task.value = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                  }
                   return task;
                 }
               });
               // set certificate data in parent project data when certificate data is not project
               if(!this.libProjectService.projectData.certificate) {
                 this.libProjectService.projectData.certificate = this.certificate
+                this.selectedYes = "2"
+              }
+              else {
+                this.certificate = this.libProjectService.projectData.certificate;
+                this.selectedYes = "1"
               }
               this.getCertificateForm();
               if (params.mode === 'edit') {
-                this.startAutoSaving();
+                // this.startAutoSaving();
               }
             });
         }
@@ -209,7 +255,11 @@ export class CertificatesComponent implements OnInit {
         }
       })
     );
-    this.getProjectDetails();
+  }
+
+  setIssuerName(value:string) {
+    this.libProjectService.projectData.certificate.issuer = value;
+    this.updateCertificatePreview('stateTitle',value,'text')
   }
 
   getCertificateForm() {
@@ -224,20 +274,22 @@ export class CertificatesComponent implements OnInit {
         (item: any) => item.scope !== 'task'
       );
       return data;
-
     });
   }
 
   certificateEnabling(value:string) {
     this.selectedYes = value;
+    if(this.selectedYes == "2") {
+      delete this.libProjectService.projectData.certificate
+    }
   }
 
   startAutoSaving() {
-    this.subscription.add(
+    this.intervalId = setInterval(() => {
       this.libProjectService
         .startAutoSave(this.projectId)
         .subscribe((data) => console.log(data))
-    );
+    }, 30000);
   }
 
   initForm() {
@@ -262,16 +314,39 @@ export class CertificatesComponent implements OnInit {
   getCertificateList() {
     this.libProjectService
       .getCertificatesList()
-      .subscribe((res:any) => this.certificateList = res.result.data);
+      .subscribe((res:any) => {
+        this.certificateList = res.result.data
+        this.certificateTypeSelected = res.result.data[0];
+        this.libProjectService.projectData.base_template_url = res.result.data[0].url;
+        this.libProjectService.projectData.base_template_id = res.result.data[0].id;
+        if(this.libProjectService.projectData.certificate) {
+          this.setCertificateData(this.libProjectService.projectData.certificate)
+        }
+        this.certificateAddIntoHtml();
+      });
+  }
+
+  setCertificateData(certificate:any) {
+    this.certificateTypeSelected = this.certificateList.find((certificateItem:any) => certificateItem.id == certificate.base_template_id)
+    this.certificateForm.patchValue({
+      issuerName:certificate.issuer,
+      certificateType:this.certificateTypeSelected.code
+    })
+  }
+
+  openAttachment(link:string) {
+    window.open(link,'_blank')
   }
 
   onCertificateTypeChange(value: string): void {
     console.log(value);
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
-    this.getProjectDetails()
+    this.libProjectService.projectData.base_template_url = this.certificateTypeSelected.url;
+    this.libProjectService.projectData.base_template_id = this.certificateTypeSelected.id;
+    this.certificateAddIntoHtml()
   }
 
-  attachLogos() {
+  attachLogos(attachmentType:number) {
     const attachLogoData = this.certificateDetails.find(
       (field: any) => field.name === 'attachlogo'
     );
@@ -281,13 +356,27 @@ export class CertificatesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.fileName) {
-        this.attachLogo.push({ name: result.fileName });
+      if (result && result.file) {
+        this.utilService.getImageUploadUrl(result.file).subscribe((res:any) => {
+          this.utilService.uploadSignedURL(result.file, res?.result?.certificate.files[0].url).subscribe((urlData:any) => {
+            urlData = res.result.certificate.files[0].downloadableUrl;
+            this.libProjectService.projectData.certificate.logos = {
+              no_of_logos: this.certificateTypeSelected.meta.logos.no_of_logos,
+              stateLogo1: attachmentType === 1 ? urlData:this.libProjectService.projectData.certificate.logos.stateLogo1,
+              stateLogo2: attachmentType === 2 ? urlData:this.libProjectService.projectData.certificate.logos.stateLogo2,
+            }
+            this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo1,'image')
+            this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
+          })
+        })
+      }
+      else {
+        this.toastService.openSnackBar({message : "Please Add Logo",class : 'error'})
       }
     });
   }
 
-  attachSignature() {
+  attachSignature(signatureType:number) {
     const attachSignData = this.certificateDetails.find(
       (field: any) => field.name === 'attachsign'
     );
@@ -296,11 +385,32 @@ export class CertificatesComponent implements OnInit {
       data: attachSignData.dialogData,
     });
     dialogRef.afterClosed().subscribe((result) => {
+      if(result.additionalData.inputfields.find((item:any) => item.value === "")?.value === "") {
+        this.toastService.openSnackBar({message : "Please Add Signature name and Designation",class : 'error'})
+        return;
+      }
       if (result && result.file) {
-        this.utilService.getImageUploadUrl(result.file).subscribe((res) => {
-          console.log(res);
-          this.attachSign.push(res);
+        this.utilService.getImageUploadUrl(result.file).subscribe((res:any) => {
+          this.utilService.uploadSignedURL(result.file, res?.result?.certificate.files[0].url).subscribe((urlData:any) => {
+            urlData = res.result.certificate.files[0].downloadableUrl;
+            this.libProjectService.projectData.certificate.signature = {
+              no_of_signature: this.certificateTypeSelected.meta.signature.no_of_signature,
+              signatureImg1: signatureType === 1 ? urlData:this.libProjectService.projectData.certificate.signature.signatureImg1,
+              signatureTitleName1: signatureType === 1 ? result.additionalData.inputfields[0].value:this.libProjectService.projectData.certificate.signature.signatureTitleName1,
+              signatureTitleDesignation1: signatureType === 1 ? result.additionalData.inputfields[1].value:this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1,
+              signatureImg2:signatureType === 2 ? urlData:this.libProjectService.projectData.certificate.signature.signatureImg2,
+              signatureTitleName2: signatureType === 2 ? result.additionalData.inputfields[0].value:this.libProjectService.projectData.certificate.signature.signatureTitleName2,
+              signatureTitleDesignation2: signatureType === 2 ? result.additionalData.inputfields[1].value:this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,
+            }
+            this.updateCertificatePreview('signatureTitle1a',this.libProjectService.projectData.certificate.signature.signatureTitleName1+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1,'text')
+            this.updateCertificatePreview('signatureTitle2a',this.libProjectService.projectData.certificate.signature.signatureTitleName2+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,'text')
+            this.updateCertificatePreview('signatureImg1',this.libProjectService.projectData.certificate.signature.signatureImg1,'image')
+            this.updateCertificatePreview('signatureImg2',this.libProjectService.projectData.certificate.signature.signatureImg2,'image')
+          })
         })
+      }
+      else {
+        this.toastService.openSnackBar({message : "Please Add Signature",class : 'error'})
       }
     });
   }
@@ -327,10 +437,9 @@ export class CertificatesComponent implements OnInit {
     );
   }
 
-  getProjectDetails() {
+  certificateAddIntoHtml() {
     this.utilService.downloadFiles(this.certificateTypeSelected.url).subscribe((res) => {
-      console.log(res);
-      // this.svgContent = res;
+      this.svgContent = res;
       if (this.certificateContainer) {
         this.renderer.setProperty(
           this.certificateContainer.nativeElement,
@@ -348,7 +457,29 @@ export class CertificatesComponent implements OnInit {
   }
 
   viewCertificate() {
+    const dialogRef = this.dialog.open(DialogPopupComponent, {
+      disableClose: true,
+      data: {certificate:this.certificateContainer},
+    });
+    dialogRef.afterClosed().subscribe((result) => {
 
+    });
+  }
+
+  updateCertificatePreview(elementId:string,content:any,type:string) {
+    const element = document.getElementById(elementId)
+    if(content && element) {
+      switch(type){
+        case "text" : {
+          element.textContent = content;
+          break;
+        }
+        case "image" : {
+          element.setAttribute('xlink:href',content);
+          break;
+        }
+      }
+    }
   }
 
   createCriteriaForTasks() {
@@ -374,17 +505,34 @@ export class CertificatesComponent implements OnInit {
   }
 
   setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
-    console.log(criterialValue,taskCriteria,item)
     this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
-    console.log(this.libProjectService.projectData.certificate)
   }
 
-  removeLogo(index: number) {
-    this.attachLogo.splice(index, 1);
-  }
-
-  removeSignature(index: number) {
-    this.attachSign.splice(index, 1);
+  removeAttachments(type:string,index:number|string) {
+    switch(type) {
+      case "logo": {
+        if(index == 1) {
+          this.libProjectService.projectData.certificate.logos.stateLogo1 = ''
+        }
+        else {
+          this.libProjectService.projectData.certificate.logos.stateLogo2 = ''
+        }
+        break;
+      }
+      case "signature": {
+        if(index == 1) {
+          this.libProjectService.projectData.certificate.signature.signatureImg1 = ''
+          this.libProjectService.projectData.certificate.signature.signatureTitleName1 = ''
+          this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1 = ''
+        }
+        else {
+          this.libProjectService.projectData.certificate.signature.signatureImg2 = ''
+          this.libProjectService.projectData.certificate.signature.signatureTitleName2 = ''
+          this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2 = ''
+        }
+        break;
+      }
+    }
   }
 
   getAttachedData(controlName: string): FormArray {
@@ -399,8 +547,12 @@ export class CertificatesComponent implements OnInit {
     return this.getAttachedData('attachedSignatures');
   }
 
+  getFileName(url:string) {
+    return url.substring(url.lastIndexOf('/') + 1)
+  }
+
   submit(): void {
-    this.getProjectDetails();
+    this.certificateAddIntoHtml();
     this.certificateForm.markAllAsTouched();
     if (this.certificateForm.valid) {
       const formData = {
@@ -412,5 +564,19 @@ export class CertificatesComponent implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.libProjectService.validForm.certificates = "VALID";
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    if(this.mode === 'edit'){
+      if(this.libProjectService.projectData.id) {
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      }
+      this.libProjectService.saveProjectFunc(false);
+    }
+    this.subscription.unsubscribe();
   }
 }
