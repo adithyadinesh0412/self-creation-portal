@@ -1,6 +1,6 @@
 <mat-sidenav-container>
   <mat-sidenav class="fixed-sidenav" [opened]="true" mode="side" [disableClose]="true">
-    <mat-nav-list>
+    <mat-nav-list class="h-70">
       @for (item of sidenavData; track item) {
         <a mat-list-item [routerLink]="[item.url]" [queryParamsHandling]="'preserve'" routerLinkActive="active" (click)="currentTab(item)">
           <span class="entry">
@@ -11,5 +11,11 @@
         </a>
       }
     </mat-nav-list>
+    @if(lastReviewed){
+      <div class="sidebar-footer p-4">
+        Last reviewed: {{ lastReviewed | date: 'dd-MM-yyyy HH:mm' }}
+      </div>
+    }
+    
   </mat-sidenav>
 </mat-sidenav-container>

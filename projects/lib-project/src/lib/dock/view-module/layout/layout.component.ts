@@ -17,9 +17,7 @@ export class LayoutComponent {
   headerData:any
   sidenavData:any;
   tabValidation:any;
-  status:any = "DRAFT"
   mode:any
-  buttonList:any[]=[]
   private subscription: Subscription = new Subscription();
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService,private toastService:ToastService) {
     this.subscription.add(
@@ -28,6 +26,7 @@ export class LayoutComponent {
      })
     )
   }
+  lastReviewed = ""
   ngOnInit(){
     this.tabValidation={
       projectDetails: "VALID",
@@ -45,16 +44,8 @@ export class LayoutComponent {
         //     element.disable = false;
         //   }
         // });
+        this.lastReviewed = this.libProjectService.projectData.last_reviewed_on
         this.headerData = data?.sidenavData.headerData
-        this.status = this.libProjectService.projectData?.status ? this.libProjectService.projectData.status :"DRAFT"
-        if (Array.isArray(data?.sidenavData.headerData.buttons[this.mode])) {
-          this.buttonList = data?.sidenavData.headerData.buttons[this.mode]
-        } else {
-          if(this.status){
-            this.buttonList = data?.sidenavData.headerData.buttons[this.mode][this.status]
-          }
-        }
-
       })
     )
   }
@@ -183,7 +174,6 @@ export class LayoutComponent {
   }
 
   ngOnDestroy() {
-    this.buttonList = []
     this.subscription.unsubscribe();
   }
 }

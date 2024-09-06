@@ -142,7 +142,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.initForm();
     this.getCertificateList();
-    if(this.mode === 'edit' || this.mode === ""){
+    if(this.mode === 'edit' || this.mode === "" || this.mode === 'reqEdit'){
       this.libProjectService.projectData = {};
       this.subscription.add(
         this.libProjectService.isProjectSave.subscribe(
@@ -168,7 +168,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.mode = params.mode;
         this.projectId = params.projectId;
         if (Object.keys(this.libProjectService.projectData)?.length) {
-          if (params.mode === 'edit') {
+          if (params.mode === 'edit' || params.mode === 'reqEdit') {
             this.startAutoSaving();
             this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
               if(task.evidence_details.min_no_of_evidences) {
@@ -218,7 +218,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.setLogoPreview();
               }
               this.getCertificateForm();
-              if (params.mode === 'edit') {
+              if (params.mode === 'edit' || this.mode === 'reqEdit') {
                 this.startAutoSaving();
               }
             });
@@ -554,7 +554,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if(this.mode === 'edit'){
+    if(this.mode === 'edit' || this.mode === 'reqEdit'){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
