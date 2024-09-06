@@ -150,6 +150,7 @@ export class LibProjectService {
                     message: res.message,
                     class: 'success',
                   });
+                  this.projectData = {};
                   this.router.navigate([SUBMITTED_FOR_REVIEW]);
                 }
               );

@@ -55,11 +55,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     //toolbar: '.toolbar',
     toolbar: {
       container: [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        ['bold', 'italic', 'underline'],        // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
-        [{ 'font': [] }],                                        // remove formatting button
-        ['link'],
+        [{ 'font': [] }],                                          // Font family dropdown with Arial and default sans-serif 
         //['link', 'image', 'video']
       ],
 
