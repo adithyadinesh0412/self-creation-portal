@@ -42,7 +42,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     )
    }
   ngOnInit() {
-    if(this.mode === 'edit' || this.mode === ""){
+    if(this.mode === 'edit' || this.mode === "" || this.mode === 'reqEdit'){
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
       this.subscription.add(
@@ -72,7 +72,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     }
   }
   ngAfterViewChecked() {
-    if(this.mode == 'edit' && this.projectId) {
+    if((this.mode == 'edit' || this.mode === 'reqEdit') && this.projectId) {
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
         const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
@@ -137,7 +137,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
             if (params.projectId) {
-              if (params.mode === 'edit') {
+              if (params.mode === 'edit' || this.mode === 'reqEdit') {
                 if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                   this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
                 } else {
@@ -217,7 +217,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
-        if(this.mode === 'edit') {
+        if(this.mode === 'edit' || this.mode === 'reqEdit') {
           this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
         }
       }
@@ -307,7 +307,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if(this.mode === 'edit'){
+    if(this.mode === 'edit' || this.mode === 'reqEdit'){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
