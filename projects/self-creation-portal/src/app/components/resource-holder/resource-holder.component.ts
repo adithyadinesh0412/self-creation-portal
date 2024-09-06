@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE, ToastService, UtilService } from 'lib-shared-modules';
+import { CardComponent, FilterComponent, HeaderComponent, PaginationComponent, SearchComponent, SideNavbarComponent, NoResultFoundComponent, DialogPopupComponent, FormService, SIDE_NAV_DATA, PROJECT_DETAILS_PAGE, ToastService, UtilService ,resourceStatus, reviewStatus ,projectMode} from 'lib-shared-modules';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceService } from '../../services/resource-service/resource.service';
@@ -235,11 +235,11 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
      const { label, item } = event;
      switch (label) {
        case 'EDIT':
-        if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
+        if(item.review_status == reviewStatus.REQUEST_FOR_CHANGES && this.activeRole == "creator"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: 'reqEdit'
+              mode: projectMode.REQUEST_FOR_EDIT
             }
           });
           break;
@@ -247,7 +247,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: 'edit'
+              mode: projectMode.EDIT
             }
           });
           break;
@@ -257,44 +257,44 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
          this.confirmAndDeleteProject(item)
          break;
        case 'VIEW':
-         if(item.status == "SUBMITTED" && this.activeRole == "creator"){
+         if(item.status == resourceStatus.SUBMITTED && this.activeRole == "creator"){
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: 'viewOnly'
+               mode: projectMode.VIEWONLY
              }
            });
            break;
-         }else if(item.status == "SUBMITTED" && this.activeRole == "reviewer"){
+         }else if(item.status == resourceStatus.SUBMITTED && this.activeRole == "reviewer"){
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: 'reviewerView'
+               mode: projectMode.REVIEWER_VIEW
              }
            });
            break;
-         }else if(item.review_status  == "CHANGES_UPDATED" && this.activeRole == "reviewer"){
+         }else if(item.review_status  == reviewStatus.CHANGES_UPDATED && this.activeRole == "reviewer"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: 'reviewerView'
+              mode: projectMode.REVIEWER_VIEW
             }
           });
           break;
-        }else if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
+        }else if(item.review_status == reviewStatus.REQUEST_FOR_CHANGES && this.activeRole == "creator"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: 'creatorView'
+              mode: projectMode.CREATOR_VIEW
             }
           });
           break;
          }
-         else if(item.review_status == "CHANGES_UPDATED" && this.activeRole == "creator" ){
+         else if(item.review_status == reviewStatus.CHANGES_UPDATED && this.activeRole == "creator" ){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: 'viewOnly'
+              mode: projectMode.VIEWONLY
             }
           });
           break;
@@ -302,7 +302,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: 'viewOnly'
+               mode: projectMode.VIEWONLY
              }
            });
            break;
@@ -315,7 +315,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
          this.router.navigate([PROJECT_DETAILS_PAGE], {
            queryParams: {
              projectId: item.id,
-             mode: 'review'
+             mode: projectMode.REVIEW
            }
          });
          break;
@@ -323,7 +323,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
          this.router.navigate([PROJECT_DETAILS_PAGE], {
            queryParams: {
              projectId: item.id,
-             mode: 'review'
+             mode: projectMode.REVIEW
            }
          })
          break;
@@ -373,7 +373,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   
     //info fields to display as per the review_status
     let infoFields = [];
-    if (!cardItem.review_status && (cardItem.status === 'SUBMITTED' || cardItem.status === 'IN_REVIEW')) {
+    if (!cardItem.review_status && (cardItem.status === resourceStatus.SUBMITTED || cardItem.status === 'IN_REVIEW')) {
       infoFields = filterAndMapFields('NOT_STARTED');
     } else {
       infoFields = filterAndMapFields(cardItem.review_status);

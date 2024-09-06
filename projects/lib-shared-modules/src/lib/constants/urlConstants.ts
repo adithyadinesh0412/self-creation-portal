@@ -7,6 +7,7 @@ export const resourceStatus = {
     REJECTED_AND_REPORTED: 'REJECTED_AND_REPORTED',
     IN_REVIEW: 'IN_REVIEW',
     COMMENTS: 'COMMENTS',
+    DRAFT:"DRAFT"
 };
 export const reviewStatus = {
     NOT_STARTED: 'NOT_STARTED',
@@ -14,6 +15,14 @@ export const reviewStatus = {
     REQUEST_FOR_CHANGES:'REQUESTED_FOR_CHANGES',
     CHANGES_UPDATED:'CHANGES_UPDATED'
 
+};
+export const projectMode = {
+  VIEWONLY: 'viewOnly',
+  EDIT: 'edit',
+  REQUEST_FOR_EDIT:'reqEdit',
+  CREATOR_VIEW:'creatorView',
+  REVIEWER_VIEW:'reviewerView',
+  REVIEW:'review'
 };
 export const ROUTE_PATHS = {
     SIDENAV: {
