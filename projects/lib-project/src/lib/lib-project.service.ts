@@ -194,42 +194,47 @@ export class LibProjectService {
   }
 
   checkCertificateValidations() {
-    if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
-      this.validForm.certificates = "INVALID"
-      this.toastService.openSnackBar({
-        message: 'Please fill issuer Name',
-        class: 'error',
-      });
-      return false;
-    }
-    if (
-      !this.projectData.certificate.logos.no_of_logos ||
-      (this.projectData.certificate.logos.no_of_logos > 0 &&
-        this.projectData.certificate.logos.stateLogo1 === '') ||
-      (this.projectData.certificate.logos.no_of_logos > 1 &&
-        this.projectData.certificate.logos.stateLogo2 === '')
-    ) {
-      this.validForm.certificates = "INVALID"
-      this.toastService.openSnackBar({
-        message: 'Please upload certificate logo',
-        class: 'error',
-      });
-      return false;
-    }
+    if(this.projectData.certificate) {
+      if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
+        this.validForm.certificates = "INVALID"
+        this.toastService.openSnackBar({
+          message: 'Please fill issuer Name',
+          class: 'error',
+        });
+        return false;
+      }
+      if (
+        !this.projectData.certificate.logos.no_of_logos ||
+        (this.projectData.certificate.logos.no_of_logos > 0 &&
+          this.projectData.certificate.logos.stateLogo1 === '') ||
+        (this.projectData.certificate.logos.no_of_logos > 1 &&
+          this.projectData.certificate.logos.stateLogo2 === '')
+      ) {
+        this.validForm.certificates = "INVALID"
+        this.toastService.openSnackBar({
+          message: 'Please upload certificate logo',
+          class: 'error',
+        });
+        return false;
+      }
 
-    if (!this.projectData.certificate.signature.no_of_signature ||
-      (this.projectData.certificate.signature.no_of_signature > 0 &&
-        this.projectData.certificate.logos.signatureImg1 === '') ||
-      (this.projectData.certificate.signature.no_of_signature > 1 &&
-        this.projectData.certificate.logos.signatureImg2 === '')) {
-          this.validForm.certificates = "INVALID"
-      this.toastService.openSnackBar({
-        message: 'Please upload certificate Signature',
-        class: 'error',
-      });
-      return false;
+      if (!this.projectData.certificate.signature.no_of_signature ||
+        (this.projectData.certificate.signature.no_of_signature > 0 &&
+          this.projectData.certificate.logos.signatureImg1 === '') ||
+        (this.projectData.certificate.signature.no_of_signature > 1 &&
+          this.projectData.certificate.logos.signatureImg2 === '')) {
+            this.validForm.certificates = "INVALID"
+        this.toastService.openSnackBar({
+          message: 'Please upload certificate Signature',
+          class: 'error',
+        });
+        return false;
+      }
+      return true;
     }
-    return true;
+    else {
+      return true;
+    }
   }
 
   // Getting form from api
@@ -362,7 +367,7 @@ export class LibProjectService {
         },
       });
     }
-    
+
   }
 
   rejectProject(reason: any, isReported: any) {
