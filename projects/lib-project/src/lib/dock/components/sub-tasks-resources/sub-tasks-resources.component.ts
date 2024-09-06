@@ -72,10 +72,10 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.projectData = this.libProjectService.projectData;
             this.createSubTaskForm()
             this.addSubtaskData()
-            if (params.mode === "edit") {
+            if (params.mode === "edit" || params.mode === 'reqEdit') {
               this.startAutoSaving();
             }
-            if((this.mode === 'review' || this.mode === 'edit') && this.libProjectService.projectData.status == "IN_REVIEW"){
+            if((this.mode === 'review' || this.mode === 'edit' ||this.mode === 'reqEdit') && this.libProjectService.projectData.status == "IN_REVIEW"){
               this.getCommentConfigs()
             }  
           }
@@ -85,13 +85,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.projectData = res?.result
               this.createSubTaskForm()
               this.addSubtaskData()
-              if (params.mode === "edit") {
+              if (params.mode === "edit" || this.mode === 'reqEdit') {
               this.startAutoSaving();
             }
             })
           }
 
-          if (params.mode === "edit") {
+          if (params.mode === "edit" || params.mode === 'reqEdit') {
             this.subscription.add(
             this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
               if(isProjectSave && this.router.url.includes('sub-tasks')) {
@@ -144,7 +144,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         };
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
-      if(this.mode === 'edit'){
+      if(this.mode === 'edit' || this.mode === 'reqEdit'){
         if (this.libProjectService?.projectData.tasks){
           this.libProjectService?.projectData.tasks.forEach((task: any) => {
               this.taskData.push(createTaskObject(task));
@@ -252,7 +252,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    if(this.mode === 'edit' && this.libProjectService.projectData.id){
+    if((this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.id){
      this.saveSubtask();
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();

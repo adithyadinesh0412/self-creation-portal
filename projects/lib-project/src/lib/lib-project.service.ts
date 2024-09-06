@@ -73,7 +73,7 @@ export class LibProjectService {
     return this.createOrUpdateProject(this.projectData, projectId).pipe(
       map((res: any) => {
         this.setProjectData(res.result);
-        this.openSnackBarAndRedirect();
+        this.openSnackBarAndRedirect(res.message);
         this.saveProjectFunc(false);
         this.upDateProjectTitle();
         return res;
@@ -347,12 +347,22 @@ export class LibProjectService {
   }
 
   editProject() {
-    this.router.navigate([PROJECT_DETAILS_PAGE], {
-      queryParams: {
-        projectId: this.projectData.id,
-        mode: 'edit',
-      },
-    });
+    if(this.projectData.status === 'IN_REVIEW'){
+      this.router.navigate([PROJECT_DETAILS_PAGE], {
+        queryParams: {
+          projectId: this.projectData.id,
+          mode: 'reqEdit'
+        }
+      });
+    }else{
+      this.router.navigate([PROJECT_DETAILS_PAGE], {
+        queryParams: {
+          projectId: this.projectData.id,
+          mode: 'edit',
+        },
+      });
+    }
+    
   }
 
   rejectProject(reason: any, isReported: any) {
@@ -413,7 +423,7 @@ export class LibProjectService {
       map((comments: any[]) => {
         comments.forEach((comment: any) => {
           if (comment?.commenter.id !== userId) {
-            comment.status = 'RESOLVED';
+            // comment.status = 'RESOLVED';
           } else {
             comment.status = 'OPEN';
           }

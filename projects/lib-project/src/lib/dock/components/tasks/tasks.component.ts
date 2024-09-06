@@ -87,10 +87,10 @@ export class TasksComponent implements OnInit, OnDestroy {
               else{
                 this.addTask();
               }
-              if(params.mode === 'edit'){
+              if(params.mode === 'edit' || this.mode === 'reqEdit'){
                 this.startAutoSaving();
               }
-              if((this.mode === 'review' || this.mode === 'edit') && this.libProjectService.projectData.status == "IN_REVIEW"){
+              if((this.mode === 'review' || this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.status == "IN_REVIEW"){
                 this.getCommentConfigs()
               }
 
@@ -117,14 +117,14 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if((this.mode === 'review' || this.mode === 'edit') && res.result.status == "IN_REVIEW"){
+                  if((this.mode === 'review' || this.mode === 'edit' || this.mode === 'reqEdit') && res.result.status == "IN_REVIEW"){
                     this.getCommentConfigs()
                   }
                 }
                 else {
                   this.addTask();
                 }
-                if(params.mode === 'edit') {
+                if(params.mode === 'edit' || this.mode === 'reqEdit') {
                   this.startAutoSaving();
                 }
               })
@@ -166,7 +166,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       this.libProjectService.isSendForReviewValidation.subscribe(
         (reviewValidation: boolean) => {
           if(reviewValidation) {
-            if(this.mode == 'edit' && this.projectId) {
+            if((this.mode == 'edit' || this.mode === 'reqEdit') && this.projectId) {
               this.tasksForm.markAllAsTouched();
               this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
               this.libProjectService.triggerSendForReview();
@@ -263,7 +263,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    if(this.mode === 'edit' && this.libProjectService.projectData.id){
+    if((this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.id){
       this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
       this.saveTasks()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))

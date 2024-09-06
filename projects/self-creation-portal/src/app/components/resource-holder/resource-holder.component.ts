@@ -235,13 +235,24 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
      const { label, item } = event;
      switch (label) {
        case 'EDIT':
-         this.router.navigate([PROJECT_DETAILS_PAGE], {
-           queryParams: {
-             projectId: item.id,
-             mode: 'edit'
-           }
-         });
-         break;
+        if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: 'reqEdit'
+            }
+          });
+          break;
+        }else{
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: 'edit'
+            }
+          });
+          break;
+        }
+       
        case 'DELETE':
          this.confirmAndDeleteProject(item)
          break;
@@ -262,7 +273,15 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
              }
            });
            break;
-         }else if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
+         }else if(item.review_status  == "CHANGES_UPDATED" && this.activeRole == "reviewer"){
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: 'reviewerView'
+            }
+          });
+          break;
+        }else if(item.review_status == "REQUESTED_FOR_CHANGES" && this.activeRole == "creator"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
