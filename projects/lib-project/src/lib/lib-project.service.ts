@@ -37,7 +37,6 @@ export class LibProjectService {
   mode: any = 'edit';
   projectConfig: any;
   instanceConfig: any;
-  status:any;
 
   constructor(
     private httpService: HttpProviderService,
