@@ -207,7 +207,6 @@
     </form>
 </div>
 
-<div class="mt-4 m-3 flex justify-center">
-    <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
-    </div>
-</div>
+@if(commentPayload || projectInReview) {
+    <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList" [mode]="mode" (comment)="saveComment($event)"></lib-comments-box>
+}
