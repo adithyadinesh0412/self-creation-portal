@@ -52,6 +52,10 @@ export class UtilService {
     return this.httpService.post(config.url, config.payload)
   }
 
+  downloadFiles(url:string) {
+    return this.http.get(url, { responseType: 'text' })
+  }
+
   getCommentList(resourceId:string|number){
     const config = {
       url : `${this.Configuration.urlConFig.RESOURCE_URLS.COMMENT_LIST+"?resource_id="+resourceId}`,
@@ -74,14 +78,7 @@ export class UtilService {
       },
       "ref": "certificate"
     }
-    return this.httpService.post(this.Configuration.urlConFig.UPLOAD.SIGNED_URL,payload).pipe(
-      map((result: any) => {
-        return this.uploadSignedURL(file, result?.result?.certificate.files[0].url).subscribe(() => {
-          // this.imgData.isUploaded = true;
-          // this.createSession.myForm.value.image = result.result.filePath;
-          // this.onSubmit();
-        })
-      }))
+    return this.httpService.post(this.Configuration.urlConFig.UPLOAD.SIGNED_URL,payload);
   }
 
   uploadSignedURL(file: any, path: any) {

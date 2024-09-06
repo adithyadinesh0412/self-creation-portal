@@ -44,7 +44,7 @@ export class HttpProviderService {
     * Method to handle errors.
     * @param error : Error from API response
     */
-    private handleError(error: HttpErrorResponse): Observable<never> {
+    handleError(error: HttpErrorResponse): Observable<never> {
       let errorMessage = '';
       if (error.error instanceof ErrorEvent) {
         // Client-side error
