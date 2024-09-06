@@ -19,6 +19,7 @@ import {
   FormService,
   ToastService,
   UtilService,
+  projectMode,resourceStatus
 } from 'lib-shared-modules';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
@@ -142,7 +143,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.initForm();
     this.getCertificateList();
-    if(this.mode === 'edit' || this.mode === "" || this.mode === 'reqEdit'){
+    if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
       this.libProjectService.projectData = {};
       this.subscription.add(
         this.libProjectService.isProjectSave.subscribe(
@@ -168,7 +169,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.mode = params.mode;
         this.projectId = params.projectId;
         if (Object.keys(this.libProjectService.projectData)?.length) {
-          if (params.mode === 'edit' || params.mode === 'reqEdit') {
+          if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
             this.startAutoSaving();
             this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
               if(task.evidence_details.min_no_of_evidences) {
@@ -188,7 +189,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             }
             this.getCertificateForm()
           }
-          if (this.libProjectService?.projectData?.status == 'IN_REVIEW') {
+          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
             this.getCommentConfigs();
           }
         } else {
@@ -218,16 +219,16 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.setLogoPreview();
               }
               this.getCertificateForm();
-              if (params.mode === 'edit' || this.mode === 'reqEdit') {
+              if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                 this.startAutoSaving();
               }
             });
         }
         if (
-          params.mode === 'viewOnly' ||
-          params.mode === 'review' ||
-          params.mode === 'reviewerView' ||
-          this.mode === 'creatorView'
+          params.mode === projectMode.VIEWONLY ||
+          params.mode === projectMode.REVIEW ||
+          params.mode === projectMode.REVIEWER_VIEW ||
+          this.mode === projectMode.CREATOR_VIEW
         ) {
           this.viewOnly = true;
         }
@@ -554,7 +555,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if(this.mode === 'edit' || this.mode === 'reqEdit'){
+    if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }

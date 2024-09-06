@@ -5,7 +5,7 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { CommentsBoxComponent, DialogPopupComponent, FormService, UtilService } from 'lib-shared-modules';
+import { CommentsBoxComponent, DialogPopupComponent, FormService, UtilService, projectMode,resourceStatus } from 'lib-shared-modules';
 @Component({
   selector: 'lib-project-details',
   standalone: true,
@@ -42,7 +42,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     )
    }
   ngOnInit() {
-    if(this.mode === 'edit' || this.mode === "" || this.mode === 'reqEdit'){
+    if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
       this.subscription.add(
@@ -65,14 +65,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         )
       );
     }
-    if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView' || this.mode === 'creatorView') {
+    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
     }
   }
   ngAfterViewChecked() {
-    if((this.mode == 'edit' || this.mode === 'reqEdit') && this.projectId) {
+    if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
       this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
         const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
@@ -88,7 +88,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.subscription.add(
             this.route.queryParams.subscribe((params: any) => {
               this.projectId = params.projectId;
-              if(this.mode === 'review' || this.libProjectService.projectData.status == "IN_REVIEW"){
+              if(this.mode === projectMode.REVIEW || this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
                 this.getCommentConfigs()
               }
               if (params.projectId) {
@@ -136,7 +136,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             this.projectId = params.projectId;
             this.libProjectService.projectData.id = params.projectId;
             if (params.projectId) {
-              if (params.mode === 'edit' || this.mode === 'reqEdit') {
+              if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                 if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
                   this.readProjectDeatilsAndMap(data.controls,this.libProjectService.projectData);
                 } else {
@@ -148,7 +148,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if(res.result.status == "IN_REVIEW") {
+                        if(res.result.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })
@@ -165,7 +165,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if(res.result.status == "IN_REVIEW") {
+                        if(res.result.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })
@@ -213,7 +213,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
-        if(this.mode === 'edit' || this.mode === 'reqEdit') {
+        if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
           this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
         }
       }
@@ -228,7 +228,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             relativeTo: this.route,
             queryParams: {
               projectId: this.projectId,
-              mode: 'edit',
+              mode: projectMode.EDIT,
             },
             queryParamsHandling: 'merge',
             replaceUrl: true,
@@ -301,7 +301,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if(this.mode === 'edit' || this.mode === 'reqEdit'){
+    if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
