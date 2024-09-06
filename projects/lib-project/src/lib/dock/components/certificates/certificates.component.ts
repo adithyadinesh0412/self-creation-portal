@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
+  CommentsBoxComponent,
   DialogPopupComponent,
   FormService,
   ToastService,
@@ -40,6 +41,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     CommonModule,
     MatDialogModule,
     MatInputModule,
+    CommentsBoxComponent
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
@@ -53,7 +55,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   certificateTypeSelected:string|any = '';
   evidenceNumber = [1, 2, 3];
   mode: string = '';
-  viewOnly: boolean = true;
+  viewOnly: boolean = false;
   projectId: string | number = '';
   tasks:any; // only to render tasks in html page
   commentPayload: any;
@@ -193,7 +195,30 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             this.getCommentConfigs();
           }
         } else {
-          this.libProjectService
+          if(!this.projectId) {
+            this.libProjectService
+            .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
+            .subscribe((res: any) => {
+              (this.projectId = res.result.id),
+                this.router.navigate([], {
+                  relativeTo: this.route,
+                  queryParams: {
+                    projectId: this.projectId,
+                    mode: projectMode.EDIT,
+                  },
+                  queryParamsHandling: 'merge',
+                  replaceUrl: true,
+                });
+                this.libProjectService.projectData.id = res.result.id;
+                this.getCertificateForm();
+                if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
+                  this.startAutoSaving();
+                }
+            })
+
+          }
+          else {
+            this.libProjectService
             .readProject(params.projectId)
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
@@ -223,6 +248,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.startAutoSaving();
               }
             });
+          }
         }
         if (
           params.mode === projectMode.VIEWONLY ||
@@ -231,6 +257,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           this.mode === projectMode.CREATOR_VIEW
         ) {
           this.viewOnly = true;
+          this.projectInReview = true;
+          Object.keys(['selectedOption','certificateType','issuerName','evidenceRequired','enableProjectEvidence']).forEach(key => {
+            this.certificateForm.get(key)?.disable()
+          });
         }
       })
     );
@@ -244,7 +274,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   getCertificateForm() {
     this.formService.getCertificateForm().then((data: any) => {
-      this.createCriteriaForTasks()
+      if(this.tasks && this.libProjectService.projectData.certificate && this.tasks.length) {
+        this.createCriteriaForTasks()
+      }
       // Separate the removed items
       this.taskForm = data.controls.filter(
         (item: any) => item.scope === 'task'
@@ -548,6 +580,12 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   getFileName(url:string) {
     return url.substring(url.lastIndexOf('/') + 1)
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
+    }
   }
 
   ngOnDestroy(): void {
