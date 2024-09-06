@@ -1,7 +1,6 @@
 @import  "../../../../../../self-creation-portal/src/styles.scss";
 .required::after {
     content: '*';
-    color: $warn;
     font-size: x-large;
 }
 

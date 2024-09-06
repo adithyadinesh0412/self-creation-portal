@@ -84,7 +84,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         signatureTitleName2: "",
         signatureTitleDesignation2: ""
       },
-      issuer: "SPD",
+      issuer: "",
       criteria: {
         validationText: 'Complete validation message',
         expression: 'C1&&C2&&C3',
@@ -223,14 +223,16 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              this.tasks = res.result.tasks.filter((task:any) => {
-                if(task.evidence_details?.min_no_of_evidences) {
-                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
-                    task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+              if(res.result.tasks) {
+                this.tasks = res.result.tasks.filter((task:any) => {
+                  if(task.evidence_details?.min_no_of_evidences) {
+                    if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
+                      task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                    }
+                    return task;
                   }
-                  return task;
-                }
-              });
+                });
+              }
               // set certificate data in parent project data when certificate data is not project
               if(!this.libProjectService.projectData.certificate) {
                 this.selectedYes = "2"
