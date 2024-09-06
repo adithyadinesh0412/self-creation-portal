@@ -232,6 +232,9 @@ export class LibProjectService {
       }
       return true;
     }
+    else {
+      return true;
+    }
   }
 
   // Getting form from api
@@ -364,7 +367,7 @@ export class LibProjectService {
         },
       });
     }
-    
+
   }
 
   rejectProject(reason: any, isReported: any) {
