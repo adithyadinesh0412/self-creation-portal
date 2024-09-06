@@ -348,12 +348,22 @@ export class LibProjectService {
   }
 
   editProject() {
-    this.router.navigate([PROJECT_DETAILS_PAGE], {
-      queryParams: {
-        projectId: this.projectData.id,
-        mode: 'edit',
-      },
-    });
+    if(this.projectData.status === 'IN_REVIEW'){
+      this.router.navigate([PROJECT_DETAILS_PAGE], {
+        queryParams: {
+          projectId: this.projectData.id,
+          mode: 'reqEdit'
+        }
+      });
+    }else{
+      this.router.navigate([PROJECT_DETAILS_PAGE], {
+        queryParams: {
+          projectId: this.projectData.id,
+          mode: 'edit',
+        },
+      });
+    }
+    
   }
 
   rejectProject(reason: any, isReported: any) {
