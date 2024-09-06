@@ -7,12 +7,12 @@
         @for(item of certificateDetails; track item) {
             @if(item.name === "addcertificate") {
                 <p>
-                    <span class="required">{{ item.label }}</span>
-                    <span class="px-1 text-base text-[$buttonDisable]">{{ item.sublabel}}</span>
+                    <span class="required">{{ item?.label }}</span>
+                    <span class="px-1 text-base text-[$buttonDisable]">{{ item?.sublabel}}</span>
                   </p>
                   <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="selectedYes" [ngModelOptions]="{standalone: true}" >
-                     @for(option of item.options; track option) {
-                        <mat-radio-button [value]="option.value" class="-mx-1 mr-6" (click)="certificateEnabling(option.value)">{{ option.label}}</mat-radio-button>
+                     @for(option of item?.options; track option) {
+                        <mat-radio-button [value]="option.value" class="-mx-1 mr-6" (click)="certificateEnabling(option.value)">{{ option?.label}}</mat-radio-button>
                      }
                   </mat-radio-group>
             }

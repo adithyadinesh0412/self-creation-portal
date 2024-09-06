@@ -214,6 +214,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
+                if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+                  this.getCommentConfigs();
+                }
             })
 
           }
@@ -223,6 +226,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
+              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+                this.getCommentConfigs();
+              }
               if(res.result.tasks) {
                 this.tasks = res.result.tasks.filter((task:any) => {
                   if(task.evidence_details?.min_no_of_evidences) {
@@ -259,10 +265,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           this.mode === projectMode.CREATOR_VIEW
         ) {
           this.viewOnly = true;
-          this.projectInReview = true;
-          Object.keys(['selectedOption','certificateType','issuerName','evidenceRequired','enableProjectEvidence']).forEach(key => {
-            this.certificateForm.get(key)?.disable()
-          });
         }
       })
     );
