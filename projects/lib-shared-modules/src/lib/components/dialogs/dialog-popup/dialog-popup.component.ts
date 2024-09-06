@@ -84,7 +84,12 @@ export class DialogPopupComponent implements OnInit {
   }
 
   onAttach() {
-    console.log(this.dialogueData)
-    this.dialogRef.close({ file: this.selectedFiles, additionalData: this.dialogueData});
+    if(!this.selectedFiles) {
+      this.errorMessage = 'Please attach file.';
+      return;
+    }
+    else {
+      this.dialogRef.close({ file: this.selectedFiles, additionalData: this.dialogueData});
+    }
   }
 }
