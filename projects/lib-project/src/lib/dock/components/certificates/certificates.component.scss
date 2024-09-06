@@ -29,6 +29,11 @@ input:focus{
     width: 1.875rem;
     height: auto;
 }
+  
+.error-container {
+    display: flex;
+    height: 2.000rem;
+}
 
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
     color: $primary !important;
