@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent, UtilService } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent, DialogPopupComponent, UtilService ,projectMode,resourceStatus} from 'lib-shared-modules';
 import { MatIconModule, getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { MatCardModule }  from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -72,10 +72,10 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.projectData = this.libProjectService.projectData;
             this.createSubTaskForm()
             this.addSubtaskData()
-            if (params.mode === "edit" || params.mode === 'reqEdit') {
+            if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if((this.mode === 'review' || this.mode === 'edit' ||this.mode === 'reqEdit') && this.libProjectService.projectData.status == "IN_REVIEW"){
+            if((this.mode === projectMode.REVIEW || this.mode === projectMode.EDIT ||this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
               this.getCommentConfigs()
             }  
           }
@@ -85,13 +85,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               this.projectData = res?.result
               this.createSubTaskForm()
               this.addSubtaskData()
-              if (params.mode === "edit" || this.mode === 'reqEdit') {
+              if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
             })
           }
 
-          if (params.mode === "edit" || params.mode === 'reqEdit') {
+          if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
             this.subscription.add(
             this.libProjectService.isProjectSave.subscribe((isProjectSave:boolean) => {
               if(isProjectSave && this.router.url.includes('sub-tasks')) {
@@ -110,7 +110,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             )
           );
           }
-          if (params.mode === 'viewOnly' || params.mode === 'review' || params.mode === 'reviewerView' || this.mode === 'creatorView') {
+          if (params.mode === projectMode.VIEWONLY || params.mode === projectMode.REVIEW || params.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
             this.viewOnly = true;
           }
         }else{
@@ -144,7 +144,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         };
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
-      if(this.mode === 'edit' || this.mode === 'reqEdit'){
+      if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
         if (this.libProjectService?.projectData.tasks){
           this.libProjectService?.projectData.tasks.forEach((task: any) => {
               this.taskData.push(createTaskObject(task));
@@ -252,7 +252,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   ngOnDestroy(){
-    if((this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.id){
+    if((this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.id){
      this.saveSubtask();
       if (this.autoSaveSubscription) {
         this.autoSaveSubscription.unsubscribe();

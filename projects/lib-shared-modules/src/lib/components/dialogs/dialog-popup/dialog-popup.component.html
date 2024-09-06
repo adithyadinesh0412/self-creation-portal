@@ -11,7 +11,9 @@
       </div>
     }
   }
-  <h3 class="text-sm font-bold p-4" *ngIf="dialogueData?.content">{{dialogueData?.content |translate}}</h3>
+  @if(dialogueData?.content){
+    <h3 class="text-sm font-bold p-4" >{{dialogueData?.content |translate}}</h3>
+  }
   @if(dialogueData.reportContent){
     <div class="pb-6 flex items-center">
       <mat-checkbox [(ngModel)]="reportContent"> Report content</mat-checkbox>

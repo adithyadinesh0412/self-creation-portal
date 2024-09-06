@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService, UtilService } from 'lib-shared-modules';
+import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService, UtilService, CommentsBoxComponent, projectMode ,resourceStatus} from 'lib-shared-modules';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,7 +17,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { v4 as uuidv4 } from 'uuid';
-import { CommentsBoxComponent } from 'lib-shared-modules';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
@@ -87,10 +86,10 @@ export class TasksComponent implements OnInit, OnDestroy {
               else{
                 this.addTask();
               }
-              if(params.mode === 'edit' || this.mode === 'reqEdit'){
+              if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if((this.mode === 'review' || this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.status == "IN_REVIEW"){
+              if((this.mode === projectMode.REVIEW || this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
                 this.getCommentConfigs()
               }
 
@@ -117,14 +116,14 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if((this.mode === 'review' || this.mode === 'edit' || this.mode === 'reqEdit') && res.result.status == "IN_REVIEW"){
+                  if((this.mode === projectMode.REVIEW || this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && res.result.status == resourceStatus.IN_REVIEW){
                     this.getCommentConfigs()
                   }
                 }
                 else {
                   this.addTask();
                 }
-                if(params.mode === 'edit' || this.mode === 'reqEdit') {
+                if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
               })
@@ -140,7 +139,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                 relativeTo: this.route,
                 queryParams: {
                   projectId: this.projectId,
-                  mode: 'edit',
+                  mode: projectMode.EDIT,
                 },
                 queryParamsHandling: 'merge',
                 replaceUrl: true,
@@ -149,7 +148,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           })
         }
 
-        if (this.mode === 'viewOnly' || this.mode === 'review' || this.mode === 'reviewerView' || this.mode === 'creatorView') {
+        if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
           this.viewOnly = true
           // this.tasksForm.disable()
         }
@@ -166,7 +165,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       this.libProjectService.isSendForReviewValidation.subscribe(
         (reviewValidation: boolean) => {
           if(reviewValidation) {
-            if((this.mode == 'edit' || this.mode === 'reqEdit') && this.projectId) {
+            if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
               this.tasksForm.markAllAsTouched();
               this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
               this.libProjectService.triggerSendForReview();
@@ -263,7 +262,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    if((this.mode === 'edit' || this.mode === 'reqEdit') && this.libProjectService.projectData.id){
+    if((this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.id){
       this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
       this.saveTasks()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))

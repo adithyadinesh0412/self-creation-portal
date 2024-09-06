@@ -7,6 +7,7 @@ import {
   ToastService,
   UtilService,
   ROUTE_PATHS,
+  resourceStatus, reviewStatus , projectMode
 } from 'lib-shared-modules';
 import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules';
@@ -89,7 +90,7 @@ export class LibProjectService {
     ) {
       if (
         this.projectConfig.show_reviewer_list &&
-        this.projectData.status !== 'IN_REVIEW'
+        this.projectData.status !== resourceStatus.IN_REVIEW
       ) {
         this.getReviewerData().subscribe((list: any) => {
           const dialogRef = this.dialog.open(ReviewModelComponent, {
@@ -346,24 +347,24 @@ export class LibProjectService {
     this.router.navigate([PROJECT_DETAILS_PAGE], {
       queryParams: {
         projectId: this.projectData.id,
-        mode: 'review',
+        mode: projectMode.REVIEW,
       },
     });
   }
 
   editProject() {
-    if(this.projectData.status === 'IN_REVIEW'){
+    if(this.projectData.status === resourceStatus.IN_REVIEW){
       this.router.navigate([PROJECT_DETAILS_PAGE], {
         queryParams: {
           projectId: this.projectData.id,
-          mode: 'reqEdit'
+          mode: projectMode.REQUEST_FOR_EDIT
         }
       });
     }else{
       this.router.navigate([PROJECT_DETAILS_PAGE], {
         queryParams: {
           projectId: this.projectData.id,
-          mode: 'edit',
+          mode: projectMode.EDIT
         },
       });
     }
@@ -442,7 +443,7 @@ export class LibProjectService {
     return this.getComments().pipe(
       map((comments: any[]) => {
         comments.forEach((comment: any) => {
-          if (comment.status === 'DRAFT') {
+          if (comment.status === resourceStatus.DRAFT) {
             comment.status = 'OPEN';
           }
         });
