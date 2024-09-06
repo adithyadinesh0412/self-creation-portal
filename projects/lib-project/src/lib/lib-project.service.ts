@@ -140,7 +140,7 @@ export class LibProjectService {
           });
         });
       } else {
-        this.getResolveComment().subscribe((res) => {
+        this.getcommentsListAsOpen().subscribe((res) => {
           this.utilService
             .updateComment(this.projectData.id, res)
             .subscribe((res: any) => {
@@ -422,22 +422,6 @@ export class LibProjectService {
 
   getCertificatesList() {
     return this.httpService.get(this.Configuration.urlConFig.CERTIFICATE.LIST);
-  }
-
-  getResolveComment(): Observable<any> {
-    const userId = localStorage.getItem('id');
-    return this.getComments().pipe(
-      map((comments: any[]) => {
-        comments.forEach((comment: any) => {
-          if (comment?.commenter.id !== userId) {
-            // comment.status = 'RESOLVED';
-          } else {
-            comment.status = 'OPEN';
-          }
-        });
-        return comments;
-      })
-    );
   }
 
   getcommentsListAsOpen(): Observable<any> {
