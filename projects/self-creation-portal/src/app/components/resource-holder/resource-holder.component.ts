@@ -191,7 +191,15 @@ export class ResourceHolderComponent implements OnInit{
           }
           if (button.buttons) {
             if(button.status === cardItem.review_status){
-              this.applyButtons(button, cardItem);
+              if(cardItem.is_under_edit){
+                this.applyButtons({
+                  "buttons": [
+                      "RESUME_EDITING",
+                  ]
+              }, cardItem);
+              }else{
+                this.applyButtons(button, cardItem);
+              }
               return true;
             }else if(button.status === cardItem.status){
               this.applyButtons(button, cardItem);
@@ -235,6 +243,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
      const { label, item } = event;
      switch (label) {
        case 'EDIT':
+       case 'RESUME_EDITING':
         if(item.review_status == reviewStatus.REQUEST_FOR_CHANGES && this.activeRole == "creator"){
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
