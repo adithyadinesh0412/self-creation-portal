@@ -53,7 +53,7 @@ export class LayoutComponent {
     this.subscription.add(
     this.libProjectService.setConfig().subscribe((res:any) => {
       this.libProjectService.instanceConfig = res?.result.instance;
-      this.libProjectService.projectConfig = res.result.resource.find((res:any) => res.resource_type === "projects");
+      this.libProjectService.projectConfig = res.result.resource.find((res:any) => res.resource_type === "project");
     })
     )
   }

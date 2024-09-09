@@ -3,7 +3,7 @@
     "ENTITY_TYPES":"entity-types",
     "ENTITIES":"entities",
     "CERTIFICATES":"certificates",
-    "PROJECTS":"projects",
+    "PROJECTS":"project",
     "REVIEWS":"reviews",
     "OBSERVATIONS":"observations",
     "RESOURCES":"resource"
