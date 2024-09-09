@@ -199,3 +199,8 @@ quill-editor .ql-toolbar {
   z-index: 1; 
   background-color: white; 
 }
+
+::ng-deep .view-certificate-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  width:  39.375rem !important;   
+  height: 26rem !important;  
+}
