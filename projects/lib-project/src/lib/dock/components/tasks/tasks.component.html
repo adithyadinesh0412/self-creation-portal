@@ -28,17 +28,17 @@
                         <div>
                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
                                 <mat-label> {{"TASK" | translate}} {{i+1}}</mat-label>
-                                <textarea matInput [formControlName]="tasksData.description.name" (change)="checkValidation()"
-                                    [placeholder]="tasksData.description.placeholder"  [required]="i === 0" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
+                                <textarea matInput [formControlName]="tasksData?.description.name" (change)="checkValidation()"
+                                    [placeholder]="tasksData?.description.placeholder"  [required]="i === 0" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
                             </mat-form-field>
 
                                 <mat-error class="error-container">
-                                    @if(task.get(tasksData.description.name)?.touched && task.get(tasksData.description.name)?.invalid){
+                                    @if(task.get(tasksData?.description.name)?.touched && task.get(tasksData?.description.name)?.invalid){
                                     <div class="error-message">
                                         <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
-                                        @if(task.get(tasksData.description.name)?.errors?.['required']){<span>{{ tasksData.description.errorMessage.required }}</span> }
-                                        @if(task.get(tasksData.description.name)?.errors?.['maxlength']){ <span>{{ tasksData.description.errorMessage.maxLength }}</span> }
-                                        @if(task.get(tasksData.description.name)?.errors?.['pattern']){<span> {{ tasksData.description.errorMessage.pattern }}</span>}
+                                        @if(task.get(tasksData?.description.name)?.errors?.['required']){<span>{{ tasksData?.description.errorMessage.required }}</span> }
+                                        @if(task.get(tasksData?.description.name)?.errors?.['maxlength']){ <span>{{ tasksData?.description.errorMessage.maxLength }}</span> }
+                                        @if(task.get(tasksData?.description.name)?.errors?.['pattern']){<span> {{ tasksData?.description.errorMessage.pattern }}</span>}
                                     </div>
                                 }
                                 </mat-error>

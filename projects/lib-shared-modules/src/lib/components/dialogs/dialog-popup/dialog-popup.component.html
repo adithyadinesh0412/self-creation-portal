@@ -127,6 +127,6 @@
     <button class="btn bg-primary text-white w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.exitButton, title: title , isReported :(reportContent ?reportContent :false) }">{{dialogueData.exitButton |translate}}</button>
   }
   @if(dialogueData.attachButton){
-    <button class="btn text-primary border-blueCircle w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.attachButton}" (click)="onAttach()">{{dialogueData.attachButton | translate}}</button>
+    <button class="btn text-primary border-blueCircle w-30 min-w-[135px]" (click)="onAttach()">{{dialogueData.attachButton | translate}}</button>
   }
 </div>

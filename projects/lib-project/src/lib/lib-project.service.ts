@@ -93,51 +93,53 @@ export class LibProjectService {
         this.projectData.status !== resourceStatus.IN_REVIEW
       ) {
         this.getReviewerData().subscribe((list: any) => {
-          const dialogRef = this.dialog.open(ReviewModelComponent, {
-            disableClose: true,
-            data: {
-              header: 'SEND_FOR_REVIEW',
-              reviewdata: list.result.data,
-              sendForReview: 'SEND_FOR_REVIEW',
-              note_length: this.instanceConfig.note_length
-                ? this.instanceConfig.note_length
-                : 200,
-            },
-          });
-          dialogRef.afterClosed().subscribe((result: any) => {
-            if (result.sendForReview == 'SEND_FOR_REVIEW' && this.checkCertificateValidations()) {
-              this.createOrUpdateProject(
-                this.projectData,
-                this.projectData.id
-              ).subscribe((res) => {
-                const reviewer_ids =
-                  result.selectedValues.length === list.result.data.length
-                    ? result.reviewerNote
-                      ? { notes: result.reviewerNote }
-                      : {}
-                    : {
-                        reviewer_ids: result.selectedValues.map(
-                          (item: any) => item.id
-                        ),
-                        ...(result.reviewerNote && {
-                          notes: result.reviewerNote,
-                        }),
+          if(this.checkCertificateValidations()) {
+            const dialogRef = this.dialog.open(ReviewModelComponent, {
+              disableClose: true,
+              data: {
+                header: 'SEND_FOR_REVIEW',
+                reviewdata: list.result.data,
+                sendForReview: 'SEND_FOR_REVIEW',
+                note_length: this.instanceConfig.note_length
+                  ? this.instanceConfig.note_length
+                  : 200,
+              },
+            });
+            dialogRef.afterClosed().subscribe((result: any) => {
+              if (result.sendForReview == 'SEND_FOR_REVIEW') {
+                this.createOrUpdateProject(
+                  this.projectData,
+                  this.projectData.id
+                ).subscribe((res) => {
+                  const reviewer_ids =
+                    result.selectedValues.length === list.result.data.length
+                      ? result.reviewerNote
+                        ? { notes: result.reviewerNote }
+                        : {}
+                      : {
+                          reviewer_ids: result.selectedValues.map(
+                            (item: any) => item.id
+                          ),
+                          ...(result.reviewerNote && {
+                            notes: result.reviewerNote,
+                          }),
+                        };
+                  this.sendForReview(reviewer_ids, this.projectData.id).subscribe(
+                    (res: any) => {
+                      let data = {
+                        message: res.message,
+                        class: 'success',
                       };
-                this.sendForReview(reviewer_ids, this.projectData.id).subscribe(
-                  (res: any) => {
-                    let data = {
-                      message: res.message,
-                      class: 'success',
-                    };
-                    this.toastService.openSnackBar(data);
-                    this.projectData = {};
-                    this.router.navigate([SUBMITTED_FOR_REVIEW]);
-                  }
-                );
-              });
-            }
-            return true;
-          });
+                      this.toastService.openSnackBar(data);
+                      this.projectData = {};
+                      this.router.navigate([SUBMITTED_FOR_REVIEW]);
+                    }
+                  );
+                });
+              }
+              return true;
+            });
+          }
         });
       } else {
         this.getcommentsListAsOpen().subscribe((res) => {

@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
+  CommentsBoxComponent,
   DialogPopupComponent,
   FormService,
   ToastService,
@@ -40,6 +41,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     CommonModule,
     MatDialogModule,
     MatInputModule,
+    CommentsBoxComponent
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
@@ -53,7 +55,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   certificateTypeSelected:string|any = '';
   evidenceNumber = [1, 2, 3];
   mode: string = '';
-  viewOnly: boolean = true;
+  viewOnly: boolean = false;
   projectId: string | number = '';
   tasks:any; // only to render tasks in html page
   commentPayload: any;
@@ -82,7 +84,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         signatureTitleName2: "",
         signatureTitleDesignation2: ""
       },
-      issuer: "SPD",
+      issuer: "",
       criteria: {
         validationText: 'Complete validation message',
         expression: 'C1&&C2&&C3',
@@ -193,19 +195,50 @@ export class CertificatesComponent implements OnInit, OnDestroy{
             this.getCommentConfigs();
           }
         } else {
-          this.libProjectService
+          if(!this.projectId) {
+            this.libProjectService
+            .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
+            .subscribe((res: any) => {
+              (this.projectId = res.result.id),
+                this.router.navigate([], {
+                  relativeTo: this.route,
+                  queryParams: {
+                    projectId: this.projectId,
+                    mode: projectMode.EDIT,
+                  },
+                  queryParamsHandling: 'merge',
+                  replaceUrl: true,
+                });
+                this.libProjectService.projectData.id = res.result.id;
+                this.getCertificateForm();
+                if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
+                  this.startAutoSaving();
+                }
+                if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+                  this.getCommentConfigs();
+                }
+            })
+
+          }
+          else {
+            this.libProjectService
             .readProject(params.projectId)
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              this.tasks = res.result.tasks.filter((task:any) => {
-                if(task.evidence_details?.min_no_of_evidences) {
-                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
-                    task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+                this.getCommentConfigs();
+              }
+              if(res.result.tasks) {
+                this.tasks = res.result.tasks.filter((task:any) => {
+                  if(task.evidence_details?.min_no_of_evidences) {
+                    if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
+                      task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+                    }
+                    return task;
                   }
-                  return task;
-                }
-              });
+                });
+              }
               // set certificate data in parent project data when certificate data is not project
               if(!this.libProjectService.projectData.certificate) {
                 this.selectedYes = "2"
@@ -223,6 +256,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.startAutoSaving();
               }
             });
+          }
         }
         if (
           params.mode === projectMode.VIEWONLY ||
@@ -244,7 +278,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   getCertificateForm() {
     this.formService.getCertificateForm().then((data: any) => {
-      this.createCriteriaForTasks()
+      if(this.tasks && this.libProjectService.projectData.certificate && this.tasks.length) {
+        this.createCriteriaForTasks()
+      }
       // Separate the removed items
       this.taskForm = data.controls.filter(
         (item: any) => item.scope === 'task'
@@ -548,6 +584,12 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   getFileName(url:string) {
     return url.substring(url.lastIndexOf('/') + 1)
+  }
+
+  saveComment(quillInput:any){
+    if(quillInput){
+        this.libProjectService.checkValidationForRequestChanges()
+    }
   }
 
   ngOnDestroy(): void {
