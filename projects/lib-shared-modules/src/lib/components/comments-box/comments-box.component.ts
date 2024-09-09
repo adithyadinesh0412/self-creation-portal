@@ -55,11 +55,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     //toolbar: '.toolbar',
     toolbar: {
       container: [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        ['bold', 'italic', 'underline'],        // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
-        [{ 'font': [] }],                                        // remove formatting button
-        ['link'],
+        [{ 'font': [] }],                                          // Font family dropdown with Arial and default sans-serif 
         //['link', 'image', 'video']
       ],
 
@@ -125,11 +123,11 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
     this.comment.emit(this.quillInput)
     this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
-    if(this.draft) {
+    if(this.draft && this.quillInput) {
       this.draft.text = this.quillInput;
       this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
     }
-    else {
+    else if(this.quillInput){
       this.commentPayload.text = this.quillInput;
       this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res:any) => {
         this.draft = res.result;

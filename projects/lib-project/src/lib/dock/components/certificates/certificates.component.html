@@ -1,5 +1,5 @@
 <div class="flex pb-10">
-    <form class="w-full" [formGroup]="certificateForm">
+    <form class="w-full" [formGroup]="certificateForm" [ngClass]="{'disabled-with-pointer-events': viewOnly}">
       <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
         <span>{{ "CERTIFICATE" | translate }}</span>
       </div>
@@ -7,12 +7,12 @@
         @for(item of certificateDetails; track item) {
             @if(item.name === "addcertificate") {
                 <p>
-                    <span class="required">{{ item.label }}</span>
-                    <span class="px-1 text-base text-[$buttonDisable]">{{ item.sublabel}}</span>
+                    <span class="required">{{ item?.label }}</span>
+                    <span class="px-1 text-base text-[$buttonDisable]">{{ item?.sublabel}}</span>
                   </p>
-                  <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="selectedYes" [ngModelOptions]="{standalone: true}">
-                     @for(option of item.options; track option) {
-                        <mat-radio-button [value]="option.value" class="-mx-1 mr-6" (click)="certificateEnabling(option.value)">{{ option.label}}</mat-radio-button>
+                  <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="selectedYes" [ngModelOptions]="{standalone: true}" >
+                     @for(option of item?.options; track option) {
+                        <mat-radio-button [value]="option.value" class="-mx-1 mr-6" (click)="certificateEnabling(option.value)">{{ option?.label}}</mat-radio-button>
                      }
                   </mat-radio-group>
             }
@@ -33,7 +33,7 @@
                                             <div class="">
                                                 <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline">
                                                     <mat-label> {{ ele.label}}</mat-label>
-                                                    <mat-select [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" (selectionChange)="onCertificateTypeChange($event.value)">
+                                                    <mat-select [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" (selectionChange)="onCertificateTypeChange($event.value)" >
                                                         @for(type of ele.options; track type){
                                                         <mat-option [value]="type.value">{{type.label}}</mat-option>
                                                         }
@@ -158,7 +158,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
-                                <button type="button" class="btn primary-button-enable" (click)="viewCertificate()">
+                                <button type="button" class="btn primary-button-enable enable-with-pointer-events" (click)="viewCertificate()">
                                     {{ 'VIEW_FULL_SCREEN' | translate }}
                                     </button>
                             </div>

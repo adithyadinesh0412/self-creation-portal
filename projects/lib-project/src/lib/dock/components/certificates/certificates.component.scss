@@ -1,7 +1,6 @@
 @import  "../../../../../../self-creation-portal/src/styles.scss";
 .required::after {
     content: '*';
-    color: $warn;
     font-size: x-large;
 }
 
@@ -12,7 +11,7 @@ input:focus{
 .disabled-class {
     cursor:not-allowed;
     pointer-events: none;
-    opacity: 0.5; 
+    opacity: 0.5;
     color:$buttonDisable;
 }
 
@@ -29,16 +28,27 @@ input:focus{
     width: 1.875rem;
     height: auto;
 }
-  
+
 .error-container {
     display: flex;
     height: 2.000rem;
 }
+
+.disabled-with-pointer-events{
+    pointer-events: none;
+    opacity: 1;
+}
+
+.enable-with-pointer-events{
+    pointer-events: auto !important;
+}
+
+
 
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
     color: $primary !important;
 }
 
 ::ng-deep  .mat-mdc-form-field-subscript-wrapper{
-    display: none !important; 
+    display: none !important;
 }
