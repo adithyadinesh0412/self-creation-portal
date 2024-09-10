@@ -113,6 +113,7 @@ export class LayoutComponent {
       }
       case "ACCEPT":{
         const dialogRef = this.dialog.open(DialogPopupComponent, {
+          width: '39.375rem',
           autoFocus: false,
           disableClose: true,
           data: {
@@ -136,6 +137,7 @@ export class LayoutComponent {
       }
       case "REJECT":{
         const dialogRef = this.dialog.open(DialogPopupComponent, {
+          width: '39.375rem',
           autoFocus: false,
           disableClose: true,
           data: {

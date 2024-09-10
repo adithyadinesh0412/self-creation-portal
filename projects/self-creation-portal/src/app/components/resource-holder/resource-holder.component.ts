@@ -441,6 +441,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
     }
   
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '39.375rem',
       data: {
         header: "DETAILS",
         fields: infoFields
@@ -480,6 +481,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
    */
   confirmAndDeleteProject(item: any) {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '39.375rem',
       disableClose: true,
       data : {
         header: "DELETE_RESOURCE",
