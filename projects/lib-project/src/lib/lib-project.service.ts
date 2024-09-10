@@ -89,7 +89,7 @@ export class LibProjectService {
       this.validForm.subTasks === 'VALID'
     ) {
       if (
-        this.projectConfig.show_reviewer_list &&
+        this.projectConfig?.show_reviewer_list &&
         this.projectData.status !== resourceStatus.IN_REVIEW
       ) {
         this.getReviewerData().subscribe((list: any) => {
@@ -142,12 +142,14 @@ export class LibProjectService {
           }
         });
       } else {
-        this.getcommentsListAsOpen().subscribe((res) => {
-          this.utilService
-            .updateComment(this.projectData.id, res)
-            .subscribe((res: any) => {
+        this.getcommentsListAsOpen().subscribe((comemnt) => {
+         
               this.sendForReview({}, this.projectData.id).subscribe(
                 (res: any) => {
+                  this.utilService
+                  .updateComment(this.projectData.id, comemnt)
+                  .subscribe((res: any) => {
+                });
                   this.toastService.openSnackBar({
                     message: res.message,
                     class: 'success',
@@ -156,7 +158,7 @@ export class LibProjectService {
                   this.router.navigate([SUBMITTED_FOR_REVIEW]);
                 }
               );
-            });
+             
         });
       }
     } else {

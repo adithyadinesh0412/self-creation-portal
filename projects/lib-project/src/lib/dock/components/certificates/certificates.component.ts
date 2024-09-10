@@ -151,7 +151,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.libProjectService.isProjectSave.subscribe(
           (isProjectSave: boolean) => {
             if (isProjectSave && this.router.url.includes('certificate')) {
-              this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res) =>console.log(res))
+              this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) =>console.log(res))
             }
           }
         )
@@ -447,21 +447,18 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   getCommentConfigs() {
     this.subscription.add(
       this.route.data.subscribe((data: any) => {
-        this.utilService
-          .getCommentList(this.projectId)
-          .subscribe((commentListRes: any) => {
-            this.commentsList = this.commentsList.concat(
-              this.utilService.filterCommentByContext(
-                commentListRes.result.comments,
-                data.page
-              )
-            );
-            this.commentPayload = data;
-            this.projectInReview = true;
-            if (commentListRes.result?.comments?.length > 0) {
-              this.libProjectService.checkValidationForRequestChanges();
-            }
-          });
+        this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
+          const comments = commentListRes.result?.comments || [];
+          const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
+          
+          this.commentsList = this.commentsList.concat(filteredComments);
+          this.commentPayload = data;
+          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
+  
+          if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
+            this.libProjectService.checkValidationForRequestChanges();
+          }
+        });
       })
     );
   }
@@ -599,7 +596,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+        this.libProjectService.createOrUpdateProject(this.projectId).subscribe((res) =>console.log(res))
       }
       this.libProjectService.saveProjectFunc(false);
     }
