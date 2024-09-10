@@ -252,6 +252,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
     } else {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
+        width: '39.375rem',
         disableClose: true,
         autoFocus : false,
         data: {

@@ -201,6 +201,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   deleteTask(index: number) {
     let content = (this.tasks.value[index].children &&  this.tasks.value[index].children.length) || (this.tasks.value[index].learning_resources && this.tasks.value[index].learning_resources.length) ? "DELETE_TASK_WITH_SUBTASK_MESSAGE" :"DELETE_TASK_MESSAGE";
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '39.375rem',
       disableClose: true,
       data: {
         header: "DELETE_TASK",

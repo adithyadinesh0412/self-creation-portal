@@ -372,6 +372,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       (field: any) => field.name === 'attachlogo'
     );
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '39.375rem',
       disableClose: true,
       data: attachLogoData.dialogData,
     });
@@ -406,6 +407,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       (field: any) => field.name === 'attachsign'
     );
     const dialogRef = this.dialog.open(DialogPopupComponent, {
+      width: '39.375rem',
       disableClose: true,
       data: attachSignData.dialogData,
     });
@@ -484,8 +486,8 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   viewCertificate() {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
-      // height: '70%',
-      // width: '80%',
+      width:  '39.375rem',
+      height: '26rem',   
       disableClose: true,
       data: {certificate:this.certificateContainer},
     });
