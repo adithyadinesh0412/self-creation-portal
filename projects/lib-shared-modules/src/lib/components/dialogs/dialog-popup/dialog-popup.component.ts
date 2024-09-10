@@ -96,21 +96,21 @@ export class DialogPopupComponent implements OnInit {
   onExit(){
     if (this.reportContent) {
       if(this.dialogueForm && this.dialogueForm.valid){
-
-        this.dialogRef.close({
-          data: this.dialogueData.exitButton,
-          title: this.title,
-          isReported: this.reportContent ? this.reportContent : false,
-        });
+        this.closeDialog();
       } else {
         this.dialogueForm.control.markAllAsTouched(); // Mark all fields as touched to display validation messages
       }
     }else{
-      this.dialogRef.close({
-        data: this.dialogueData.exitButton,
-        title: this.title,
-        isReported: this.reportContent ? this.reportContent : false,
-      });
+      this.closeDialog();
     }
+  }
+
+
+  closeDialog() {
+    this.dialogRef.close({
+      data: this.dialogueData.exitButton,
+      title: this.title,
+      isReported: this.reportContent || false,
+    });
   }
 }
