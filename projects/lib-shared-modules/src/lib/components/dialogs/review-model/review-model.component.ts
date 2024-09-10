@@ -5,7 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule, MatListOption, MatSelectionList} from '@angular/material/list';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,9 +17,10 @@ import { CommonModule } from '@angular/common';
 })
 export class ReviewModelComponent {
   @ViewChild('reviewer') selectionList: MatSelectionList | undefined;
+  @ViewChild('dialogueForm') dialogueForm!: NgForm;
   charCount: number = 0;
   reviewerNote:string = ""
-  pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-\_ <>&]+$"
+  pattern="^(?! )(?![\\s\\S]* {3})[\\\\p{L}a-zA-Z0-9\\\\-_ <>&\\n]+$"
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 
@@ -41,13 +42,26 @@ export class ReviewModelComponent {
     }
   }
   
-  getSelectedValues(sendForReview:any,selectedOptions: MatListOption[]) {
-    const selectedValues = selectedOptions.map(option => option.value);
-    return {
-            sendForReview: sendForReview,
-            selectedValues : selectedValues ,
-            reviewerNote:this.reviewerNote
+  getSelectedValues(sendForReview: any, selectedOptions: MatListOption[]) {
+    if (this.dialogueForm) {
+      if (this.dialogueForm.valid) {
+        this.closeDialog(sendForReview, selectedOptions);
+      } else {
+        this.dialogueForm.control.markAllAsTouched(); // Mark all fields as touched to display validation messages
+      }
+    } else {
+      this.closeDialog(sendForReview, selectedOptions);
     }
+  }
+  
+
+closeDialog(sendForReview:any,selectedOptions: MatListOption[]) {
+  const selectedValues = selectedOptions.map(option => option.value);
+      this.dialogRef.close({
+        sendForReview: sendForReview,
+        selectedValues : selectedValues ,
+        reviewerNote:this.reviewerNote
+      });
 }
 
 updateCharCount(event: any): void {
