@@ -14,6 +14,6 @@ export const rejectform = {
     "validators": {
       "required": false,
       "maxLength": 255,
-      "pattern": "^(?! )(?!.* {3})[\\p{L}a-zA-Z0-9\\-\\_\\- <>&]+$"
+      "pattern": "^(?! )(?![\\s\\S]* {3})[\\\\p{L}a-zA-Z0-9\\\\-_ <>&\\n]+$"
     }
   }
