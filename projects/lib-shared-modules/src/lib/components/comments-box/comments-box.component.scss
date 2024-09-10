@@ -29,6 +29,9 @@ quill-editor {
   background: #e1e8ed;
   height: calc(100% - 24rem);
   overflow-y: auto;
+  max-width: 25rem !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
 }
 .date-stamp {
   background: lightblue;

@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule,  MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,12 +21,12 @@ export class DialogPopupComponent implements OnInit {
   title: string = '';
   errorMessage: string = '';
   selectedFiles: File | undefined;
+  @ViewChild('dialogueForm') dialogueForm!: NgForm;
   @ViewChild('certificateContainer', { static: true }) certificateContainer: ElementRef | any;
 
   constructor(
     public dialogRef: MatDialogRef<DialogPopupComponent>, private renderer: Renderer2,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) {
-      console.log(dialogueData)
   }
 
   ngOnInit(): void {
@@ -78,7 +78,6 @@ export class DialogPopupComponent implements OnInit {
   }
 
   uploadFile(file: File) {
-    console.log('File selected:', file);
     const formData = new FormData();
     formData.append('file', file);
   }
@@ -91,5 +90,27 @@ export class DialogPopupComponent implements OnInit {
     else {
       this.dialogRef.close({ file: this.selectedFiles, additionalData: this.dialogueData});
     }
+  }
+
+
+  onExit(){
+    if (this.reportContent) {
+      if(this.dialogueForm && this.dialogueForm.valid){
+        this.closeDialog();
+      } else {
+        this.dialogueForm.control.markAllAsTouched(); // Mark all fields as touched to display validation messages
+      }
+    }else{
+      this.closeDialog();
+    }
+  }
+
+
+  closeDialog() {
+    this.dialogRef.close({
+      data: this.dialogueData.exitButton,
+      title: this.title,
+      isReported: this.reportContent || false,
+    });
   }
 }
