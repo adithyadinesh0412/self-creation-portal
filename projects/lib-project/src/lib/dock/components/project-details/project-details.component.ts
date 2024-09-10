@@ -123,11 +123,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.commentPayload = data;
           this.projectInReview = this.mode === 'review' || this.mode === 'reqEdit';
   
-          // Common validation check for both modes
-          const hasDraftComment = comments.some((comment: any) => comment.status === 'DRAFT');
-          const hasComments = comments.length > 0;
-  
-          if ((this.mode === 'review' && hasDraftComment) || (this.mode === 'reqEdit' && hasComments)) {
+          if ((this.mode === 'review' && comments.some((comment: any) => comment.status === 'DRAFT')) || (this.mode === 'reqEdit' && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }
         });
