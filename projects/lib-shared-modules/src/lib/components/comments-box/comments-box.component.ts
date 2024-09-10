@@ -123,9 +123,11 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
     this.comment.emit(this.quillInput)
     this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
-    if(this.draft && this.quillInput) {
+    if(this.draft && this.quillInput?.length>0) {
       this.draft.text = this.quillInput;
-      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+      if(this.draft?.comment?.length){
+        this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+      }
     }
     else if(this.quillInput){
       this.commentPayload.text = this.quillInput;

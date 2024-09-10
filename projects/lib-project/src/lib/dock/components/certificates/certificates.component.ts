@@ -445,25 +445,30 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   getCommentConfigs() {
-    this.subscription.add(
-      this.route.data.subscribe((data: any) => {
-        this.utilService
-          .getCommentList(this.projectId)
-          .subscribe((commentListRes: any) => {
-            this.commentsList = this.commentsList.concat(
-              this.utilService.filterCommentByContext(
-                commentListRes.result.comments,
-                data.page
-              )
-            );
+    this.subscription.add(this.route.data.subscribe((data:any) => {
+      this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
+        if(this.mode === 'review'){
+          this.projectInReview = true;
+         
+            this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
             this.commentPayload = data;
-            this.projectInReview = true;
-            if (commentListRes.result?.comments?.length > 0) {
-              this.libProjectService.checkValidationForRequestChanges();
-            }
-          });
+            
+            if(commentListRes.result?.comments?.some((comment: any) => comment.status === 'DRAFT')){
+              this.libProjectService.checkValidationForRequestChanges()
+          }
+        }else if(this.mode === "reqEdit"){
+          this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        this.commentPayload = data;
+        this.projectInReview = true;
+
+        if(commentListRes.result?.comments?.length > 0){
+          this.libProjectService.checkValidationForRequestChanges()
+        }
+        }
+        
+        
       })
-    );
+    }));
   }
 
   certificateAddIntoHtml() {
@@ -599,7 +604,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.updateProjectDraft(this.projectId).subscribe((res) =>console.log(res))
+        this.libProjectService.createOrUpdateProject(this.projectId).subscribe((res) =>console.log(res))
       }
       this.libProjectService.saveProjectFunc(false);
     }

@@ -115,17 +115,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   getCommentConfigs() {
     this.subscription.add(this.route.data.subscribe((data:any) => {
       this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-        if(this.mode === 'IN_REVIEW'){
-          if(commentListRes.result?.comments?.some((comment: any) => comment.status === 'DRAFT')){
+        if(this.mode === 'review'){
+          this.projectInReview = true;
+         
             this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
             this.commentPayload = data;
-            this.projectInReview = true;
-    
-            if(commentListRes.result?.comments?.length > 0){
+            
+            if(commentListRes.result?.comments?.some((comment: any) => comment.status === 'DRAFT')){
               this.libProjectService.checkValidationForRequestChanges()
-            }
           }
-        }else{
+        }else if(this.mode === "reqEdit"){
           this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
         this.commentPayload = data;
         this.projectInReview = true;

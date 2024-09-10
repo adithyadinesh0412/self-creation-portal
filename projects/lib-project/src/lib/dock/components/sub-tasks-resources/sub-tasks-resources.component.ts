@@ -273,16 +273,28 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     }
   }
 
-  getCommentConfigs(){
+  getCommentConfigs() {
     this.subscription.add(this.route.data.subscribe((data:any) => {
       this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+        if(this.mode === 'review'){
+          this.projectInReview = true;
+         
+            this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+            this.commentPayload = data;
+            
+            if(commentListRes.result?.comments?.some((comment: any) => comment.status === 'DRAFT')){
+              this.libProjectService.checkValidationForRequestChanges()
+          }
+        }else if(this.mode === "reqEdit"){
+          this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
         this.commentPayload = data;
         this.projectInReview = true;
 
         if(commentListRes.result?.comments?.length > 0){
           this.libProjectService.checkValidationForRequestChanges()
         }
+        }
+        
         
       })
     }));

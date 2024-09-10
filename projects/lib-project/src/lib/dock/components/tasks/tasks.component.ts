@@ -63,7 +63,6 @@ export class TasksComponent implements OnInit, OnDestroy {
           if (params.mode) {
             if (Object.keys(this.libProjectService.projectData).length > 1) {
               this.tasksForm.reset()
-              console.log(this.libProjectService.projectData)
               if (this.libProjectService.projectData.tasks && this.libProjectService.projectData.tasks.length) {
                 this.libProjectService.projectData.tasks.forEach((element:any) => {
                   const task = this.fb.group({
@@ -338,20 +337,30 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCommentConfigs(){
+  getCommentConfigs() {
     this.subscription.add(this.route.data.subscribe((data:any) => {
       this.utilService.getCommentList(this.projectId).subscribe((commentListRes:any)=>{
-        this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
-       console.log(data)
+        if(this.mode === 'review'){
+          this.projectInReview = true;
+         
+            this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
+            this.commentPayload = data;
+            
+            if(commentListRes.result?.comments?.some((comment: any) => comment.status === 'DRAFT')){
+              this.libProjectService.checkValidationForRequestChanges()
+          }
+        }else if(this.mode === "reqEdit"){
+          this.commentsList = this.commentsList.concat(this.utilService.filterCommentByContext(commentListRes.result.comments,data.page)) ;
         this.commentPayload = data;
         this.projectInReview = true;
 
         if(commentListRes.result?.comments?.length > 0){
           this.libProjectService.checkValidationForRequestChanges()
         }
+        }
+        
         
       })
     }));
   }
-
 }
