@@ -86,11 +86,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
 
   onFocus = () =>{}
-  onBlur = () =>{
-    if(this.quillInput.length){
-      this.saveComment()
-    }
-  }
+  onBlur = () =>{}
 
   checkCommentIsDraftAndResolvable() {
     if(this.messages?.length) {
