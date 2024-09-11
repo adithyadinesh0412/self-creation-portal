@@ -391,9 +391,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           })
         })
       }
-      else {
-        this.toastService.openSnackBar({message : "Please Add Logo",class : 'error'})
-      }
     });
   }
 
@@ -528,10 +525,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         taskDetails: [task.id],
       }
     });
-    // set certificate data in parent project data when certificate data is not project
-    // if(!this.libProjectService.projectData.certificate) {
-    //   this.libProjectService.projectData.certificate = this.certificate
-    // }
   }
 
   setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
@@ -598,7 +591,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.createOrUpdateProject(this.projectId).subscribe((res) =>console.log(res))
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
       this.libProjectService.saveProjectFunc(false);
     }
