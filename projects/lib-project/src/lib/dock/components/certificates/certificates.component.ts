@@ -250,6 +250,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
                 this.updateSignaturePreview()
                 this.setLogoPreview();
+                this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
               }
               this.getCertificateForm();
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
@@ -306,11 +307,13 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   startAutoSaving() {
-    this.intervalId = setInterval(() => {
-      this.libProjectService
+    this.subscription.add(
+      this.subscription.add(
+        this.libProjectService
         .startAutoSave(this.projectId)
         .subscribe((data) => console.log(data))
-    }, 30000);
+      )
+    )
   }
 
   initForm() {
@@ -452,11 +455,11 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
           const comments = commentListRes.result?.comments || [];
           const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
-          
+
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-  
+
           if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }
@@ -487,9 +490,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   viewCertificate() {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       width:  '39.375rem',
-      height: '26rem',   
+      height: '26rem',
       disableClose: true,
-      data: {certificate:this.certificateContainer},
+      data: {...{header:"Certificate preview"},...{certificate:this.certificateContainer}},
     });
     dialogRef.afterClosed().subscribe((result) => {
 
@@ -598,7 +601,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.createOrUpdateProject(this.projectId).subscribe((res) =>console.log(res))
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res) =>console.log(res))
       }
       this.libProjectService.saveProjectFunc(false);
     }
