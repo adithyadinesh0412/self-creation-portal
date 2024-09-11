@@ -116,9 +116,11 @@
       <div  class=" w-[100%] sm:w-[80%]" #certificateContainer>
       </div>
     </div>
-
+    
 </div>
-<div class="border-t"></div>
+@if(dialogueData.cancelButton || dialogueData.exitButton || dialogueData.attachButton){
+  <div class="border-t"></div>
+}
 <div class="flex flex-row justify-end items-center">
   @if(dialogueData.cancelButton){
     <button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.cancelButton }">{{dialogueData.cancelButton |translate}}</button>

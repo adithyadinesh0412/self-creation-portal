@@ -489,8 +489,8 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   viewCertificate() {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
-      width:  '39.375rem',
-      height: '26rem',
+      width: '63%',
+      height: '75%',
       disableClose: true,
       data: {...{header:"Certificate preview"},...{certificate:this.certificateContainer}},
     });
