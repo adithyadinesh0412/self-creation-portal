@@ -525,6 +525,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         taskDetails: [task.id],
       }
     });
+    // set certificate data in parent project data when certificate data is not project
+    // if(!this.libProjectService.projectData.certificate) {
+    //   this.libProjectService.projectData.certificate = this.certificate
+    // }
   }
 
   setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
