@@ -118,7 +118,9 @@
     </div>
     
 </div>
-<div [ngStyle]="{'border-top':  dialogRef._containerInstance._config.height === '75%' ? 'none' : '1px solid #ccc'}"></div>
+@if(dialogueData.cancelButton || dialogueData.exitButton || dialogueData.attachButton){
+  <div class="border-t"></div>
+}
 <div class="flex flex-row justify-end items-center">
   @if(dialogueData.cancelButton){
     <button  class="btn text-primary w-30 min-w-[135px]" [mat-dialog-close]="{ data: dialogueData.cancelButton }">{{dialogueData.cancelButton |translate}}</button>
