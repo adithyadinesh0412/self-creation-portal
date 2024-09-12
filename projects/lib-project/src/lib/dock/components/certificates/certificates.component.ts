@@ -396,9 +396,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           })
         })
       }
-      else {
-        this.toastService.openSnackBar({message : "Please Add Logo",class : 'error'})
-      }
     });
   }
 
@@ -608,9 +605,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res:any) =>{
-          this.libProjectService.setProjectData(res.result);
-        })
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
       this.libProjectService.saveProjectFunc(false);
     }
