@@ -341,8 +341,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       .subscribe((res:any) => {
         this.certificateList = res.result.data
         this.certificateTypeSelected = res.result.data[0];
-        this.libProjectService.projectData.base_template_url = res.result.data[0].url;
-        this.libProjectService.projectData.base_template_id = res.result.data[0].id;
+        if(!this.libProjectService.projectData.base_template_url) {
+          this.libProjectService.projectData.base_template_url = res.result.data[0].url;
+          this.libProjectService.projectData.base_template_id = res.result.data[0].id;
+        }
         if(this.libProjectService.projectData.certificate) {
           this.setCertificateData(this.libProjectService.projectData.certificate)
         }
@@ -402,7 +404,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   setLogoPreview() {
     this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo1,'image')
-    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
+    this.updateCertificatePreview('stateLogo2',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
   }
 
   attachSignature(signatureType:number) {
@@ -483,6 +485,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           this.renderer.setStyle(svgElement, 'object-fit', 'contain');
           this.renderer.setStyle(svgElement, 'width', '100%');
         }
+        this.updateSignaturePreview()
+        this.setLogoPreview();
+        this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
       }
     });
   }
@@ -585,7 +590,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   getFileName(url:string) {
-    return url.substring(url.lastIndexOf('/') + 1)
+    let fileName =  url.substring(url.lastIndexOf('/') + 1)
+    fileName = fileName.replace(/%20/g, ' '); // Replace all occurrences of %20 with a space
+    return fileName;
   }
 
   saveComment(quillInput:any){
@@ -601,7 +608,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
-        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res) =>console.log(res))
+        this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res:any) =>{
+          this.libProjectService.setProjectData(res.result);
+        })
       }
       this.libProjectService.saveProjectFunc(false);
     }
