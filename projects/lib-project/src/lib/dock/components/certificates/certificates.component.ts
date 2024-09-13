@@ -172,14 +172,16 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         if (Object.keys(this.libProjectService.projectData)?.length) {
           if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
             this.startAutoSaving();
-            this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
-              if(task.evidence_details.min_no_of_evidences) {
-                if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
-                  task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] ? this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value : task.evidence_details.min_no_of_evidences
+            if(this.libProjectService.projectData.tasks) {
+              this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
+                if(task.evidence_details.min_no_of_evidences) {
+                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
+                    task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] ? this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value : task.evidence_details.min_no_of_evidences
+                  }
+                  return task;
                 }
-                return task;
-              }
-            });
+              });
+            }
             // set certificate data in parent project data when certificate data is not project
             if(!this.libProjectService.projectData.certificate) {
               this.selectedYes = "2"
@@ -492,8 +494,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   viewCertificate() {
     const dialogRef = this.dialog.open(DialogPopupComponent, {
-      width: '63%',
-      height: '75%',
+      width: 'auto',
+      height: 'auto',
+      panelClass: 'custom-class',
       disableClose: true,
       data: {...{header:"Certificate preview"},...{certificate:this.certificateContainer}},
     });
