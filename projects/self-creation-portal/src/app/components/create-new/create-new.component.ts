@@ -48,7 +48,7 @@ export class CreateNewComponent {
   }
 
  onCardClick(cardItem: any) {
-    this.router.navigate([cardItem.url])
+    this.router.navigate([cardItem.url],{queryParams:{parent:"create"}})
   }
 
   getsolutionList() {
