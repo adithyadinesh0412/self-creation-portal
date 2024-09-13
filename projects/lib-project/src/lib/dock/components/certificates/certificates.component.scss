@@ -39,6 +39,11 @@ input:focus{
     opacity: 1;
 }
 
+.file-name {
+    height: 1.5rem !important;
+    overflow-x: hidden !important;
+}
+
 .enable-with-pointer-events{
     pointer-events: auto !important;
 }
