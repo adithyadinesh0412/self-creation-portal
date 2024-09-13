@@ -186,6 +186,16 @@
                                 <input type="number" class="w-full" matInput formControlName="evidenceRequired" #projectEvidenceInput (change)="setProjectEvidenceCriteriaValue(projectEvidenceInput.value)" [placeholder]="item.placeHolder || ''">
                             </mat-form-field>
                         }
+                        @if(certificateForm.get(item.formControlName)?.invalid && certificateForm.get(item.formControlName)?.touched ){
+                            <mat-error class="error-container text-red-600  flex w-full">
+                                <div class="error-message">
+                                    <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                    @if(certificateForm.get(item.formControlName)?.hasError('required')) {
+                                        <span>{{ item.errorMessage?.required }}</span>
+                                      }
+                                </div>
+                            </mat-error>
+                        }
                     </div>
                 }
                 @for(item of tasks; track item;let i = $index){
