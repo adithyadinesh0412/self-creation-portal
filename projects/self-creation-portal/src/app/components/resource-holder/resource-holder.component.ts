@@ -146,8 +146,12 @@ export class ResourceHolderComponent implements OnInit{
     const filterName = event.filterName;
     if (filterName === 'type') {
       this.filters.current.type = event.values;
+      // Clear filter button action when type filter is applied
+      this.filters.activeFilterButton = '';
     } else if (filterName === 'status') {
       this.filters.status = event.values;
+      // Clear filter button action when status filter is applied
+      this.filters.activeFilterButton = '';
     }
     this.pagination.currentPage = 0;
     if(this.paginationComponent) {

@@ -199,3 +199,26 @@ quill-editor .ql-toolbar {
   z-index: 1; 
   background-color: white; 
 }
+
+::ng-deep .custom-class .mat-mdc-dialog-container .mdc-dialog__surface {
+  min-height: 0 !important;
+  width: 63vw;
+  height:auto;
+  min-height: 50vh;
+  max-height: 90vh;
+  padding: 0 0 1.4rem 0;
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .custom-class .mat-mdc-dialog-container .mdc-dialog__surface {
+    height: 50vh !important;
+    width: 90vw !important; 
+  }
+}
+
+@media (max-width: 480px) {
+  ::ng-deep .custom-class .mat-mdc-dialog-container .mdc-dialog__surface {
+    height: 40vh !important; 
+    width: 95vw !important;  
+  }
+}
