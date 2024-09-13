@@ -6,8 +6,8 @@ import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
-import { SUBMITTED_FOR_REVIEW } from './constants/urlConstants';
-import { UP_FOR_REVIEW } from 'lib-shared-modules';
+import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW } from './constants/urlConstants';
+
 
 @Injectable({
   providedIn: 'root'
