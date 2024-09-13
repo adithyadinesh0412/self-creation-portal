@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
 import { SUBMITTED_FOR_REVIEW } from './constants/urlConstants';
+import { UP_FOR_REVIEW } from 'lib-shared-modules';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,9 @@ export class LibSharedModulesService {
         break;
       case 'review':
         this.router.navigate([SUBMITTED_FOR_REVIEW]);
+        break;
+      case 'up-for-review':
+        this.router.navigate([UP_FOR_REVIEW]);
         break;
       default:
         this.router.navigate(['../'], { relativeTo: this.route });

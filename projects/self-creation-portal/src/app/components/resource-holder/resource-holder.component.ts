@@ -299,8 +299,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.REQUEST_FOR_EDIT,
-              parent:"review"
+              mode: projectMode.REQUEST_FOR_EDIT
             }
           });
           break;
@@ -331,7 +330,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: projectMode.REVIEWER_VIEW
+               mode: projectMode.REVIEWER_VIEW,
+               parent:"up-for-review"
              }
            });
            break;
@@ -339,7 +339,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.REVIEWER_VIEW
+              mode: projectMode.REVIEWER_VIEW,
+              parent:"up-for-review"
             }
           });
           break;
@@ -347,7 +348,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.CREATOR_VIEW
+              mode: projectMode.CREATOR_VIEW,
+              parent:"review"
             }
           });
           break;
@@ -356,7 +358,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.VIEWONLY
+              mode: projectMode.VIEWONLY,
+              parent:"review"
             }
           });
           break;
@@ -378,7 +381,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            queryParams: {
              projectId: item.id,
              mode: projectMode.REVIEW,
-             parent:"review"
+             parent:"up-for-review"
            }
          });
          break;
@@ -387,7 +390,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            queryParams: {
              projectId: item.id,
              mode: projectMode.REVIEW,
-             parent:"review"
+             parent:"up-for-review"
            }
          })
          break;
