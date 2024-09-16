@@ -228,9 +228,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   this.startAutoSaving();
                 }
                 if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
-                  this.getCommentConfigs()
-                }
-                
+                  this.getCommentConfigs();
+                }  
                 this.certificateAddIntoHtml();
             })
 
@@ -242,7 +241,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
               if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
-                this.getCommentConfigs()
+                this.getCommentConfigs();
               }
               if(res.result.tasks) {
                 this.tasks = res.result.tasks.filter((task:any) => {
