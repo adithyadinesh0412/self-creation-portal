@@ -54,11 +54,31 @@ export class DialogPopupComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.validateAndUploadFile(input.files[0]);
-    }
+  onFileSelected(event: Event|any) {
+    let image: any = event.target.files[0];
+    let fr:any = new FileReader();
+    fr.onload = () => {
+      // when file has loaded
+      var img = new Image();
+
+      img.onload = () => {
+        console.log(img.height,img.width)
+        if(this.dialogueData.imageSpecification.height != img.height || this.dialogueData.imageSpecification.width != img.width) {
+          this.errorMessage = 'File size is not match with acceptable size.';
+          return;
+        }
+        else {
+          const input = event.target as HTMLInputElement;
+          if (input.files && input.files.length > 0) {
+            this.validateAndUploadFile(input.files[0]);
+          }
+        }
+      };
+
+      img.src = fr.result; // This is the data URL
+    };
+
+    fr.readAsDataURL(image);
   }
 
   validateAndUploadFile(file: File) {
@@ -73,7 +93,9 @@ export class DialogPopupComponent implements OnInit {
       this.errorMessage = 'File size exceeds 50KB limit.';
       return;
     }
-    this.selectedFiles = file;
+    if(this.errorMessage.length == 0) {
+      this.selectedFiles = file;
+    }
     this.uploadFile(file);
   }
 

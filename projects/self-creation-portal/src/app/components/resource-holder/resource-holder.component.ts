@@ -64,12 +64,12 @@ export class ResourceHolderComponent implements OnInit{
   areQueryParamsEmpty:boolean = false;
 
   constructor(
-    private route: ActivatedRoute, 
-    private formService: FormService, 
-    private resourceService: ResourceService, 
-    private commonService: CommonService, 
-    private libProjectService:LibProjectService, 
-    private router:Router, 
+    private route: ActivatedRoute,
+    private formService: FormService,
+    private resourceService: ResourceService,
+    private commonService: CommonService,
+    private libProjectService:LibProjectService,
+    private router:Router,
     private dialog : MatDialog,
     private toastService:ToastService,
     private datePipe: DatePipe,
@@ -122,9 +122,9 @@ export class ResourceHolderComponent implements OnInit{
     this.pagination.pageSize = event.pageSize;
     this.pagination.currentPage = event.page - 1;
     // this.getList();
-    this.updateQueryParams(); 
+    this.updateQueryParams();
   }
-  
+
   /**
    * This function is used for the search functionality
    * @param event - The search event which contains the searchtext
@@ -135,7 +135,7 @@ export class ResourceHolderComponent implements OnInit{
     if(this.paginationComponent) {
       this.paginationComponent.resetToFirstPage();
     }
-    this.updateQueryParams(); 
+    this.updateQueryParams();
   }
 
   /**
@@ -146,8 +146,12 @@ export class ResourceHolderComponent implements OnInit{
     const filterName = event.filterName;
     if (filterName === 'type') {
       this.filters.current.type = event.values;
+      // Clear filter button action when type filter is applied
+      this.filters.activeFilterButton = '';
     } else if (filterName === 'status') {
       this.filters.status = event.values;
+      // Clear filter button action when status filter is applied
+      this.filters.activeFilterButton = '';
     }
     this.pagination.currentPage = 0;
     if(this.paginationComponent) {
@@ -155,17 +159,17 @@ export class ResourceHolderComponent implements OnInit{
     }
     this.updateQueryParams();
   }
-  
+
   /**
    * This function is used for the sorting functionality
-   * @param event - An object containing the `sort_by` field to be sorted and the `sort_order` 
+   * @param event - An object containing the `sort_by` field to be sorted and the `sort_order`
    * (either 'asc' for ascending or 'desc' for descending) as emitted by the child component.
    */
   onSortOptionsChanged(event: { sort_by: string, sort_order: string }) {
     this.sortOptions = event;
     this.pagination.currentPage = 0;
     this.paginationComponent.resetToFirstPage();
-    this.updateQueryParams(); 
+    this.updateQueryParams();
   }
 
   /**
@@ -189,7 +193,7 @@ export class ResourceHolderComponent implements OnInit{
       this.handleResponse(response);
     });
   }
-  
+
   /**
    * This functions used to call the resourcelist api response
    * @param response -resourcelist api response
@@ -268,7 +272,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
     const queryParams = this.commonService.generateParams(this.pagination, this.filters, this.sortOptions);
     this.commonService.updateQueryParams(queryParams);
   }
-  
+
   /**
    * This function is used to call the api response with queryparams present in the router
    * the resourcelist api using applied queryparams
@@ -280,7 +284,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
       this.areQueryParamsEmpty = Object.keys(params).length === 0;
     });
   }
-  
+
   /**
    * This functions is used to add the buttons click event as per its label it will call the actions
    * @param event -listresource api response.
@@ -308,7 +312,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           });
           break;
         }
-       
+
        case 'DELETE':
          this.confirmAndDeleteProject(item)
          break;
@@ -317,7 +321,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: projectMode.VIEWONLY
+               mode: projectMode.VIEWONLY,
+               parent:"review"
              }
            });
            break;
@@ -325,7 +330,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: projectMode.REVIEWER_VIEW
+               mode: projectMode.REVIEWER_VIEW,
+               parent:"up-for-review"
              }
            });
            break;
@@ -333,7 +339,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.REVIEWER_VIEW
+              mode: projectMode.REVIEWER_VIEW,
+              parent:"up-for-review"
             }
           });
           break;
@@ -341,7 +348,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.CREATOR_VIEW
+              mode: projectMode.CREATOR_VIEW,
+              parent:"review"
             }
           });
           break;
@@ -350,7 +358,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.VIEWONLY
+              mode: projectMode.VIEWONLY,
+              parent:"review"
             }
           });
           break;
@@ -365,13 +374,14 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
          }else{
           break;
          }
-         
+
        case 'START_REVIEW':
         this.utilService.startOrResumeReview(item.id).subscribe((data)=>{})
          this.router.navigate([PROJECT_DETAILS_PAGE], {
            queryParams: {
              projectId: item.id,
-             mode: projectMode.REVIEW
+             mode: projectMode.REVIEW,
+             parent:"up-for-review"
            }
          });
          break;
@@ -379,7 +389,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
          this.router.navigate([PROJECT_DETAILS_PAGE], {
            queryParams: {
              projectId: item.id,
-             mode: projectMode.REVIEW
+             mode: projectMode.REVIEW,
+             parent:"up-for-review"
            }
          })
          break;
@@ -390,7 +401,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
 
   /**
    * This functions is used to call the buttons in the filter ui and as per the button-label it will call the actions
-   * @param event - this is filter button click event 
+   * @param event - this is filter button click event
    */
   filterButtonClickEvent(event : { label: string }) {
     if(this.filters.activeFilterButton === event.label) {
@@ -408,34 +419,34 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   }
 
   /**
-   * This functions is used for the infoicon click 
+   * This functions is used for the infoicon click
    * @param event - onclicking the event is calling data in the card
-   * @return resourcelist api response on infoiconclick for each item 
+   * @return resourcelist api response on infoiconclick for each item
    */
   infoIconClickEvent(event: any) {
     const cardItem = event.item;
-  
+
     //to get field data from listapi to map in json
     const getFieldData = (field: any) => {
       let value = cardItem[field.name] || '';
       if (field.name.includes('organization')) {
         value = cardItem.organization ? cardItem.organization.name : '';
-      } else if (this.commonService.isISODate(value)) { 
-        value = this.datePipe.transform(value, 'dd/MM/yyyy'); 
+      } else if (this.commonService.isISODate(value)) {
+        value = this.datePipe.transform(value, 'dd/MM/yyyy');
       }
       return {
         label: field.label,
         value: value
       };
     };
-  
+
     // Function to filter and map fields based on conditions
     const filterAndMapFields = (status: string | null) => {
       return this.infoFieldsData
         .filter((field: any) => field.status === status || !field.status)
         .map(getFieldData);
     };
-  
+
     //info fields to display as per the review_status
     let infoFields = [];
     if (!cardItem.review_status && (cardItem.status === resourceStatus.SUBMITTED || cardItem.status === 'IN_REVIEW')) {
@@ -443,12 +454,12 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
     } else {
       infoFields = filterAndMapFields(cardItem.review_status);
     }
-  
+
     // If no fields match the conditions, default to 'NOT_STARTED' fields
     if (infoFields.length === 0) {
       infoFields = filterAndMapFields('NOT_STARTED');
     }
-  
+
     const dialogRef = this.dialog.open(DialogPopupComponent, {
       width: '39.375rem',
       data: {
@@ -456,7 +467,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
         fields: infoFields
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       return result ? true : false;
     });
@@ -479,7 +490,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
       this.paginationComponent.setToPage(this.pagination.currentPage);
     }
     this.getList();
-    this.updateQueryParams(); 
+    this.updateQueryParams();
     })
   }
 
@@ -499,12 +510,12 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
         exitButton:"DELETE"
       }
       });
-  
+
       dialogRef.afterClosed().subscribe(result => {
         if(result.data === "CANCEL"){
           return true
         } else if(result.data === "DELETE"){
-          this.deleteProject(item); 
+          this.deleteProject(item);
           return true
         } else {
           return false
@@ -516,5 +527,5 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
   navigateToCreateNew() {
     this.router.navigate(['home/create-new'], {})
   }
- 
+
 }

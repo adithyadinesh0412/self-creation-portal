@@ -84,29 +84,29 @@
                                     <div class="mt-4">
                                         @if(ele.name === "attachlogo"){
                                         <p class="required">{{ ele.label}}</p>
-                                        <section class="flex">
-                                            <div class="mt-2 pb-2 mr-3">
+                                        <section class="grid grid-cols-2 gap-2 mt-3">
+                                            <div class="">
                                                 <div class="flex items-center">
                                                     <mat-icon class="cursor-pointer text-primary"
-                                                    (click)="attachLogos(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary" (click)="attachLogos(1)">{{ele.textForLink}}</span>
+                                                    (click)="attachLogos(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachLogos(1)">{{ele.textForLink}}</span>
                                                 </div><br>
                                                  <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.logos.stateLogo1)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.logos.stateLogo1">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo1)}}</p>
+                                                        <p class="overflow-ellipsis file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo1)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('logo',1)">cancel</mat-icon>
                                                 </div>
                                             </div>
-                                            <div class="mt-2 pb-2" *ngIf="certificateTypeSelected.code == 'two_logo_two_sign' || certificateTypeSelected.code == 'one_logo_two_sign'">
+                                            <div class="" *ngIf="certificateTypeSelected?.code == 'two_logo_two_sign' || certificateTypeSelected?.code == 'two_logo_one_sign'">
                                                 <div class="flex items-center">
                                                     <mat-icon class="cursor-pointer text-primary"
-                                                    (click)="attachLogos(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary" (click)="attachLogos(2)">Add image 2</span>
+                                                    (click)="attachLogos(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachLogos(2)">Add image 2</span>
                                                 </div><br>
                                                   <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.logos.stateLogo2)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.logos.stateLogo2">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo2)}}</p>
+                                                        <p class="overflow-ellipsis file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo2)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('logo',2)">cancel</mat-icon>
                                                 </div>
@@ -117,29 +117,29 @@
                                     <div class="mt-4">
                                         @if(ele.name === "attachsign"){
                                         <p class="required">{{ ele.label}}</p>
-                                        <section class="flex">
-                                            <div class="mt-2 pb-2 mr-3">
+                                        <section class="grid grid-cols-2 gap-2 mt-3">
+                                            <div class="">
                                                 <div class="flex items-center">
                                                     <mat-icon class="cursor-pointer text-primary"
-                                                    (click)="attachSignature(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary" (click)="attachSignature(1)">Add image 1</span>
+                                                    (click)="attachSignature(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachSignature(1)">Add image 1</span>
                                                 </div><br>
                                                 <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.signature.signatureImg1)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.signature.signatureImg1">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg1)}}</p>
+                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg1)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('signature',1)">cancel</mat-icon>
                                                 </div>
                                             </div>
-                                            <div class="mt-2 pb-2" *ngIf="certificateTypeSelected.code == 'two_logo_two_sign' || certificateTypeSelected.code == 'two_logo_one_sign'">
+                                            <div class="" *ngIf="certificateTypeSelected?.code == 'two_logo_two_sign' || certificateTypeSelected?.code == 'one_logo_two_sign'">
                                                 <div class="flex items-center">
                                                     <mat-icon class="cursor-pointer text-primary"
-                                                    (click)="attachSignature(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary" (click)="attachSignature(2)">Add image 2</span>
+                                                    (click)="attachSignature(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachSignature(2)">Add image 2</span>
                                                 </div><br>
                                                 <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.signature.signatureImg2)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.signature.signatureImg2">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-2">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg2)}}</p>
+                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg2)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('signature',1)">cancel</mat-icon>
                                                 </div>
@@ -176,7 +176,7 @@
                         @if(item.name === "attachprojectevidence"){
                         <p>{{ item.label}}</p>
                         <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableProjectEvidence">
-                            <mat-radio-button value="1" class="-mx-1 mr-6" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value">{{ 'YES' | translate }}</mat-radio-button>
+                            <mat-radio-button value="1" class="-mx-1 mr-6" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length > 0">{{ 'YES' | translate }}</mat-radio-button>
                             <mat-radio-button value="0" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
                         </mat-radio-group>
                         }
@@ -185,6 +185,16 @@
                                 <mat-label> {{ item.label}}</mat-label>
                                 <input type="number" class="w-full" matInput formControlName="evidenceRequired" #projectEvidenceInput (change)="setProjectEvidenceCriteriaValue(projectEvidenceInput.value)" [placeholder]="item.placeHolder || ''">
                             </mat-form-field>
+                        }
+                        @if(certificateForm.get(item.formControlName)?.invalid && certificateForm.get(item.formControlName)?.touched ){
+                            <mat-error class="error-container text-red-600  flex w-full">
+                                <div class="error-message">
+                                    <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                    @if(certificateForm.get(item.formControlName)?.hasError('required')) {
+                                        <span>{{ item.errorMessage?.required }}</span>
+                                      }
+                                </div>
+                            </mat-error>
                         }
                     </div>
                 }

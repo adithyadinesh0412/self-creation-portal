@@ -6,6 +6,8 @@ import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
+import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW } from './constants/urlConstants';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,21 @@ export class LibSharedModulesService {
   }
 
   goBack(): void {
-    this.router.navigate(['../'], { relativeTo: this.route });
+    const state = this.route.snapshot.queryParamMap.get('parent')
+    switch (state) {
+      case 'create':
+        this.router.navigate(['../'], { relativeTo: this.route });
+        break;
+      case 'review':
+        this.router.navigate([SUBMITTED_FOR_REVIEW]);
+        break;
+      case 'up-for-review':
+        this.router.navigate([UP_FOR_REVIEW]);
+        break;
+      default:
+        this.router.navigate(['../'], { relativeTo: this.route });
+        break;
+    }
   }
 
   logout(): void {
