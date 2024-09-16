@@ -148,3 +148,8 @@ quill-editor {
   position: relative;
   left: 30%;
 }
+
+.disabled-with-pointer-events {
+  pointer-events: none;
+  opacity: 1;
+}
