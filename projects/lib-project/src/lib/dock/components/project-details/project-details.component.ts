@@ -97,7 +97,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .readProject(this.projectId)
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
-                          if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+                          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                             this.getCommentConfigs()
                           }
                           this.readProjectDeatilsAndMap(data.controls,res.result);
@@ -153,7 +153,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })
@@ -170,7 +170,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })

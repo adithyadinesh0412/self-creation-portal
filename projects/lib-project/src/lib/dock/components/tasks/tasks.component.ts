@@ -88,7 +88,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                 this.getCommentConfigs()
               }
 
@@ -115,7 +115,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+                  if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                     this.getCommentConfigs()
                   }
                 }
