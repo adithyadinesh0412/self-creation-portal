@@ -16,12 +16,12 @@
               }
               <input
                 matInput
-                [placeholder]="control.placeHolder"
-                [type]="control.type"
-                [formControlName]="control.name"
-                [maxlength]="control.validators.maxLength"
-                [required]="control.validators?.required"
-                [pattern]="control.validators?.pattern"
+                [placeholder]="control?.placeHolder"
+                [type]="control?.type"
+                [formControlName]="control?.name"
+                [maxlength]="control?.validators.maxLength"
+                [required]="control?.validators?.required"
+                [pattern]="control?.validators?.pattern"
               />
             </mat-form-field>
             @if(resourceGroup.get(control.name)?.touched && resourceGroup.get(control.name)?.invalid){
