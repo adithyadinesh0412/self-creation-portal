@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  backButton : boolean = true;
+  backButton : boolean = false;
   subHeader : any;
   selctedCardItem : any;
   headerData:any
@@ -126,7 +126,7 @@ export class LayoutComponent {
         dialogRef.afterClosed().toPromise().then(result => {
           if (result.data === "CANCEL") {
             return true;
-          } else if (result.data === "ACCEPT") { 
+          } else if (result.data === "ACCEPT") {
             this.libProjectService.approveProject()
             return true;
           } else {
@@ -149,7 +149,7 @@ export class LayoutComponent {
             exitButton: "REJECT"
           }
         });
-    
+
         dialogRef.afterClosed().toPromise().then(result => {
           if (result.data === "CANCEL") {
             return true;
@@ -163,7 +163,7 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
-        this.libProjectService.sendForRequestChange()      
+        this.libProjectService.sendForRequestChange()
         break;
       }
       default:

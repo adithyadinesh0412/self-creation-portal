@@ -143,7 +143,7 @@ export class LibProjectService {
         });
       } else {
         this.getcommentsListAsOpen().subscribe((comemnt) => {
-         
+
               this.sendForReview({}, this.projectData.id).subscribe(
                 (res: any) => {
                   this.utilService
@@ -158,7 +158,7 @@ export class LibProjectService {
                   this.router.navigate([SUBMITTED_FOR_REVIEW]);
                 }
               );
-             
+
         });
       }
     } else {
@@ -236,9 +236,11 @@ export class LibProjectService {
         });
         return false;
       }
+      this.validForm.certificates = "VALID"
       return true;
     }
     else {
+      this.validForm.certificates = "VALID"
       return true;
     }
   }
