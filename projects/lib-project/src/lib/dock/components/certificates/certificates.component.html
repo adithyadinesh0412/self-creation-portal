@@ -93,7 +93,7 @@
                                                  <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.logos.stateLogo1)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.logos.stateLogo1">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo1)}}</p>
+                                                        <p class="truncate file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo1)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('logo',1)">cancel</mat-icon>
                                                 </div>
@@ -106,7 +106,7 @@
                                                   <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.logos.stateLogo2)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.logos.stateLogo2">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo2)}}</p>
+                                                        <p class="truncate file-name">{{getFileName(libProjectService.projectData.certificate.logos.stateLogo2)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('logo',2)">cancel</mat-icon>
                                                 </div>
@@ -126,7 +126,7 @@
                                                 <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.signature.signatureImg1)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.signature.signatureImg1">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-3">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg1)}}</p>
+                                                        <p class="truncate file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg1)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('signature',1)">cancel</mat-icon>
                                                 </div>
@@ -139,7 +139,7 @@
                                                 <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.signature.signatureImg2)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.signature.signatureImg2">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-2">
                                                         <img src="assets/images/video-icon.png" alt="My Image" class="flex-shrink-0">
-                                                        <p class="overflow-ellipsis text-wrap file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg2)}}</p>
+                                                        <p class="truncate file-name">{{getFileName(libProjectService.projectData.certificate.signature.signatureImg2)}}</p>
                                                     </section>
                                                     <mat-icon class="cursor-pointer flex-shrink-0" (click)="removeAttachments('signature',2)">cancel</mat-icon>
                                                 </div>
