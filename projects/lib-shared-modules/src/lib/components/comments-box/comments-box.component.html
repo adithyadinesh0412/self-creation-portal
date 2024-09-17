@@ -41,7 +41,7 @@
         }
       </section>
     }
-    <section  [ngClass]="{'disabled-with-pointer-events': (mode === 'viewOnly' || mode === 'creatorView' || mode === 'reviewerView')}">
+    <section  [ngClass]="{'disabled-with-pointer-events': (mode === 'viewOnly' || mode === 'creatorView' || mode === 'reviewerView'), 'expanded-editor': !messages || messages.length === 0}">
       <quill-editor [(ngModel)]="quillInput" placeholder="Type your comment" [modules]="quillConfig"
         (onSelectionChanged)="onSelectionChanged($event)"></quill-editor>
     </section>

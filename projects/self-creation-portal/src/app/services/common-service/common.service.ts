@@ -30,7 +30,8 @@ export class CommonService {
       sort_order: sortOptions.sort_order || '',
       filter: '',
       search: btoa(filters.search) || '',
-      listing: pageStatus || ''
+      listing: pageStatus || '',
+      activeFilterButton: filters.activeFilterButton || '',
     };
   }
 
@@ -42,6 +43,7 @@ export class CommonService {
     filters.search = params['search'] ? atob(params['search']) : '';
     sortOptions.sort_by = params['sort_by'] || '';
     sortOptions.sort_order = params['sort_order'] || '';
+    filters.activeFilterButton = params['activeFilterButton'] || ''; 
   }
 
   updateQueryParams(params: { [key: string]: any }) {
