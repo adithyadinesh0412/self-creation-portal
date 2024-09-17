@@ -23,7 +23,6 @@
 quill-editor {
   height: 8rem !important;
   width: 100%;
-  overflow-y: auto !important;
 }
 .chat-window {
   background: #e1e8ed;
@@ -147,4 +146,8 @@ quill-editor {
 .user-message {
   position: relative;
   left: 30%;
+}
+
+.expanded-editor quill-editor {
+  height: 60vh!important; 
 }
