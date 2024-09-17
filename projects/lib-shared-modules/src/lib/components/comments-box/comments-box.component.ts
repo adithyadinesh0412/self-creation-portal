@@ -8,6 +8,7 @@ import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 import { FormService } from '../../services/form/form.service';
 import { ToastService, UtilService } from '../../../public-api';
+import { interval, Subscription } from 'rxjs';
 
 
 
@@ -27,8 +28,8 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   @Input() resourceId:string|number = '';
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
+  private subscription: Subscription = new Subscription();
   value: any;
-  intervalId:any;
   resolveDisable:boolean = false;
   chatFlag: boolean = true;
 
@@ -79,9 +80,11 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   autoSave(){
-    this.intervalId = setInterval(() => {
-     this.saveComment();
-    }, 30000);
+    this.subscription.add(
+      interval(30000).subscribe(() => {
+        this.saveComment();
+      })
+    );
   }
 
   onSelectionChanged = (event:any) =>{
@@ -142,12 +145,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+  this.subscription.unsubscribe();
     if(this.quillInput.length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
   }
-
 }
