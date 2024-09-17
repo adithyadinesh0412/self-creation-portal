@@ -320,6 +320,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
       this.libProjectService.saveProjectFunc(false);
     }
+    // if(this.mode.length==0 && this.route.snapshot.queryParamMap.get('parent') == 'create') {
+    //   this.createProject()
+    // }
     this.subscription.unsubscribe();
   }
   formMarkTouched() {
