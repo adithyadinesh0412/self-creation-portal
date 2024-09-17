@@ -40,11 +40,11 @@ export class ResourceHolderComponent implements OnInit{
     current: { type: [] as string[] },
     status: '' as string,
     filteredLists: [] as any[],
-    filterData: [] as any,
-    showActionButton: false,
+    filterData: [] as any, //to store filterarray data json coming from formapi
+    showActionButton: false, //property to show the buttons resourcelist ui
     changeReqCount : 0,
     inprogressCount  : 0,
-    activeFilterButton: '' as string,
+    activeFilterButton: '' as string, //button selected from filter ui
     showInfoIcon: false
   };
 
