@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
@@ -46,7 +46,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
 })
-export class CertificatesComponent implements OnInit, OnDestroy{
+export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   certificateDetails: any;
   selectedYes: any = "2";
   certificateForm!: FormGroup;
@@ -64,7 +64,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   projectInReview: boolean = false;
   taskForm: any;
   certificateList:any = [];
-  intervalId:any;
   certificate:any = {
       base_template_id: 1,
       base_template_url: "",
@@ -146,7 +145,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     this.initForm();
     this.getCertificateList();
     if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
-      this.libProjectService.projectData = {};
       this.subscription.add(
         this.libProjectService.isProjectSave.subscribe(
           (isProjectSave: boolean) => {
@@ -170,17 +168,19 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
-        if (Object.keys(this.libProjectService.projectData)?.length) {
+        if (Object.keys(this.libProjectService.projectData).length > 1) {
           if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
             this.startAutoSaving();
-            this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
-              if(task.evidence_details.min_no_of_evidences) {
-                if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
-                  task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+            if(this.libProjectService.projectData.tasks) {
+              this.tasks = this.libProjectService.projectData.tasks.filter((task:any) => {
+                if(task.evidence_details.min_no_of_evidences) {
+                  if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
+                    task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] ? this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value : task.evidence_details.min_no_of_evidences
+                  }
+                  return task;
                 }
-                return task;
-              }
-            });
+              });
+            }
             // set certificate data in parent project data when certificate data is not project
             if(!this.libProjectService.projectData.certificate) {
               this.selectedYes = "2"
@@ -193,6 +193,18 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           }
           if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
             this.getCommentConfigs();
+            this.getCertificateForm()
+            if(this.libProjectService.projectData.certificate) {
+              this.selectedYes = "1"
+            }
+          }
+          if(this.libProjectService.projectData.certificate.code) {
+            this.certificateTypeSelected = {
+              code : this.libProjectService.projectData.certificate.code,
+              name : this.libProjectService.projectData.certificate.name,
+              id: this.libProjectService.projectData.certificate.base_template_id,
+              url: this.libProjectService.projectData.certificate.base_template_url
+            }
           }
         } else {
           if(!this.projectId) {
@@ -217,6 +229,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                   this.getCommentConfigs();
                 }
+                this.certificateAddIntoHtml();
             })
 
           }
@@ -250,11 +263,13 @@ export class CertificatesComponent implements OnInit, OnDestroy{
                 this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
                 this.updateSignaturePreview()
                 this.setLogoPreview();
+                this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
               }
               this.getCertificateForm();
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                 this.startAutoSaving();
               }
+              this.certificateAddIntoHtml();
             });
           }
         }
@@ -270,6 +285,18 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     );
   }
 
+  initiateCertificatePreview() {
+    this.updateCertificatePreview('stateTitle',"government of <state name>",'text')
+    this.updateCertificatePreview('svg_97',"Full Name",'text')
+    this.updateCertificatePreview('svg_99',"Project Name",'text')
+    this.updateCertificatePreview('svg_101',"on DD Month yyyy",'text')
+  }
+
+  ngAfterViewInit(): void {
+    if(this.certificateContainer && Object.keys(this.libProjectService.projectData)?.length) {
+      this.certificateAddIntoHtml();
+    }
+  }
   setIssuerName(value:string) {
     this.libProjectService.projectData.certificate.issuer = value;
     this.updateCertificatePreview('stateTitle',value,'text')
@@ -301,16 +328,22 @@ export class CertificatesComponent implements OnInit, OnDestroy{
     else {
       if(!this.libProjectService.projectData.certificate) {
         this.libProjectService.projectData.certificate = this.certificate
+        this.certificateForm.patchValue({
+          certificateType:this.certificateTypeSelected.code
+        })
+        this.certificateAddIntoHtml();
       }
     }
   }
 
   startAutoSaving() {
-    this.intervalId = setInterval(() => {
-      this.libProjectService
+    this.subscription.add(
+      this.subscription.add(
+        this.libProjectService
         .startAutoSave(this.projectId)
         .subscribe((data) => console.log(data))
-    }, 30000);
+      )
+    )
   }
 
   initForm() {
@@ -338,12 +371,18 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       .subscribe((res:any) => {
         this.certificateList = res.result.data
         this.certificateTypeSelected = res.result.data[0];
-        this.libProjectService.projectData.base_template_url = res.result.data[0].url;
-        this.libProjectService.projectData.base_template_id = res.result.data[0].id;
         if(this.libProjectService.projectData.certificate) {
           this.setCertificateData(this.libProjectService.projectData.certificate)
         }
-        this.certificateAddIntoHtml();
+        if(this.selectedYes === '1' && !this.libProjectService.projectData.certificate) {
+          this.libProjectService.projectData.certificate = this.certificate
+        }
+        if(!this.libProjectService.projectData?.certificate?.base_template_url) {
+          this.libProjectService.projectData.certificate.base_template_url = res.result.data[0].url;
+          this.libProjectService.projectData.certificate.base_template_id = res.result.data[0].id;
+          this.libProjectService.projectData.certificate.code = res.result.data[0].code;
+          this.libProjectService.projectData.certificate.name = res.result.data[0].name;
+        }
       });
   }
 
@@ -354,7 +393,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       certificateType:this.certificateTypeSelected.code
     })
   }
-
   openAttachment(link:string) {
     window.open(link,'_blank')
   }
@@ -362,8 +400,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   onCertificateTypeChange(value: string): void {
     console.log(value);
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
-    this.libProjectService.projectData.base_template_url = this.certificateTypeSelected.url;
-    this.libProjectService.projectData.base_template_id = this.certificateTypeSelected.id;
+    this.libProjectService.projectData.certificate.base_template_url = this.certificateTypeSelected.url;
+    this.libProjectService.projectData.certificate.base_template_id = this.certificateTypeSelected.id;
+    this.libProjectService.projectData.certificate.code = this.certificateTypeSelected.code;
+    this.libProjectService.projectData.certificate.name = this.certificateTypeSelected.name;
     this.certificateAddIntoHtml()
   }
 
@@ -395,8 +435,8 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   setLogoPreview() {
-    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo1,'image')
-    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate.logos.stateLogo2,'image')
+    this.updateCertificatePreview('stateLogo1',this.libProjectService.projectData.certificate?.logos?.stateLogo1,'image')
+    this.updateCertificatePreview('stateLogo2',this.libProjectService.projectData.certificate?.logos?.stateLogo2,'image')
   }
 
   attachSignature(signatureType:number) {
@@ -437,10 +477,10 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   updateSignaturePreview() {
-    this.updateCertificatePreview('signatureTitle1a',this.libProjectService.projectData.certificate.signature.signatureTitleName1+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation1,'text')
-    this.updateCertificatePreview('signatureTitle2a',this.libProjectService.projectData.certificate.signature.signatureTitleName2+", "+this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,'text')
-    this.updateCertificatePreview('signatureImg1',this.libProjectService.projectData.certificate.signature.signatureImg1,'image')
-    this.updateCertificatePreview('signatureImg2',this.libProjectService.projectData.certificate.signature.signatureImg2,'image')
+    this.updateCertificatePreview('signatureTitle1a',this.libProjectService.projectData.certificate?.signature?.signatureTitleName1+", "+this.libProjectService.projectData.certificate?.signature?.signatureTitleDesignation1,'text')
+    this.updateCertificatePreview('signatureTitle2a',this.libProjectService.projectData.certificate?.signature?.signatureTitleName2+", "+this.libProjectService.projectData.certificate?.signature?.signatureTitleDesignation2,'text')
+    this.updateCertificatePreview('signatureImg1',this.libProjectService.projectData.certificate?.signature?.signatureImg1,'image')
+    this.updateCertificatePreview('signatureImg2',this.libProjectService.projectData.certificate?.signature?.signatureImg2,'image')
   }
 
   getCommentConfigs() {
@@ -449,11 +489,11 @@ export class CertificatesComponent implements OnInit, OnDestroy{
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
           const comments = commentListRes.result?.comments || [];
           const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
-          
+
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-  
+
           if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }
@@ -477,6 +517,17 @@ export class CertificatesComponent implements OnInit, OnDestroy{
           this.renderer.setStyle(svgElement, 'object-fit', 'contain');
           this.renderer.setStyle(svgElement, 'width', '100%');
         }
+        if(this.libProjectService.projectData.certificate.code) {
+          this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === this.libProjectService.projectData.certificate.code);
+          this.certificateForm.patchValue({
+            issuerName:this.libProjectService.projectData.certificate.issuer,
+            certificateType:this.libProjectService.projectData.certificate.code
+          })
+        }
+        this.updateSignaturePreview()
+        this.setLogoPreview();
+        this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate?.issuer,'text')
+        this.initiateCertificatePreview()
       }
     });
   }
@@ -487,7 +538,7 @@ export class CertificatesComponent implements OnInit, OnDestroy{
       height: 'auto',
       panelClass: 'custom-class',
       disableClose: true,
-      data: {certificate:this.certificateContainer},
+      data: {...{header:"Certificate preview"},...{certificate:this.certificateContainer}},
     });
     dialogRef.afterClosed().subscribe((result) => {
 
@@ -580,7 +631,9 @@ export class CertificatesComponent implements OnInit, OnDestroy{
   }
 
   getFileName(url:string) {
-    return url.substring(url.lastIndexOf('/') + 1)
+    let fileName =  url.substring(url.lastIndexOf('/') + 1)
+    fileName = decodeURI(fileName); // Replace all occurrences of %20 with a space
+    return fileName;
   }
 
   saveComment(quillInput:any){
@@ -591,9 +644,6 @@ export class CertificatesComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.libProjectService.validForm.certificates = "VALID";
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
