@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +34,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   chatFlag: boolean = true;
 
   @ViewChild('editor') editor:any;
+  @ViewChild('chatWindow') private chatWindow!: ElementRef;
 
   name = 'Angular';
   currentUserId:number = 25;
@@ -75,6 +76,10 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     this.checkCommentIsDraftAndResolvable();
   }
 
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+  
   test=(event:any)=>{
     // console.log(event.keyCode);
   }
@@ -120,6 +125,14 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     });
   }
 
+  scrollToBottom(): void {
+    try {
+      this.chatWindow.nativeElement.scrollTop = this.chatWindow.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error in scrolling: ', err);
+    }
+  }
+
   openChatBot() {
     this.chatFlag=!this.chatFlag;
   }
@@ -150,4 +163,5 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       this.saveComment();
     }
   }
+
 }
