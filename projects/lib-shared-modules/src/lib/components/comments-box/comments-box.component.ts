@@ -72,7 +72,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userId = localStorage.getItem('id');
     this.checkCommentIsDraftAndResolvable();
-    
   }
 
   test=(event:any)=>{
