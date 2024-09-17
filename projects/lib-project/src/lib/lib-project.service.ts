@@ -159,7 +159,7 @@ export class LibProjectService {
                   this.router.navigate([SUBMITTED_FOR_REVIEW]);
                 }
               );
-             
+
         });
       }
     } else {
@@ -237,9 +237,11 @@ export class LibProjectService {
         });
         return false;
       }
+      this.validForm.certificates = "VALID"
       return true;
     }
     else {
+      this.validForm.certificates = "VALID"
       return true;
     }
   }
