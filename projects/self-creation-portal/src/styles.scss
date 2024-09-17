@@ -201,6 +201,11 @@ color:$tertiary
   padding: 0 0 1.4rem 0;
 }
 
+.disabled-with-pointer-events {
+  pointer-events: none;
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   ::ng-deep .custom-class .mat-mdc-dialog-container .mdc-dialog__surface {
     height: 50vh !important;

@@ -46,11 +46,6 @@ input:focus{
   display: none !important; 
 }
 
-.disabled-with-pointer-events {
-  pointer-events: none;
-  opacity: 1;
-}
-
 .disabled-without-pointer-event{
   opacity: 0.5;
 }

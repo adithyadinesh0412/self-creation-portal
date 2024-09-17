@@ -98,7 +98,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .readProject(this.projectId)
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
-                          if(this.libProjectService.projectData.status == resourceStatus.IN_REVIEW){
+                          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                             this.getCommentConfigs()
                           }
                           this.readProjectDeatilsAndMap(data.controls,res.result);
@@ -154,7 +154,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if(res.result.status == resourceStatus.IN_REVIEW) {
+                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })
@@ -171,7 +171,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.setProjectData(res.result);
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if(res.result.status == resourceStatus.IN_REVIEW) {
+                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                           this.getCommentConfigs()
                         }
                       })
@@ -295,10 +295,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
-    if(this.libProjectService.projectData.title != data.title) {
-    this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
-    }
     if (!this.isEvent(data)) {
+      if(this.libProjectService.projectData.title != data.title) {
+        this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
+        }
     this.libProjectService.setProjectData(data);
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
