@@ -354,6 +354,7 @@ export class LibProjectService {
       queryParams: {
         projectId: this.projectData.id,
         mode: projectMode.REVIEW,
+        parent:"up-for-review"
       },
     });
   }
@@ -363,7 +364,8 @@ export class LibProjectService {
       this.router.navigate([PROJECT_DETAILS_PAGE], {
         queryParams: {
           projectId: this.projectData.id,
-          mode: projectMode.REQUEST_FOR_EDIT
+          mode: projectMode.REQUEST_FOR_EDIT,
+          parent:"review"
         }
       });
     }else{

@@ -191,7 +191,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             }
             this.getCertificateForm()
           }
-          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
             this.getCommentConfigs();
             this.getCertificateForm()
             if(this.libProjectService.projectData.certificate) {
@@ -226,7 +226,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
-                if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+                if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
                   this.getCommentConfigs();
                 }  
                 this.certificateAddIntoHtml();
@@ -239,7 +239,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
+              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
                 this.getCommentConfigs();
               }
               if(res.result.tasks) {
