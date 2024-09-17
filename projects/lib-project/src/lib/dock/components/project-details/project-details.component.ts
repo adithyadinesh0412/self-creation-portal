@@ -5,7 +5,7 @@ import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { CommentsBoxComponent, DialogPopupComponent, FormService, UtilService, projectMode,resourceStatus } from 'lib-shared-modules';
+import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, UtilService, projectMode,resourceStatus } from 'lib-shared-modules';
 @Component({
   selector: 'lib-project-details',
   standalone: true,
@@ -32,7 +32,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private formService: FormService,
-    private utilService:UtilService
+    private utilService:UtilService,
+    private toastService: ToastService,
   ) {
     this.startAutoSaving()
     this.subscription.add(
@@ -105,7 +106,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         })
                     );
                   }
-              }  
+              }
             })
           );
       }
@@ -118,11 +119,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
           const comments = commentListRes.result?.comments || [];
           const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
-          
+
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-  
+
           if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }
@@ -130,7 +131,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       })
     );
   }
-  
+
 
   getFormWithEntitiesAndMap(){
     this.formService.getFormWithEntities('PROJECT_DETAILS').then((data) => {
@@ -224,7 +225,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
     }, 30000);
   }
-  createProject(payload?:any) { // title should be send from calling methods only, due to title can be filled before project creation
+  createProject(payload?:any,showToast?:boolean) { // title should be send from calling methods only, due to title can be filled before project creation
       this.libProjectService
       .createOrUpdateProject(payload)
       .subscribe((res: any) => {
@@ -239,6 +240,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
             replaceUrl: true,
           });
           this.libProjectService.projectData.id = res.result.id;
+          if(showToast) {
+            this.toastService.openSnackBar({
+              message: res.message,
+              class: 'success',
+            })
+          }
       })
   }
   saveForm() {
@@ -248,7 +255,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.updateProjectDraft(this.projectId).subscribe();
       }
       else {
-        return this.createProject({title:this.libProjectService.projectData.title})
+        return this.createProject({title:this.libProjectService.projectData.title},true)
       }
     } else {
       const dialogRef = this.dialog.open(DialogPopupComponent, {
@@ -274,7 +281,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                 this.libProjectService.updateProjectDraft(this.projectId).subscribe();
               }
               else {
-                return this.createProject(this.libProjectService.projectData)
+                return this.createProject(this.libProjectService.projectData,true)
               }
               this.getFormWithEntitiesAndMap()
               this.saveForm()

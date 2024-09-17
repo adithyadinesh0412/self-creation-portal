@@ -64,7 +64,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   projectInReview: boolean = false;
   taskForm: any;
   certificateList:any = [];
-  intervalId:any;
   certificate:any = {
       base_template_id: 1,
       base_template_url: "",
@@ -284,6 +283,13 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         }
       })
     );
+  }
+
+  initiateCertificatePreview() {
+    this.updateCertificatePreview('stateTitle',"government of <state name>",'text')
+    this.updateCertificatePreview('svg_97',"Full Name",'text')
+    this.updateCertificatePreview('svg_99',"Project Name",'text')
+    this.updateCertificatePreview('svg_101',"on DD Month yyyy",'text')
   }
 
   ngAfterViewInit(): void {
@@ -521,6 +527,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.updateSignaturePreview()
         this.setLogoPreview();
         this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate?.issuer,'text')
+        this.initiateCertificatePreview()
       }
     });
   }
@@ -625,7 +632,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   getFileName(url:string) {
     let fileName =  url.substring(url.lastIndexOf('/') + 1)
-    fileName = fileName.replace(/%20/g, ' '); // Replace all occurrences of %20 with a space
+    fileName = decodeURI(fileName); // Replace all occurrences of %20 with a space
     return fileName;
   }
 
@@ -637,9 +644,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   ngOnDestroy(): void {
     this.libProjectService.validForm.certificates = "VALID";
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
