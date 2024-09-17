@@ -288,10 +288,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
-    if(this.libProjectService.projectData.title != data.title) {
-    this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
-    }
     if (!this.isEvent(data)) {
+      if(this.libProjectService.projectData.title != data.title) {
+        this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
+        }
     this.libProjectService.setProjectData(data);
     this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
