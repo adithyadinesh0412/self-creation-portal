@@ -21,13 +21,12 @@
   border-radius: .5rem 0.5rem 0 0;
 }
 quill-editor {
-  height: 8rem !important;
+  height: 18rem !important;
   width: 100%;
-  overflow-y: auto !important;
 }
 .chat-window {
   background: #e1e8ed;
-  height: calc(100% - 24rem);
+  height: calc(100% - 60vh);
   overflow-y: auto;
   max-width: 25rem !important;
   white-space: normal !important;
@@ -147,4 +146,8 @@ quill-editor {
 .user-message {
   position: relative;
   left: 30%;
+}
+
+.expanded-editor quill-editor {
+  height: 60vh !important; 
 }

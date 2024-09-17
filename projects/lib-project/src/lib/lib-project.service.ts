@@ -142,14 +142,15 @@ export class LibProjectService {
           }
         });
       } else {
-        this.getcommentsListAsOpen().subscribe((comemnt) => {
-
+        this.getcommentsListAsOpen().subscribe((comment) => {
               this.sendForReview({}, this.projectData.id).subscribe(
                 (res: any) => {
-                  this.utilService
-                  .updateComment(this.projectData.id, comemnt)
-                  .subscribe((res: any) => {
-                });
+                  if(comment.length > 0){
+                    this.utilService
+                    .updateComment(this.projectData.id, comment)
+                    .subscribe((res: any) => {
+                  });
+                  }
                   this.toastService.openSnackBar({
                     message: res.message,
                     class: 'success',

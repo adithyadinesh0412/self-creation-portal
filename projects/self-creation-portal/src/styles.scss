@@ -193,19 +193,17 @@ color:$tertiary
   display: none !important;
 }
 
-quill-editor .ql-toolbar {
-  position: sticky; 
-  top: 0;
-  z-index: 1; 
-  background-color: white; 
-}
-
 ::ng-deep .custom-class .mat-mdc-dialog-container .mdc-dialog__surface {
   width: 63vw;
   height:auto;
   min-height: 50vh;
   max-height: 90vh;
   padding: 0 0 1.4rem 0;
+}
+
+.disabled-with-pointer-events {
+  pointer-events: none;
+  opacity: 1;
 }
 
 @media (max-width: 768px) {

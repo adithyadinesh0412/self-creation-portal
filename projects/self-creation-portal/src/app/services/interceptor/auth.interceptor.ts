@@ -18,9 +18,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   let isOnline$ = merge(onlineEvent, offlineEvent).pipe( startWith(navigator.onLine));
    isOnline$.subscribe(isOnline => {
     onlineStatus = isOnline
-    if(!onlineStatus){
-      commonService.openErrorToast("OFFLINE_MSG_NETWORK")
-    }
+    // if(!onlineStatus){
+    //   commonService.openErrorToast("OFFLINE_MSG_NETWORK")
+    // }
   });
 
   let authReq = req.clone({})

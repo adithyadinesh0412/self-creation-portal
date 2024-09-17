@@ -168,5 +168,7 @@
     "FILE_SPECIFICATION":"File type = PNG only",
     "FILE_SPECIFICATION_HEADER":"Make sure your file:",
     "UPLOAD_PNG_UPTO_50KB":"upload PNG upto 50kb",
-    "VIEW_FULL_SCREEN":"View full screen"
+    "VIEW_FULL_SCREEN":"View full screen",
+    "ADD_IMAGE_1":"Add image 1",
+    "ADD_IMAGE_2":"Add image 2"
 }
