@@ -228,7 +228,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 }
                 if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW) {
                   this.getCommentConfigs();
-                }
+                }  
                 this.certificateAddIntoHtml();
             })
 

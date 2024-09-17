@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 import { FormService } from '../../services/form/form.service';
 import { ToastService, UtilService } from '../../../public-api';
+import { interval, Subscription } from 'rxjs';
 
 
 
@@ -27,11 +28,13 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   @Input() resourceId:string|number = '';
   @Input() messages:any;
   @Output() comment = new EventEmitter<String>();
+  private subscription: Subscription = new Subscription();
   value: any;
   resolveDisable:boolean = false;
   chatFlag: boolean = true;
 
   @ViewChild('editor') editor:any;
+  @ViewChild('chatWindow') private chatWindow!: ElementRef;
 
   name = 'Angular';
   currentUserId:number = 25;
@@ -64,15 +67,29 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private utilService:UtilService,private toastService:ToastService) { }
+  constructor(private utilService:UtilService,private toastService:ToastService) {
+    this.autoSave()
+   }
 
   ngOnInit() {
     this.userId = localStorage.getItem('id');
     this.checkCommentIsDraftAndResolvable();
   }
 
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+  
   test=(event:any)=>{
     // console.log(event.keyCode);
+  }
+
+  autoSave(){
+    this.subscription.add(
+      interval(30000).subscribe(() => {
+        this.saveComment();
+      })
+    );
   }
 
   onSelectionChanged = (event:any) =>{
@@ -108,6 +125,14 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     });
   }
 
+  scrollToBottom(): void {
+    try {
+      this.chatWindow.nativeElement.scrollTop = this.chatWindow.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error in scrolling: ', err);
+    }
+  }
+
   openChatBot() {
     this.chatFlag=!this.chatFlag;
   }
@@ -119,11 +144,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
     this.comment.emit(this.quillInput)
     this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
-    if(this.draft && this.quillInput?.length>0) {
+    if(this.draft.id && this.quillInput?.length>0) {
       this.draft.text = this.quillInput;
-      if(this.draft?.comment?.length){
-        this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
-      }
+      this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
     }
     else if(this.quillInput){
       this.commentPayload.text = this.quillInput;
@@ -135,6 +158,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  this.subscription.unsubscribe();
     if(this.quillInput.length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
