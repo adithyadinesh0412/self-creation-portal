@@ -6,7 +6,8 @@ import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
-import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW } from './constants/urlConstants';
+import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlConstants';
+
 
 
 @Injectable({
@@ -25,9 +26,25 @@ export class LibSharedModulesService {
 
   goBack(): void {
     const state = this.route.snapshot.queryParamMap.get('parent')
+    const solutionId = this.route.snapshot.queryParamMap.get('projectId')
     switch (state) {
       case 'create':
         this.router.navigate(['../'], { relativeTo: this.route });
+        if(solutionId) {
+          this.toastService.openSnackBar({
+            message:'YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT',
+            class: 'success',
+          })
+        }
+        break;
+      case 'draft':
+        this.router.navigate([DRAFTS]);
+        if(solutionId) {
+          this.toastService.openSnackBar({
+            message:'YOUR_RESOURCE_HAS_BEEN_SAVED_AS_DRAFT',
+            class: 'success',
+          })
+        }
         break;
       case 'review':
         this.router.navigate([SUBMITTED_FOR_REVIEW]);

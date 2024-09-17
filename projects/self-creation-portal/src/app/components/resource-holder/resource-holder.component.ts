@@ -299,7 +299,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.REQUEST_FOR_EDIT
+              mode: projectMode.REQUEST_FOR_EDIT,
+              parent:"review"
             }
           });
           break;
@@ -307,7 +308,8 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.EDIT
+              mode: projectMode.EDIT,
+              parent:"draft"
             }
           });
           break;
