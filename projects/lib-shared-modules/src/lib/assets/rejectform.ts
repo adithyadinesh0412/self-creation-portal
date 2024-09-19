@@ -1,3 +1,4 @@
+import { pattern } from "../constants/commonConstants"
 export const rejectform = {
     "name": "title",
     "label": "Add a reason",
@@ -14,6 +15,6 @@ export const rejectform = {
     "validators": {
       "required": false,
       "maxLength": 255,
-      "pattern": "^(?! )(?![\\s\\S]* {3})[\\\\p{L}a-zA-Z0-9\\\\-_ <>&\\n]+$"
+      "pattern": pattern
     }
   }

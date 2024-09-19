@@ -7,6 +7,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatListModule, MatListOption, MatSelectionList} from '@angular/material/list';
 import {FormsModule, NgForm} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { pattern } from '../../../constants/commonConstants';
 
 @Component({
   selector: 'lib-review-model',
@@ -20,7 +21,7 @@ export class ReviewModelComponent {
   @ViewChild('dialogueForm') dialogueForm!: NgForm;
   charCount: number = 0;
   reviewerNote:string = ""
-  pattern="^(?! )(?![\\s\\S]* {3})[\\\\p{L}a-zA-Z0-9\\\\-_ <>&\\n]+$"
+  pattern=pattern
   constructor(
     public dialogRef: MatDialogRef<ReviewModelComponent>,
     @Inject(MAT_DIALOG_DATA)  public dialogueData: any) { 

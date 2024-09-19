@@ -5,8 +5,8 @@
             <div class="flex-row mr-10">
                 <div class="flex-column">
                     <div class="flex justify-normal gap-2">
-                        <div class="chip-container item-center text-center bg-chipPurple capitalize">
-                            {{list.type | translate}}
+                        <div class="chip-container item-center text-center bg-chipPurple">
+                            {{ formatLabel(list?.type) }}
                         </div>
                         @if(this.activeRole === "creator" && ( list.status === resourceStatus.SUBMITTED ||  list.review_status === reviewStatus.NOT_STARTED || list.review_status === reviewStatus.CHANGES_UPDATED)){
                             <div class="chip-container item-center text-center bg-tertiary border border-chipBorder text-secondary">
