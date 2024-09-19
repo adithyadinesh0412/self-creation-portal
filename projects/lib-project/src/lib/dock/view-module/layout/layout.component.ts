@@ -176,6 +176,7 @@ export class LayoutComponent {
   }
 
   ngOnDestroy() {
+    this.libProjectService.resetProjectMetaData();
     this.subscription.unsubscribe();
   }
 }
