@@ -44,7 +44,7 @@ export class LayoutComponent {
         //     element.disable = false;
         //   }
         // });
-        this.lastReviewed = this.libProjectService.projectData.last_reviewed_on
+        this.lastReviewed = (this.mode === 'review' || this.mode === 'reviewerView' ) ? this.libProjectService.projectData.last_reviewed_on: "";
         this.headerData = data?.sidenavData.headerData
       })
     )
