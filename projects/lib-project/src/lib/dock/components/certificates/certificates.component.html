@@ -20,7 +20,7 @@
         }
       </div>
 
-        <div class="px-10 text-tertiary" [ngClass]="{hidden: selectedYes === '2'}">
+        <div class="px-10 text-tertiary" [ngClass]="{hidden: (selectedYes === '2' || !libProjectService.projectData.certificate)}">
             <p class="text-lg">{{ "CERTIFICATE_DETAILS" | translate}}
                 <span class="px-1 text-base text-[$buttonDisable]">({{"CERTIFICATE_SUB_DETAILS" | translate}})</span>
             </p>
@@ -150,7 +150,7 @@
                                 </div>
                     }
                     </div>
-                    <div class="certificate-content w-1/2">
+                    <div class="certificate-content w-1/2" *ngIf="libProjectService.projectData?.certificate?.base_template_url.length > 0">
                         <!-- certificate image content to place here -->
                         <div class="px-10 mt-10">
                             <div class="mt-4 m-3 flex justify-center">
@@ -176,8 +176,8 @@
                         @if(item.name === "attachprojectevidence"){
                         <p>{{ item.label}}</p>
                         <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableProjectEvidence">
-                            <mat-radio-button value="1" class="-mx-1 mr-6" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length > 0">{{ 'YES' | translate }}</mat-radio-button>
-                            <mat-radio-button value="0" class="-mx-1">{{ 'No' | translate }}</mat-radio-button>
+                            <mat-radio-button value=1 class="-mx-1 mr-6" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length > 0">{{ 'YES' | translate }}</mat-radio-button>
+                            <mat-radio-button value=0 class="-mx-1" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length == 0">{{ 'No' | translate }}</mat-radio-button>
                         </mat-radio-group>
                         }
                         @if(item.name === "noofevidence"){
@@ -203,11 +203,11 @@
                         <div class="mt-6 w-1/2">
                             <p class="mt-2"> {{taskForm[0]?.label}}&nbsp;{{item?.name}}</p>
                             <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" #taskEvidenceCriteria>
-                                <mat-radio-button value="1" class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="item?.values">{{ 'YES' | translate }}</mat-radio-button>
-                                <mat-radio-button value="0" class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)">{{ 'No' | translate }}</mat-radio-button>
+                                <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="item?.values > 0">{{ 'YES' | translate }}</mat-radio-button>
+                                <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)" [checked]="item?.values == 0">{{ 'No' | translate }}</mat-radio-button>
                             </mat-radio-group>
                             <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline" >
-                                <mat-label> {{taskForm[1]?.label}}{{item?.name}}</mat-label>
+                                <mat-label> {{taskForm[1]?.label}}&nbsp;{{item?.name}}</mat-label>
                                 <input type="number" [min]="item?.evidence_details.min_no_of_evidences" #taskCriteriaInput class="w-full" matInput (change)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences" [placeholder]="taskForm[1]?.placeHolder || ''">
                             </mat-form-field>
                         </div>

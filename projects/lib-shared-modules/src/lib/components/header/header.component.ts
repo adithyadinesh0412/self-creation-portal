@@ -19,6 +19,9 @@ export class HeaderComponent {
   @Input() backButton : boolean = true ;
   @Input() title!: string;
   @Input() headerData : any;
+  @Input() toParent:boolean = false;
+  @Output() backToParent = new EventEmitter<boolean>();
+
   mode:any = "edit";
   private subscription: Subscription = new Subscription();
   @Output() buttonClick: EventEmitter<string> =  new EventEmitter<string>();
@@ -29,10 +32,14 @@ export class HeaderComponent {
         this.mode = params.mode ? params.mode : "edit"
      })
     )
-    
+
   }
 
   backArrowButton() {
+    if(this.toParent) {
+      this.backToParent.emit(true)
+      return;
+    }
     this.libsharedservice.goBack()
   }
 

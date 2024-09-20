@@ -61,7 +61,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         ['bold', 'italic', 'underline'],    // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
         [{ size: ['small', false, 'large', 'huge'] }],
-        [{ 'font': [] }],      // Font family dropdown with Arial and default sans-serif 
+        [{ 'font': [] }],
       ],
 
     }
@@ -79,7 +79,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
-  
+
   test=(event:any)=>{
     // console.log(event.keyCode);
   }
@@ -126,10 +126,8 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom(): void {
-    try {
+    if(this.messages.length > 0){
       this.chatWindow.nativeElement.scrollTop = this.chatWindow.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Error in scrolling: ', err);
     }
   }
 
