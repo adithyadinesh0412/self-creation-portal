@@ -8,7 +8,3 @@
 .pd-top{
     padding-top: 3rem !important;
 }
-
-::ng-deep .cdk-overlay-container:not(:has(.cdk-overlay-dark-backdrop)) {
-    z-index: 0; 
-}
