@@ -61,7 +61,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         ['bold', 'italic', 'underline'],    // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
         [{ size: ['small', false, 'large', 'huge'] }],
-        [{ 'font': [] }],      // Font family dropdown with Arial and default sans-serif 
+        [{ 'font': [] }],
       ],
 
     }
@@ -79,7 +79,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
-  
+
   test=(event:any)=>{
     // console.log(event.keyCode);
   }
