@@ -7,8 +7,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormService, HeaderComponent, SIDE_NAV_DATA, SideNavbarComponent } from 'lib-shared-modules';
-import { CommonService } from '../../services/common-service/common.service';
 import { CommonModule } from '@angular/common';
+import { environment } from 'environments';
 
 
 @Component({
@@ -34,9 +34,16 @@ export class AppMainViewComponent {
   ngOnInit(){
     this.getnavData();
     this.getPermissions();
+    if(environment.parentURL.length > 0) {
+      this.backButton = true;
+    }
   }
 
   onButtonClick(buttonTitle: string) {
+  }
+
+  backToParent(event:boolean) {
+    window.open(environment.parentURL,"_self")
   }
 
   getnavData(){
@@ -64,7 +71,7 @@ export class AppMainViewComponent {
   }
 
   clearQueryParams() {
-    this.router.navigate([], {  
+    this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {}
     });

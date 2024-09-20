@@ -48,7 +48,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   certificateDetails: any;
-  selectedYes: any = "2";
+  selectedYes: any = "";
   certificateForm!: FormGroup;
   attachLogo:any= [];
   attachSign:any = [];
@@ -65,7 +65,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   taskForm: any;
   certificateList:any = [];
   certificate:any = {
-      base_template_id: 1,
+      base_template_id: '',
       base_template_url: "",
       code: "",
       name: "",
@@ -168,6 +168,14 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode;
         this.projectId = params.projectId;
+        if (
+          params.mode === projectMode.VIEWONLY ||
+          params.mode === projectMode.REVIEW ||
+          params.mode === projectMode.REVIEWER_VIEW ||
+          this.mode === projectMode.CREATOR_VIEW
+        ) {
+          this.viewOnly = true;
+        }
         if (Object.keys(this.libProjectService.projectData).length > 1) {
           if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
             this.startAutoSaving();
@@ -182,10 +190,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               });
             }
             // set certificate data in parent project data when certificate data is not project
-            if(!this.libProjectService.projectData.certificate) {
-              this.selectedYes = "2"
-            }
-            else {
+            if(this.libProjectService.projectData.certificate) {
               this.certificate = this.libProjectService.projectData.certificate;
               this.selectedYes = "1"
             }
@@ -228,7 +233,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 }
                 if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
                   this.getCommentConfigs();
-                }  
+                }
                 this.certificateAddIntoHtml();
             })
 
@@ -253,10 +258,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 });
               }
               // set certificate data in parent project data when certificate data is not project
-              if(!this.libProjectService.projectData.certificate) {
-                this.selectedYes = "2"
-              }
-              else {
+              if(this.libProjectService.projectData.certificate) {
                 this.certificate = this.libProjectService.projectData.certificate;
                 this.selectedYes = "1"
                 this.setIssuerName(this.libProjectService.projectData.certificate.issuer)
@@ -272,14 +274,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               this.certificateAddIntoHtml();
             });
           }
-        }
-        if (
-          params.mode === projectMode.VIEWONLY ||
-          params.mode === projectMode.REVIEW ||
-          params.mode === projectMode.REVIEWER_VIEW ||
-          this.mode === projectMode.CREATOR_VIEW
-        ) {
-          this.viewOnly = true;
         }
       })
     );
@@ -323,14 +317,15 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   certificateEnabling(value:string) {
     this.selectedYes = value;
     if(this.selectedYes == "2") {
-      delete this.libProjectService.projectData.certificate
+      delete this.libProjectService.projectData.certificate;
+      this.libProjectService.validForm.certificates = "VALID"
     }
     else {
       if(!this.libProjectService.projectData.certificate) {
         this.libProjectService.projectData.certificate = this.certificate
-        this.certificateForm.patchValue({
-          certificateType:this.certificateTypeSelected.code
-        })
+        // this.certificateForm.patchValue({
+        //   certificateType:this.certificateTypeSelected.code
+        // })
         this.certificateAddIntoHtml();
       }
     }
@@ -349,7 +344,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   initForm() {
     this.certificateForm = this.fb.group({
       selectedOption: [''],
-      certificateType: ['one_logo_one_sign', Validators.required],
+      certificateType: ['', Validators.required],
       issuerName: [
         '',
         [
@@ -467,6 +462,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               signatureTitleDesignation2: signatureType === 2 ? result.additionalData.inputfields[1].value:this.libProjectService.projectData.certificate.signature.signatureTitleDesignation2,
             }
             this.updateSignaturePreview()
+            result.additionalData.inputfields[0].value = "";
+            result.additionalData.inputfields[1].value = "";
           })
         })
       }

@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  backButton : boolean = false;
+  backButton : boolean = true;
   subHeader : any;
   selctedCardItem : any;
   headerData:any

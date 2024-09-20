@@ -60,7 +60,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       container: [
         ['bold', 'italic', 'underline'],        // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
-        [{ 'font': [] }],                                          // Font family dropdown with Arial and default sans-serif 
+        [{ 'font': [] }],                                          // Font family dropdown with Arial and default sans-serif
         //['link', 'image', 'video']
       ],
 
@@ -79,7 +79,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
-  
+
   test=(event:any)=>{
     // console.log(event.keyCode);
   }
@@ -149,7 +149,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       if(this.draft.id){
         this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
       }
-     
+
     }
     else if(this.quillInput){
       this.commentPayload.text = this.quillInput;

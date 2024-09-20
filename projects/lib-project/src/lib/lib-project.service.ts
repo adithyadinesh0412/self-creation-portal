@@ -32,7 +32,7 @@ export class LibProjectService {
     projectDetails: 'INVALID',
     tasks: 'INVALID',
     subTasks: 'VALID',
-    certificates: 'VALID',
+    certificates: 'INVALID',
   };
   viewOnly: boolean = false;
   mode: any = 'edit';
@@ -86,7 +86,8 @@ export class LibProjectService {
     if (
       this.validForm.projectDetails === 'VALID' &&
       this.validForm.tasks === 'VALID' &&
-      this.validForm.subTasks === 'VALID'
+      this.validForm.subTasks === 'VALID' &&
+      this.validForm.certificates === 'VALID'
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&

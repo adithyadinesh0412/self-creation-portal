@@ -1,11 +1,11 @@
 <mat-toolbar color="primary" class="primary-toolbar flex justify-between items-center px-4 sticky top-0 z-50">
   <div class="flex items-center space-x-2">
-    @if (backButton) {
-      <a>
-          <mat-icon (click)="backArrowButton()" class="cursor-pointer py-1 pl-1 pr-7">keyboard_backspace</mat-icon>
-      </a>
-      <span class="px-0">{{ title  || 'BACK'  | translate }}</span>
-    }
+    <a>
+      @if (backButton) {
+        <mat-icon (click)="backArrowButton()" class="cursor-pointer py-1 pl-1 pr-7">keyboard_backspace</mat-icon>
+      }
+    </a>
+    <span class="px-0">{{ title  || 'BACK'  | translate }}</span>
   </div>
   <div title="logout">
     <mat-icon class="cursor-pointer" (click)="logout()">power_settings_new</mat-icon>
