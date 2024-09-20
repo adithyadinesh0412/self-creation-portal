@@ -12,7 +12,7 @@
   </div>
 </mat-toolbar>
 <mat-toolbar class="sub-header flex border-b sticky justify-between items-center  top-16">
-  <div class="title" [matTooltip]="headerData?.title | translate">{{ headerData?.title || 'WORKSPACE' | translate }}</div>
+  <div class="title" [matTooltip]="headerData?.title | translate">{{ headerData?.title | translate }}</div>
   @if (headerData?.buttons) {
     <div class="buttons-container">
         @for (button of headerData?.buttons[mode]; track button) {

@@ -70,6 +70,10 @@ export class LibProjectService {
     this.sendForReviewValidation.next(newAction);
   }
 
+  resetProjectMetaData() {
+    this.dataSubject.next(null); // Emit null to clear the current data
+  }
+
   updateProjectDraft(projectId: string | number) {
     return this.createOrUpdateProject(this.projectData, projectId).pipe(
       map((res: any) => {

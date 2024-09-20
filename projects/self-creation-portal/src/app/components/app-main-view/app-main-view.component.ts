@@ -21,7 +21,9 @@ import { environment } from 'environments';
 export class AppMainViewComponent {
 
   backButton : boolean = false;
-  headerData : any = {};
+  headerData : any = {
+    title:"WORKSPACE"
+  };
   titleObj = {
     "title" : "CREATION_PORTAL"
   }
