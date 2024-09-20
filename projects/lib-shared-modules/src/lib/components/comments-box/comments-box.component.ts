@@ -58,10 +58,10 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     //toolbar: '.toolbar',
     toolbar: {
       container: [
-        ['bold', 'italic', 'underline'],        // Bold, Italic, Underline
+        ['bold', 'italic', 'underline'],    // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
-        [{ 'font': [] }],                                          // Font family dropdown with Arial and default sans-serif 
-        //['link', 'image', 'video']
+        [{ size: ['small', false, 'large', 'huge'] }],
+        [{ 'font': [] }],      // Font family dropdown with Arial and default sans-serif 
       ],
 
     }
@@ -139,21 +139,24 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
 
   saveComment(closeChatBox:boolean = false) {
-    if(closeChatBox){
+    if (closeChatBox) {
       this.chatFlag = !this.chatFlag;
     }
+    this.quillInput = this.quillInput
+      .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
+      .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
+      .trim();  // Just in case there are spaces outside the tags
     this.comment.emit(this.quillInput)
-    this.commentPayload.parent_id= this.messages.length > 0 ? this.messages[this.messages.length-1].id : 0;
-    if(this.draft && this.quillInput?.length>0) {
+    this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
+    if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
       this.draft.text = this.quillInput;
-      if(this.draft.id){
-        this.utilService.updateComment(this.resourceId,this.draft,this.draft.id).subscribe((res) => console.log(res));
+      if (this.draft.id) {
+        this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).subscribe((res) => console.log(res));
       }
-     
     }
-    else if(this.quillInput){
+    else if (this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
       this.commentPayload.text = this.quillInput;
-      this.utilService.updateComment(this.resourceId,this.commentPayload).subscribe((res:any) => {
+      this.utilService.updateComment(this.resourceId, this.commentPayload).subscribe((res: any) => {
         this.draft = res.result;
       });
     }
@@ -162,7 +165,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
   this.subscription.unsubscribe();
-    if(this.quillInput.length > 0 && this.utilService.saveComment) {
+    if(this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
   }

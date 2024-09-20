@@ -21,7 +21,9 @@ import { CommonModule } from '@angular/common';
 export class AppMainViewComponent {
 
   backButton : boolean = false;
-  headerData : any = {};
+  headerData : any = {
+    title:"WORKSPACE"
+  };
   titleObj = {
     "title" : "CREATION_PORTAL"
   }
