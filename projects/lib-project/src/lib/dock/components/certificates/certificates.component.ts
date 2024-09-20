@@ -526,8 +526,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         }
         this.updateSignaturePreview()
         this.setLogoPreview();
+        this.initiateCertificatePreview();
         this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate?.issuer,'text')
-        this.initiateCertificatePreview()
       }
     });
   }
