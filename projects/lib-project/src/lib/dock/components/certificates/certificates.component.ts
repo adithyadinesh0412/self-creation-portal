@@ -190,9 +190,13 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               });
             }
             // set certificate data in parent project data when certificate data is not project
-            if(this.libProjectService.projectData.certificate) {
+            if(!this.libProjectService.projectData.certificate) {
+              this.selectedYes = "2"
+            }
+            else {
               this.certificate = this.libProjectService.projectData.certificate;
               this.selectedYes = "1"
+              this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
             }
             this.getCertificateForm()
           }

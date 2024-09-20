@@ -32,7 +32,7 @@ export class LibProjectService {
     projectDetails: 'INVALID',
     tasks: 'INVALID',
     subTasks: 'VALID',
-    certificates: 'INVALID',
+    certificates: 'VALID',
   };
   viewOnly: boolean = false;
   mode: any = 'edit';
