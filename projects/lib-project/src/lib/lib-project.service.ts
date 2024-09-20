@@ -90,8 +90,7 @@ export class LibProjectService {
     if (
       this.validForm.projectDetails === 'VALID' &&
       this.validForm.tasks === 'VALID' &&
-      this.validForm.subTasks === 'VALID' &&
-      this.validForm.certificates === 'VALID'
+      this.validForm.subTasks === 'VALID'
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
