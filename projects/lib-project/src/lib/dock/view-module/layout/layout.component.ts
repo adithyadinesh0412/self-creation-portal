@@ -100,7 +100,7 @@ export class LayoutComponent {
       }
       case "SEND_FOR_REVIEW":{
         this.libProjectService.checkSendForReviewValidation(true);
-        this.tabValidation = this.libProjectService.validForm;
+        this.tabValidation = this.libProjectService.formMeta.formValidation;
         break;
       }
       case "START_REVIEW":{
