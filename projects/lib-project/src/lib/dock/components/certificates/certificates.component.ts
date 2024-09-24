@@ -640,9 +640,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
   ngOnDestroy(): void {

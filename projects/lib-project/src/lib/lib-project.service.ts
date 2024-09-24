@@ -421,21 +421,46 @@ export class LibProjectService {
           }) 
   }
 
-  checkValidationForRequestChanges() {
-    const currentProjectMetaData = this.dataSubject.getValue();
-    if (
-      Array.isArray(
-        currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
-      )
-    ) {
-      currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-        this.mode
-      ].forEach((element: any) => {
-        if (element.title === 'REQUEST_CHANGES') {
-          element.disable = false;
+  checkValidationForRequestChanges(quillInput:any = "") {
+      const currentProjectMetaData = this.dataSubject.getValue();
+      if (
+        Array.isArray(
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
+        )
+      ) {
+        if(quillInput === null){
+          this.getComments().subscribe((data:any)=>{
+            if(data.length === 0){
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = true;
+                }
+              });
+            }else{
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = false;
+                }
+              });
+            }
+                })
+    
+        }else{
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+            this.mode
+          ].forEach((element: any) => {
+            if (element.title === 'REQUEST_CHANGES') {
+              element.disable = false;
+            }
+          });
         }
-      });
-    }
+       
+      }
+   
   }
 
   getCertificatesList() {

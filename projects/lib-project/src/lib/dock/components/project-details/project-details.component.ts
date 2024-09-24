@@ -336,8 +336,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
 
   saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 }

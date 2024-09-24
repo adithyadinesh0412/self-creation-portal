@@ -333,9 +333,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
   getCommentConfigs() {

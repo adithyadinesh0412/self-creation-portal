@@ -53,7 +53,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   hasFocus = false;
   subject: any;
   draft:any = '';
-  notifyCommentCompleted: boolean= false;
 
 
   quillConfig={
@@ -94,11 +93,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   triggerSaveComment(){
     if(this.quillInput){
       this.saveComment(true).then((res) => {
-        if(this.notifyCommentCompleted){
           this.subscription.add(
             this.sharedService.notifySaveCommentCompleted()
           )
-        }
       }).catch((error) => {
         console.error('Error saving comment:', error);
       });
@@ -163,65 +160,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     this.chatFlag=!this.chatFlag;
   }
 
-
-  // saveComment(closeChatBox:boolean = false) {
-  //   if (closeChatBox) {
-  //     this.chatFlag = !this.chatFlag;
-  //   }
-  //   this.quillInput = (this.quillInput !== null)? this.quillInput
-  //     .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
-  //     .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
-  //     .trim(): this.quillInput;  // Just in case there are spaces outside the tags
-  //   this.comment.emit(this.quillInput)
-  //   this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
-  //   if(this.quillInput !== null){
-  //     if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
-  //       this.draft.text = this.quillInput;
-  //       if (this.draft.id) {
-  //         this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).subscribe((res) => {
-  //           if(res){
-  //             this.notifyCommentCompleted = true
-  //           }
-  //           return
-  //         });
-  //       }
-  //     }
-  //     else if (this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
-  //       this.commentPayload.text = this.quillInput;
-  //       this.utilService.updateComment(this.resourceId, this.commentPayload).subscribe((res: any) => {
-  //         this.utilService.getCommentList(this.resourceId).subscribe((commentListRes: any) => {
-  //           if(res){
-  //             this.notifyCommentCompleted = true
-  //           }
-  //           commentListRes.result?.comments .slice().reverse().forEach((comment:any) => {
-  //             if (comment.status === "DRAFT" && comment.page == this.commentPayload.page) {
-  //               this.draft = comment;
-  //             }
-  //           })
-  //           return
-  //         });
-  //       });
-  //     }
-  //   }else if(this.quillInput === null){
-  //     if(this.draft.id){
-  //       this.utilService.deleteComment(this.draft.id, this.resourceId).subscribe((res: any) => {
-  //         if(res){
-  //           this.notifyCommentCompleted = true
-  //         }
-  //         return
-  //       })
-  //     }else{
-  //       this.notifyCommentCompleted = true
-  //       return
-  //     }
-      
-  
-  //   }
-  //   this.commentPayload.comment = this.quillInput;
-  // }
-
-
-
   saveComment(closeChatBox: boolean = false): Promise<any> {
     return new Promise((resolve, reject) => {
       if (closeChatBox) {
@@ -239,9 +177,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
           this.draft.text = this.quillInput;
           if (this.draft.id) {
             this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).toPromise().then((res) => {
-              if (res) {
-                this.notifyCommentCompleted = true;
-              }
               resolve(true);
             }).catch((error) => {
               reject(error);
@@ -251,9 +186,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
           this.commentPayload.text = this.quillInput;
           this.utilService.updateComment(this.resourceId, this.commentPayload).toPromise().then((res: any) => {
             this.utilService.getCommentList(this.resourceId).toPromise().then((commentListRes: any) => {
-              if (res) {
-                this.notifyCommentCompleted = true;
-              }
               commentListRes.result?.comments.slice().reverse().forEach((comment: any) => {
                 if (comment.status === "DRAFT" && comment.page == this.commentPayload.page) {
                   this.draft = comment;
@@ -270,15 +202,12 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       } else if (this.quillInput === null) {
         if (this.draft.id) {
           this.utilService.deleteComment(this.draft.id, this.resourceId).toPromise().then((res: any) => {
-            if (res) {
-              this.notifyCommentCompleted = true;
-            }
+            this.draft = {}
             resolve(true);
           }).catch((error) => {
             reject(error);
           });
         } else {
-          this.notifyCommentCompleted = true;
           resolve(true);
         }
       }
