@@ -189,14 +189,16 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 }
               });
             }
-            // set certificate data in parent project data when certificate data is not project
-            if(!this.libProjectService.projectData.certificate) {
-              this.selectedYes = "2"
-            }
-            else {
-              this.certificate = this.libProjectService.projectData.certificate;
-              this.selectedYes = "1"
-              this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
+            if(this.libProjectService.formMeta.isCertificateSelected || this.libProjectService.projectData.certificate) {
+              // set certificate data in parent project data when certificate data is not project
+              if(!this.libProjectService.projectData.certificate) {
+                this.selectedYes = "2"
+              }
+              else {
+                this.certificate = this.libProjectService.projectData.certificate;
+                this.selectedYes = "1"
+                this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
+              }
             }
             this.getCertificateForm()
           }
@@ -262,18 +264,20 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   }
                 });
               }
-              // set certificate data in parent project data when certificate data is not project
-              if(!this.libProjectService.projectData.certificate) {
-                this.selectedYes = "2"
-              }
-              else {
-                this.certificate = this.libProjectService.projectData.certificate;
-                this.selectedYes = "1"
-                this.setIssuerName(this.libProjectService.projectData.certificate.issuer)
-                this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
-                this.updateSignaturePreview()
-                this.setLogoPreview();
-                this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
+              if(this.libProjectService.formMeta.isCertificateSelected || this.libProjectService.projectData.certificate) {
+                // set certificate data in parent project data when certificate data is not project
+                if(!this.libProjectService.projectData.certificate) {
+                  this.selectedYes = "2"
+                }
+                else {
+                  this.certificate = this.libProjectService.projectData.certificate;
+                  this.selectedYes = "1"
+                  this.setIssuerName(this.libProjectService.projectData.certificate.issuer)
+                  this.certificateForm.patchValue({issuerName:this.libProjectService.projectData.certificate.issuer,evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
+                  this.updateSignaturePreview()
+                  this.setLogoPreview();
+                  this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
+                }
               }
               this.getCertificateForm();
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
@@ -325,6 +329,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   certificateEnabling(value:string) {
     this.selectedYes = value;
     if(this.selectedYes == "2") {
+      this.libProjectService.formMeta.isCertificateSelected = "2"
       delete this.libProjectService.projectData.certificate;
       this.libProjectService.formMeta.formValidation.certificates = "VALID"
     }
@@ -588,12 +593,27 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     // }
   }
 
+  setProjectEvidenceCriteriaSelection(value:string) {
+
+  }
+
   setEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
     this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
   }
 
   setProjectEvidenceCriteriaValue(criterialValue:any) {
-    this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = criterialValue;
+    console.log(parseInt(criterialValue))
+    if(parseInt(criterialValue) < 0) {
+      this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = 0;
+      this.certificateForm.patchValue({evidenceRequired:0})
+    }
+    else if(parseInt(criterialValue) > 10) {
+      this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = 10;
+      this.certificateForm.patchValue({evidenceRequired:10})
+    }
+    else {
+      this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = criterialValue;
+    }
   }
 
   removeAttachments(type:string,index:number|string) {

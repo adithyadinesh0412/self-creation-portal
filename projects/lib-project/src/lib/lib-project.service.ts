@@ -33,10 +33,10 @@ export class LibProjectService {
       projectDetails: 'INVALID',
       tasks: 'INVALID',
       subTasks: 'VALID',
-      certificates: 'VALID',
+      certificates: 'INVALID',
     },
-    isCertificateSelected:false,
-    isProjectEvidenceSelected:false,
+    isCertificateSelected:'',
+    isProjectEvidenceSelected:'',
     taskEvidenceSelected:[]
   }
   viewOnly: boolean = false;
@@ -95,7 +95,8 @@ export class LibProjectService {
     if (
       this.formMeta.formValidation.projectDetails === 'VALID' &&
       this.formMeta.formValidation.tasks === 'VALID' &&
-      this.formMeta.formValidation.subTasks === 'VALID'
+      this.formMeta.formValidation.subTasks === 'VALID' &&
+      this.formMeta.formValidation.certificates === 'VALID'
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
