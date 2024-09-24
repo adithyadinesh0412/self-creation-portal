@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
 import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlConstants';
+import { Subject } from 'rxjs';
 
 
 
@@ -17,6 +18,9 @@ import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlCons
 export class LibSharedModulesService {
 
   private previousUrl !: string;
+  private saveCommentSubject = new Subject<void>();
+  private saveCommentCompletedSubject = new Subject<void>();
+
   constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService,private toastService:ToastService, private route:ActivatedRoute) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -94,4 +98,22 @@ export class LibSharedModulesService {
       }
      this.toastService.openSnackBar(data)
   }
+
+  triggerSaveComment() {
+    this.saveCommentSubject.next();
+  }
+
+  getSaveCommentObservable() {
+    return this.saveCommentSubject.asObservable();
+  }
+
+  notifySaveCommentCompleted() {
+    this.saveCommentCompletedSubject.next();
+  }
+
+  getSaveCommentCompletedObservable() {
+    return this.saveCommentCompletedSubject.asObservable();
+  }
+
+
 }

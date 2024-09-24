@@ -7,8 +7,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import 'quill/dist/quill.snow.css';
 import { FormService } from '../../services/form/form.service';
-import { ToastService, UtilService } from '../../../public-api';
+import { LibSharedModulesService, ToastService, UtilService } from '../../../public-api';
 import { interval, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -52,6 +53,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   hasFocus = false;
   subject: any;
   draft:any = '';
+  notifyCommentCompleted: boolean= false;
 
 
   quillConfig={
@@ -67,13 +69,18 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private utilService:UtilService,private toastService:ToastService) {
+  constructor(private utilService:UtilService,private toastService:ToastService, private sharedService:LibSharedModulesService, private route: ActivatedRoute,) {
     this.autoSave()
    }
 
   ngOnInit() {
     this.userId = localStorage.getItem('id');
     this.checkCommentIsDraftAndResolvable();
+    this.subscription.add(
+      this.sharedService. getSaveCommentObservable().subscribe(() => {
+        this.triggerSaveComment()
+      })
+    )
   }
 
   ngAfterViewChecked() {
@@ -82,6 +89,27 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   test=(event:any)=>{
     // console.log(event.keyCode);
+  }
+
+  triggerSaveComment(){
+    if(this.quillInput){
+      this.saveComment(true).then((res) => {
+        if(this.notifyCommentCompleted){
+          this.subscription.add(
+            this.sharedService.notifySaveCommentCompleted()
+          )
+        }
+      }).catch((error) => {
+        console.error('Error saving comment:', error);
+      });
+    }else{
+      this.subscription.add(
+        this.sharedService.notifySaveCommentCompleted()
+      )
+    }
+   
+      
+   
   }
 
   autoSave(){
@@ -136,34 +164,131 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
 
-  saveComment(closeChatBox:boolean = false) {
-    if (closeChatBox) {
-      this.chatFlag = !this.chatFlag;
-    }
-    this.quillInput = this.quillInput
-      .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
-      .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
-      .trim();  // Just in case there are spaces outside the tags
-    this.comment.emit(this.quillInput)
-    this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
-    if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
-      this.draft.text = this.quillInput;
-      if (this.draft.id) {
-        this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).subscribe((res) => console.log(res));
+  // saveComment(closeChatBox:boolean = false) {
+  //   if (closeChatBox) {
+  //     this.chatFlag = !this.chatFlag;
+  //   }
+  //   this.quillInput = (this.quillInput !== null)? this.quillInput
+  //     .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
+  //     .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
+  //     .trim(): this.quillInput;  // Just in case there are spaces outside the tags
+  //   this.comment.emit(this.quillInput)
+  //   this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
+  //   if(this.quillInput !== null){
+  //     if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
+  //       this.draft.text = this.quillInput;
+  //       if (this.draft.id) {
+  //         this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).subscribe((res) => {
+  //           if(res){
+  //             this.notifyCommentCompleted = true
+  //           }
+  //           return
+  //         });
+  //       }
+  //     }
+  //     else if (this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
+  //       this.commentPayload.text = this.quillInput;
+  //       this.utilService.updateComment(this.resourceId, this.commentPayload).subscribe((res: any) => {
+  //         this.utilService.getCommentList(this.resourceId).subscribe((commentListRes: any) => {
+  //           if(res){
+  //             this.notifyCommentCompleted = true
+  //           }
+  //           commentListRes.result?.comments .slice().reverse().forEach((comment:any) => {
+  //             if (comment.status === "DRAFT" && comment.page == this.commentPayload.page) {
+  //               this.draft = comment;
+  //             }
+  //           })
+  //           return
+  //         });
+  //       });
+  //     }
+  //   }else if(this.quillInput === null){
+  //     if(this.draft.id){
+  //       this.utilService.deleteComment(this.draft.id, this.resourceId).subscribe((res: any) => {
+  //         if(res){
+  //           this.notifyCommentCompleted = true
+  //         }
+  //         return
+  //       })
+  //     }else{
+  //       this.notifyCommentCompleted = true
+  //       return
+  //     }
+      
+  
+  //   }
+  //   this.commentPayload.comment = this.quillInput;
+  // }
+
+
+
+  saveComment(closeChatBox: boolean = false): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (closeChatBox) {
+        this.chatFlag = !this.chatFlag;
       }
-    }
-    else if (this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
-      this.commentPayload.text = this.quillInput;
-      this.utilService.updateComment(this.resourceId, this.commentPayload).subscribe((res: any) => {
-        this.draft = res.result;
-      });
-    }
-    this.commentPayload.comment = this.quillInput;
+      this.quillInput = (this.quillInput !== null) ? this.quillInput
+        .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
+        .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
+        .trim() : this.quillInput;  // Just in case there are spaces outside the tags
+      this.comment.emit(this.quillInput);
+      this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
+  
+      if (this.quillInput !== null) {
+        if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
+          this.draft.text = this.quillInput;
+          if (this.draft.id) {
+            this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).toPromise().then((res) => {
+              if (res) {
+                this.notifyCommentCompleted = true;
+              }
+              resolve(true);
+            }).catch((error) => {
+              reject(error);
+            });
+          }
+        } else if (this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
+          this.commentPayload.text = this.quillInput;
+          this.utilService.updateComment(this.resourceId, this.commentPayload).toPromise().then((res: any) => {
+            this.utilService.getCommentList(this.resourceId).toPromise().then((commentListRes: any) => {
+              if (res) {
+                this.notifyCommentCompleted = true;
+              }
+              commentListRes.result?.comments.slice().reverse().forEach((comment: any) => {
+                if (comment.status === "DRAFT" && comment.page == this.commentPayload.page) {
+                  this.draft = comment;
+                }
+              });
+              resolve(true);
+            }).catch((error) => {
+              reject(error);
+            });
+          }).catch((error) => {
+            reject(error);
+          });
+        }
+      } else if (this.quillInput === null) {
+        if (this.draft.id) {
+          this.utilService.deleteComment(this.draft.id, this.resourceId).toPromise().then((res: any) => {
+            if (res) {
+              this.notifyCommentCompleted = true;
+            }
+            resolve(true);
+          }).catch((error) => {
+            reject(error);
+          });
+        } else {
+          this.notifyCommentCompleted = true;
+          resolve(true);
+        }
+      }
+      this.commentPayload.comment = this.quillInput;
+    });
   }
 
   ngOnDestroy(): void {
-  this.subscription.unsubscribe();
-    if(this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0 && this.utilService.saveComment) {
+    this.subscription.unsubscribe();
+    if (this.quillInput && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0 && this.utilService.saveComment) {
       this.saveComment();
     }
   }

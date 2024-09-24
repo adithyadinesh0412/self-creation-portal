@@ -7,7 +7,8 @@ import {
   ToastService,
   UtilService,
   ROUTE_PATHS,
-  resourceStatus, reviewStatus , projectMode
+  resourceStatus, reviewStatus , projectMode,
+  LibSharedModulesService
 } from 'lib-shared-modules';
 import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules';
@@ -47,7 +48,8 @@ export class LibProjectService {
     private _snackBar: MatSnackBar,
     private toastService: ToastService,
     private dialog: MatDialog,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private sharedService:LibSharedModulesService
   ) {
     this.route.queryParams.subscribe((params: any) => {
       this.mode = params.mode ? params.mode : 'edit';
@@ -403,17 +405,20 @@ export class LibProjectService {
 
   sendForRequestChange() {
     this.utilService.saveComment = false;
-    this.getcommentsListAsOpen().subscribe((res) => {
-      this.utilService
-        .updateReview(this.projectData.id, { comment: res })
-        .subscribe((data: any) => {
-          this.openSnackBarAndRedirect(
-            data.message,
-            'success',
-            ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW
-          );
-        });
-    });
+    this.sharedService.triggerSaveComment();
+          this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
+            this.getcommentsListAsOpen().subscribe((res) => {
+              this.utilService
+                .updateReview(this.projectData.id, { comment: res })
+                .subscribe((data: any) => {
+                  this.openSnackBarAndRedirect(
+                    data.message,
+                    'success',
+                    ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW
+                  );
+                });
+            });
+          }) 
   }
 
   checkValidationForRequestChanges() {
