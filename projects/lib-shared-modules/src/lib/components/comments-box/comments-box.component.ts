@@ -104,9 +104,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         this.sharedService.notifySaveCommentCompleted()
       )
     }
-   
-      
-   
   }
 
   autoSave(){

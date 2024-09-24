@@ -405,18 +405,17 @@ export class LibProjectService {
 
   sendForRequestChange() {
     this.utilService.saveComment = false;
-    
-            this.getcommentsListAsOpen().subscribe((res) => {
-              this.utilService
-                .updateReview(this.projectData.id, { comment: res })
-                .subscribe((data: any) => {
-                  this.openSnackBarAndRedirect(
-                    data.message,
-                    'success',
-                    ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW
-                  );
-                });
-            }); 
+    this.getcommentsListAsOpen().subscribe((res) => {
+      this.utilService
+        .updateReview(this.projectData.id, { comment: res })
+        .subscribe((data: any) => {
+          this.openSnackBarAndRedirect(
+            data.message,
+            'success',
+            ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW
+          );
+        });
+    });
   }
 
   checkValidationForRequestChanges(quillInput:any = "") {
