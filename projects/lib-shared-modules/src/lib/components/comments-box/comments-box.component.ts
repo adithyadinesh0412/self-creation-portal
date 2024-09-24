@@ -126,7 +126,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom(): void {
-    if(this.messages.length > 0){
+    if(this.chatFlag && this.messages.length > 0){
       this.chatWindow.nativeElement.scrollTop = this.chatWindow.nativeElement.scrollHeight;
     }
   }

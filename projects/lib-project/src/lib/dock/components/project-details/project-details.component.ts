@@ -74,6 +74,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   ngAfterViewChecked() {
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
+      if (this.viewOnly) {
+        this.viewOnly = false;
+        this.libProjectService.projectData = {};
+        this.getFormWithEntitiesAndMap();
+      }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
         const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);

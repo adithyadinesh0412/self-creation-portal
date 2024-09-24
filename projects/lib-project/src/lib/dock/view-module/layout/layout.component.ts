@@ -127,6 +127,7 @@ export class LayoutComponent {
           if (result.data === "CANCEL") {
             return true;
           } else if (result.data === "ACCEPT") {
+            this.utilService.saveComment = false
             this.libProjectService.approveProject()
             return true;
           } else {
