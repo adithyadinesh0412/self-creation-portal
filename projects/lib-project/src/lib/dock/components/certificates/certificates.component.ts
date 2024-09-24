@@ -639,7 +639,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     return fileName;
   }
 
-  saveComment(quillInput:any){
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 

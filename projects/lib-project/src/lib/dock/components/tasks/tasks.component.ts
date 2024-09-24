@@ -332,7 +332,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveComment(quillInput:any){
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 

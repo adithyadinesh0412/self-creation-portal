@@ -97,7 +97,7 @@ export class LayoutComponent {
       case "SAVE_CHANGES":
       case "SAVE_AS_DRAFT":{
         this.subscription.add(
-          this.sharedService.triggerSaveComment()
+          this.sharedService.triggerSaveComment()  // Triggers the save comment action from the comment module
         )
         this.libProjectService.saveProjectFunc(true);
         break;
@@ -169,11 +169,16 @@ export class LayoutComponent {
       }
       case "REQUEST_CHANGES":{
         this.subscription.add(
-          this.sharedService.triggerSaveComment()
+          this.sharedService.triggerSaveComment() //// Triggers the save comment action from the comment module
         )
+        /**
+        * Once the save comment operation is completed, the `sendForRequestChange()` method from
+        * `libProjectService` is called to send the request for change. This ensures that further actions
+        * are triggered only after the save comment operation is fully done.
+        */
         this.subscription.add(
           this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
-            this.libProjectService.sendForRequestChange()
+            this.libProjectService.sendForRequestChange() // Sends request change after comment save is completed
           })
         )
         break;

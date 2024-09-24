@@ -418,7 +418,7 @@ export class LibProjectService {
     });
   }
 
-  checkValidationForRequestChanges(quillInput:any = "") {
+  checkValidationForRequestChanges(quillInput:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
       const currentProjectMetaData = this.dataSubject.getValue();
       if (
         Array.isArray(

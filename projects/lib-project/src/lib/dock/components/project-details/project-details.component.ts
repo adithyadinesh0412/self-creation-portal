@@ -335,7 +335,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     this.formLib?.subform?.myForm.markAllAsTouched()
   }
 
-  saveComment(quillInput:any){
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 }

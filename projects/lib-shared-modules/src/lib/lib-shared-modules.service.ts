@@ -18,6 +18,7 @@ import { Subject } from 'rxjs';
 export class LibSharedModulesService {
 
   private previousUrl !: string;
+  // Subjects to manage saving comment events
   private saveCommentSubject = new Subject<void>();
   private saveCommentCompletedSubject = new Subject<void>();
 
@@ -99,18 +100,28 @@ export class LibSharedModulesService {
      this.toastService.openSnackBar(data)
   }
 
-  triggerSaveComment() {
+  triggerSaveComment() { //Method to trigger the save comment event.
     this.saveCommentSubject.next();
   }
 
-  getSaveCommentObservable() {
+   /**
+   * Returns an observable that subscribers can use to listen for the save comment event.
+   * 
+   * This allows external components to subscribe and know when the `triggerSaveComment` method is called.
+   */
+  getSaveCommentObservable() { 
     return this.saveCommentSubject.asObservable();
   }
 
-  notifySaveCommentCompleted() {
+  notifySaveCommentCompleted() { //Method to notify that the save comment process has been completed.
     this.saveCommentCompletedSubject.next();
   }
 
+   /**
+   * Returns an observable that subscribers can use to listen for the comment save completion event.
+   * This allows external components to subscribe and know when `notifySaveCommentCompleted` is called,
+   * indicating the comment has been saved.
+   */
   getSaveCommentCompletedObservable() {
     return this.saveCommentCompletedSubject.asObservable();
   }

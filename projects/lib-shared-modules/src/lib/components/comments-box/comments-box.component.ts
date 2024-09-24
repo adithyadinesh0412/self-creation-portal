@@ -76,8 +76,8 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     this.userId = localStorage.getItem('id');
     this.checkCommentIsDraftAndResolvable();
     this.subscription.add(
-      this.sharedService. getSaveCommentObservable().subscribe(() => {
-        this.triggerSaveComment()
+      this.sharedService. getSaveCommentObservable().subscribe(() => { // When the `getSaveCommentObservable()` observable emits, it will call `triggerSaveComment()`to handle the save operation.
+        this.triggerSaveComment() // Triggers the comment save process
       })
     )
   }
@@ -92,6 +92,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   triggerSaveComment(){
     if(this.quillInput){
+      // Call saveComment() and handle the promise
       this.saveComment().then((res) => {
           this.subscription.add(
             this.sharedService.notifySaveCommentCompleted()
@@ -100,6 +101,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         console.error('Error saving comment:', error);
       });
     }else{
+       // If there's no input, directly notify that saving is complete
       this.subscription.add(
         this.sharedService.notifySaveCommentCompleted()
       )
@@ -157,11 +159,20 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
     this.chatFlag=!this.chatFlag;
   }
 
+  /**
+ * Method to save a comment. It handles the following:
+ * - Toggles the chat box visibility (based on the `closeChatBox` flag).
+ * - Cleans up the `quillInput` by removing unwanted whitespace around HTML tags.
+ * - Emits the cleaned comment input via the `comment` event emitter.
+ * - Determines if the comment is a new comment or an update to a draft, and calls the appropriate service method.
+ * - Handles draft deletion if the input is empty.
+ */
   saveComment(closeChatBox: boolean = false): Promise<any> {
     return new Promise((resolve, reject) => {
       if (closeChatBox) {
         this.chatFlag = !this.chatFlag;
       }
+      // Clean up the quillInput content by removing unnecessary whitespace inside HTML tags
       this.quillInput = (this.quillInput !== null) ? this.quillInput
         .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
         .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
