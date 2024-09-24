@@ -200,7 +200,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             }
             this.getCertificateForm()
           }
-          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
             this.getCommentConfigs();
             this.getCertificateForm()
             if(this.libProjectService.projectData.certificate) {
@@ -235,7 +235,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
-                if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+                if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                   this.getCommentConfigs();
                 }
                 this.certificateAddIntoHtml();
@@ -248,7 +248,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             .subscribe((res: any) => {
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                 this.getCommentConfigs();
               }
               if(res.result.tasks) {
@@ -400,7 +400,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   onCertificateTypeChange(value: string): void {
-    console.log(value);
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
     this.libProjectService.projectData.certificate.base_template_url = this.certificateTypeSelected.url;
     this.libProjectService.projectData.certificate.base_template_id = this.certificateTypeSelected.id;
@@ -640,10 +639,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     return fileName;
   }
 
-  saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
   ngOnDestroy(): void {

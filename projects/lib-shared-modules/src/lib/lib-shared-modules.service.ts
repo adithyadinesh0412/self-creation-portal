@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
 import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlConstants';
+import { Subject } from 'rxjs';
 
 
 
@@ -17,6 +18,10 @@ import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlCons
 export class LibSharedModulesService {
 
   private previousUrl !: string;
+  // Subjects to manage saving comment events
+  private saveCommentSubject = new Subject<void>();
+  private saveCommentCompletedSubject = new Subject<void>();
+
   constructor( private router : Router, private location : Location, private httpService: HttpProviderService,private _snackBar:MatSnackBar,private translate: TranslateService,private toastService:ToastService, private route:ActivatedRoute) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -94,4 +99,32 @@ export class LibSharedModulesService {
       }
      this.toastService.openSnackBar(data)
   }
+
+  triggerSaveComment() { //Method to trigger the save comment event.
+    this.saveCommentSubject.next();
+  }
+
+   /**
+   * Returns an observable that subscribers can use to listen for the save comment event.
+   * 
+   * This allows external components to subscribe and know when the `triggerSaveComment` method is called.
+   */
+  getSaveCommentObservable() { 
+    return this.saveCommentSubject.asObservable();
+  }
+
+  notifySaveCommentCompleted() { //Method to notify that the save comment process has been completed.
+    this.saveCommentCompletedSubject.next();
+  }
+
+   /**
+   * Returns an observable that subscribers can use to listen for the comment save completion event.
+   * This allows external components to subscribe and know when `notifySaveCommentCompleted` is called,
+   * indicating the comment has been saved.
+   */
+  getSaveCommentCompletedObservable() {
+    return this.saveCommentCompletedSubject.asObservable();
+  }
+
+
 }

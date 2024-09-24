@@ -7,7 +7,8 @@ import {
   ToastService,
   UtilService,
   ROUTE_PATHS,
-  resourceStatus, reviewStatus , projectMode
+  resourceStatus, reviewStatus , projectMode,
+  LibSharedModulesService
 } from 'lib-shared-modules';
 import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules';
@@ -47,7 +48,8 @@ export class LibProjectService {
     private _snackBar: MatSnackBar,
     private toastService: ToastService,
     private dialog: MatDialog,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private sharedService:LibSharedModulesService
   ) {
     this.route.queryParams.subscribe((params: any) => {
       this.mode = params.mode ? params.mode : 'edit';
@@ -416,21 +418,46 @@ export class LibProjectService {
     });
   }
 
-  checkValidationForRequestChanges() {
-    const currentProjectMetaData = this.dataSubject.getValue();
-    if (
-      Array.isArray(
-        currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
-      )
-    ) {
-      currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-        this.mode
-      ].forEach((element: any) => {
-        if (element.title === 'REQUEST_CHANGES') {
-          element.disable = false;
+  checkValidationForRequestChanges(quillInput:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
+      const currentProjectMetaData = this.dataSubject.getValue();
+      if (
+        Array.isArray(
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
+        )
+      ) {
+        if(quillInput === null){
+          this.getComments().subscribe((data:any)=>{
+            if(data.length === 0){
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = true;
+                }
+              });
+            }else{
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = false;
+                }
+              });
+            }
+                })
+    
+        }else{
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+            this.mode
+          ].forEach((element: any) => {
+            if (element.title === 'REQUEST_CHANGES') {
+              element.disable = false;
+            }
+          });
         }
-      });
-    }
+       
+      }
+   
   }
 
   getCertificatesList() {

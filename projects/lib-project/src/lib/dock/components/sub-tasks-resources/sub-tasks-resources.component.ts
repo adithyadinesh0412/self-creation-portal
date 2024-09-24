@@ -75,7 +75,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
               this.getCommentConfigs()
             } 
           }
@@ -88,6 +88,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
+            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+              this.getCommentConfigs()
+            } 
             })
           }
 
@@ -267,10 +270,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
   }
 
-  saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
   getCommentConfigs() {
