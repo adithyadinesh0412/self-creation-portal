@@ -90,4 +90,11 @@ export class UtilService {
     return this.http.put(path, file,options);
   }
 
+  deleteComment(commentId: any, resourceId: any) {
+    const config = {
+      url: `${this.Configuration.urlConFig.RESOURCE_URLS.UPDATE_COMMENT}/${commentId}?resource_id=${resourceId}`,
+    };
+    return this.httpService.delete(config.url);
+  }
+
 }

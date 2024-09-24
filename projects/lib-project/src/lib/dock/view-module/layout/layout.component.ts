@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform } from 'lib-shared-modules';
+import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService } from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -19,7 +19,7 @@ export class LayoutComponent {
   tabValidation:any;
   mode:any
   private subscription: Subscription = new Subscription();
-  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService,private toastService:ToastService,private configuration: ConfigService,) {
+  constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService,private toastService:ToastService,private configuration: ConfigService,private sharedService: LibSharedModulesService) {
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : "edit"
@@ -48,6 +48,7 @@ export class LayoutComponent {
         this.headerData = data?.sidenavData.headerData
       })
     )
+    this.utilService.saveComment = true;
   }
   setConfig(){
     this.subscription.add(
@@ -95,6 +96,9 @@ export class LayoutComponent {
     switch (buttonTitle) {
       case "SAVE_CHANGES":
       case "SAVE_AS_DRAFT":{
+        this.subscription.add(
+          this.sharedService.triggerSaveComment()  // Triggers the save comment action from the comment module
+        )
         this.libProjectService.saveProjectFunc(true);
         break;
       }
@@ -164,7 +168,19 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
-        this.libProjectService.sendForRequestChange()
+        this.subscription.add(
+          this.sharedService.triggerSaveComment() //// Triggers the save comment action from the comment module
+        )
+        /**
+        * Once the save comment operation is completed, the `sendForRequestChange()` method from
+        * `libProjectService` is called to send the request for change. This ensures that further actions
+        * are triggered only after the save comment operation is fully done.
+        */
+        this.subscription.add(
+          this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
+            this.libProjectService.sendForRequestChange() // Sends request change after comment save is completed
+          })
+        )
         break;
       }
       default:
@@ -177,6 +193,7 @@ export class LayoutComponent {
   }
 
   ngOnDestroy() {
+    this.libProjectService.projectData = {}
     this.libProjectService.resetProjectMetaData();
     this.subscription.unsubscribe();
   }

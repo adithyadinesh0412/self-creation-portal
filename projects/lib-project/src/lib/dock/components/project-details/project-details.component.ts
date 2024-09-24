@@ -161,7 +161,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                           this.getCommentConfigs()
                         }
                       })
@@ -179,7 +179,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                           this.getCommentConfigs()
                         }
                       })
@@ -338,9 +338,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     this.formLib?.subform?.myForm.markAllAsTouched()
   }
 
-  saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 }
