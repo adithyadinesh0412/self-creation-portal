@@ -168,7 +168,14 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
-        this.libProjectService.sendForRequestChange()
+        this.subscription.add(
+          this.sharedService.triggerSaveComment()
+        )
+        this.subscription.add(
+          this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
+            this.libProjectService.sendForRequestChange()
+          })
+        )
         break;
       }
       default:

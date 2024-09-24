@@ -92,7 +92,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   triggerSaveComment(){
     if(this.quillInput){
-      this.saveComment(true).then((res) => {
+      this.saveComment().then((res) => {
           this.subscription.add(
             this.sharedService.notifySaveCommentCompleted()
           )

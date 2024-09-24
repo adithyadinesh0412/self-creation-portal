@@ -405,8 +405,7 @@ export class LibProjectService {
 
   sendForRequestChange() {
     this.utilService.saveComment = false;
-    this.sharedService.triggerSaveComment();
-          this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
+    
             this.getcommentsListAsOpen().subscribe((res) => {
               this.utilService
                 .updateReview(this.projectData.id, { comment: res })
@@ -417,8 +416,7 @@ export class LibProjectService {
                     ROUTE_PATHS.SIDENAV.UP_FOR_REVIEW
                   );
                 });
-            });
-          }) 
+            }); 
   }
 
   checkValidationForRequestChanges(quillInput:any = "") {
