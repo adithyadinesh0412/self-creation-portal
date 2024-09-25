@@ -194,6 +194,7 @@ export class LayoutComponent {
 
   ngOnDestroy() {
     this.libProjectService.projectData = {}
+    this.libProjectService.setFormMetaData();
     this.libProjectService.resetProjectMetaData();
     this.subscription.unsubscribe();
   }

@@ -29,17 +29,7 @@ export class LibProjectService {
   private sendForReviewValidation = new BehaviorSubject<boolean>(false);
   isSendForReviewValidation = this.sendForReviewValidation.asObservable();
   projectId: string | number = '';
-  formMeta = {
-    formValidation:{
-      projectDetails: 'INVALID',
-      tasks: 'INVALID',
-      subTasks: 'VALID',
-      certificates: 'INVALID',
-    },
-    isCertificateSelected:'',
-    isProjectEvidenceSelected:'',
-    taskEvidenceSelected:[]
-  }
+  formMeta:any = ''
   viewOnly: boolean = false;
   mode: any = 'edit';
   projectConfig: any;
@@ -59,6 +49,7 @@ export class LibProjectService {
     this.route.queryParams.subscribe((params: any) => {
       this.mode = params.mode ? params.mode : 'edit';
     });
+    this.setFormMetaData();
   }
 
   setData(data: any) {
@@ -98,7 +89,7 @@ export class LibProjectService {
       this.formMeta.formValidation.projectDetails === 'VALID' &&
       this.formMeta.formValidation.tasks === 'VALID' &&
       this.formMeta.formValidation.subTasks === 'VALID' &&
-      this.formMeta.formValidation.certificates === 'VALID'
+      this.formMeta.isCertificateSelected
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
@@ -204,12 +195,12 @@ export class LibProjectService {
         : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectData ? projectData : '',
     };
-    if(removeMetaData) {
-      delete projectData.formMeta
-    }
-    else {
-      projectData.formMeta = projectData.formMeta ? projectData.formMeta : this.formMeta;
-    }
+    // if(removeMetaData) {
+    //   delete projectData.formMeta
+    // }
+    // else {
+      projectData.formMeta = this.formMeta;
+    // }
     return this.httpService.post(config.url, config.payload);
   }
 
@@ -272,6 +263,20 @@ export class LibProjectService {
       payload: formBody,
     };
     return this.httpService.post(config.url, config.payload);
+  }
+
+  setFormMetaData() {
+    this.formMeta = {
+      formValidation:{
+        projectDetails: 'INVALID',
+        tasks: 'INVALID',
+        subTasks: 'VALID',
+        certificates: 'INVALID',
+      },
+      isCertificateSelected:'',
+      isProjectEvidenceSelected:'',
+      taskEvidenceSelected:{}
+    }
   }
 
   openSnackBarAndRedirect(
@@ -458,7 +463,7 @@ export class LibProjectService {
               });
             }
                 })
-    
+
         }else{
           currentProjectMetaData?.sidenavData.headerData?.buttons?.[
             this.mode
@@ -468,9 +473,9 @@ export class LibProjectService {
             }
           });
         }
-       
+
       }
-   
+
   }
 
   getCertificatesList() {

@@ -97,7 +97,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
                 this.tasksForm.reset()
                 this.libProjectService.projectData = res.result;
-                this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
+               this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                 if(res && res.result.tasks && res.result.tasks.length) {
                   res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({

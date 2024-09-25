@@ -150,7 +150,7 @@
                                 </div>
                     }
                     </div>
-                    <div class="certificate-content w-1/2" *ngIf="libProjectService.projectData?.certificate?.base_template_url.length > 0">
+                    <div class="certificate-content w-1/2" *ngIf="libProjectService?.projectData?.certificate?.base_template_url?.length > 0">
                         <!-- certificate image content to place here -->
                         <div class="px-10 mt-10">
                             <div class="mt-4 m-3 flex justify-center">
@@ -175,15 +175,15 @@
                     <div class="mt-6 w-1/2">
                         @if(item.name === "attachprojectevidence"){
                         <p>{{ item.label}}</p>
-                        <mat-radio-group color="primary" aria-label="Select an option" formControlName="enableProjectEvidence">
-                            <mat-radio-button value=1 class="-mx-1 mr-6" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length > 0">{{ 'YES' | translate }}</mat-radio-button>
-                            <mat-radio-button value=0 class="-mx-1" [checked]="libProjectService.projectData?.certificate?.criteria?.conditions?.C2?.conditions?.C1?.value.length == 0">{{ 'No' | translate }}</mat-radio-button>
+                        <mat-radio-group color="primary" aria-label="Select an option">
+                            <mat-radio-button value=1 class="-mx-1 mr-6" [checked]="libProjectService.projectData.formMeta.isProjectEvidenceSelected == '1'" (click)="setProjectEvidenceCriteriaSelection('1')">{{ 'YES' | translate }}</mat-radio-button>
+                            <mat-radio-button value=0 class="-mx-1" [checked]="libProjectService.projectData.formMeta.isProjectEvidenceSelected == '0'" (click)="setProjectEvidenceCriteriaSelection('0')">{{ 'No' | translate }}</mat-radio-button>
                         </mat-radio-group>
                         }
                         @if(item.name === "noofevidence"){
                             <mat-form-field floatLabel="always" class="w-full mt-2" appearance="outline">
                                 <mat-label> {{ item.label}}</mat-label>
-                                <input type="number" class="w-full" matInput formControlName="evidenceRequired" #projectEvidenceInput (change)="setProjectEvidenceCriteriaValue(projectEvidenceInput.value)" [placeholder]="item.placeHolder || ''">
+                                <input type="number" appLimitToRange class="w-full" matInput formControlName="evidenceRequired" [disabled]="libProjectService.projectData.formMeta.isProjectEvidenceSelected == 0 || !libProjectService.projectData.formMeta.isProjectEvidenceSelected" #projectEvidenceInput (change)="setProjectEvidenceCriteriaValue(projectEvidenceInput.value)" [placeholder]="item.placeHolder || ''">
                             </mat-form-field>
                             @if(certificateForm.get(item.formControlName)?.invalid && certificateForm.get(item.formControlName)?.touched ){
                                 <mat-error class="error-container text-red-600  flex w-full">
@@ -200,16 +200,18 @@
                 }
                 @for(item of tasks; track item;let i = $index){
                     @if(item?.evidence_details?.min_no_of_evidences) {
-                        <div class="mt-6 w-1/2">
-                            <p class="mt-2"> {{taskForm[0]?.label}}&nbsp;{{item?.name}}</p>
-                            <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" #taskEvidenceCriteria>
-                                <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="item?.values > 0">{{ 'YES' | translate }}</mat-radio-button>
-                                <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)" [checked]="item?.values == 0">{{ 'No' | translate }}</mat-radio-button>
-                            </mat-radio-group>
-                            <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline" >
-                                <mat-label> {{taskForm[1]?.label}}&nbsp;{{item?.name}}</mat-label>
-                                <input type="number" [min]="item?.evidence_details.min_no_of_evidences" #taskCriteriaInput class="w-full" matInput (change)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences" [placeholder]="taskForm[1]?.placeHolder || ''">
-                            </mat-form-field>
+                        <div class="mt-6">
+                            <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item?.name}}</p>
+                            <div class="w-1/2">
+                                <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" #taskEvidenceCriteria>
+                                    <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 1">{{ 'YES' | translate }}</mat-radio-button>
+                                    <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)" [checked]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0">{{ 'No' | translate }}</mat-radio-button>
+                                </mat-radio-group>
+                                <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline" >
+                                    <mat-label> {{taskForm[1]?.label}}&nbsp;{{item?.name}}</mat-label>
+                                    <input type="number" appLimitToRange [minValue]="item?.evidence_details.min_no_of_evidences" [disabled]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0 || !libProjectService.projectData.formMeta.taskEvidenceSelected[item.id]" [min]="item?.evidence_details.min_no_of_evidences" #taskCriteriaInput class="w-full" matInput (change)="changeEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences" [placeholder]="taskForm[1]?.placeHolder || ''">
+                                </mat-form-field>
+                            </div>
                         </div>
                     }
                 }

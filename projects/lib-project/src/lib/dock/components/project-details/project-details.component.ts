@@ -103,7 +103,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .readProject(this.projectId)
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
-                          this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
+                         this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                           if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
                             this.getCommentConfigs()
                           }
@@ -157,7 +157,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
-                        this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
+                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
@@ -176,7 +176,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
-                        this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
+                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
                         if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {

@@ -83,7 +83,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
               this.libProjectService.setProjectData(res.result);
               this.projectData = res?.result
-              this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
+             this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
               this.createSubTaskForm()
               this.addSubtaskData()
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
@@ -91,7 +91,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             }
             if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
               this.getCommentConfigs()
-            } 
+            }
             })
           }
 
