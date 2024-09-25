@@ -79,10 +79,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.projectData = {};
         this.getFormWithEntitiesAndMap();
       }
-      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
         const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
-        this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
+        this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
       }
     }
   }
@@ -103,7 +103,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .readProject(this.projectId)
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
-                          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+                         this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
+                          if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
                             this.getCommentConfigs()
                           }
                           this.readProjectDeatilsAndMap(data.controls,res.result);
@@ -156,6 +157,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
+                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
@@ -174,6 +176,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
+                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
                         if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
@@ -212,11 +215,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     });
     this.dynamicFormData = formControls;
     if( this.formLib){
-      this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.formMeta.formValidation.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
       const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
-      this.libProjectService.validForm.tasks = isValid ? "VALID" : "INVALID";
+      this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
     }
   }
   startAutoSaving() {
@@ -255,7 +258,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
   saveForm() {
     if (this.libProjectService.projectData.title) {
-      this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if (this.projectId) {
         this.libProjectService.updateProjectDraft(this.projectId).subscribe();
       }
@@ -305,7 +308,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
         }
     this.libProjectService.setProjectData(data);
-    this.libProjectService.validForm.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
   }
   isEvent(data:any) {
@@ -315,7 +318,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
            typeof data.stopPropagation === 'function';
   };
   ngOnDestroy() {
-    this.libProjectService.validForm.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+    this.libProjectService.formMeta.formValidation.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }

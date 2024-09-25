@@ -77,12 +77,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             }
             if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
               this.getCommentConfigs()
-            } 
+            }
           }
           else {
             this.libProjectService.readProject(params.projectId).subscribe((res:any)=> {
               this.libProjectService.setProjectData(res.result);
               this.projectData = res?.result
+             this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
               this.createSubTaskForm()
               this.addSubtaskData()
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
@@ -90,7 +91,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             }
             if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
               this.getCommentConfigs()
-            } 
+            }
             })
           }
 
@@ -106,7 +107,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               (reviewValidation: boolean) => {
                 if(reviewValidation) {
                     this.myForm.markAllAsTouched()
-                    this.libProjectService.validForm.subTasks =  this.subtasks?.status? this.subtasks?.status: "INVALID"
+                    this.libProjectService.formMeta.formValidation.subTasks =  this.subtasks?.status? this.subtasks?.status: "INVALID"
                     this.libProjectService.triggerSendForReview();
                 }
               }
@@ -280,11 +281,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
           const comments = commentListRes.result?.comments || [];
           const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
-          
+
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-  
+
           if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }
@@ -292,5 +293,5 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       })
     );
   }
-  
+
 }
