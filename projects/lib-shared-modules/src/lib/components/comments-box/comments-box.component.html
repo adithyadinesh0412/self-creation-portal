@@ -31,7 +31,7 @@
       <section class="p-3 chat-window z-[100]" #chatWindow [ngClass]="{'content-center items-center': !messages?.length}">
         @if(!messages?.length){
           <div class="flex items-center justify-center" >
-            "No comments added."
+            {{"NO_COMMENTS_ADDED" | translate}}
           </div>
         }
         @for(message of messages; track message; let i = $index) {
