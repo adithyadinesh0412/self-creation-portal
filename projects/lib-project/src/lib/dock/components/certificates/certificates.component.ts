@@ -177,6 +177,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           this.mode === projectMode.CREATOR_VIEW
         ) {
           this.viewOnly = true;
+          this.getCertificateForm();
         }
         if (Object.keys(this.libProjectService.projectData).length > 1) {
           if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
@@ -210,13 +211,20 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             if(this.libProjectService.projectData.certificate) {
               this.selectedYes = "1"
             }
+            this.addTasktoCertificatePage(this.libProjectService.projectData)
           }
-          if(this.libProjectService.projectData.certificate.code) {
+          if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.code) {
             this.certificateTypeSelected = {
               code : this.libProjectService.projectData.certificate.code,
               name : this.libProjectService.projectData.certificate.name,
               id: this.libProjectService.projectData.certificate.base_template_id,
               url: this.libProjectService.projectData.certificate.base_template_url
+            }
+          }
+          if(this.viewOnly) {
+            this.selectedYes = this.libProjectService.projectData.certificate ? "1":"2";
+            if(this.libProjectService.projectData.certificate) {
+              this.addTasktoCertificatePage(this.libProjectService.projectData)
             }
           }
         } else {
@@ -257,14 +265,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 this.getCommentConfigs();
               }
               if(res.result.tasks) {
-                this.tasks = res.result.tasks.filter((task:any) => {
-                  if(task.evidence_details?.min_no_of_evidences) {
-                    if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
-                      task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
-                    }
-                    return task;
-                  }
-                });
+                this.addTasktoCertificatePage(res.result)
               }
               if(this.libProjectService.formMeta.isCertificateSelected || (this.libProjectService.projectData.certificate && this.libProjectService.formMeta.isCertificateSelected == "2")) {
                 // set certificate data in parent project data when certificate data is not project
@@ -285,12 +286,30 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                 this.startAutoSaving();
               }
+              if(this.viewOnly) {
+                if(this.libProjectService.projectData.certificate) {
+                  this.addTasktoCertificatePage(this.libProjectService.projectData)
+                }
+              }
               this.certificateAddIntoHtml();
             });
           }
         }
       })
     );
+  }
+
+
+
+  addTasktoCertificatePage(projectData:any) {
+    this.tasks = projectData.tasks.filter((task:any) => {
+      if(task.evidence_details?.min_no_of_evidences) {
+        if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
+          task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+        }
+        return task;
+      }
+    });
   }
 
   initiateCertificatePreview() {
@@ -313,9 +332,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   getCertificateForm() {
     this.formService.getCertificateForm().then((data: any) => {
-      if(this.tasks && this.libProjectService.projectData.certificate && this.tasks.length) {
-        this.createCriteriaForTasks()
-      }
       // Separate the removed items
       this.taskForm = data.controls.filter(
         (item: any) => item.scope === 'task'
@@ -586,15 +602,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
   }
 
-  createCriteriaForTasks() {
-    this.tasks.forEach((task:any) => {
 
-    });
-    // set certificate data in parent project data when certificate data is not project
-    // if(!this.libProjectService.projectData.certificate) {
-    //   this.libProjectService.projectData.certificate = this.certificate
-    // }
-  }
 
   setProjectEvidenceCriteriaSelection(value:string) {
     this.libProjectService.formMeta.isProjectEvidenceSelected = value
