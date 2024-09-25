@@ -88,7 +88,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                 this.getCommentConfigs()
               }
 
@@ -97,6 +97,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               this.libProjectService.readProject(this.projectId).subscribe((res:any)=> {
                 this.tasksForm.reset()
                 this.libProjectService.projectData = res.result;
+               this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                 if(res && res.result.tasks && res.result.tasks.length) {
                   res.result.tasks.forEach((element:any) => {
                     const task = this.fb.group({
@@ -115,7 +116,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if (this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") {
+                  if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
                     this.getCommentConfigs()
                   }
                 }
@@ -166,7 +167,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           if(reviewValidation) {
             if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
               this.tasksForm.markAllAsTouched();
-              this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+              this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
               this.libProjectService.triggerSendForReview();
             }
           }
@@ -174,7 +175,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       )
     );
     this.saveTasks()
-    this.libProjectService.validForm.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
+    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
   }
 
   get tasks() {
@@ -195,7 +196,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       })
     });
     this.tasks.push(taskGroup);
-    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
   }
 
   deleteTask(index: number) {
@@ -216,7 +217,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         return true;
       } else if (result.data === "YES") {
         this.tasks.removeAt(index);
-        this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+        this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
         this.saveTasks()
         return true;
       } else {
@@ -227,7 +228,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   checkValidation() {
     this.saveTasks()
-    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
   }
 
   startAutoSaving() {
@@ -247,7 +248,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
     this.tasks.value.forEach((item:any, index:any) => {
       item.sequence_no = index + 1;
       item.type = item.type ? item.type : "simple"
@@ -263,7 +264,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     if((this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.id){
-      this.libProjectService.validForm.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+      this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
       this.saveTasks()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
     }
@@ -332,10 +333,8 @@ export class TasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveComment(quillInput:any){
-    if(quillInput){
-        this.libProjectService.checkValidationForRequestChanges()
-    }
+  saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
+    this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
   getCommentConfigs() {
@@ -344,11 +343,11 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
           const comments = commentListRes.result?.comments || [];
           const filteredComments = this.utilService.filterCommentByContext(comments, data.page);
-          
+
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-  
+
           if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
             this.libProjectService.checkValidationForRequestChanges();
           }

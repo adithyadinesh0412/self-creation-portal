@@ -7,7 +7,8 @@ import {
   ToastService,
   UtilService,
   ROUTE_PATHS,
-  resourceStatus, reviewStatus , projectMode
+  resourceStatus, reviewStatus , projectMode,
+  LibSharedModulesService
 } from 'lib-shared-modules';
 import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules';
@@ -28,12 +29,7 @@ export class LibProjectService {
   private sendForReviewValidation = new BehaviorSubject<boolean>(false);
   isSendForReviewValidation = this.sendForReviewValidation.asObservable();
   projectId: string | number = '';
-  validForm = {
-    projectDetails: 'INVALID',
-    tasks: 'INVALID',
-    subTasks: 'VALID',
-    certificates: 'VALID',
-  };
+  formMeta:any = ''
   viewOnly: boolean = false;
   mode: any = 'edit';
   projectConfig: any;
@@ -47,11 +43,13 @@ export class LibProjectService {
     private _snackBar: MatSnackBar,
     private toastService: ToastService,
     private dialog: MatDialog,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private sharedService:LibSharedModulesService
   ) {
     this.route.queryParams.subscribe((params: any) => {
       this.mode = params.mode ? params.mode : 'edit';
     });
+    this.setFormMetaData();
   }
 
   setData(data: any) {
@@ -88,9 +86,10 @@ export class LibProjectService {
 
   triggerSendForReview() {
     if (
-      this.validForm.projectDetails === 'VALID' &&
-      this.validForm.tasks === 'VALID' &&
-      this.validForm.subTasks === 'VALID'
+      this.formMeta.formValidation.projectDetails === 'VALID' &&
+      this.formMeta.formValidation.tasks === 'VALID' &&
+      this.formMeta.formValidation.subTasks === 'VALID' &&
+      this.formMeta.isCertificateSelected
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
@@ -113,7 +112,8 @@ export class LibProjectService {
               if (result.sendForReview == 'SEND_FOR_REVIEW') {
                 this.createOrUpdateProject(
                   this.projectData,
-                  this.projectData.id
+                  this.projectData.id,
+                  true
                 ).subscribe((res) => {
                   const reviewer_ids =
                     result.selectedValues.length === list.result.data.length
@@ -172,7 +172,7 @@ export class LibProjectService {
     this.checkSendForReviewValidation(false);
   }
 
-  createOrUpdateProject(projectData?: any, projectId?: string | number) {
+  createOrUpdateProject(projectData?: any, projectId?: string | number,removeMetaData?:boolean) {
     this.projectData.title =
       this.projectData?.title?.length > 0
         ? this.projectData.title
@@ -195,6 +195,12 @@ export class LibProjectService {
         : this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT,
       payload: projectData ? projectData : '',
     };
+    // if(removeMetaData) {
+    //   delete projectData.formMeta
+    // }
+    // else {
+      projectData.formMeta = this.formMeta;
+    // }
     return this.httpService.post(config.url, config.payload);
   }
 
@@ -207,7 +213,7 @@ export class LibProjectService {
   checkCertificateValidations() {
     if(this.projectData.certificate) {
       if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
-        this.validForm.certificates = "INVALID"
+        this.formMeta.formValidation.certificates = "INVALID"
         this.toastService.openSnackBar({
           message: 'Please fill issuer Name',
           class: 'error',
@@ -221,7 +227,7 @@ export class LibProjectService {
         (this.projectData.certificate.logos.no_of_logos > 1 &&
           this.projectData.certificate.logos.stateLogo2 === '')
       ) {
-        this.validForm.certificates = "INVALID"
+        this.formMeta.formValidation.certificates = "INVALID"
         this.toastService.openSnackBar({
           message: 'Please upload certificate logo',
           class: 'error',
@@ -234,18 +240,18 @@ export class LibProjectService {
           this.projectData.certificate.logos.signatureImg1 === '') ||
         (this.projectData.certificate.signature.no_of_signature > 1 &&
           this.projectData.certificate.logos.signatureImg2 === '')) {
-            this.validForm.certificates = "INVALID"
+            this.formMeta.formValidation.certificates = "INVALID"
         this.toastService.openSnackBar({
           message: 'Please upload certificate Signature',
           class: 'error',
         });
         return false;
       }
-      this.validForm.certificates = "VALID"
+      this.formMeta.formValidation.certificates = "VALID"
       return true;
     }
     else {
-      this.validForm.certificates = "VALID"
+      this.formMeta.formValidation.certificates = "VALID"
       return true;
     }
   }
@@ -257,6 +263,20 @@ export class LibProjectService {
       payload: formBody,
     };
     return this.httpService.post(config.url, config.payload);
+  }
+
+  setFormMetaData() {
+    this.formMeta = {
+      formValidation:{
+        projectDetails: 'INVALID',
+        tasks: 'INVALID',
+        subTasks: 'VALID',
+        certificates: 'INVALID',
+      },
+      isCertificateSelected:'',
+      isProjectEvidenceSelected:'',
+      taskEvidenceSelected:{}
+    }
   }
 
   openSnackBarAndRedirect(
@@ -416,21 +436,46 @@ export class LibProjectService {
     });
   }
 
-  checkValidationForRequestChanges() {
-    const currentProjectMetaData = this.dataSubject.getValue();
-    if (
-      Array.isArray(
-        currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
-      )
-    ) {
-      currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-        this.mode
-      ].forEach((element: any) => {
-        if (element.title === 'REQUEST_CHANGES') {
-          element.disable = false;
+  checkValidationForRequestChanges(quillInput:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
+      const currentProjectMetaData = this.dataSubject.getValue();
+      if (
+        Array.isArray(
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
+        )
+      ) {
+        if(quillInput === null){
+          this.getComments().subscribe((data:any)=>{
+            if(data.length === 0){
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = true;
+                }
+              });
+            }else{
+              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+                this.mode
+              ].forEach((element: any) => {
+                if (element.title === 'REQUEST_CHANGES') {
+                  element.disable = false;
+                }
+              });
+            }
+                })
+
+        }else{
+          currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+            this.mode
+          ].forEach((element: any) => {
+            if (element.title === 'REQUEST_CHANGES') {
+              element.disable = false;
+            }
+          });
         }
-      });
-    }
+
+      }
+
   }
 
   getCertificatesList() {
