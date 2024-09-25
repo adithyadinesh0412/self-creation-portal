@@ -333,7 +333,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     if(this.selectedYes == "2") {
       delete this.libProjectService.projectData.certificate;
       this.libProjectService.formMeta.formValidation.certificates = "VALID"
-      this.libProjectService.setFormMetaData();
+      this.libProjectService.formMeta.isProjectEvidenceSelected = '',
+      this.libProjectService.formMeta.taskEvidenceSelected = {}
       this.libProjectService.formMeta.isCertificateSelected = "2"
     }
     else {
@@ -508,7 +509,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-          if(this.projectInReview) {
+          if(this.projectInReview && this.libProjectService.projectData.certificate) {
             this.libProjectService.formMeta.isCertificateSelected = this.libProjectService.projectData.certificate ? "2" : "1";
             this.libProjectService.formMeta.isProjectEvidenceSelected = this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? 1 : 0;
             this.libProjectService.projectData.tasks.forEach((element:any) => {
