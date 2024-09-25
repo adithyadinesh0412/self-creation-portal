@@ -170,5 +170,6 @@
     "UPLOAD_PNG_UPTO_50KB":"upload PNG upto 50kb",
     "VIEW_FULL_SCREEN":"View full screen",
     "ADD_IMAGE_1":"Add image 1",
-    "ADD_IMAGE_2":"Add image 2"
+    "ADD_IMAGE_2":"Add image 2",
+    "NO_COMMENTS_ADDED":"No comments added."
 }

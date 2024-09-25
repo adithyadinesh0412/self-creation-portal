@@ -28,7 +28,12 @@
       </section>
     }
     @if(messages?.length || (this.mode === 'creatorView' || this.mode === 'reqEdit' )){
-      <section class="p-3 chat-window z-[100]" #chatWindow>
+      <section class="p-3 chat-window z-[100]" #chatWindow [ngClass]="{'content-center items-center': !messages?.length}">
+        @if(!messages?.length){
+          <div class="flex items-center justify-center" >
+            {{"NO_COMMENTS_ADDED" | translate}}
+          </div>
+        }
         @for(message of messages; track message; let i = $index) {
           <section>
             <div class="flex justify-center">
