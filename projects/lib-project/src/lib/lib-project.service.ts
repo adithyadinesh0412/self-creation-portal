@@ -439,14 +439,16 @@ export class LibProjectService {
   checkValidationForRequestChanges(input:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
     if(input === null){
       this.getComments().subscribe((data:any)=>{
-        if(data.length === 0){
+        if(data.some((comment: any) => comment.status === resourceStatus.DRAFT)){
           this.changeCommentStatus(true)
         }else{
           this.changeCommentStatus(false)
         }
         })
     }else{
-      if(input.length > 0){
+      if(Array.isArray(input) && input.some((comment: any) => comment.status === resourceStatus.DRAFT)){
+        this.changeCommentStatus(false)
+      }else if(!Array.isArray(input) && input.length > 0){
         this.changeCommentStatus(false)
       }else{
         this.changeCommentStatus(true)
