@@ -530,6 +530,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             if(this.libProjectService.formMeta.isProjectEvidenceSelected == 0) {
               this.certificateForm.controls['evidenceRequired'].disable()
             }
+            this.certificateForm.patchValue({evidenceRequired:this.libProjectService.projectData.certificate.criteria?.conditions?.C2?.conditions?.C1?.value})
             this.libProjectService.projectData.tasks.forEach((element:any) => {
               if(element.allow_evidences) {
                 this.libProjectService.formMeta.taskEvidenceSelected[element.id] = this.libProjectService.projectData.certificate.criteria.conditions.C3.expression.includes(element.id) ? 1 : 0
