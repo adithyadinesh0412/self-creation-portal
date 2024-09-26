@@ -436,46 +436,39 @@ export class LibProjectService {
     });
   }
 
-  checkValidationForRequestChanges(quillInput:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
-      const currentProjectMetaData = this.dataSubject.getValue();
-      if (
-        Array.isArray(
-          currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
-        )
-      ) {
-        if(quillInput === null){
-          this.getComments().subscribe((data:any)=>{
-            if(data.length === 0){
-              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-                this.mode
-              ].forEach((element: any) => {
-                if (element.title === 'REQUEST_CHANGES') {
-                  element.disable = true;
-                }
-              });
-            }else{
-              currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-                this.mode
-              ].forEach((element: any) => {
-                if (element.title === 'REQUEST_CHANGES') {
-                  element.disable = false;
-                }
-              });
-            }
-                })
-
+  checkValidationForRequestChanges(input:any = "") { // Method to check validation for enabling or disabling the 'REQUEST_CHANGES' button based on the content of `quillInput` and existing comments.
+    if(input === null){
+      this.getComments().subscribe((data:any)=>{
+        if(data.length === 0){
+          this.changeCommentStatus(true)
         }else{
-          currentProjectMetaData?.sidenavData.headerData?.buttons?.[
-            this.mode
-          ].forEach((element: any) => {
-            if (element.title === 'REQUEST_CHANGES') {
-              element.disable = false;
-            }
-          });
+          this.changeCommentStatus(false)
         }
-
+        })
+    }else{
+      if(input.length > 0){
+        this.changeCommentStatus(false)
+      }else{
+        this.changeCommentStatus(true)
       }
+    }
+  }
 
+  changeCommentStatus(status:any){
+    const currentProjectMetaData = this.dataSubject.getValue();
+    if (
+      Array.isArray(
+        currentProjectMetaData?.sidenavData.headerData?.buttons?.[this.mode]
+      )
+    ) {
+      currentProjectMetaData?.sidenavData.headerData?.buttons?.[
+        this.mode
+      ].forEach((element: any) => {
+        if (element.title === 'REQUEST_CHANGES') {
+          element.disable = status;
+        }
+      });
+    }
   }
 
   getCertificatesList() {

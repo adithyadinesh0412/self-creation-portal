@@ -347,7 +347,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-          this.libProjectService.checkValidationForRequestChanges(null);
+          this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })
     );

@@ -211,6 +211,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         if (this.draft.id) {
           this.utilService.deleteComment(this.draft.id, this.resourceId).toPromise().then((res: any) => {
             this.draft = {}
+            this.comment.emit(this.quillInput);
             resolve(true);
           }).catch((error) => {
             reject(error);

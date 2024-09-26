@@ -129,7 +129,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-          this.libProjectService.checkValidationForRequestChanges(null);
+          this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })
     );
@@ -336,6 +336,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
 
   saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
+    console.log(quillInput)
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 }
