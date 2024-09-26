@@ -299,8 +299,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     );
   }
 
-
-
   addTasktoCertificatePage(projectData:any) {
     this.tasks = projectData.tasks.filter((task:any) => {
       if(task.evidence_details?.min_no_of_evidences) {
@@ -528,6 +526,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           if(this.projectInReview && this.libProjectService.projectData.certificate) {
             this.libProjectService.formMeta.isCertificateSelected = this.libProjectService.projectData.certificate ? "2" : "1";
             this.libProjectService.formMeta.isProjectEvidenceSelected = this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? 1 : 0;
+            if(this.libProjectService.formMeta.isProjectEvidenceSelected == 0) {
+              this.certificateForm.controls['evidenceRequired'].disable()
+            }
             this.libProjectService.projectData.tasks.forEach((element:any) => {
               if(element.allow_evidences) {
                 this.libProjectService.formMeta.taskEvidenceSelected[element.id] = this.libProjectService.projectData.certificate.criteria.conditions.C3.expression.includes(element.id) ? 1 : 0
@@ -608,6 +609,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.libProjectService.formMeta.isProjectEvidenceSelected = value
     this.libProjectService.projectData.formMeta.isProjectEvidenceSelected = value
     if(value == "0" && this.libProjectService.projectData.certificate.criteria.expression.includes("C2")) {
+      this.certificateForm.controls['evidenceRequired'].disable()
       // Remove the substring
       this.libProjectService.projectData.certificate.criteria.expression = this.libProjectService.projectData.certificate.criteria.expression.includes("&&C2") ? this.libProjectService.projectData.certificate.criteria.expression.replace("&&C2", ""):this.libProjectService.projectData.certificate.criteria.expression.replace("C2", "")
 
@@ -643,6 +645,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     else if(taskCriteria == 0) {
       if(this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id]) {
         delete this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id]
+        delete this.libProjectService.formMeta.taskEvidenceSelected[item.id]
       }
       // Check if the string contains the substring
       if (this.libProjectService.projectData.certificate.criteria.conditions.C3.expression.includes(item.id)) {
