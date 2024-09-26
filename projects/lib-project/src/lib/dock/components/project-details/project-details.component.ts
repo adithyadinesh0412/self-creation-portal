@@ -104,7 +104,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
                          this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
-                          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") && (this.mode !== "viewOnly")) {
+                          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") && (this.mode !== projectMode.VIEWONLY)) {
                             this.getCommentConfigs()
                           }
                           this.readProjectDeatilsAndMap(data.controls,res.result);
@@ -120,6 +120,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
 
   getCommentConfigs() {
+    this.commentsList = []
     this.subscription.add(
       this.route.data.subscribe((data: any) => {
         this.utilService.getCommentList(this.projectId).subscribe((commentListRes: any) => {
@@ -128,7 +129,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
 
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
-          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
+          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT ||  this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW ;
           this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })
@@ -158,7 +159,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
                           this.getCommentConfigs()
                         }
                       })
@@ -176,7 +177,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                        this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
                           this.getCommentConfigs()
                         }
                       })
@@ -336,7 +337,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   }
 
   saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
-    console.log(quillInput)
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 }

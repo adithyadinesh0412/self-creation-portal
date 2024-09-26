@@ -168,6 +168,7 @@ export class LayoutComponent {
         break;
       }
       case "REQUEST_CHANGES":{
+        this.utilService.saveComment = false
         this.subscription.add(
           this.sharedService.triggerSaveComment() //// Triggers the save comment action from the comment module
         )

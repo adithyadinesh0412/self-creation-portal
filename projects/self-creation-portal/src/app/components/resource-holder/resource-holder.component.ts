@@ -366,14 +366,23 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
             }
           });
           break;
-        }else if(item.status){
+        }else if(item.status && this.activeRole == "creator"){
            this.router.navigate([PROJECT_DETAILS_PAGE], {
              queryParams: {
                projectId: item.id,
-               mode: projectMode.VIEWONLY
+               mode: projectMode.VIEWONLY,
+               parent:"review"
              }
            });
            break;
+         }else if(item.status){  
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: projectMode.VIEWONLY,
+            }
+          });
+          break;  
          }else{
           break;
          }
