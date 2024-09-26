@@ -14,7 +14,6 @@ export class LimitToRangeDirective {
   @HostListener('blur', ['$event.target.value'])
   onInput(value: string) {
     let parsedValue = parseFloat(value);
-    debugger;
     if (isNaN(parsedValue)) {
       parsedValue = parsedValue;
     } else if (parsedValue < this.minValue) {
