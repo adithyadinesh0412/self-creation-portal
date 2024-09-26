@@ -285,10 +285,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
           this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-
-          if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
-            this.libProjectService.checkValidationForRequestChanges();
-          }
+          this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })
     );
