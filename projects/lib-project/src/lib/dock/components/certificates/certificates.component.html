@@ -134,7 +134,7 @@
                                             <div class="" *ngIf="certificateTypeSelected?.code == 'two_logo_two_sign' || certificateTypeSelected?.code == 'one_logo_two_sign'">
                                                 <div class="flex items-center">
                                                     <mat-icon class="cursor-pointer text-primary"
-                                                    (click)="attachSignature(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachSignature(2)">{{'ADD_IMAGE_1' | translate}}</span>
+                                                    (click)="attachSignature(2)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachSignature(2)">{{'ADD_IMAGE_2' | translate}}</span>
                                                 </div><br>
                                                 <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2" (click)="openAttachment(libProjectService.projectData.certificate.signature.signatureImg2)" *ngIf="libProjectService.projectData.certificate && libProjectService.projectData.certificate.signature.signatureImg2">
                                                     <section class="flex items-center gap-2 min-w-0 flex-grow mr-2">
@@ -176,8 +176,8 @@
                         @if(item.name === "attachprojectevidence"){
                         <p>{{ item.label}}</p>
                         <mat-radio-group color="primary" aria-label="Select an option">
-                            <mat-radio-button value=1 class="-mx-1 mr-6" [checked]="libProjectService.projectData?.formMeta?.isProjectEvidenceSelected == '1'" (click)="setProjectEvidenceCriteriaSelection('1')">{{ 'YES' | translate }}</mat-radio-button>
-                            <mat-radio-button value=0 class="-mx-1" [checked]="libProjectService.projectData?.formMeta?.isProjectEvidenceSelected == '0'" (click)="setProjectEvidenceCriteriaSelection('0')">{{ 'No' | translate }}</mat-radio-button>
+                            <mat-radio-button value=1 class="-mx-1 mr-6" [checked]="checkProjectEvidenceIsAvailable()" (click)="setProjectEvidenceCriteriaSelection('1')">{{ 'YES' | translate }}</mat-radio-button>
+                            <mat-radio-button value=0 class="-mx-1" [checked]="!checkProjectEvidenceIsAvailable()" (click)="setProjectEvidenceCriteriaSelection('0')">{{ 'No' | translate }}</mat-radio-button>
                         </mat-radio-group>
                         }
                         @if(item.name === "noofevidence"){
@@ -204,8 +204,8 @@
                             <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item?.name}}</p>
                             <div class="w-1/2">
                                 <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" #taskEvidenceCriteria>
-                                    <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 1">{{ 'YES' | translate }}</mat-radio-button>
-                                    <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)" [checked]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0">{{ 'No' | translate }}</mat-radio-button>
+                                    <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [checked]="checkTaskEvidenceIsAvailable(item.id)">{{ 'YES' | translate }}</mat-radio-button>
+                                    <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskCriteriaInput.value,0,item)" [checked]="!checkTaskEvidenceIsAvailable(item.id)">{{ 'No' | translate }}</mat-radio-button>
                                 </mat-radio-group>
                                 <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline" >
                                     <mat-label> {{taskForm[1]?.label}}&nbsp;{{item?.name}}</mat-label>

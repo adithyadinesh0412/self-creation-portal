@@ -88,7 +88,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       issuer: "",
       criteria: {
         validationText: 'Complete validation message',
-        expression: 'C1&&C3',
+        expression: 'C1&&C2&&C3',
         conditions: {
           C1: {
             validationText: 'Project Should be submitted.',
@@ -115,7 +115,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   value: 'all',
                 },
                 operator: '>=',
-                value: '',
+                value: '1',
               },
             },
           },
@@ -243,6 +243,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   replaceUrl: true,
                 });
                 this.libProjectService.projectData.id = res.result.id;
+                this.libProjectService.projectData.formMeta = this.libProjectService.formMeta
                 this.getCertificateForm();
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
@@ -710,8 +711,27 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
+  checkTaskEvidenceIsAvailable(id:string) {
+    if(this.libProjectService.projectData.certificate) {
+      return this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[id] ? true : false;
+    }
+    else {
+      return false;
+    }
+  }
+
+  checkProjectEvidenceIsAvailable() {
+    if(this.libProjectService.projectData.certificate) {
+      return this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? true : false;
+    }
+    else {
+      return true;
+    }
+  }
+
   ngOnDestroy(): void {
-    this.libProjectService.formMeta.formValidation.certificates = "VALID";
+    // this.libProjectService.formMeta.formValidation.certificates = "VALID";
+    // this.libProjectService.checkCertificateValidations(true)
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
