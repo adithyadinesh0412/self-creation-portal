@@ -75,7 +75,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
           }
@@ -89,7 +89,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
             })
@@ -284,11 +284,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
-          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
-
-          if ((this.mode ===  projectMode.REVIEW && comments.some((comment: any) => comment.status === resourceStatus.DRAFT)) || (this.mode === projectMode.REQUEST_FOR_EDIT && comments.length > 0)) {
-            this.libProjectService.checkValidationForRequestChanges();
-          }
+          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT ||  this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW ;
+          this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })
     );

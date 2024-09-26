@@ -177,14 +177,13 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         .replace(/>\s+([^\s])/, '>$1')  // Trim leading whitespace after the opening tag content
         .replace(/\s+(<\/\w+>)$/, '$1')// Trim trailing whitespace before the closing tag content
         .trim() : this.quillInput;  // Just in case there are spaces outside the tags
-      this.comment.emit(this.quillInput);
       this.commentPayload.parent_id = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
-  
-      if (this.quillInput !== null) {
-        if (this.draft && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
-          this.draft.text = this.quillInput;
+        if (this.quillInput !== null) {
+        if (Object.keys(this.draft).length !== 0 && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0) {
           if (this.draft.id) {
+            this.draft.text = this.quillInput;
             this.utilService.updateComment(this.resourceId, this.draft, this.draft.id).toPromise().then((res) => {
+              this.comment.emit(this.quillInput);
               resolve(true);
             }).catch((error) => {
               reject(error);
@@ -199,6 +198,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
                   this.draft = comment;
                 }
               });
+              this.comment.emit(this.quillInput);
               resolve(true);
             }).catch((error) => {
               reject(error);
@@ -211,11 +211,14 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
         if (this.draft.id) {
           this.utilService.deleteComment(this.draft.id, this.resourceId).toPromise().then((res: any) => {
             this.draft = {}
+            this.comment.emit(this.quillInput);
             resolve(true);
           }).catch((error) => {
             reject(error);
           });
         } else {
+          this.draft = {}
+          this.comment.emit(this.quillInput);
           resolve(true);
         }
       }
@@ -225,7 +228,7 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    if (this.quillInput && this.quillInput.replace(/<\/?[^>]+>/gi, '').trim().length > 0 && this.utilService.saveComment) {
+    if(this.utilService.saveComment){
       this.saveComment();
     }
   }
