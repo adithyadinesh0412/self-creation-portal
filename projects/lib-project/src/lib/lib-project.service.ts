@@ -85,11 +85,12 @@ export class LibProjectService {
   }
 
   triggerSendForReview() {
+    this.checkCertificateValidations(true)
     if (
       this.formMeta.formValidation.projectDetails === 'VALID' &&
       this.formMeta.formValidation.tasks === 'VALID' &&
       this.formMeta.formValidation.subTasks === 'VALID' &&
-      this.formMeta.isCertificateSelected
+      (this.formMeta.isCertificateSelected && this.formMeta.formValidation.certificates === 'VALID')
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
@@ -146,25 +147,31 @@ export class LibProjectService {
           }
         });
       } else {
-        this.getcommentsListAsOpen().subscribe((comment) => {
-              this.sendForReview({}, this.projectData.id).subscribe(
-                (res: any) => {
-                  if(comment.length > 0){
-                    this.utilService
-                    .updateComment(this.projectData.id, comment)
-                    .subscribe((res: any) => {
-                  });
-                  }
-                  this.toastService.openSnackBar({
-                    message: res.message,
-                    class: 'success',
-                  });
-                  this.projectData = {};
-                  this.router.navigate([SUBMITTED_FOR_REVIEW]);
+        this.createOrUpdateProject(
+          this.projectData,
+          this.projectData.id,
+          true
+        ).subscribe((res) => {
+          this.getcommentsListAsOpen().subscribe((comment) => {
+            this.sendForReview({}, this.projectData.id).subscribe(
+              (res: any) => {
+                if(comment.length > 0){
+                  this.utilService
+                  .updateComment(this.projectData.id, comment)
+                  .subscribe((res: any) => {
+                });
                 }
-              );
+                this.toastService.openSnackBar({
+                  message: res.message,
+                  class: 'success',
+                });
+                this.projectData = {};
+                this.router.navigate([SUBMITTED_FOR_REVIEW]);
+              }
+            );
 
-        });
+      });
+        })
       }
     } else {
       this.openSnackBarAndRedirect('Fill all the mandatory fields.', 'error');
@@ -210,14 +217,16 @@ export class LibProjectService {
     );
   }
 
-  checkCertificateValidations() {
+  checkCertificateValidations(skipToaster?:boolean) {
     if(this.projectData.certificate) {
       if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
         this.formMeta.formValidation.certificates = "INVALID"
-        this.toastService.openSnackBar({
-          message: 'Please fill issuer Name',
-          class: 'error',
-        });
+        if(skipToaster) {
+          this.toastService.openSnackBar({
+            message: 'Please fill issuer Name',
+            class: 'error',
+          });
+        }
         return false;
       }
       if (
@@ -228,30 +237,36 @@ export class LibProjectService {
           this.projectData.certificate.logos.stateLogo2 === '')
       ) {
         this.formMeta.formValidation.certificates = "INVALID"
-        this.toastService.openSnackBar({
-          message: 'Please upload certificate logo',
-          class: 'error',
-        });
+        if(skipToaster) {
+          this.toastService.openSnackBar({
+            message: 'Please upload certificate logo',
+            class: 'error',
+          });
+        }
         return false;
       }
 
       if (!this.projectData.certificate.signature.no_of_signature ||
         (this.projectData.certificate.signature.no_of_signature > 0 &&
-          this.projectData.certificate.logos.signatureImg1 === '') ||
+          this.projectData.certificate.signature.signatureImg1 === '') ||
         (this.projectData.certificate.signature.no_of_signature > 1 &&
-          this.projectData.certificate.logos.signatureImg2 === '')) {
+          this.projectData.certificate.signature.signatureImg2 === '')) {
             this.formMeta.formValidation.certificates = "INVALID"
-        this.toastService.openSnackBar({
-          message: 'Please upload certificate Signature',
-          class: 'error',
-        });
+            if(skipToaster) {
+              this.toastService.openSnackBar({
+                message: 'Please upload certificate Signature',
+                class: 'error',
+              });
+            }
         return false;
       }
       this.formMeta.formValidation.certificates = "VALID"
       return true;
     }
     else {
-      this.formMeta.formValidation.certificates = "VALID"
+      if(!skipToaster) {
+        this.formMeta.formValidation.certificates = "VALID"
+      }
       return true;
     }
   }
@@ -274,7 +289,7 @@ export class LibProjectService {
         certificates: 'INVALID',
       },
       isCertificateSelected:'',
-      isProjectEvidenceSelected:'',
+      isProjectEvidenceSelected:'1',
       taskEvidenceSelected:{}
     }
   }

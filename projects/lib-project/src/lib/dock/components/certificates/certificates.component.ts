@@ -88,7 +88,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       issuer: "",
       criteria: {
         validationText: 'Complete validation message',
-        expression: 'C1&&C3',
+        expression: 'C1&&C2&&C3',
         conditions: {
           C1: {
             validationText: 'Project Should be submitted.',
@@ -115,7 +115,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   value: 'all',
                 },
                 operator: '>=',
-                value: '',
+                value: '1',
               },
             },
           },
@@ -243,6 +243,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   replaceUrl: true,
                 });
                 this.libProjectService.projectData.id = res.result.id;
+                this.libProjectService.projectData.formMeta = this.libProjectService.formMeta
                 this.getCertificateForm();
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
@@ -298,8 +299,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       })
     );
   }
-
-
 
   addTasktoCertificatePage(projectData:any) {
     this.tasks = projectData.tasks.filter((task:any) => {
@@ -528,6 +527,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           if(this.projectInReview && this.libProjectService.projectData.certificate) {
             this.libProjectService.formMeta.isCertificateSelected = this.libProjectService.projectData.certificate ? "2" : "1";
             this.libProjectService.formMeta.isProjectEvidenceSelected = this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? 1 : 0;
+            if(this.libProjectService.formMeta.isProjectEvidenceSelected == 0) {
+              this.certificateForm.controls['evidenceRequired'].disable()
+            }
             this.libProjectService.projectData.tasks.forEach((element:any) => {
               if(element.allow_evidences) {
                 this.libProjectService.formMeta.taskEvidenceSelected[element.id] = this.libProjectService.projectData.certificate.criteria.conditions.C3.expression.includes(element.id) ? 1 : 0
@@ -605,6 +607,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.libProjectService.formMeta.isProjectEvidenceSelected = value
     this.libProjectService.projectData.formMeta.isProjectEvidenceSelected = value
     if(value == "0" && this.libProjectService.projectData.certificate.criteria.expression.includes("C2")) {
+      this.certificateForm.controls['evidenceRequired'].disable()
       // Remove the substring
       this.libProjectService.projectData.certificate.criteria.expression = this.libProjectService.projectData.certificate.criteria.expression.includes("&&C2") ? this.libProjectService.projectData.certificate.criteria.expression.replace("&&C2", ""):this.libProjectService.projectData.certificate.criteria.expression.replace("C2", "")
 
@@ -640,6 +643,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     else if(taskCriteria == 0) {
       if(this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id]) {
         delete this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id]
+        delete this.libProjectService.formMeta.taskEvidenceSelected[item.id]
       }
       // Check if the string contains the substring
       if (this.libProjectService.projectData.certificate.criteria.conditions.C3.expression.includes(item.id)) {
@@ -707,8 +711,27 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.libProjectService.checkValidationForRequestChanges(quillInput)
   }
 
+  checkTaskEvidenceIsAvailable(id:string) {
+    if(this.libProjectService.projectData.certificate) {
+      return this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[id] ? true : false;
+    }
+    else {
+      return false;
+    }
+  }
+
+  checkProjectEvidenceIsAvailable() {
+    if(this.libProjectService.projectData.certificate) {
+      return this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? true : false;
+    }
+    else {
+      return true;
+    }
+  }
+
   ngOnDestroy(): void {
-    this.libProjectService.formMeta.formValidation.certificates = "VALID";
+    // this.libProjectService.formMeta.formValidation.certificates = "VALID";
+    // this.libProjectService.checkCertificateValidations(true)
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
