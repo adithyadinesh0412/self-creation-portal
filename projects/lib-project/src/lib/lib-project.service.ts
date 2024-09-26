@@ -455,9 +455,9 @@ export class LibProjectService {
     if(input === null){
       this.getComments().subscribe((data:any)=>{
         if(data.some((comment: any) => comment.status === resourceStatus.DRAFT)){
-          this.changeCommentStatus(true)
-        }else{
           this.changeCommentStatus(false)
+        }else{
+          this.changeCommentStatus(true)
         }
         })
     }else{

@@ -103,6 +103,7 @@ export class LayoutComponent {
         break;
       }
       case "SEND_FOR_REVIEW":{
+        this.utilService.saveComment = false
         this.libProjectService.checkSendForReviewValidation(true);
         this.tabValidation = this.libProjectService.formMeta.formValidation;
         break;
@@ -159,6 +160,7 @@ export class LayoutComponent {
           if (result.data === "CANCEL") {
             return true;
           } else if (result.data === "REJECT") {
+            this.utilService.saveComment = false
             this.libProjectService.rejectProject(result?.title, result?.isReported)
             return true;
           } else {
