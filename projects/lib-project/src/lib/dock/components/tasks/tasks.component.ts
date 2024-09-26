@@ -88,7 +88,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
                 this.getCommentConfigs()
               }
 
@@ -116,7 +116,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+                  if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
                     this.getCommentConfigs()
                   }
                 }
@@ -346,7 +346,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
-          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
+          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT ||  this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW ;
           this.libProjectService.checkValidationForRequestChanges(comments);
         });
       })

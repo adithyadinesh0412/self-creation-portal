@@ -205,7 +205,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             }
             this.getCertificateForm()
           }
-          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
             this.getCommentConfigs();
             this.getCertificateForm()
             if(this.libProjectService.projectData.certificate) {
@@ -247,7 +247,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
-                if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+                if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
                   this.getCommentConfigs();
                 }
                 this.certificateAddIntoHtml();
@@ -261,7 +261,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== "viewOnly")) {
+              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
                 this.getCommentConfigs();
               }
               if(res.result.tasks) {
@@ -524,7 +524,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
           this.commentsList = this.commentsList.concat(filteredComments);
           this.commentPayload = data;
-          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT;
+          this.projectInReview = this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT ||  this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW ;
           if(this.projectInReview && this.libProjectService.projectData.certificate) {
             this.libProjectService.formMeta.isCertificateSelected = this.libProjectService.projectData.certificate ? "2" : "1";
             this.libProjectService.formMeta.isProjectEvidenceSelected = this.libProjectService.projectData.certificate.criteria.expression.includes("C2") ? 1 : 0;

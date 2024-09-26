@@ -228,7 +228,9 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.saveComment();
+    if(this.utilService.saveComment){
+      this.saveComment();
+    }
   }
 
 }
