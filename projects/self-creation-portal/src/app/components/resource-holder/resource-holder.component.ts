@@ -384,6 +384,13 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           });
           break;  
          }else{
+          this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: item.id,
+              mode: projectMode.VIEWONLY,
+              parent:"browse-existing"
+            }
+          });
           break;
          }
 
