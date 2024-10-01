@@ -10,6 +10,7 @@ import { FormService } from '../../services/form/form.service';
 import { LibSharedModulesService, ToastService, UtilService } from '../../../public-api';
 import { interval, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 
 
@@ -39,16 +40,6 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
 
   name = 'Angular';
   currentUserId:number = 25;
-  modules = {
-    formula: true,
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline'],
-      ['formula'],
-      [{ 'font': [] }],
-      ['image', 'code-block']
-    ]
-  };
   quillInput =""
   hasFocus = false;
   subject: any;
@@ -61,14 +52,14 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       container: [
         ['bold', 'italic', 'underline'],    // Bold, Italic, Underline
         [{ 'list': 'bullet' }],
-        [{ size: ['small', false, 'large', 'huge'] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
         [{ 'font': [] }],
       ],
 
     }
   }
 
-  constructor(private utilService:UtilService,private toastService:ToastService, private sharedService:LibSharedModulesService, private route: ActivatedRoute,) {
+  constructor(private utilService:UtilService,private toastService:ToastService, private sharedService:LibSharedModulesService, private route: ActivatedRoute,private sanitizer: DomSanitizer) {
     this.autoSave()
    }
 
@@ -224,6 +215,11 @@ export class CommentsBoxComponent implements OnInit, OnDestroy {
       }
       this.commentPayload.comment = this.quillInput;
     });
+  }
+
+  sanitiseInput(message:any){
+    return  this.sanitizer.bypassSecurityTrustHtml(message)
+
   }
 
   ngOnDestroy(): void {
