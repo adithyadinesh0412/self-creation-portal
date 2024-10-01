@@ -29,7 +29,7 @@
                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
                                 <mat-label> {{"TASK" | translate}} {{i+1}}</mat-label>
                                 <textarea matInput [formControlName]="tasksData?.description.name" (change)="checkValidation()"
-                                    [placeholder]="tasksData?.description.placeholder"  [required]="i === 0" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
+                                    [placeholder]="tasksData?.description.placeholder"  [required]="true" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
                             </mat-form-field>
 
                                 <mat-error class="error-container">
