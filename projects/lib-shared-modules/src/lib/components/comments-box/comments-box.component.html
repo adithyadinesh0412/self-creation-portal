@@ -41,7 +41,7 @@
             </div>
             <div class="flex w-50" [ngClass]="{'sender-message message-container': message?.commenter.id != userId,'justify-end flex-col relative': message?.commenter.id == userId}">
               <div class="message-body p-3" [ngClass]="{'sender-message-body': message?.commenter.id != userId,'user-message':message?.commenter.id == userId}">
-                <p [innerHTML]="message?.text"></p>
+                <div class="quill-wrapper" [innerHTML]="sanitiseInput(message?.text)"></div>
                 <p class="text-end">{{message?.created_at | date : 'shortTime'}}</p>
               </div>
               <p class="text-end color-primary my-2 resolve-text" *ngIf="message?.resolved_at">Resolved<mat-icon class="mr-5">check_circle</mat-icon></p>
