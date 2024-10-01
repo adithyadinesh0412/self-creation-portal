@@ -289,7 +289,7 @@ export class LibProjectService {
         certificates: 'INVALID',
       },
       isCertificateSelected:'',
-      isProjectEvidenceSelected:'1',
+      isProjectEvidenceSelected:'0',
       taskEvidenceSelected:{}
     }
   }
