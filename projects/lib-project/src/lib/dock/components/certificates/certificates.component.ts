@@ -736,6 +736,22 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
+      }else{
+        this.libProjectService
+        .createOrUpdateProject({ ...this.libProjectService.projectData, ...{ title: 'Untitled project' } })
+        .subscribe((res: any) => {
+          (this.projectId = res.result.id),
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: {
+                projectId: this.projectId,
+                mode: projectMode.EDIT,
+              },
+              queryParamsHandling: 'merge',
+              replaceUrl: true,
+            });
+            this.libProjectService.projectData.id = res.result.id;
+        })
       }
       this.libProjectService.saveProjectFunc(false);
     }

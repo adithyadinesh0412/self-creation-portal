@@ -130,11 +130,16 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   createSubTaskForm() {
+    // const getButtonStates = (taskDescriptionLength: number) => {
+    //     return taskDescriptionLength
+    //         ? [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": false}, {"label": "ADD_SUBTASKS", "disable": false}]
+    //         : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}];
+    // };
     const getButtonStates = (taskDescriptionLength: number) => {
-        return taskDescriptionLength
-            ? [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": false}, {"label": "ADD_SUBTASKS", "disable": false}]
-            : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}];
-    };
+      return taskDescriptionLength
+          ? [{"label": "ADD_OBSERVATION", "disable": false}, {"label": "ADD_LEARNING_RESOURCE", "disable": false}, {"label": "ADD_SUBTASKS", "disable": false}]
+          : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}];
+  };
 
     const createTaskObject = (task?: any) => {
        let subtask =task?.children  ?  task.children.map((child: any) => this.fb.control(child.name)):[]
@@ -173,6 +178,67 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   onAction(button : string, taskIndex: number) {
       switch (button) {
         case 'ADD_OBSERVATION':
+          const dialogObservation = this.dialog.open(DialogModelComponent, {
+            disableClose: true,
+            data: {
+              control:  {
+                "header": "Add observation",
+                "headerCss": "flex flex-row justify-between items-center bg-[#0a4f9d] h-10",
+                "resource": [
+                    [
+                        {
+                            "name": "name",
+                            "label": "Name of the resource",
+                            "value": "",
+                            "class": "",
+                            "type": "text",
+                            "placeHolder": "Name",
+                            "position": "floating",
+                            "errorMessage": {
+                                "required": "Enter Name of the resource",
+                                "maxLength": "Name must not exceed 256 characters",
+                                "pattern": "Name can only include alphanumeric characters with spaces, -, _, &, <>"
+                            },
+                            "validators": {
+                                "required": true,
+                                "maxLength": 255,
+                                "pattern": "^(?! )(?!.* {3})[\\p{L}a-zA-Z0-9\\-_ <>&]+$"
+                            }
+                        },
+                        {
+                            "name": "url",
+                            "label": "Link to the resource",
+                            "value": "",
+                            "class": "",
+                            "type": "text",
+                            "placeHolder": "Link",
+                            "position": "floating",
+                            "errorMessage": {
+                                "required": "Enter link to the resource",
+                                "pattern": "Please add a valid link to resource",
+                                "maxLength": "Url must not exceed 256 characters"
+                            },
+                            "validators": {
+                                "required": true,
+                                "pattern": "^https://[:.a-zA-Z0-9/?=&_#-]+$",
+                                "maxLength": 255
+                            }
+                        }
+                    ]
+                ],
+                "confirmButton": "Save",
+                "cancelButton": "Cancel"
+            },
+              ExistingResources:this.taskData[taskIndex].resources
+            }
+            });
+
+            const componentInstanceObservation = dialogObservation.componentInstance;
+            componentInstanceObservation.saveLearningResource.subscribe((result: any) => {
+              if (result) {
+                console.log(result)
+              }
+            });
           break;
 
         case 'ADD_LEARNING_RESOURCE':
