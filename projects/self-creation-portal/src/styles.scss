@@ -219,3 +219,36 @@ color:$tertiary
     width: 95vw !important;  
   }
 }
+
+.quill-wrapper {
+  /* Reset specific Tailwind styles here */
+  font-size: inherit; /* Reset font size */
+}
+
+.quill-wrapper ol, 
+.quill-wrapper ul {
+  list-style-type: initial; /* Reset list styles */
+  margin: 2px; /* Adjust margins if necessary */
+  padding: 10px; /* Adjust padding if necessary */
+}
+
+.quill-wrapper .ql-size-small {
+  font-size: 12px; /* Adjust to your preferred small size */
+}
+
+.quill-wrapper .ql-size-large {
+  font-size: 20px; /* Adjust to your preferred large size */
+}
+
+.quill-wrapper .ql-size-huge {
+  font-size: 28px; /* Adjust to your preferred huge size */
+}
+
+.quill-wrapper .ql-font-serif{
+  font-family: 'Times New Roman', serif; 
+  
+}
+
+.quill-wrapper .ql-font-monospace{
+  font-family: 'Courier New', monospace; 
+}
