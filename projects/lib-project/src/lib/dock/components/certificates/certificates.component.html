@@ -195,21 +195,21 @@
                                     </div>
                                 </mat-error>
                             } -->
-                            <div class="flex justify-between w-1/2">
-                                <mat-label> {{ item.label}}</mat-label>
-                                <b>{{range.value}}</b>
+                            <div class="flex">
+                                <mat-label class="mr-6"> {{ item.label}}</mat-label>
+                                <b class="range-value">{{range.value}}</b>
                             </div>
-                            <mat-slider [min]="" max="15" step="1" showTickMarks discrete style="width: 100%;"  [disabled]="checkProjectCriteriaIncluded()">
-                                <input matSliderThumb matInput formControlName="evidenceRequired" #range (change)="setProjectEvidenceCriteriaValue(range.value)">
+                            <mat-slider [min]="" max="15" step="1" showTickMarks discrete style="width: 100%;"  [disabled]="checkProjectCriteriaIncluded()" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
+                                <input matSliderThumb matInput formControlName="evidenceRequired" #range (change)="setProjectEvidenceCriteriaValue(range.value)" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                             </mat-slider>
                         }
                     </div>
                 }
                 @for(item of tasks; track item;let i = $index){
                     @if(item?.evidence_details?.min_no_of_evidences) {
-                        <div class="mt-6">
-                            <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600" (click)="onShowMore(item.id)" *ngIf="item?.slicedName">show more</span></p>
-                            <div class="w-1/2">
+                        <div class="mt-6" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
+                            <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600 cursor-pointer" (click)="onShowMore(item.id)" *ngIf="item?.slicedName && item.name.length > 150">show more</span></p>
+                            <div class="w-1/2 mt-2">
                                 <mat-radio-group color="primary" aria-label="Select an option" class="mr-3" #taskEvidenceCriteria>
                                     <mat-radio-button value=1 class="-mx-1 mr-6" (click)="setEvidenceCriteriaValue(taskRange.value,1,item)" [checked]="checkTaskEvidenceIsAvailable(item.id)">{{ 'YES' | translate }}</mat-radio-button>
                                     <mat-radio-button value=0 class="-mx-1" (click)="setEvidenceCriteriaValue(taskRange.value,0,item)" [checked]="!checkTaskEvidenceIsAvailable(item.id)">{{ 'No' | translate }}</mat-radio-button>
@@ -218,12 +218,12 @@
                                     <mat-label> {{taskForm[1]?.label}}&nbsp;{{item?.name}}</mat-label>
                                     <input type="text" appLimitToRange [minValue]=  [min]="item?.evidence_details.min_no_of_evidences" #taskCriteriaInput class="w-full" matInput (change)="changeEvidenceCriteriaValue(taskCriteriaInput.value,1,item)" [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences" [placeholder]="taskForm[1]?.placeHolder || ''">
                                 </mat-form-field> -->
-                                <div class="flex justify-between w-3/4">
-                                    <mat-label>Number of evidence needed for this task</mat-label>
-                                    <b>{{taskRange.value}}</b>
+                                <div class="flex mt-6">
+                                    <mat-label class="mr-6">Number of evidence needed for this task</mat-label>
+                                    <b class="range-value">{{taskRange.value}}</b>
                                 </div>
-                                <mat-slider [min]="item?.evidence_details.min_no_of_evidences" [id]="item.id" [disabled]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0 || !libProjectService.projectData.formMeta.taskEvidenceSelected[item.id]" max="15" step="1" showTickMarks discrete style="width: 100%;">
-                                    <input matSliderThumb [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences"  [id]="item.id"  matInput #taskRange (change)="changeEvidenceCriteriaValue(taskRange.value,1,item)">
+                                <mat-slider [min]="item?.evidence_details.min_no_of_evidences" [id]="item.id" [disabled]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0 || !libProjectService.projectData.formMeta.taskEvidenceSelected[item.id]" max="15" step="1" showTickMarks discrete style="width: 100%;" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
+                                    <input matSliderThumb [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences"  [id]="item.id"  matInput #taskRange (change)="changeEvidenceCriteriaValue(taskRange.value,1,item)" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                                 </mat-slider>
                             </div>
                         </div>
