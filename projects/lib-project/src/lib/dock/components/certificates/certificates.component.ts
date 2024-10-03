@@ -27,6 +27,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'lib-certificates',
@@ -43,7 +44,9 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatDialogModule,
     MatInputModule,
     CommentsBoxComponent,
-    LimitToRangeDirective
+    LimitToRangeDirective,
+    MatTooltip,
+    MatTooltipModule
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
@@ -728,6 +731,16 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     else {
       return true;
     }
+  }
+
+  showTooltip(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
+  }
+
+  hideTooltip(tooltip: MatTooltip) {
+    tooltip.hide(); 
+    tooltip.disabled = true; 
   }
 
   ngOnDestroy(): void {

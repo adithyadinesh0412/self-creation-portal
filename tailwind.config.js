@@ -19,7 +19,8 @@ module.exports = {
         "borderGray":"#d1d3d5",
         "blueCircle":"#8AA7C1",
         "cardLightBlue":"#f3f7fa",
-        "lightGreen":"#07BC81"
+        "lightGreen":"#07BC81",
+        "iconGray":"#80868b"
       },
     },
   },
