@@ -199,7 +199,7 @@
                                 <mat-label class="mr-6"> {{ item.label}}</mat-label>
                                 <b class="range-value">{{range.value}}</b>
                             </div>
-                            <mat-slider [min]="" max="15" step="1" showTickMarks discrete style="width: 100%;"  [disabled]="checkProjectCriteriaIncluded()" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
+                            <mat-slider min="1" max="15" step="1" showTickMarks discrete style="width: 100%;"  [disabled]="checkProjectCriteriaIncluded()" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                                 <input matSliderThumb matInput formControlName="evidenceRequired" #range (change)="setProjectEvidenceCriteriaValue(range.value)" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                             </mat-slider>
                         }
