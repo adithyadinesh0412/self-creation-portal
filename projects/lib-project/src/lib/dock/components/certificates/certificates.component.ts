@@ -27,7 +27,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+<<<<<<< HEAD
 import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
+=======
+import { MatSliderModule } from '@angular/material/slider';
+>>>>>>> upstream/release-1.0.0
 
 @Component({
   selector: 'lib-certificates',
@@ -45,8 +49,12 @@ import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
     MatInputModule,
     CommentsBoxComponent,
     LimitToRangeDirective,
+<<<<<<< HEAD
     MatTooltip,
     MatTooltipModule
+=======
+    MatSliderModule
+>>>>>>> upstream/release-1.0.0
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
@@ -91,7 +99,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       issuer: "",
       criteria: {
         validationText: 'Complete validation message',
-        expression: 'C1&&C2&&C3',
+        expression: 'C1&&C3',
         conditions: {
           C1: {
             validationText: 'Project Should be submitted.',
@@ -191,7 +199,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
                     task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] ? this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value : task.evidence_details.min_no_of_evidences
                   }
-                  return task;
+                  task.slicedName = task.name.slice(0,150);
+                  return task
                 }
               });
             }
@@ -308,6 +317,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       if(task.evidence_details?.min_no_of_evidences) {
         if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
           task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
+        }
+        if(task.name.length > 150){
+          task.slicedName = task.name.slice(0,150);
         }
         return task;
       }
@@ -741,6 +753,15 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   hideTooltip(tooltip: MatTooltip) {
     tooltip.hide(); 
     tooltip.disabled = true; 
+  }
+  
+  onShowMore(id:string) {
+    const index = this.tasks.findIndex((element:any) => element.id === id);
+    delete this.tasks[index].slicedName
+  }
+
+  checkProjectCriteriaIncluded() {
+    return this.libProjectService.projectData?.certificate?.criteria?.expression?.includes("C2") ? false : true;
   }
 
   ngOnDestroy(): void {
