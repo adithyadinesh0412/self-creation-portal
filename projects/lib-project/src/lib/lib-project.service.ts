@@ -510,4 +510,13 @@ export class LibProjectService {
       .getCommentList(this.projectData.id)
       .pipe(map((response: any) => response.result.comments || []));
   }
+
+  copyAndCreateProject(){
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT +
+          '?reference_id=' + this.projectData.id,
+      payload: this.projectData,
+    };
+    return this.httpService.post(config.url, config.payload);
+  }
 }

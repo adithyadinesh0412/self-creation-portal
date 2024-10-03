@@ -66,7 +66,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         )
       );
     }
-    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
+    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()

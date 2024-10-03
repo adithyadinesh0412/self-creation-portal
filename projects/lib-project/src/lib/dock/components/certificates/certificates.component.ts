@@ -174,7 +174,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           params.mode === projectMode.VIEWONLY ||
           params.mode === projectMode.REVIEW ||
           params.mode === projectMode.REVIEWER_VIEW ||
-          this.mode === projectMode.CREATOR_VIEW
+          this.mode === projectMode.CREATOR_VIEW ||
+          this.mode === projectMode.COPY_EDIT
         ) {
           this.viewOnly = true;
           this.getCertificateForm();

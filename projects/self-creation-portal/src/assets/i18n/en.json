@@ -171,5 +171,6 @@
     "VIEW_FULL_SCREEN":"View full screen",
     "ADD_IMAGE_1":"Add image 1",
     "ADD_IMAGE_2":"Add image 2",
-    "NO_COMMENTS_ADDED":"No comments added."
+    "NO_COMMENTS_ADDED":"No comments added.",
+    "COPY_AND_EDIT":"Copy and edit"
 }

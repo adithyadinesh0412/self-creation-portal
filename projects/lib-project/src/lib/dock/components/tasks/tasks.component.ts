@@ -40,7 +40,8 @@ export class TasksComponent implements OnInit, OnDestroy {
   commentsList:any = [];
   projectInReview:boolean = false;
   private autoSaveSubscription: Subscription = new Subscription();
-  maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
+  maxTaskLength = 15;
+  // maxTaskLength = this.libProjectService.projectConfig?.max_task_count ? this.libProjectService.projectConfig?.max_task_count : 10;
   private subscription: Subscription = new Subscription();
   constructor(private fb: FormBuilder, private libProjectService: LibProjectService, private route: ActivatedRoute, private router: Router, private dialog: MatDialog, private _snackBar: MatSnackBar, private toastService: ToastService, private utilService:UtilService) {
     this.tasksForm = this.fb.group({
@@ -148,7 +149,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           })
         }
 
-        if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
+        if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
           this.viewOnly = true
           // this.tasksForm.disable()
         }
