@@ -27,11 +27,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-<<<<<<< HEAD
 import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
-=======
 import { MatSliderModule } from '@angular/material/slider';
->>>>>>> upstream/release-1.0.0
 
 @Component({
   selector: 'lib-certificates',
@@ -49,12 +46,9 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     CommentsBoxComponent,
     LimitToRangeDirective,
-<<<<<<< HEAD
     MatTooltip,
-    MatTooltipModule
-=======
+    MatTooltipModule,
     MatSliderModule
->>>>>>> upstream/release-1.0.0
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
