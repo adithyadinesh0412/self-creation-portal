@@ -240,9 +240,9 @@
                 @for(item of tasks; track item;let i = $index){
                     @if(item?.evidence_details?.min_no_of_evidences) {
                         <div class="mt-6">
-                            <div class="relative">
-                                <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600" (click)="onShowMore(item.id)" *ngIf="item?.slicedName">show more</span></p>
-                                <mat-icon class="absolute cursor-pointer -top-[0.10rem] left-[30.5rem] text-iconGray  text-xl" 
+                            <div class="">
+                                <p class="mt-2 label-wrap  inline-block"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600" (click)="onShowMore(item.id)" *ngIf="item?.slicedName">show more</span></p>
+                                <mat-icon class="cursor-pointer align-middle ml-2 text-iconGray  text-xl" 
                                 [matTooltip]="taskForm[0]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
                                 [matTooltipDisabled]="true"
                                 #tooltip="matTooltip" 
