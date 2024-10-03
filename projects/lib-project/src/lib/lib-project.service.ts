@@ -174,7 +174,7 @@ export class LibProjectService {
         })
       }
     } else {
-      this.openSnackBarAndRedirect('Fill all the mandatory fields.', 'error');
+      this.openSnackBarAndRedirect('FILL_ALL_THE_MANDATORY_FIELDS', 'error');
     }
     this.checkSendForReviewValidation(false);
   }
