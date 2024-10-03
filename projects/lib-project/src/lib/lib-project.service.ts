@@ -519,4 +519,17 @@ export class LibProjectService {
     };
     return this.httpService.post(config.url, config.payload);
   }
+
+  validateTasksData(){  
+    this.currentProjectMetaData.subscribe((data: any) => {
+      const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
+      const isValid = this.projectData.tasks.every((task: { name: string }) => {
+        const isNameValid = task.name && task.name.trim().length > 0;
+        const isMaxLengthValid = task.name.length <= data?.tasksData.tasks.description.validators.maxLength;
+        const isPatternValid = pattern.test(task.name);
+      });
+  
+      this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+    });
+  }
 }

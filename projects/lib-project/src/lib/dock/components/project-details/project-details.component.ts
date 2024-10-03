@@ -81,8 +81,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
-        const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
-        this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+        this.libProjectService.validateTasksData()
       }
     }
   }
@@ -216,8 +215,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.formMeta.formValidation.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
-      this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+      this.libProjectService.validateTasksData()
     }
   }
   startAutoSaving() {
