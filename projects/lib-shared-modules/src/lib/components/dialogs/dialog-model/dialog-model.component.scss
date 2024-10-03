@@ -1,0 +1,57 @@
+@import "../../../../../../self-creation-portal/src/styles.scss";
+
+.container{
+    width: 50%;
+    height: 50%;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 1rem;
+    background-color: $primary;
+    color:  $secondary;
+}
+.dialog-container {
+    width: 31.25rem; 
+    height: auto;
+}
+.footer {
+    display: flex;
+    justify-content: end;
+    padding: 1rem;
+}
+.cancel-btn {
+    margin-right: 1rem;
+}
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+}
+.button-container {
+    margin-left: 2rem;
+    margin-bottom: 2rem;
+}
+
+.error-message{
+    display: flex;
+    flex-direction: row;
+    margin-top: -1.875rem;
+    margin-bottom: 1.25rem;
+    align-items: start;
+    font-size: 0.75rem;
+    padding: 0.125rem 0;
+}
+
+.error-icon{
+    padding-right: 1.125rem;
+    font-size: 1rem;
+    width: 1.25rem;
+    height: auto;
+}
+
+.main-container{
+    max-height: 18.75rem;
+    overflow-y: auto;
+}

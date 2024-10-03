@@ -1,0 +1,20 @@
+{
+    "USER_URLS":{
+        "USER_LOGIN":"/user/v1/account/login"
+    },
+    "PROJECT_URLS": {
+        "CREATE_PROJECT":"/scp/v1/project/create"
+    },
+    "FORM_URLS":{
+           "READ_FORM":"scp/v1/form/read",
+           "READ_ENTITY_TYPE":"scp/v1/entity-types/read"
+    },
+    "RESOURCE_URLS": {
+        "BASE": "scp/v1/resource/",
+        "ENDPOINTS": {
+            "RESOURCE_LIST": "list",
+            "UP_FOR_REVIEW_LIST": "upForReview",
+            "BROWSE_EXISTING_LIST": "getPublishedResources"
+        }
+    }
+}

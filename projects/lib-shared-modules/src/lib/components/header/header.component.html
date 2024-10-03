@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" class="primary-toolbar flex justify-between items-center px-4 fixed top-0 z-50">
+  <div class="flex items-center space-x-2">
+    <a>
+      @if (backButton) {
+        <mat-icon (click)="backArrowButton()" class="cursor-pointer py-1 pl-1 pr-7">keyboard_backspace</mat-icon>
+      }
+    </a>
+    <span class="px-0">{{ title  || 'BACK'  | translate }}</span>
+  </div>
+  <div title="logout">
+    <mat-icon class="cursor-pointer" (click)="logout()">power_settings_new</mat-icon>
+  </div>
+</mat-toolbar>
+<mat-toolbar class="sub-header flex border-b fixed justify-between items-center  top-16">
+  <div class="title" [matTooltip]="headerData?.title | translate">{{ headerData?.title | translate }}</div>
+  @if (headerData?.buttons) {
+    <div class="buttons-container">
+        @for (button of headerData?.buttons[mode]; track button) {
+          <button [disabled]="button.disable" [ngClass]="[ button.disable ? 'button-disable' : button.cssClass]" mat-raised-button (click)="onButtonClick(button)">{{ button?.title | translate }}</button>
+        }
+    </div>
+  }
+</mat-toolbar>

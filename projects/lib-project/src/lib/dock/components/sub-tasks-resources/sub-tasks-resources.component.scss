@@ -1,0 +1,42 @@
+@import "../../../../../../self-creation-portal/src/styles.scss";
+input:focus{
+    outline: none;
+}
+.disabled {
+    color: gray; 
+    cursor: not-allowed; 
+    pointer-events: none;
+}
+.overflow-ellipsis{
+    width: 100px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    white-space: pre-line;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+hr {
+    border-color: $horizontalBlueLine;
+  }
+
+.error-message {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 12px;
+    padding: 0.125rem 0;
+}
+
+.error-icon {
+    font-size: 1rem;
+    width: 1.875rem;
+    height: auto;
+}
+
+.error-container {
+    display: flex;
+    height: 2rem;
+    width: 14.375rem;
+}

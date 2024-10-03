@@ -1,0 +1,50 @@
+@import  "../../../../../self-creation-portal/src/styles.scss";
+mat-sidenav-container {
+    height: 100vh;
+  }
+
+.fixed-sidenav {
+    position: fixed;
+    padding-top: 8rem;
+    left: 0;
+    width: 300px;
+    overflow: hidden;
+}
+
+.mdc-list {
+    padding: 0px;
+}
+
+mat-nav-list {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.entry {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 18px;
+}
+
+.active {
+    background: $cardLightBlue;
+    border-top: 1px solid $borderGray;
+    border-bottom: 1px solid $borderGray;
+    .entry {
+      color: $primary;
+    }
+}
+.error-icon {
+    padding-right: 1rem;
+}
+
+.sidebar-footer {
+    position: absolute;
+    width: 100%;
+    font-size: medium;
+  }
+
+::ng-deep mat-nav-list{
+    height: 72vh !important
+}

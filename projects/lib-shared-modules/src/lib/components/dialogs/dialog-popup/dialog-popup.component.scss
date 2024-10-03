@@ -1,0 +1,31 @@
+@import "../../../../../../self-creation-portal/src/styles.scss";
+
+::ng-deep .mdc-dialog .mdc-dialog__content {
+    color: $tertiary;
+    padding: 0.625rem;
+}
+
+.error-message{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 0.75rem;
+    padding: 0.125rem 0;
+}
+
+.error-icon{
+    font-size: 1rem;
+    width: 1.25rem;
+    height: auto;
+}
+
+.error-container {
+    display: flex;
+    height: 2.000rem;
+}
+
+::ng-deep .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background{
+    background-color: $primary !important;
+    border-color: $primary !important;
+}
+

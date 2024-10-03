@@ -1,0 +1,62 @@
+<body>
+  <section class="comment-open" *ngIf="!chatFlag">
+    <div class="flex justify-between mr-10">
+      <mat-icon class="mr-2">chat_bubble</mat-icon>
+      <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
+    </div>
+    <mat-icon *ngIf="!chatFlag" (click)="openChatBot()" class="cursor-pointer">zoom_out_map</mat-icon>
+  </section>
+  <div *ngIf="chatFlag" class="chatbox">
+    <section class="header" >
+      <div class="flex justify-between">
+        <mat-icon class="mr-5">chat_bubble</mat-icon>
+        <p>{{"ADD_REVIEW_COMMENTS" | translate}}</p>
+      </div>
+      <div>
+        <mat-icon *ngIf="chatFlag" (click)="openChatBot()" class="cursor-pointer">do_not_disturb_on</mat-icon>
+      </div>
+    </section>
+    @if(mode !== "review" && mode !== "reviewerView"){
+      <section class="flex justify-between items-center p-3 bg-white"  [ngClass]="{'disabled-with-pointer-events': (mode === 'viewOnly' || mode === 'creatorView' || mode === 'reviewerView')}">
+        <div>
+          @if(messages?.length > 0){
+            <p>Comments by {{messages[0]?.commenter?.name}}</p>
+          }
+        </div>
+        <!-- [0] represents the reviewer initiates the message, so the reviewer with be the commenter -->
+        <button class="btn mr-5 save-button" [ngClass]="{'button-disabled': (resolveDisable || !(messages?.length > 0))}" mat-flat-button [disabled]="resolveDisable || !(messages?.length > 0)" (click)="resolveComment()">Resolve</button>
+      </section>
+    }
+    @if(messages?.length || (this.mode === 'creatorView' || this.mode === 'reqEdit' )){
+      <section class="p-3 chat-window z-[100]" #chatWindow [ngClass]="{'content-center items-center': !messages?.length}">
+        @if(!messages?.length){
+          <div class="flex items-center justify-center" >
+            {{"NO_COMMENTS_ADDED" | translate}}
+          </div>
+        }
+        @for(message of messages; track message; let i = $index) {
+          <section>
+            <div class="flex justify-center">
+              <p class="text-center date-stamp my-3">{{message?.created_at | date : 'mediumDate'}}</p>
+            </div>
+            <div class="flex w-50" [ngClass]="{'sender-message message-container': message?.commenter.id != userId,'justify-end flex-col relative': message?.commenter.id == userId}">
+              <div class="message-body p-3" [ngClass]="{'sender-message-body': message?.commenter.id != userId,'user-message':message?.commenter.id == userId}">
+                <div class="quill-wrapper" [innerHTML]="sanitiseInput(message?.text)"></div>
+                <p class="text-end">{{message?.created_at | date : 'shortTime'}}</p>
+              </div>
+              <p class="text-end color-primary my-2 resolve-text" *ngIf="message?.resolved_at">Resolved<mat-icon class="mr-5">check_circle</mat-icon></p>
+            </div>
+          </section>
+        }
+      </section>
+    }
+    <section  [ngClass]="{'disabled-with-pointer-events': (mode === 'viewOnly' || mode === 'creatorView' || mode === 'reviewerView'), 'expanded-editor': ((!messages || messages.length === 0) && !(mode === 'creatorView' || mode === 'reqEdit')) }">
+      <quill-editor [(ngModel)]="quillInput" placeholder="Type your comment" [modules]="quillConfig"
+        (onSelectionChanged)="onSelectionChanged($event)"></quill-editor>
+    </section>
+    <section class="flex justify-end p-1"  [ngClass]="{'disabled-with-pointer-events': (mode === 'viewOnly' || mode === 'creatorView' || mode === 'reviewerView')}">
+      <button class="btn button-enable mr-5 save-button" mat-flat-button (click)="saveComment(true)">Save</button>
+    </section>
+  </div>
+</body>
+

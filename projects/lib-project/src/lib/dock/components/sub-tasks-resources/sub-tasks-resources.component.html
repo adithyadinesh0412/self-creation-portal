@@ -1,0 +1,71 @@
+<div class="main flex">
+    <div class="w-full">
+        <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
+            <span>{{"SUBTASKS_AND_RESOURCES" | translate}}</span>
+        </div>
+        <div class="px-10 mt-52 mb-6 text-tertiary">
+            <p>{{"SUBTASKS_AND_RESOURCES_DESCRIPTION" | translate}}</p>
+        </div>
+        <div class="px-10"  [ngClass]="{'disabled-with-pointer-events': viewOnly}">
+            @for(item of taskData; track item; let i = $index) {
+            <div>
+                <p class="mt-5 text-lg text-tertiary">{{"SUBTASK_HEADER"| translate}} {{i+1}}</p>
+                <div>
+                    <div class="flex flex-row gap-28  pt-5 pb-8">
+                        @for(button of item.buttons; track button) {
+                        <div class="">
+                            <mat-card-content class="cursor-pointer">
+                                <div [class.disabled]="button.disable" (click)="!button.disable && onAction(button.label, i)" class="flex items-center text-primary pb-2">
+                                    <mat-icon>add_circle</mat-icon><span class="px-2">{{button.label | translate}}</span></div>
+                                @if (button.label === 'ADD_SUBTASKS') {
+                                <form [formGroup]="item.subTasks" (ngSubmit)="onSubtasks(item.subTasks, i)">
+                                    <div formArrayName="subtasks" class="flex flex-col gap-2">
+                                        @for( control of item.subTasks.get('subtasks').controls;track control; let j =
+                                        $index) {
+                                        <div class="flex items-center space-x-2 custom-input-wrapper">
+                                            <mat-form-field floatLabel="always" class="w-full" appearance="outline">
+                                            <input matInput [value]="control.name" maxlength="256" pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-_ <>&]+$" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask" (change)="saveSubtask()">
+                                            </mat-form-field>
+                                            <mat-icon class="cursor-pointer"
+                                                (click)="onDeleteSubtask(i, j)" color="primary">delete</mat-icon>
+                                          </div>
+                                          @if(control.errors) {
+                                            <mat-error class="error-container">
+                                                    <div class="error-message">
+                                                        <mat-icon class="error-icon" matPrefix>error_outline</mat-icon>
+                                                        @if(control?.errors?.['maxlength']){ <span>Subtask cannot exceed 256 characters.</span> }
+                                                        @if(control?.errors?.['pattern']){<span>Subtask can only include alphanumeric characters with spaces, -, _, &, <></span>}
+                                                    </div>
+                                                </mat-error>
+                                            }
+                                        }
+                                    </div>
+                                </form>
+                                }
+                                @if (button.label === 'ADD_LEARNING_RESOURCE' && item.resources){
+                                <div class="flex flex-col">
+                                    @for(resource of item.resources;track resource;let j= $index){
+                                        <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2">
+                                            <section class="flex items-center gap-2">
+                                                <img src="assets/images/video-icon.png" alt="My Image">
+                                                <p class="overflow-ellipsis">{{resource.name}}</p>
+                                            </section>
+                                            <mat-icon (click)="deleteResource(i, j)" class="cursor-pointer">cancel</mat-icon>
+                                        </div>
+                                    }
+                                </div>
+                                }
+                            </mat-card-content>
+                        </div>
+                        }
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+@if(commentPayload || projectInReview) {
+    <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList" [mode]="mode" (comment)="saveComment($event)"></lib-comments-box>
+}
