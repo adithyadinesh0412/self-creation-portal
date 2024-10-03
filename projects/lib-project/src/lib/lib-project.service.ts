@@ -523,12 +523,12 @@ export class LibProjectService {
   validateTasksData(){  
     this.currentProjectMetaData.subscribe((data: any) => {
       const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
-      const isValid = this.projectData.tasks.every((task: { name: string }) => {
-        const isNameValid = task.name && task.name.trim().length > 0;
+      const isValid = this.projectData?.tasks.every((task: { name: string }) => {
+        const isNameValid = task.name && task.name?.length > 0;
         const isMaxLengthValid = task.name.length <= data?.tasksData.tasks.description.validators.maxLength;
         const isPatternValid = pattern.test(task.name);
+        return isNameValid && isMaxLengthValid && isPatternValid;
       });
-  
       this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
     });
   }
