@@ -175,13 +175,7 @@ export class LibProjectService {
         })
       }
     } else {
-//       if(this.projectData.tasks.length > 5){
-
-//  this.openSnackBarAndRedirect('task limit exceeded ', 'error');
-//       }else{
-        this.openSnackBarAndRedirect('FILL_ALL_THE_MANDATORY_FIELDS', 'error');
-      // }
-     
+      this.openSnackBarAndRedirect('Fill all the mandatory fields.', 'error');
     }
     this.checkSendForReviewValidation(false);
   }
