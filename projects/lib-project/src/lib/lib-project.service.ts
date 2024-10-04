@@ -90,7 +90,8 @@ export class LibProjectService {
       this.formMeta.formValidation.projectDetails === 'VALID' &&
       this.formMeta.formValidation.tasks === 'VALID' &&
       this.formMeta.formValidation.subTasks === 'VALID' &&
-      (this.formMeta.isCertificateSelected && this.formMeta.formValidation.certificates === 'VALID')
+      (this.formMeta.isCertificateSelected && this.formMeta.formValidation.certificates === 'VALID') &&
+      this.projectData.tasks.length <= (this.projectConfig?.max_task_count ? this.projectConfig.max_task_count : 10)
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
@@ -174,7 +175,13 @@ export class LibProjectService {
         })
       }
     } else {
-      this.openSnackBarAndRedirect('FILL_ALL_THE_MANDATORY_FIELDS', 'error');
+//       if(this.projectData.tasks.length > 5){
+
+//  this.openSnackBarAndRedirect('task limit exceeded ', 'error');
+//       }else{
+        this.openSnackBarAndRedirect('FILL_ALL_THE_MANDATORY_FIELDS', 'error');
+      // }
+     
     }
     this.checkSendForReviewValidation(false);
   }
