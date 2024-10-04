@@ -49,6 +49,11 @@ input:focus{
 .show-more {
     background: white;
 }
+.range-value {
+    border: 1px solid;
+    padding: 0 1rem;
+    border-radius: 10%;
+}
 
 ::ng-deep .info-tooltip .mdc-tooltip__surface {
     font-size: 0.75rem  !important; 
