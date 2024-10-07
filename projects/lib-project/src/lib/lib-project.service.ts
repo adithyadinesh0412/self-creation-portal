@@ -528,7 +528,8 @@ export class LibProjectService {
         const isNameValid = task.name && task.name?.length > 0;
         const isMaxLengthValid = task.name.length <= data?.tasksData.tasks.description.validators.maxLength;
         const isPatternValid = pattern.test(task.name);
-        return isNameValid && isMaxLengthValid && isPatternValid;
+        const isTaskLength = this.projectData.tasks.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
+        return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
       });
       this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
     });

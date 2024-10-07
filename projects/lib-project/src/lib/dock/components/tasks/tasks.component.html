@@ -6,6 +6,11 @@
         <div class="px-10 mt-52 mb-6  text-tertiary">
             <p>{{"TASK_DESCRIPTION" | translate}}</p>
         </div>
+        @if(tasks.controls.length > maxTaskLength){
+        <div class="px-10 mt-62 mb-6 text-red-600">
+            <p>*The maximum number of tasks that can be added is {{maxTaskLength}}</p>
+        </div>
+        }
         <form [formGroup]="tasksForm" (ngSubmit)="submit()" [ngClass]="{'disabled-with-pointer-events': viewOnly}">
             <div formArrayName="tasks">
                 @for(task of tasks.controls; track task; let i = $index){
