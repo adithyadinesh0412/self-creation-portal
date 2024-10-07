@@ -8,7 +8,7 @@
         </div>
         @if(tasks.controls.length > maxTaskLength){
         <div class="px-10 mt-62 mb-6 text-red-600">
-            <p>*The maximum number of tasks that can be added is {{maxTaskLength}}</p>
+            <p>{{"THE_MAXIMUM_NUMBER_OF_TASKS_THAT_CAN_BE_ADDED_IS" | translate}}{{maxTaskLength}}</p>
         </div>
         }
         <form [formGroup]="tasksForm" (ngSubmit)="submit()" [ngClass]="{'disabled-with-pointer-events': viewOnly}">

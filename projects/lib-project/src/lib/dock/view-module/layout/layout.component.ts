@@ -188,7 +188,6 @@ export class LayoutComponent {
       }
       case "COPY_AND_EDIT":{
         this.libProjectService.copyAndCreateProject().subscribe((res:any)=>{
-          console.log(res)
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: res.result.id,
