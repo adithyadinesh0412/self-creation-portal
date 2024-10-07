@@ -27,6 +27,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
@@ -45,6 +46,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     CommentsBoxComponent,
     LimitToRangeDirective,
+    MatTooltip,
+    MatTooltipModule,
     MatSliderModule
   ],
   templateUrl: './certificates.component.html',
@@ -737,6 +740,16 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
   }
 
+  showTooltip(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
+  }
+
+  hideTooltip(tooltip: MatTooltip) {
+    tooltip.hide(); 
+    tooltip.disabled = true; 
+  }
+  
   onShowMore(id:string) {
     const index = this.tasks.findIndex((element:any) => element.id === id);
     delete this.tasks[index].slicedName
