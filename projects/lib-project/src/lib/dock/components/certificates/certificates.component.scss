@@ -42,6 +42,14 @@ input:focus{
     pointer-events: auto !important;
 }
 
+.label-wrap {
+    max-width: 80%; 
+    white-space: normal; 
+    overflow-wrap: break-word; 
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
 .label-wrap::after {
     content: " ?";
 }
