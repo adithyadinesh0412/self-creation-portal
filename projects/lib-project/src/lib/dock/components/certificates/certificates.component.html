@@ -192,7 +192,7 @@
                         @if(item.name === "attachprojectevidence"){
                         <div class="flex">
                             <p>{{ item.label}}</p>
-                            <mat-icon class="cursor-pointer pl-1 -mt-1 text-iconGray text-xl enable-with-pointer-events" 
+                            <mat-icon class="cursor-pointer pl-1  text-iconGray text-xl enable-with-pointer-events" 
                             [matTooltip]="item?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above"
                             [matTooltipDisabled]="true"
                             #tooltip="matTooltip" 
@@ -223,7 +223,7 @@
                             <div class="flex">
                                 <mat-label class="mr-6"> {{ item.label}}</mat-label>
                                 <b class="range-value">{{range.value}}</b>
-                                <mat-icon class="cursor-pointer pl-1 -mt-2 text-xl text-iconGray enable-with-pointer-events" 
+                                <mat-icon class="cursor-pointer pl-1 -mt-[0.3rem] text-xl text-iconGray enable-with-pointer-events" 
                                 [matTooltip]="item?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
                                 [matTooltipDisabled]="true"
                                 #tooltip="matTooltip" 
@@ -242,7 +242,7 @@
                         <div class="mt-6" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                             <div class="flex">
                             <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600 cursor-pointer" (click)="onShowMore(item.id)" *ngIf="item?.slicedName && item.name.length > 150">show more</span></p>
-                            <mat-icon class="cursor-pointer pl-1 text-iconGray text-xl enable-with-pointer-events" 
+                            <mat-icon class="cursor-pointer mt-[0.40rem] pl-1 text-iconGray text-xl enable-with-pointer-events" 
                                 [matTooltip]="taskForm[0]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
                                 [matTooltipDisabled]="true"
                                 #tooltip="matTooltip" 
@@ -263,7 +263,7 @@
                                     <mat-label class="mr-6">Number of evidence needed for this task</mat-label>
                                     <b class="range-value">{{taskRange.value}}</b>
                                     <mat-icon 
-                                    class="cursor-pointer pl-1 text-xl -mt-2 text-iconGray mr-12 enable-with-pointer-events" 
+                                    class="cursor-pointer pl-1 text-xl -mt-[0.3rem] text-iconGray mr-12 enable-with-pointer-events" 
                                     [matTooltip]="taskForm[1]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
                                     [matTooltipDisabled]="true"
                                     #tooltip1="matTooltip" 
