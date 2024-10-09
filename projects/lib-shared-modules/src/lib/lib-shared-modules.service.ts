@@ -6,7 +6,7 @@ import { LOGOUT_URLS } from './configs/url.config.json';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastService } from './services/toast/toast.service';
-import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS } from './constants/urlConstants';
+import { SUBMITTED_FOR_REVIEW, UP_FOR_REVIEW, DRAFTS, BROWSE_EXISTING } from './constants/urlConstants';
 import { Subject } from 'rxjs';
 
 
@@ -57,6 +57,9 @@ export class LibSharedModulesService {
         break;
       case 'up-for-review':
         this.router.navigate([UP_FOR_REVIEW]);
+        break;
+      case 'browse-existing':
+        this.router.navigate([BROWSE_EXISTING]);
         break;
       default:
         this.router.navigate(['../'], { relativeTo: this.route });

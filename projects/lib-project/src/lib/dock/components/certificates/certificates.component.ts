@@ -132,6 +132,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         },
       }
   }
+  maximunNumberOfEvedence=15
   @ViewChild('certificateContainer', { static: false }) certificateContainer: ElementRef | any;
 
   private subscription: Subscription = new Subscription();
@@ -179,7 +180,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           params.mode === projectMode.VIEWONLY ||
           params.mode === projectMode.REVIEW ||
           params.mode === projectMode.REVIEWER_VIEW ||
-          this.mode === projectMode.CREATOR_VIEW
+          this.mode === projectMode.CREATOR_VIEW ||
+          this.mode === projectMode.COPY_EDIT
         ) {
           this.viewOnly = true;
           this.getCertificateForm();
@@ -664,8 +666,13 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     // this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
   }
 
-  changeEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
-    this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
+  //The function updates value with the newly calculated value based on the conditions.
+  changeEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any,minTaskEvidence:any) {
+    if(criterialValue < minTaskEvidence){
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? minTaskEvidence : 0;
+    }else{
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
+    }
   }
 
   setProjectEvidenceCriteriaValue(criterialValue:any) {
@@ -769,4 +776,14 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
     this.subscription.unsubscribe();
   }
+
+  onSliderInput(event: any, item: any,min:any,inputValue:any): void {
+    if ( event.target.value < min && min <=  this.maximunNumberOfEvedence) {
+      item.values = min
+    } else{
+      item.values =event.target.value
+    }
+    event.target.value = item.values
+    event.srcElement.value=item.values
+  } 
 }

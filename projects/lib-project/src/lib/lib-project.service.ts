@@ -90,7 +90,8 @@ export class LibProjectService {
       this.formMeta.formValidation.projectDetails === 'VALID' &&
       this.formMeta.formValidation.tasks === 'VALID' &&
       this.formMeta.formValidation.subTasks === 'VALID' &&
-      (this.formMeta.isCertificateSelected && this.formMeta.formValidation.certificates === 'VALID')
+      (this.formMeta.isCertificateSelected && this.formMeta.formValidation.certificates === 'VALID') &&
+      this.projectData.tasks.length <= (this.projectConfig?.max_task_count ? this.projectConfig.max_task_count : 10)
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
@@ -509,5 +510,28 @@ export class LibProjectService {
     return this.utilService
       .getCommentList(this.projectData.id)
       .pipe(map((response: any) => response.result.comments || []));
+  }
+
+  copyAndCreateProject(){
+    const config = {
+      url: this.Configuration.urlConFig.PROJECT_URLS.CREATE_OR_UPDATE_PROJECT +
+          '?reference_id=' + this.projectData.id,
+      payload: this.projectData,
+    };
+    return this.httpService.post(config.url, config.payload);
+  }
+
+  validateTasksData(){  
+    this.currentProjectMetaData.subscribe((data: any) => {
+      const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
+      const isValid = this.projectData?.tasks.every((task: { name: string }) => {
+        const isNameValid = task.name && task.name?.length > 0;
+        const isMaxLengthValid = task.name.length <= data?.tasksData.tasks.description.validators.maxLength;
+        const isPatternValid = pattern.test(task.name);
+        const isTaskLength = this.projectData.tasks.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
+        return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
+      });
+      this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+    });
   }
 }

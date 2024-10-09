@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService } from 'lib-shared-modules';
+import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService , projectMode} from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -182,6 +182,20 @@ export class LayoutComponent {
         this.subscription.add(
           this.sharedService.getSaveCommentCompletedObservable().subscribe(() => {
             this.libProjectService.sendForRequestChange() // Sends request change after comment save is completed
+          })
+        )
+        break;
+      }
+      case "COPY_AND_EDIT":{
+        this.subscription.add(
+          this.libProjectService.copyAndCreateProject().subscribe((res:any)=>{
+            this.router.navigate([PROJECT_DETAILS_PAGE], {
+              queryParams: {
+                projectId: res.result.id,
+                mode: projectMode.EDIT,
+                parent:"draft"
+              },
+            });
           })
         )
         break;
