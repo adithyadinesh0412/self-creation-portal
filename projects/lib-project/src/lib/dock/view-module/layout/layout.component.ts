@@ -187,15 +187,17 @@ export class LayoutComponent {
         break;
       }
       case "COPY_AND_EDIT":{
-        this.libProjectService.copyAndCreateProject().subscribe((res:any)=>{
-          this.router.navigate([PROJECT_DETAILS_PAGE], {
-            queryParams: {
-              projectId: res.result.id,
-              mode: projectMode.EDIT,
-              parent:"draft"
-            },
-          });
-        })
+        this.subscription.add(
+          this.libProjectService.copyAndCreateProject().subscribe((res:any)=>{
+            this.router.navigate([PROJECT_DETAILS_PAGE], {
+              queryParams: {
+                projectId: res.result.id,
+                mode: projectMode.EDIT,
+                parent:"draft"
+              },
+            });
+          })
+        )
         break;
       }
       default:

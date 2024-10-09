@@ -666,6 +666,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     // this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
   }
 
+  //The function updates value with the newly calculated value based on the conditions.
   changeEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any,minTaskEvidence:any) {
     if(criterialValue < minTaskEvidence){
       this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? minTaskEvidence : 0;

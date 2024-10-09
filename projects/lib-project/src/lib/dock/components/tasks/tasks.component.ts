@@ -289,7 +289,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   adjustValue(event: any, task:any): void {
-    let inputValue = parseInt(event.target.value, this.tasksData.minEvidences.validators.max); // Convert the input value to a number
+    let inputValue = parseInt(event.target.value, 10); // Convert the input value to a number
     if (inputValue < this.tasksData.minEvidences.validators.min) {
       inputValue = this.tasksData.minEvidences.validators.min;
     } else if (inputValue > this.tasksData.minEvidences.validators.max) {
