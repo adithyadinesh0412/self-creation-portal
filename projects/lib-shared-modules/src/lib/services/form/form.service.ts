@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable, of, switchMap, tap } from 'rxjs';
 import { ConfigService } from '../../configs/config.service';
 import { HttpProviderService } from '../http-provider.service';
 import { PROJECT_DETAILS, CERTIFICATE_DETAILS } from '../../constants/formConstant';
+import { IndexDbService } from '../index-db/index-db.service';
 
 
 
@@ -12,9 +13,36 @@ import { PROJECT_DETAILS, CERTIFICATE_DETAILS } from '../../constants/formConsta
 })
 export class FormService {
 
-  constructor(private httpService: HttpProviderService, private configService:ConfigService) { }
+  constructor(private httpService: HttpProviderService, private configService:ConfigService, private indexDb:IndexDbService) { }
 
-  // Getting form from api
+
+  // getForm(formBody: any): Observable<any> {
+  //   const config = {
+  //     url: this.configService.urlConFig.FORM_URLS.READ_FORM,
+  //     payload: formBody,
+  //   };
+
+  //   return this.indexDb.getData(config.url, 0).pipe(
+  //     switchMap((dbResponse: any) => {
+  //       if (dbResponse) {
+  //         // If data is found in IndexedDB, return it
+  //         return of(dbResponse);
+  //       } else {
+  //         // If no data in IndexedDB, make an HTTP request
+  //         return this.httpService.post(config.url, config.payload).pipe(
+  //           tap((result: any) => {
+  //             // Save the result to IndexedDB after a successful HTTP response
+  //             this.indexDb.addData(config.url, result).subscribe(() => {
+  //               console.log("Data added to IndexedDB");
+  //             });
+  //           }),
+  //           map((result: any) => result)
+  //         );
+  //       }
+  //     })
+  //   );
+  // }
+
   getForm(formBody: any) {
     const config = {
       url: this.configService.urlConFig.FORM_URLS.READ_FORM,
