@@ -759,10 +759,10 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   hideTooltip(tooltip: MatTooltip) {
-    tooltip.hide(); 
-    tooltip.disabled = true; 
+    tooltip.hide();
+    tooltip.disabled = true;
   }
-  
+
   onShowMore(id:string) {
     const index = this.tasks.findIndex((element:any) => element.id === id);
     delete this.tasks[index].slicedName
@@ -774,7 +774,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   ngOnDestroy(): void {
     // this.libProjectService.formMeta.formValidation.certificates = "VALID";
-    // this.libProjectService.checkCertificateValidations(true)
+    this.libProjectService.checkCertificateValidations(true)
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
@@ -792,5 +792,5 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
     event.target.value = item.values
     event.srcElement.value=item.values
-  } 
+  }
 }
