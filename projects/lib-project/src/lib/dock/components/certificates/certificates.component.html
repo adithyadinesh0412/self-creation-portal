@@ -99,7 +99,7 @@
                                     </div>
                                     <div class="mt-4">
                                         @if(ele.name === "attachlogo"){
-                                        <p class="required">{{ ele.label}}</p>
+                                        <p class="required" [ngClass]="{'error': (isSendForReview && libProjectService?.projectData?.certificate?.logos.no_of_logos == 1 &&libProjectService?.projectData?.certificate?.logos.stateLogo1 == '')||(isSendForReview && libProjectService?.projectData?.certificate?.logos.no_of_logos == 2 &&libProjectService?.projectData?.certificate?.logos.stateLogo2 == '')}">{{ ele.label}}</p>
                                         <section class="grid grid-cols-2 gap-2 mt-3">
                                             <div class="">
                                                 <div class="flex items-center" [ngClass]="{'opacity-70':libProjectService?.projectData?.certificate?.base_template_id == '' }">
@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="mt-4">
                                         @if(ele.name === "attachsign"){
-                                        <p class="required">{{ ele.label}}</p>
+                                        <p class="required" [ngClass]="{'error': (isSendForReview && libProjectService?.projectData?.certificate?.signature.no_of_signature == 1 &&libProjectService?.projectData?.certificate?.signature.signatureImg1 == '')||(isSendForReview && libProjectService?.projectData?.certificate?.signature.no_of_signature == 2 &&libProjectService?.projectData?.certificate?.signature.signatureImg2 == '')}">{{ ele.label}}</p>
                                         <section class="grid grid-cols-2 gap-2 mt-3">
                                             <div class="">
                                                 <div class="flex items-center" [ngClass]="{'opacity-70':libProjectService?.projectData?.certificate?.base_template_id == '' }">

@@ -60,6 +60,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   attachLogo:any= [];
   attachSign:any = [];
   certificateTypeSelected:string|any = '';
+  isSendForReview:boolean = false; // to handle the error cases in non-typical form fields
   evidenceNumber = [1, 2, 3];
   mode: string = '';
   viewOnly: boolean = false;
@@ -168,6 +169,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             if(reviewValidation) {
               this.certificateForm.markAllAsTouched();
               this.libProjectService.triggerSendForReview();
+              this.isSendForReview = true;
             }
           }
         )
@@ -394,8 +396,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         '',
         [
           Validators.required,
-          Validators.maxLength(255),
-          Validators.pattern(/^(?! )(?!.* {3})[\p{L}a-zA-Z0-9\-_ <>&]+$/),
+          Validators.maxLength(255)
         ],
       ],
       evidenceRequired: ['1', Validators.required],
@@ -438,6 +439,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   onCertificateTypeChange(value: string): void {
+    this.isSendForReview = false;
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
     this.libProjectService.projectData.certificate.base_template_url = this.certificateTypeSelected.url;
     this.libProjectService.projectData.certificate.base_template_id = this.certificateTypeSelected.id;
