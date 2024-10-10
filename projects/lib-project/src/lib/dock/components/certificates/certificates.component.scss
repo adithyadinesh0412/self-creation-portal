@@ -42,14 +42,6 @@ input:focus{
     pointer-events: auto !important;
 }
 
-.label-wrap {
-    max-width: 80%;
-    white-space: normal;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-all;
-}
-
 .label-wrap::after {
     content: " ?";
 }
@@ -64,26 +56,27 @@ input:focus{
 }
 
 .task-label {
+    word-break: break-all;
     overflow-wrap: break-word !important;
 }
   /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
     .task-label {
-        width: 39rem;
+        max-width: 39rem;
     }
 }
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
     .task-label {
-        width: 48rem;
+        max-width: 48rem;
     }
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
     .task-label {
-        width: 58rem;
+        max-width: 53rem;
     }
 }
 
