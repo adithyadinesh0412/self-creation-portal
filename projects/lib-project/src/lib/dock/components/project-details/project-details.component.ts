@@ -66,7 +66,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         )
       );
     }
-    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
+    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
@@ -81,7 +81,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
-        this.libProjectService.validateTasksData()
+        const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
+        this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
       }
     }
   }
@@ -102,7 +103,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .readProject(this.projectId)
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
-                         this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
+                          this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;
                           if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") && (this.mode !== projectMode.VIEWONLY)) {
                             this.getCommentConfigs()
                           }
@@ -154,8 +155,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
-                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                       this.libProjectService.formMeta = res.              this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;Map(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
                         if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
@@ -173,8 +173,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       .readProject(this.projectId)
                       .subscribe((res: any) => {
                         this.libProjectService.setProjectData(res.result);
-                       this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
-                        this.readProjectDeatilsAndMap(data.controls,res.result);
+                       this.libProjectService.formM              this.libProjectService.formMeta.formValidation = res.result.formMeta.formValidation ? res.result.formMeta.formValidation : this.libProjectService.formMeta.formValidation;DeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
                         if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
                           this.getCommentConfigs()
@@ -215,7 +214,8 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.formMeta.formValidation.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      this.libProjectService.validateTasksData()
+      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
+      this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
     }
   }
   startAutoSaving() {
@@ -322,16 +322,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
+      this.libProjectService.saveProjectFunc(false);
     }
     // if(this.mode.length==0 && this.route.snapshot.queryParamMap.get('parent') == 'create') {
-    //   this.libProjectService
-    //   .createOrUpdateProject(this.libProjectService.projectData)
-    //   .subscribe((res: any) => {
-    //     this.toastService.openSnackBar({
-    //       message: res.message,
-    //       class: 'success',
-    //     })
-    //   })
+    //   this.createProject()
     // }
     this.subscription.unsubscribe();
   }
