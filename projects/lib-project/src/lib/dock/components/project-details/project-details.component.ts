@@ -323,16 +323,16 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
     }
-    if(this.mode.length==0 && this.route.snapshot.queryParamMap.get('parent') == 'create') {
-      this.libProjectService
-      .createOrUpdateProject(this.libProjectService.projectData)
-      .subscribe((res: any) => {
-        this.toastService.openSnackBar({
-          message: res.message,
-          class: 'success',
-        })
-      })
-    }
+    // if(this.mode.length==0 && this.route.snapshot.queryParamMap.get('parent') == 'create') {
+    //   this.libProjectService
+    //   .createOrUpdateProject(this.libProjectService.projectData)
+    //   .subscribe((res: any) => {
+    //     this.toastService.openSnackBar({
+    //       message: res.message,
+    //       class: 'success',
+    //     })
+    //   })
+    // }
     this.subscription.unsubscribe();
   }
   formMarkTouched() {
