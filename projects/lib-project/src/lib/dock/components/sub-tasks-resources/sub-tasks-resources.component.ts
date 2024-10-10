@@ -114,7 +114,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             )
           );
           }
-          if (params.mode === projectMode.VIEWONLY || params.mode === projectMode.REVIEW || params.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
+          if (params.mode === projectMode.VIEWONLY || params.mode === projectMode.REVIEW || params.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
             this.viewOnly = true;
           }
         }else{

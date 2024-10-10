@@ -148,7 +148,7 @@ export class TasksComponent implements OnInit, OnDestroy {
           })
         }
 
-        if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
+        if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
           this.viewOnly = true
           // this.tasksForm.disable()
         }
@@ -167,15 +167,14 @@ export class TasksComponent implements OnInit, OnDestroy {
           if(reviewValidation) {
             if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
               this.tasksForm.markAllAsTouched();
-              this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+              this.checkValidation()
               this.libProjectService.triggerSendForReview();
             }
           }
         }
       )
     );
-    this.saveTasks()
-    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status ? this.tasks?.status: "INVALID"
+    this.checkValidation()
   }
 
   get tasks() {
@@ -196,7 +195,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       })
     });
     this.tasks.push(taskGroup);
-    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.checkValidation()
   }
 
   deleteTask(index: number) {
@@ -217,8 +216,7 @@ export class TasksComponent implements OnInit, OnDestroy {
         return true;
       } else if (result.data === "YES") {
         this.tasks.removeAt(index);
-        this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-        this.saveTasks()
+        this.checkValidation()
         return true;
       } else {
         return false;
@@ -228,7 +226,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   checkValidation() {
     this.saveTasks()
-    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
+    this.libProjectService.formMeta.formValidation.tasks = (this.tasks?.status && this.tasks.length <= this.maxTaskLength)  ? this.tasks?.status: "INVALID"
   }
 
   startAutoSaving() {
@@ -248,7 +246,6 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
     this.tasks.value.forEach((item:any, index:any) => {
       item.sequence_no = index + 1;
       item.type = item.type ? item.type : "simple"
@@ -258,14 +255,13 @@ export class TasksComponent implements OnInit, OnDestroy {
         item.evidence_details = {}
       }
     });
-    this.saveTasks()
+    this.checkValidation()
     this.libProjectService.updateProjectDraft(this.projectId).subscribe();
   }
 
   ngOnDestroy(){
     if((this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.libProjectService.projectData.id){
-      this.libProjectService.formMeta.formValidation.tasks =  this.tasks?.status? this.tasks?.status: "INVALID"
-      this.saveTasks()
+      this.checkValidation()
       this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
     }
     this.subscription.unsubscribe();
@@ -293,7 +289,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   adjustValue(event: any, task:any): void {
-    let inputValue = parseInt(event.target.value, this.tasksData.minEvidences.validators.max); // Convert the input value to a number
+    let inputValue = parseInt(event.target.value, 10); // Convert the input value to a number
     if (inputValue < this.tasksData.minEvidences.validators.min) {
       inputValue = this.tasksData.minEvidences.validators.min;
     } else if (inputValue > this.tasksData.minEvidences.validators.max) {

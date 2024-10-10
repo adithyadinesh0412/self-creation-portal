@@ -66,7 +66,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         )
       );
     }
-    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW) {
+    if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
       this.viewOnly = true
       this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly()
@@ -81,8 +81,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
       if(this.libProjectService.projectData.tasks){
-        const isValid = this.libProjectService.projectData.tasks.every((task: { name: any; }) => task.name);
-        this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+        this.libProjectService.validateTasksData()
       }
     }
   }
@@ -216,8 +215,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       this.libProjectService.formMeta.formValidation.projectDetails = ( this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }
     if(this.libProjectService.projectData.tasks){
-      const isValid = this.libProjectService.projectData.tasks.every((task: { description: any; }) => task.description);
-      this.libProjectService.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+      this.libProjectService.validateTasksData()
     }
   }
   startAutoSaving() {
@@ -324,7 +322,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
       }
-      this.libProjectService.saveProjectFunc(false);
     }
     if(this.mode.length==0 && this.route.snapshot.queryParamMap.get('parent') == 'create') {
       this.libProjectService
