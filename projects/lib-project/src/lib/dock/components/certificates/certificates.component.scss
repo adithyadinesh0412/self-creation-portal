@@ -55,7 +55,29 @@ input:focus{
     border-radius: 10%;
 }
 
+.task-label {
+    overflow-wrap: break-word !important;
+}
+  /* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+.task-label {
+    width: 39rem;
+}
+}
 
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+.task-label {
+    width: 48rem;
+}
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+.task-label {
+    width: 58rem;
+}
+}
 
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
     color: $primary !important;
