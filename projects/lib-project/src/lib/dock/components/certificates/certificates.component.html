@@ -39,13 +39,13 @@
                                                         }
                                                     </mat-select>
                                                 </mat-form-field>
-                                                <mat-icon 
-                                                class="absolute pl-1 bottom-[2.3rem] cursor-pointer text-xl text-iconGray enable-with-pointer-events" 
-                                                [matTooltip]="ele?.infoMessage" 
-                                                matTooltipClass="info-tooltip" 
+                                                <mat-icon
+                                                class="absolute pl-1 bottom-[2.3rem] cursor-pointer text-xl text-iconGray enable-with-pointer-events"
+                                                [matTooltip]="ele?.infoMessage"
+                                                matTooltipClass="info-tooltip"
                                                 matTooltipPosition="above"
                                                 [matTooltipDisabled]="true"
-                                                #tooltip="matTooltip" 
+                                                #tooltip="matTooltip"
                                                 (click)="showTooltip(tooltip)"
                                                 (mouseleave)="hideTooltip(tooltip)">info</mat-icon>
                                             </div>
@@ -73,10 +73,10 @@
                                                 [pattern]="ele.validators.pattern"
                                                 [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" (change)="setIssuerName(issuerName.value)">
                                             </mat-form-field>
-                                            <mat-icon 
-                                            class="absolute pl-1 bottom-[2.3rem] cursor-pointer text-xl text-iconGray enable-with-pointer-events" [matTooltip]="ele?.infoMessage" matTooltipClass="info-tooltip" 
+                                            <mat-icon
+                                            class="absolute pl-1 bottom-[2.3rem] cursor-pointer text-xl text-iconGray enable-with-pointer-events" [matTooltip]="ele?.infoMessage" matTooltipClass="info-tooltip"
                                             matTooltipPosition="above" [matTooltipDisabled]="true"
-                                            #tooltip="matTooltip" 
+                                            #tooltip="matTooltip"
                                             (click)="showTooltip(tooltip)"
                                             (mouseleave)="hideTooltip(tooltip)"
                                            >info</mat-icon>
@@ -102,7 +102,7 @@
                                         <p class="required">{{ ele.label}}</p>
                                         <section class="grid grid-cols-2 gap-2 mt-3">
                                             <div class="">
-                                                <div class="flex items-center">
+                                                <div class="flex items-center" [ngClass]="{'opacity-70':libProjectService?.projectData?.certificate?.base_template_id == '' }">
                                                     <mat-icon class="cursor-pointer text-primary"
                                                     (click)="attachLogos(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachLogos(1)">{{ele.textForLink}}</span>
                                                 </div><br>
@@ -135,7 +135,7 @@
                                         <p class="required">{{ ele.label}}</p>
                                         <section class="grid grid-cols-2 gap-2 mt-3">
                                             <div class="">
-                                                <div class="flex items-center">
+                                                <div class="flex items-center" [ngClass]="{'opacity-70':libProjectService?.projectData?.certificate?.base_template_id == '' }">
                                                     <mat-icon class="cursor-pointer text-primary"
                                                     (click)="attachSignature(1)">{{ele.icon}}</mat-icon><span class="px-2 text-primary cursor-pointer" (click)="attachSignature(1)">{{'ADD_IMAGE_1' | translate}}</span>
                                                 </div><br>
@@ -192,10 +192,10 @@
                         @if(item.name === "attachprojectevidence"){
                         <div class="flex">
                             <p>{{ item.label}}</p>
-                            <mat-icon class="cursor-pointer pl-1  text-iconGray text-xl enable-with-pointer-events" 
+                            <mat-icon class="cursor-pointer pl-1  text-iconGray text-xl enable-with-pointer-events"
                             [matTooltip]="item?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above"
                             [matTooltipDisabled]="true"
-                            #tooltip="matTooltip" 
+                            #tooltip="matTooltip"
                             (click)="showTooltip(tooltip)"
                             (mouseleave)="hideTooltip(tooltip)"
                             >info</mat-icon>
@@ -225,13 +225,13 @@
                                 <mat-label class="mr-6"> {{ item.label}}</mat-label>
                                 <b class="range-value">{{range.value}}</b>
                                </div>
-                                <mat-icon class="cursor-pointer pl-1 text-xl text-iconGray enable-with-pointer-events" 
-                                [matTooltip]="item?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
+                                <mat-icon class="cursor-pointer pl-1 text-xl text-iconGray enable-with-pointer-events"
+                                [matTooltip]="item?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above"
                                 [matTooltipDisabled]="true"
-                                #tooltip="matTooltip" 
+                                #tooltip="matTooltip"
                                 (click)="showTooltip(tooltip)"
                                 (mouseleave)="hideTooltip(tooltip)"
-                                >info</mat-icon> 
+                                >info</mat-icon>
                             </div>
                             <mat-slider min="1" [max]="maximunNumberOfEvedence" step="1" showTickMarks discrete style="width: 100%;"  [disabled]="checkProjectCriteriaIncluded()" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                                 <input matSliderThumb matInput formControlName="evidenceRequired" #range (change)="setProjectEvidenceCriteriaValue(range.value)" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
@@ -243,11 +243,11 @@
                     @if(item?.evidence_details?.min_no_of_evidences) {
                         <div class="mt-6" [style.pointer-events]="viewOnly ? 'none' : 'auto'">
                             <div class="flex">
-                            <p class="mt-2 label-wrap"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600 cursor-pointer" (click)="onShowMore(item.id)" *ngIf="item?.slicedName && item.name.length > 150">show more</span></p>
-                            <mat-icon class="cursor-pointer mt-[0.40rem] pl-1 text-iconGray text-xl enable-with-pointer-events" 
-                                [matTooltip]="taskForm[0]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
+                                <p class="mt-2 label-wrap task-label"> {{taskForm[0]?.label}}&nbsp;{{item.slicedName ? item.slicedName :item?.name}}&nbsp;<span class="text-emerald-600 cursor-pointer" (click)="onShowMore(item.id)" *ngIf="item?.slicedName && item.name.length > 150">show more</span></p>
+                            <mat-icon class="cursor-pointer mt-[0.40rem] pl-1 text-iconGray text-xl enable-with-pointer-events"
+                                [matTooltip]="taskForm[0]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above"
                                 [matTooltipDisabled]="true"
-                                #tooltip="matTooltip" 
+                                #tooltip="matTooltip"
                                 (click)="showTooltip(tooltip)"
                                 (mouseleave)="hideTooltip(tooltip)"
                                 >info</mat-icon>
@@ -264,14 +264,14 @@
                                 <div class="flex mt-6">
                                     <mat-label class="mr-6">Number of evidence needed for this task</mat-label>
                                     <b class="range-value"  [ngClass]="{'error': item?.evidence_details.min_no_of_evidences > maximunNumberOfEvedence && (!(libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0 || !libProjectService.projectData.formMeta.taskEvidenceSelected[item.id])) }">{{item?.evidence_details.min_no_of_evidences > maximunNumberOfEvedence ? item?.evidence_details.min_no_of_evidences : taskRange.value}}</b>
-                                    <mat-icon 
-                                    class="cursor-pointer pl-1 text-xl  text-iconGray mr-12 enable-with-pointer-events" 
-                                    [matTooltip]="taskForm[1]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above" 
+                                    <mat-icon
+                                    class="cursor-pointer pl-1 text-xl  text-iconGray mr-12 enable-with-pointer-events"
+                                    [matTooltip]="taskForm[1]?.infoMessage" matTooltipClass="info-tooltip" matTooltipPosition="above"
                                     [matTooltipDisabled]="true"
-                                    #tooltip1="matTooltip" 
+                                    #tooltip1="matTooltip"
                                     (click)="showTooltip(tooltip1)"
                                     (mouseleave)="hideTooltip(tooltip1)"
-                                    >info</mat-icon> 
+                                    >info</mat-icon>
                                 </div>
                                 <mat-slider [min]="1" [id]="item.id" [disabled]="libProjectService.projectData.formMeta.taskEvidenceSelected[item.id] == 0 || !libProjectService.projectData.formMeta.taskEvidenceSelected[item.id]" [max]="maximunNumberOfEvedence" step="1" showTickMarks discrete style="width: 100%;" [style.pointer-events]="viewOnly ? 'none' : 'auto'" (slideend)="onSliderInput($event, item, item?.evidence_details.min_no_of_evidences, taskRange.value)"  (input)="onSliderInput($event, item, item?.evidence_details.min_no_of_evidences, taskRange.value)" (pointerup)="onSliderInput($event, item, item?.evidence_details.min_no_of_evidences, taskRange.value)">
                                     <input matSliderThumb [value]="item?.values ? item?.values :item?.evidence_details.min_no_of_evidences"  [id]="item.id"  matInput #taskRange (change)="changeEvidenceCriteriaValue(taskRange.value,1,item,item?.evidence_details.min_no_of_evidences);" [style.pointer-events]="viewOnly ? 'none' : 'auto'">

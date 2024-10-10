@@ -166,6 +166,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.libProjectService.isSendForReviewValidation.subscribe(
           (reviewValidation: boolean) => {
             if(reviewValidation) {
+              this.certificateForm.markAllAsTouched();
               this.libProjectService.triggerSendForReview();
             }
           }
@@ -448,6 +449,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   attachLogos(attachmentType:number) {
+    if(this.libProjectService.projectData.certificate.base_template_id == '') {
+      return
+    }
     const attachLogoData = this.certificateDetails.find(
       (field: any) => field.name === 'attachlogo'
     );
@@ -480,6 +484,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   attachSignature(signatureType:number) {
+    if(this.libProjectService.projectData.certificate.base_template_id == '') {
+      return
+    }
     const attachSignData = this.certificateDetails.find(
       (field: any) => field.name === 'attachsign'
     );
@@ -752,10 +759,10 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   hideTooltip(tooltip: MatTooltip) {
-    tooltip.hide(); 
-    tooltip.disabled = true; 
+    tooltip.hide();
+    tooltip.disabled = true;
   }
-  
+
   onShowMore(id:string) {
     const index = this.tasks.findIndex((element:any) => element.id === id);
     delete this.tasks[index].slicedName
@@ -767,7 +774,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   ngOnDestroy(): void {
     // this.libProjectService.formMeta.formValidation.certificates = "VALID";
-    // this.libProjectService.checkCertificateValidations(true)
+    this.libProjectService.checkCertificateValidations(true)
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
@@ -785,5 +792,5 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
     event.target.value = item.values
     event.srcElement.value=item.values
-  } 
+  }
 }
