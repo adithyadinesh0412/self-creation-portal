@@ -218,11 +218,11 @@ export class LibProjectService {
     );
   }
 
-  checkCertificateValidations(skipToaster?:boolean) {
+  checkCertificateValidations(showToast?:boolean) {
     if(this.projectData.certificate) {
       if (this.projectData.certificate && this.projectData?.certificate?.issuer === '') {
         this.formMeta.formValidation.certificates = "INVALID"
-        if(skipToaster) {
+        if(showToast) {
           this.toastService.openSnackBar({
             message: 'Please fill issuer Name',
             class: 'error',
@@ -238,7 +238,7 @@ export class LibProjectService {
           this.projectData.certificate.logos.stateLogo2 === '')
       ) {
         this.formMeta.formValidation.certificates = "INVALID"
-        if(skipToaster) {
+        if(showToast) {
           this.toastService.openSnackBar({
             message: 'Please upload certificate logo',
             class: 'error',
@@ -253,7 +253,7 @@ export class LibProjectService {
         (this.projectData.certificate.signature.no_of_signature > 1 &&
           this.projectData.certificate.signature.signatureImg2 === '')) {
             this.formMeta.formValidation.certificates = "INVALID"
-            if(skipToaster) {
+            if(showToast) {
               this.toastService.openSnackBar({
                 message: 'Please upload certificate Signature',
                 class: 'error',
@@ -265,7 +265,7 @@ export class LibProjectService {
       return true;
     }
     else {
-      if(!skipToaster) {
+      if(!showToast) {
         this.formMeta.formValidation.certificates = "VALID"
       }
       return true;
@@ -521,7 +521,7 @@ export class LibProjectService {
     return this.httpService.post(config.url, config.payload);
   }
 
-  validateTasksData(){  
+  validateTasksData(){
     this.currentProjectMetaData.subscribe((data: any) => {
       const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
       const isValid = this.projectData?.tasks.every((task: { name: string }) => {
