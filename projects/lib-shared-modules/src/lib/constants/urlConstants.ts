@@ -2,6 +2,7 @@ export const PROJECT_DETAILS_PAGE = 'solution/project/project-details'
 export const SUBMITTED_FOR_REVIEW = 'home/submit-for-review'
 export const DRAFTS = 'home/drafts'
 export const UP_FOR_REVIEW = 'home/up-for-review'
+export const BROWSE_EXISTING = 'home/browse-existing'
 export const resourceStatus = {
     SUBMITTED: 'SUBMITTED',
     PUBLISHED: 'PUBLISHED',
@@ -24,7 +25,8 @@ export const projectMode = {
   REQUEST_FOR_EDIT:'reqEdit',
   CREATOR_VIEW:'creatorView',
   REVIEWER_VIEW:'reviewerView',
-  REVIEW:'review'
+  REVIEW:'review',
+  COPY_EDIT:"copyEdit"
 };
 export const ROUTE_PATHS = {
     SIDENAV: {

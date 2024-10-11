@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeaderComponent, SideNavbarComponent, DialogModelComponent } from 'lib-shared-modules';
+import { HeaderComponent, SideNavbarComponent, DialogModelComponent, IndexDbService } from 'lib-shared-modules';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +26,7 @@ export class AppComponent {
     "title" : "Creation Portal"
   }
 
-  constructor(private translate: TranslateService, private router: Router, private viewportScroller: ViewportScroller) {
+  constructor(private translate: TranslateService, private router: Router, private viewportScroller: ViewportScroller,private dbService: IndexDbService) {
     this.initializeTranslation();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -45,4 +45,19 @@ export class AppComponent {
   scrollToTop(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
   }
+  people: any[] = [];
+
+  addData() {
+    const person = { name: 'John Doe', age: 25 };
+    this.dbService.addData('people', person).subscribe((res:any)=>{
+      console.log(res,"data created")
+    },((err) => console.log(err)));
+  }
+
+  getData() {
+    this.dbService.getAllData('people').subscribe((res:any)=>{
+      console.log(res,"data fetched")
+    })
+  }
+
 }

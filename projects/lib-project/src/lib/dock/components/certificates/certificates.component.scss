@@ -42,13 +42,6 @@ input:focus{
     pointer-events: auto !important;
 }
 
-.label-wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
 .label-wrap::after {
     content: " ?";
 }
@@ -56,8 +49,51 @@ input:focus{
 .show-more {
     background: white;
 }
+.range-value {
+    border: 1px solid;
+    padding: 0.2rem 1rem;
+    border-radius: 10%;
+}
 
+.task-label {
+    word-break: break-all;
+    overflow-wrap: break-word !important;
+}
+  /* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .task-label {
+        max-width: 37rem;
+    }
+}
 
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .task-label {
+        max-width: 48rem;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .task-label {
+        max-width: 53rem;
+    }
+}
+
+::ng-deep .info-tooltip .mdc-tooltip__surface {
+    font-size: 0.75rem  !important;
+    background-color: #0a4f9d  !important;
+}
+
+::ng-deep .info-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #0a4f9d transparent transparent transparent;
+}
 
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
     color: $primary !important;
@@ -69,4 +105,8 @@ input:focus{
 
 ::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
     pointer-events: none;
+}
+
+.error{
+    color: $error;
 }

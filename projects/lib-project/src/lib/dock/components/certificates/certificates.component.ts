@@ -27,6 +27,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LibProjectService } from '../../../lib-project.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import {MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
+import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'lib-certificates',
@@ -43,7 +45,10 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatDialogModule,
     MatInputModule,
     CommentsBoxComponent,
-    LimitToRangeDirective
+    LimitToRangeDirective,
+    MatTooltip,
+    MatTooltipModule,
+    MatSliderModule
   ],
   templateUrl: './certificates.component.html',
   styleUrl: './certificates.component.scss',
@@ -55,6 +60,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   attachLogo:any= [];
   attachSign:any = [];
   certificateTypeSelected:string|any = '';
+  isSendForReview:boolean = false; // to handle the error cases in non-typical form fields
   evidenceNumber = [1, 2, 3];
   mode: string = '';
   viewOnly: boolean = false;
@@ -88,7 +94,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       issuer: "",
       criteria: {
         validationText: 'Complete validation message',
-        expression: 'C1&&C2&&C3',
+        expression: 'C1&&C3',
         conditions: {
           C1: {
             validationText: 'Project Should be submitted.',
@@ -127,6 +133,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         },
       }
   }
+  maximunNumberOfEvedence=15
   @ViewChild('certificateContainer', { static: false }) certificateContainer: ElementRef | any;
 
   private subscription: Subscription = new Subscription();
@@ -160,7 +167,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.libProjectService.isSendForReviewValidation.subscribe(
           (reviewValidation: boolean) => {
             if(reviewValidation) {
+              this.certificateForm.markAllAsTouched();
               this.libProjectService.triggerSendForReview();
+              this.isSendForReview = true;
             }
           }
         )
@@ -174,7 +183,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           params.mode === projectMode.VIEWONLY ||
           params.mode === projectMode.REVIEW ||
           params.mode === projectMode.REVIEWER_VIEW ||
-          this.mode === projectMode.CREATOR_VIEW
+          this.mode === projectMode.CREATOR_VIEW ||
+          this.mode === projectMode.COPY_EDIT
         ) {
           this.viewOnly = true;
           this.getCertificateForm();
@@ -188,7 +198,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria) {
                     task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id] ? this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value : task.evidence_details.min_no_of_evidences
                   }
-                  return task;
+                  task.slicedName = task.name.slice(0,150);
+                  return task
                 }
               });
             }
@@ -306,6 +317,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         if(this.libProjectService.projectData.certificate && this.libProjectService.projectData.certificate.criteria && this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id]) {
           task.values = this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[task.id].value
         }
+        if(task.name.length > 150){
+          task.slicedName = task.name.slice(0,150);
+        }
         return task;
       }
     });
@@ -382,8 +396,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         '',
         [
           Validators.required,
-          Validators.maxLength(255),
-          Validators.pattern(/^(?! )(?!.* {3})[\p{L}a-zA-Z0-9\-_ <>&]+$/),
+          Validators.maxLength(255)
         ],
       ],
       evidenceRequired: ['1', Validators.required],
@@ -426,6 +439,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   onCertificateTypeChange(value: string): void {
+    this.isSendForReview = false;
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
     this.libProjectService.projectData.certificate.base_template_url = this.certificateTypeSelected.url;
     this.libProjectService.projectData.certificate.base_template_id = this.certificateTypeSelected.id;
@@ -437,6 +451,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   attachLogos(attachmentType:number) {
+    if(this.libProjectService.projectData.certificate.base_template_id == '') {
+      return
+    }
     const attachLogoData = this.certificateDetails.find(
       (field: any) => field.name === 'attachlogo'
     );
@@ -469,6 +486,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
   }
 
   attachSignature(signatureType:number) {
+    if(this.libProjectService.projectData.certificate.base_template_id == '') {
+      return
+    }
     const attachSignData = this.certificateDetails.find(
       (field: any) => field.name === 'attachsign'
     );
@@ -655,8 +675,13 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     // this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
   }
 
-  changeEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any) {
-    this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
+  //The function updates value with the newly calculated value based on the conditions.
+  changeEvidenceCriteriaValue(criterialValue:any,taskCriteria:any,item:any,minTaskEvidence:any) {
+    if(criterialValue < minTaskEvidence){
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? minTaskEvidence : 0;
+    }else{
+      this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
+    }
   }
 
   setProjectEvidenceCriteriaValue(criterialValue:any) {
@@ -730,9 +755,28 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }
   }
 
+  showTooltip(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
+  }
+
+  hideTooltip(tooltip: MatTooltip) {
+    tooltip.hide();
+    tooltip.disabled = true;
+  }
+
+  onShowMore(id:string) {
+    const index = this.tasks.findIndex((element:any) => element.id === id);
+    delete this.tasks[index].slicedName
+  }
+
+  checkProjectCriteriaIncluded() {
+    return this.libProjectService.projectData?.certificate?.criteria?.expression?.includes("C2") ? false : true;
+  }
+
   ngOnDestroy(): void {
     // this.libProjectService.formMeta.formValidation.certificates = "VALID";
-    // this.libProjectService.checkCertificateValidations(true)
+    this.libProjectService.checkCertificateValidations(false)
     if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
       if(this.libProjectService.projectData.id) {
         this.libProjectService.createOrUpdateProject(this.libProjectService.projectData,this.projectId).subscribe((res)=> console.log(res))
@@ -756,5 +800,15 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
       this.libProjectService.saveProjectFunc(false);
     }
     this.subscription.unsubscribe();
+  }
+
+  onSliderInput(event: any, item: any,min:any,inputValue:any): void {
+    if ( event.target.value < min && min <=  this.maximunNumberOfEvedence) {
+      item.values = min
+    } else{
+      item.values =event.target.value
+    }
+    event.target.value = item.values
+    event.srcElement.value=item.values
   }
 }

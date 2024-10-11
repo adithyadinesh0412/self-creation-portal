@@ -387,7 +387,7 @@ applyButtons(button: any, cardItem: any, clearExisting: boolean = false): void {
           this.router.navigate([PROJECT_DETAILS_PAGE], {
             queryParams: {
               projectId: item.id,
-              mode: projectMode.VIEWONLY,
+              mode: projectMode.COPY_EDIT,
               parent:"browse-existing"
             }
           });
