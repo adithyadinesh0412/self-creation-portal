@@ -44,12 +44,14 @@
         }
       </div>
     }
-    <div  class="button-container">
+    @if(dialogData.control?.addButton){
+      <div  class="button-container">
         <button (click)="onClickAddResource()" [disabled]="myGroup.invalid" mat-raised-button>
           <mat-icon class="cursor-pointer">add_circle</mat-icon>
           <p> {{dialogData.control?.addButton}}</p>
         </button>
     </div>
+    }
   </main>
   <hr>
   <section class="footer">

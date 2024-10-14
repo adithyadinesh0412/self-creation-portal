@@ -77,7 +77,8 @@ export class TasksComponent implements OnInit, OnDestroy {
                     learning_resources:element?.learning_resources? [element.learning_resources] : [],
                     children: [element?.children],
                     type:[element?.type],
-                    sequence_no:[element?.sequence_no]
+                    sequence_no:[element?.sequence_no],
+                    solution_details:element.solution_details ?element.solution_details :{}
                   });
                   this.tasks.push(task);
                 })
@@ -112,7 +113,8 @@ export class TasksComponent implements OnInit, OnDestroy {
                       learning_resources:[element.learning_resources ?  element.learning_resources : []],
                       children: [element.children],
                       type:[element.type],
-                      sequence_no: [element.sequence_no]
+                      sequence_no: [element.sequence_no],
+                      solution_details:element.solution_details ?element.solution_details :{}
                     });
                     this.tasks.push(task);
                   })
