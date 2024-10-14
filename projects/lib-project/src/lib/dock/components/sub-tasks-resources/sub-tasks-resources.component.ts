@@ -131,35 +131,16 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     return this.subtask.get('subtasks') as FormArray;
   }
 
-  getButtonStates = (task:any) => {
-    if (task.name?.length) {
-      if (task.solution_details.name) {
-        return [
-          { "label": "ADD_OBSERVATION", "disable": true },
-          { "label": "ADD_LEARNING_RESOURCE", "disable": true },
-          { "label": "ADD_SUBTASKS", "disable": true }
-        ];
-      } else if ((task?.learning_resources && task.learning_resources.length) || (task?.resources && task.resources.length) || task.children.length ) {
-        return [
-          { "label": "ADD_OBSERVATION", "disable": true },
-          { "label": "ADD_LEARNING_RESOURCE", "disable": false },
-          { "label": "ADD_SUBTASKS", "disable": false }
-        ];
-      } else {
-        return [
-          { "label": "ADD_OBSERVATION", "disable": false },
-          { "label": "ADD_LEARNING_RESOURCE", "disable": false },
-          { "label": "ADD_SUBTASKS", "disable": false }
-        ];
-      }
-    } else{
-      return [
-        { "label": "ADD_OBSERVATION", "disable": true },
-        { "label": "ADD_LEARNING_RESOURCE", "disable": true },
-        { "label": "ADD_SUBTASKS", "disable": true }
-      ];
-    }
-};
+  getButtonStates = (task: any) => {
+    const disableAll = !task?.name?.length || task?.solution_details?.name;
+    const disableObservation = !!(task?.learning_resources?.length || task?.resources?.length || task?.children?.length);
+  
+    return [
+      { "label": "ADD_OBSERVATION", "disable": disableAll || disableObservation },
+      { "label": "ADD_LEARNING_RESOURCE", "disable": disableAll },
+      { "label": "ADD_SUBTASKS", "disable": disableAll }
+    ];
+  };
 
   createSubTaskForm() {
 
