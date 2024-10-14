@@ -11,7 +11,7 @@
             <div>
                 <p class="mt-5 text-lg text-tertiary">{{"SUBTASK_HEADER"| translate}} {{i+1}}</p>
                 <div>
-                    <div class="flex flex-row gap-28  pt-5 pb-8">
+                    <div class="flex flex-row gap-28  pt-5 pb-8 grid grid-cols-3 gap-8 pt-5 pb-8">
                         @for(button of item.buttons; track button) {
                         <div class="">
                             <mat-card-content class="cursor-pointer">
@@ -24,7 +24,7 @@
                                         $index) {
                                         <div class="flex items-center space-x-2 custom-input-wrapper">
                                             <mat-form-field floatLabel="always" class="w-full" appearance="outline">
-                                            <input matInput [value]="control.name" maxlength="256" pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-_ <>&]+$" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask" (change)="saveSubtask()">
+                                            <input matInput [value]="control.name" maxlength="256" pattern="^(?! )(?!.* {3})[a-zA-Z0-9\-_ <>&]+$" class="border border-gray-300 rounded px-2 py-1 text-gray-500" type="text" [formControlName]="j" placeholder="Add a subtask" (change)="savingSubtask(i,j)">
                                             </mat-form-field>
                                             <mat-icon class="cursor-pointer"
                                                 (click)="onDeleteSubtask(i, j)" color="primary">delete</mat-icon>
@@ -55,6 +55,27 @@
                                     }
                                 </div>
                                 }
+
+                                @if (button.label === 'ADD_OBSERVATION' && item.solution_details.name){
+                                    <div class="flex flex-col">
+                                            <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2">
+                                                <section class="flex items-center gap-2">
+                                                    <img src="assets/images/video-icon.png" alt="My Image">
+                                                    <p class="overflow-ellipsis">{{item.solution_details.name}}</p>
+                                                </section>
+                                                <mat-icon  (click)="deleteObservation(i)" class="cursor-pointer">cancel</mat-icon>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between gap-2" [ngClass]="">
+                                                    <p class="text-tertiary">{{observationFormDetails.minSubmissionRequired.label | translate}}</p>
+                                                    <input matInput [readonly]="viewOnly" required="true"
+                                                        placeholder="1" type="number" 
+                                                        [min]="observationFormDetails.minSubmissionRequired.validators.min" [max]="observationFormDetails.minSubmissionRequired.validators.max" [value]="item.solution_details.min_no_of_submissions_required"
+                                                        class="w-14 block border text-center" (input)="addMinSubmissionsRequired($event,i)" (change)="addMinSubmissionsRequired($event,i)" />
+                                                </div>
+                                            </div>
+                                    </div>
+                                    }
                             </mat-card-content>
                         </div>
                         }

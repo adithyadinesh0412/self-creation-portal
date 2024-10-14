@@ -48,6 +48,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   commentPayload:any;
   commentsList:any = [];
   projectInReview:boolean = false;
+  observationFormDetails:any
   private subscription: Subscription = new Subscription();
   private autoSaveSubscription: Subscription = new Subscription();
 
@@ -61,6 +62,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.subscription.add(
     this.libProjectService.currentProjectMetaData.subscribe(data => {
       this.learningResources = data?.tasksData.subTaskLearningResources
+      this.observationFormDetails =  data?.tasksData.observationDeatils
     })
     )
     this.subscription.add(
@@ -129,22 +131,30 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     return this.subtask.get('subtasks') as FormArray;
   }
 
+  getButtonStates = (task: any) => {
+    const disableAll = !task?.name?.length || task?.solution_details?.name;
+    const disableObservation = !!(task?.learning_resources?.length || task?.resources?.length || task?.children?.length);
+  
+    return [
+      { "label": "ADD_OBSERVATION", "disable": disableAll || disableObservation },
+      { "label": "ADD_LEARNING_RESOURCE", "disable": disableAll },
+      { "label": "ADD_SUBTASKS", "disable": disableAll }
+    ];
+  };
+
   createSubTaskForm() {
-    const getButtonStates = (taskDescriptionLength: number) => {
-        return taskDescriptionLength
-            ? [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": false}, {"label": "ADD_SUBTASKS", "disable": false}]
-            : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}];
-    };
 
     const createTaskObject = (task?: any) => {
        let subtask =task?.children  ?  task.children.map((child: any) => this.fb.control(child.name)):[]
         return {
-            buttons: task ? getButtonStates(task.name?.length) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            buttons: task ? this.getButtonStates(task) : [{"label": "ADD_OBSERVATION", "disable": true}, {"label": "ADD_LEARNING_RESOURCE", "disable": true}, {"label": "ADD_SUBTASKS", "disable": true}],
+            name: task?.name,
             subTasks: this.fb.group({
               subtasks: this.fb.array(task?.children?.length > 0 ? subtask : [])
             }),
              resources : task?.learning_resources?.length > 0 ? task.learning_resources : [],
-             children: task?.children ? task.children : []
+             children: task?.children ? task.children : [],
+             solution_details: task?.solution_details ? task?.solution_details : {} 
         };
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
@@ -173,6 +183,24 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   onAction(button : string, taskIndex: number) {
       switch (button) {
         case 'ADD_OBSERVATION':
+          const dialogObservation = this.dialog.open(DialogModelComponent, {
+            disableClose: true,
+            data: {
+              control: this.observationFormDetails.observationFormDetails,
+              ExistingObservation:this.taskData[taskIndex].solution_details
+            }
+            });
+            const componentInstanceObservation = dialogObservation.componentInstance;
+            componentInstanceObservation.saveLearningResource.subscribe((result: any) => {
+              if (result) {
+                this.taskData[taskIndex].solution_details = {
+                  ...result[0],
+                  min_no_of_submissions_required: 1
+                };
+                this.saveSubtask()
+                this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
+              }
+            });
           break;
 
         case 'ADD_LEARNING_RESOURCE':
@@ -189,6 +217,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (result) {
                 this.taskData[taskIndex].resources = this.taskData[taskIndex].resources.concat(result) // Save resources to the specific task
                 this.saveSubtask()
+                this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
               }
             });
           break;
@@ -203,17 +232,27 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   addSubTask(taskIndex: number) {
-    const control = <FormArray>this.taskData[taskIndex].subTasks.get('subtasks');
-    control.push(this.fb.control(''));
+    <FormArray>this.taskData[taskIndex].subTasks.get('subtasks').push(this.fb.control(''));
+    this.taskData[taskIndex].children.push(this.fb.control(''));
+    this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
   }
 
   onDeleteSubtask(taskIndex: number, subTaskIndex: number) {
-    const control = <FormArray>this.taskData[taskIndex].subTasks.get('subtasks');
-    control.removeAt(subTaskIndex);
+    <FormArray>this.taskData[taskIndex].subTasks.get('subtasks').removeAt(subTaskIndex);
+    this.taskData[taskIndex].children.splice(subTaskIndex, 1);
+    this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
   }
 
   deleteResource(taskIndex: number, resourceIndex: number) {
     this.taskData[taskIndex].resources.splice(resourceIndex, 1);
+    this.saveSubtask()
+    this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
+  }
+
+  deleteObservation(taskIndex: number){
+    this.taskData[taskIndex].solution_details={}
+    this.saveSubtask()
+    this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
   }
   onSubtasks(form: FormGroup, taskIndex: number) {}
 
@@ -245,6 +284,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
           )
         }
         this.projectData.tasks[i]['children'] = subtasks;
+        this.projectData.tasks[i]['solution_details'] = this.taskData[i]?.solution_details;
       }
     }
   }
@@ -289,6 +329,25 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
         });
       })
     );
+  }
+
+
+  savingSubtask(taskIndex:any,j:any){
+    this.saveSubtask();
+    this.taskData[taskIndex].children[j] = this.taskData[taskIndex]?.subTasks.value.subtasks[j]
+    this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
+  }
+
+  addMinSubmissionsRequired(event:any,taskIndex:any){
+    let inputValue = parseInt(event.target.value, 10); // Convert the input value to a number
+    if (inputValue < 1) {
+      inputValue = this.observationFormDetails.minSubmissionRequired.validators.min;
+    } else if (inputValue > 10) {
+      inputValue = this.observationFormDetails.minSubmissionRequired.validators.max;
+    }
+    event.target.value = inputValue;
+    this.taskData[taskIndex].solution_details.min_no_of_submissions_required = inputValue;
+    this.saveSubtask()
   }
 
 }

@@ -42,35 +42,35 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       })
     )
    }
-  ngOnInit() {
+   ngOnInit() {
     if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
       this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
-      this.subscription.add(
-        this.libProjectService.isProjectSave.subscribe(
-          (isProjectSave: boolean) => {
-            if (isProjectSave && this.router.url.includes('project-details')) {
-              this.saveForm();
-            }
-          }
-        )
-      );
-      this.subscription.add( // Check validation before sending for review.
-        this.libProjectService.isSendForReviewValidation.subscribe(
-          (reviewValidation: boolean) => {
-            if(reviewValidation) {
-              this.formMarkTouched();
-              this.libProjectService.triggerSendForReview();
-            }
-          }
-        )
-      );
     }
     if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
       this.viewOnly = true
       this.libProjectService.projectData = {};
-      this.getProjectDetailsForViewOnly()
+      this.getProjectDetailsForViewOnly();
     }
+    this.subscription.add(
+      this.libProjectService.isProjectSave.subscribe(
+        (isProjectSave: boolean) => {
+          if (isProjectSave && this.router.url.includes('project-details')) {
+            this.saveForm();
+          }
+        }
+      )
+    );
+    this.subscription.add( // Check validation before sending for review.
+      this.libProjectService.isSendForReviewValidation.subscribe(
+        (reviewValidation: boolean) => {
+          if(reviewValidation) {
+            this.formMarkTouched();
+            this.libProjectService.triggerSendForReview();
+          }
+        }
+      )
+    );
   }
   ngAfterViewChecked() {
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
