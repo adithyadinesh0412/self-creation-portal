@@ -1,27 +1,58 @@
 # SelfCreationPortal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.5.
+The SelfCreationPortal is a Angular-based project generated with Angular Framework and Angular Material
+This project using multiple angular build libraries like  lib-observation, lib-observation-with-rubrics, lib-program, lib-project, lib-survey and lib-shared-modules.
 
-## Development server
+## Contents
+- [Dependencies](#dependencies)
+- [Setting up the CLI](#setting-up-the-cli)
+- [Setting up the Project](#setting-up-the-project)
+- [Building the Libraries](#building-the-libraries)
+- [Building the Application](#building-the-application)
+- [Debugging the Application](#debugging-the-application)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Dependencies
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+| Requirement | Description |
+| --- | --- |
+| `Angular CLI` | Version 17.3.5 |
+| `Angular Framework` |  |
+| `Angular Material`|  @angular/material 17.3.6 |
+| `NgxIndexedDBModule`| ngx-indexed-db 19.0.1|
+| `QuillEditorComponent`| ngx-quill 26.0.5|
+| `System`| [nodejs](https://nodejs.org/en): v20.17.0 npm: 10.8.2 |
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Additional Information
 
-## Running unit tests
+- [Angular Framework](https://angular.dev/)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Setting up the CLI
 
-## Running end-to-end tests
+1. Install the Angular CLI
+``` npm install -g @angular/cli@17 ```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Setting up the  Project
 
-## Further help
+1. Clone the [repository](https://github.com/ELEVATE-Project/self-creation-portal.git)
+2. Go to the project folder using the below command.
+   ``` cd self-creation-portal ```
+3. Set the environment variables in the `environments./environment.ts` file.
+4. Run `npm  i`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Building the Libraries
+
+1. Build the library on your local system using the following command:
+   ``` ng build ```
+   The build artifacts will be stored in the `dist/` directory.
+
+## Building the Application
+
+1. Run the project on your local system using the following command:
+   ``` ng serve ```
+
+## Debugging the Application
+
+1. Open the running app in the browser.
+2. Start inspecting using Chrome dev tools or any alternatives.
