@@ -351,4 +351,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.saveSubtask()
   }
 
+  openObservation(url:any){
+    if(this.observationFormDetails.allowOpenObservation){
+      window.open(url, '_blank');
+    }
+  }
 }
