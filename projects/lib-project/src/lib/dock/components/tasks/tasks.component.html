@@ -36,6 +36,17 @@
                                 <textarea matInput [formControlName]="tasksData?.description.name" (change)="checkValidation()"
                                     [placeholder]="tasksData?.description.placeholder"  [required]="true" [maxlength]="tasksData.description.validators.maxLength" [pattern]="tasksData.description.validators.pattern" [readonly]="viewOnly"></textarea>
                             </mat-form-field>
+                            @if(tasksData?.description.infoMessage){
+                            <mat-icon
+                                class="absolute pl-1 -mt-[0.3rem] cursor-pointer text-xl text-iconGray enable-with-pointer-events"
+                                [matTooltip]="tasksData?.description.infoMessage"
+                                matTooltipClass="info-tooltip"
+                                matTooltipPosition="above"
+                                [matTooltipDisabled]="true"
+                                #tooltip="matTooltip"
+                                (click)="showTooltip(tooltip)"
+                                (mouseleave)="hideTooltip(tooltip)">info</mat-icon>
+                            }
 
                                 <mat-error class="error-container">
                                     @if(task.get(tasksData?.description.name)?.touched && task.get(tasksData?.description.name)?.invalid){
