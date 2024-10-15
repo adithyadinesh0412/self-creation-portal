@@ -195,7 +195,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (result) {
                 this.taskData[taskIndex].solution_details = {
                   ...result[0],
-                  min_no_of_submissions_required: 1
+                  min_no_of_submissions_required: 1,
+                  type: "observation",
                 };
                 this.saveSubtask()
                 this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
