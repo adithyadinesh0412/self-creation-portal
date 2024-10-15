@@ -195,7 +195,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (result) {
                 this.taskData[taskIndex].solution_details = {
                   ...result[0],
-                  min_no_of_submissions_required: 1,
+                  min_no_of_submissions_required: this.observationFormDetails.minSubmissionRequired.validators.min,
                   type: "observation",
                 };
                 this.saveSubtask()
@@ -341,9 +341,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   addMinSubmissionsRequired(event:any,taskIndex:any){
     let inputValue = parseInt(event.target.value, 10); // Convert the input value to a number
-    if (inputValue < 1) {
+    if (inputValue < this.observationFormDetails.minSubmissionRequired.validators.min) {
       inputValue = this.observationFormDetails.minSubmissionRequired.validators.min;
-    } else if (inputValue > 10) {
+    } else if (inputValue > this.observationFormDetails.minSubmissionRequired.validators.max ) {
       inputValue = this.observationFormDetails.minSubmissionRequired.validators.max;
     }
     event.target.value = inputValue;
