@@ -31,9 +31,9 @@ This project using multiple angular build libraries like  lib-observation, lib-o
 
 1. Install the Angular CLI
 
- ```bash
-   npm install -g  @angular/cli@17 
- ```
+   ```bash
+      npm install -g  @angular/cli@17 
+   ```
 
 ## Setting up the  Project
 
