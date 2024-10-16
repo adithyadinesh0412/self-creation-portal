@@ -39,27 +39,40 @@ This project using multiple angular build libraries like  lib-observation, lib-o
 
 1. Clone the [repository](https://github.com/ELEVATE-Project/self-creation-portal.git)
 2. Go to the project folder using the below command.
-   ``` cd self-creation-portal ```
+   
+   ```bash
+      cd self-creation-portal 
+   ```
+
 3. Create the `environment.prod.ts` in the environments folder.
-3. Set the environment variables in the `environments./environment.prod.ts` file.
-4. Run `npm  i`
+4. Set the environment variables in the `environments./environment.prod.ts` file.
+5. Run `npm  i`
 
 ## Building the Libraries
 
 1. Build the library on your local system 
 
    1. Build the lib-shared-modules using following command  
-    ``` ng build lib-shared-modules ``` 
+
+   ```bash
+       ng build lib-shared-modules  
+   ```
 
    2. Build the lib-project using following command
-    ``` ng build lib-project ``` 
+
+   ```bash
+       ng build lib-project   
+   ```
 
    The build artifacts will be stored in the `dist/` directory. 
 
 ## Building the Application
 
 1. Run the project on your local system using the following command: 
-    ``` ng serve ``` 
+
+   ```bash
+       ng serve   
+   ```
 
 ## Debugging the Application
 
