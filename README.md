@@ -41,7 +41,7 @@ This project using multiple angular build libraries like  lib-observation, lib-o
 2. Go to the project folder using the below command.
    
    ```bash
-      cd self-creation-portal 
+       cd self-creation-portal 
    ```
 
 3. Create the `environment.prod.ts` in the environments folder.
@@ -54,15 +54,15 @@ This project using multiple angular build libraries like  lib-observation, lib-o
 
    1. Build the lib-shared-modules using following command  
 
-   ```bash
-       ng build lib-shared-modules  
-   ```
+      ```bash
+         ng build lib-shared-modules  
+      ```
 
    2. Build the lib-project using following command
 
-   ```bash
-       ng build lib-project   
-   ```
+      ```bash
+         ng build lib-project   
+      ```
 
    The build artifacts will be stored in the `dist/` directory. 
 
