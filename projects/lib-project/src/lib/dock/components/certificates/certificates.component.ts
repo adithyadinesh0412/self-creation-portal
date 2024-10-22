@@ -290,6 +290,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                   this.updateSignaturePreview()
                   this.setLogoPreview();
                   this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate.issuer,'text')
+                  this.disableIssuerName()
                 }
               }
               this.getCertificateForm();
@@ -373,6 +374,8 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         // })
         this.certificateAddIntoHtml();
       }
+      this.disableIssuerName()
+
     }
   }
 
@@ -411,6 +414,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.certificateList = res.result.data
         this.certificateTypeSelected = res.result.data[0];
         if(this.libProjectService.projectData.certificate) {
+          this.disableIssuerName()
           this.setCertificateData(this.libProjectService.projectData.certificate)
         }
         if(this.selectedYes === '1' && !this.libProjectService.projectData.certificate) {
@@ -423,6 +427,12 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
           this.libProjectService.projectData.certificate.name = res.result.data[0].name;
         }
       });
+  }
+
+  disableIssuerName() {
+    if(this.libProjectService?.projectData?.certificate?.base_template_id == '') {
+      this.certificateForm.controls['issuerName'].disable()
+    }
   }
 
   setCertificateData(certificate:any) {
@@ -588,9 +598,6 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.setLogoPreview();
         this.initiateCertificatePreview();
         this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate?.issuer,'text')
-      }
-      if(this.libProjectService?.projectData?.certificate?.base_template_id == '') {
-        this.certificateForm.controls['issuerName'].disable()
       }
     });
   }

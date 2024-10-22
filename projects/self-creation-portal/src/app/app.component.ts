@@ -45,19 +45,6 @@ export class AppComponent {
   scrollToTop(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
   }
-  people: any[] = [];
 
-  addData() {
-    const person = { name: 'John Doe', age: 25 };
-    this.dbService.addData('people', person).subscribe((res:any)=>{
-      console.log(res,"data created")
-    },((err) => console.log(err)));
-  }
-
-  getData() {
-    this.dbService.getAllData('people').subscribe((res:any)=>{
-      console.log(res,"data fetched")
-    })
-  }
 
 }
