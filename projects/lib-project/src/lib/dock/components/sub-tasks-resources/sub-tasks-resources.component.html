@@ -60,7 +60,7 @@
                                     <div class="flex flex-col">
                                             <div class="flex justify-between items-center p-1 bg-gray-100 rounded mb-2">
                                                 <section class="flex items-center gap-2">
-                                                    <img src="assets/images/video-icon.png" alt="My Image">
+                                                    <img src="assets/images/video-icon.png" alt="My Image" (click)="openObservation(item.solution_details.link)">
                                                     <p class="overflow-ellipsis">{{item.solution_details.name}}</p>
                                                 </section>
                                                 <mat-icon  (click)="deleteObservation(i)" class="cursor-pointer">cancel</mat-icon>
