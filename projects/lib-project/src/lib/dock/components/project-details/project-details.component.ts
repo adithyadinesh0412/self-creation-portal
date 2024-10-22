@@ -79,7 +79,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         this.libProjectService.projectData = {};
         this.getFormWithEntitiesAndMap();
       }
-      this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
+      this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "VALID" && this.formLib?.subform?.myForm.status === "VALID") ? "VALID" : "INVALID";
       if(this.libProjectService.projectData.tasks){
         this.libProjectService.validateTasksData()
       }

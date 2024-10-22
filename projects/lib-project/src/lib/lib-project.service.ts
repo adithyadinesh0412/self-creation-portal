@@ -522,16 +522,18 @@ export class LibProjectService {
   }
 
   validateTasksData(){
+    if(this.projectData?.tasks){
     this.currentProjectMetaData.subscribe((data: any) => {
-      const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
-      const isValid = this.projectData?.tasks.every((task: { name: string }) => {
-        const isNameValid = task.name && task.name?.length > 0;
-        const isMaxLengthValid = task.name.length <= data?.tasksData.tasks.description.validators.maxLength;
-        const isPatternValid = pattern.test(task.name);
-        const isTaskLength = this.projectData.tasks.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
-        return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
-      });
-      this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+        const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
+        const isValid = this.projectData?.tasks.every((task: { name: string }) => {
+          const isNameValid = task.name && task.name?.length > 0;
+          const isMaxLengthValid = task?.name?.length <= data?.tasksData.tasks.description.validators?.maxLength;
+          const isPatternValid = pattern.test(task.name);
+          const isTaskLength = this.projectData?.tasks?.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
+          return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
+        });
+        this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
     });
+   }
   }
 }

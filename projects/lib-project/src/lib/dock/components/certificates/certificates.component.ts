@@ -431,7 +431,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.certificateTypeSelected = this.certificateList.find((certificateItem:any) => certificateItem.id == certificate.base_template_id)
     this.certificateForm.patchValue({
       issuerName:certificate.issuer,
-      certificateType:this.certificateTypeSelected.code
+      certificateType:this.certificateTypeSelected?.code
     })
   }
   openAttachment(link:string) {
