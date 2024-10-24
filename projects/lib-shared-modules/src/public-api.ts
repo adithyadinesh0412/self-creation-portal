@@ -23,4 +23,5 @@ export * from './lib/constants/urlConstants';
 export * from './lib/services/util/util.service';
 export * from './lib/assets/rejectform';
 export * from './lib/constants/commonConstants';
-export * from './lib/directive/limit-to-range.directive'
+export * from './lib/directive/limit-to-range.directive';
+export * from './lib/components/preview/preview.component';

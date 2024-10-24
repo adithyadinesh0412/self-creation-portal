@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService , projectMode} from 'lib-shared-modules';
+import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService , projectMode, PreviewComponent} from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -8,7 +8,8 @@ import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'lib-layout',
   templateUrl: './layout.component.html',
-  styleUrl: './layout.component.scss'
+  styleUrl: './layout.component.scss',
+  encapsulation:ViewEncapsulation.None
 })
 export class LayoutComponent {
   backButton : boolean = true;
@@ -19,6 +20,7 @@ export class LayoutComponent {
   tabValidation:any;
   mode:any
   private subscription: Subscription = new Subscription();
+  
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService,private toastService:ToastService,private configuration: ConfigService,private sharedService: LibSharedModulesService) {
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
@@ -94,6 +96,16 @@ export class LayoutComponent {
 
   onButtonClick(buttonTitle: string) {
     switch (buttonTitle) {
+      case "PREVIEW":{
+        const dialogRef = this.dialog.open(PreviewComponent, {
+          autoFocus: false,
+          disableClose: false,
+          data: {
+            projectData:this.libProjectService.projectData
+          }
+        });
+        break;
+      }
       case "SAVE_CHANGES":
       case "SAVE_AS_DRAFT":{
         this.subscription.add(
