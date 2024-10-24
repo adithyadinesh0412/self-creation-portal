@@ -9,8 +9,8 @@
   </div>
   <div class="flex items-center space-x-4">
     <div class="filter-container flex items-center space-x-1">
-      <mat-icon class="pr-6">language</mat-icon>
-      <mat-select [placeholder]="selectedLanguage | translate" [(value)]="selectedLanguage" (selectionChange)="languageChange($event)">
+      <mat-icon class="pr-8">language</mat-icon>
+      <mat-select [placeholder]="selectedLanguage | translate" [(ngModel)]="selectedLanguage" (selectionChange)="languageChange($event)">
         @for(option of supportLanguages;track option){
           <mat-option [value]="option.value">{{option.label | translate}}</mat-option>
         }

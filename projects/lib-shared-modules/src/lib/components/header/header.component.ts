@@ -2,18 +2,18 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LibSharedModulesService } from '../../lib-shared-modules.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { Subscription } from 'rxjs/internal/Subscription';
 import {MatSelectModule} from '@angular/material/select';
-import { TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'lib-header',
   standalone: true,
-  imports: [MatToolbarModule, MatIconModule, TranslateModule,CommonModule,MatTooltipModule, MatSelectModule],
+  imports: [MatToolbarModule, MatIconModule, TranslateModule,CommonModule,MatTooltipModule, MatSelectModule, FormsModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -23,8 +23,12 @@ export class HeaderComponent {
   @Input() headerData : any;
   @Input() toParent:boolean = false;
   @Output() backToParent = new EventEmitter<boolean>();
-  @Input() selectedLanguage : any
-  @Input() supportLanguages : any
+
+  selectedLanguage: any = 'en'; 
+  supportLanguages : any = [
+    {label: "ENGLISH", value: "en"},
+    {label: "HINDI", value: "hi"}
+  ]
 
   mode:any = "edit";
   private subscription: Subscription = new Subscription();

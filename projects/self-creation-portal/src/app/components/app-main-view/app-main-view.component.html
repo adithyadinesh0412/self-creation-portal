@@ -1,4 +1,4 @@
-<lib-header [title]="titleObj.title" [backButton]="backButton" [toParent]="true" [headerData]="headerData" [supportLanguages]="supportLanguages" [selectedLanguage]="selectedLanguage" (backToParent)="backToParent($event)" (buttonClick)="onButtonClick($event)"></lib-header>
+<lib-header [title]="titleObj.title" [backButton]="backButton" [toParent]="true" [headerData]="headerData"  (backToParent)="backToParent($event)" (buttonClick)="onButtonClick($event)"></lib-header>
 <div class="flex">
     <div class="min-h-[88vh] max-h-[100vh]">
         <lib-side-navbar [sidenavData]="sidenavData" [clearQueryParamsOnNavigate]="clearQueryParamsOnNavigate" (navChange)="onSideNavNavigate($event)"></lib-side-navbar>
