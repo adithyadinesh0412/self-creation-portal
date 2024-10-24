@@ -27,6 +27,12 @@ export class AppMainViewComponent {
   titleObj = {
     "title" : "CREATION_PORTAL"
   }
+  
+  selectedLanguage: any = 'en'; 
+  supportLanguages : any = [
+    {label: "ENGLISH", value: "en"},
+    {label: "HINDI", value: "hi"}
+  ]
 
   public sidenavData: any;
   clearQueryParamsOnNavigate: boolean = true;

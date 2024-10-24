@@ -175,5 +175,8 @@
     "COPY_AND_EDIT":"Copy and edit",
     "FILL_ALL_THE_MANDATORY_FIELDS":"Fill all the mandatory fields.",
     "THE_MAXIMUM_NUMBER_OF_TASKS_THAT_CAN_BE_ADDED_IS":"*The maximum number of tasks that can be added is ",
-    "MIN_SUBMISSION_REQUIRED":"Min. Submission required*"
+    "MIN_SUBMISSION_REQUIRED":"Min. Submission required*",
+    "PUBLISHED_ON":"Published on ",
+    "ENGLISH":"English",
+    "HINDI":"Hindi"
 }
