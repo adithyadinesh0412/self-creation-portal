@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LibProjectService } from '../../../lib-project.service';
-import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService , projectMode, PreviewComponent} from 'lib-shared-modules';
+import { ConfigService, DialogPopupComponent, FormService, PROJECT_DETAILS_PAGE, ReviewModelComponent, SOLUTION_LIST, SUBMITTED_FOR_REVIEW, TASK_DETAILS, ToastService, UtilService,rejectform, LibSharedModulesService , projectMode} from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -97,13 +97,6 @@ export class LayoutComponent {
   onButtonClick(buttonTitle: string) {
     switch (buttonTitle) {
       case "PREVIEW":{
-        const dialogRef = this.dialog.open(PreviewComponent, {
-          autoFocus: false,
-          disableClose: false,
-          data: {
-            projectData:this.libProjectService.projectData
-          }
-        });
         break;
       }
       case "SAVE_CHANGES":

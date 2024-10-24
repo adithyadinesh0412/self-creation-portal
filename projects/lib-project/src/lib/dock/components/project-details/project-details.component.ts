@@ -44,12 +44,12 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
    }
    ngOnInit() {
     if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
-      this.libProjectService.projectData = {};
+      // this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
     }
     if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
       this.viewOnly = true
-      this.libProjectService.projectData = {};
+      // this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly();
     }
     this.subscription.add(
@@ -76,7 +76,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
       if (this.viewOnly) {
         this.viewOnly = false;
-        this.libProjectService.projectData = {};
+        // this.libProjectService.projectData = {};
         this.getFormWithEntitiesAndMap();
       }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "VALID" && this.formLib?.subform?.myForm.status === "VALID") ? "VALID" : "INVALID";
