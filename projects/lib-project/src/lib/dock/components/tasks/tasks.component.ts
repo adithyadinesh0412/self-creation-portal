@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 import { v4 as uuidv4 } from 'uuid';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
@@ -349,5 +349,15 @@ export class TasksComponent implements OnInit, OnDestroy {
         });
       })
     );
+  }
+
+  showTooltip(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
+  }
+
+  hideTooltip(tooltip: MatTooltip) {
+    tooltip.hide();
+    tooltip.disabled = true;
   }
 }

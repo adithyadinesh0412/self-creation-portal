@@ -18,7 +18,6 @@ import {
   CommentsBoxComponent,
   DialogPopupComponent,
   FormService,
-  LimitToRangeDirective,
   ToastService,
   UtilService,
   projectMode,resourceStatus
@@ -45,7 +44,6 @@ import { MatSliderModule } from '@angular/material/slider';
     MatDialogModule,
     MatInputModule,
     CommentsBoxComponent,
-    LimitToRangeDirective,
     MatTooltip,
     MatTooltipModule,
     MatSliderModule
@@ -440,6 +438,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   onCertificateTypeChange(value: string): void {
     this.isSendForReview = false;
+    this.certificateForm.controls['issuerName'].enable()
     this.certificateTypeSelected = this.certificateList.find((item:any) => item.code === value);
     this.libProjectService.projectData.certificate.base_template_url = this.certificateTypeSelected.url;
     this.libProjectService.projectData.certificate.base_template_id = this.certificateTypeSelected.id;
@@ -589,6 +588,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         this.setLogoPreview();
         this.initiateCertificatePreview();
         this.updateCertificatePreview('stateTitle',this.libProjectService.projectData.certificate?.issuer,'text')
+      }
+      if(this.libProjectService?.projectData?.certificate?.base_template_id == '') {
+        this.certificateForm.controls['issuerName'].disable()
       }
     });
   }
