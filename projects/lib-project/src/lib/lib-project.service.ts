@@ -10,7 +10,7 @@ import {
   resourceStatus, reviewStatus , projectMode,
   LibSharedModulesService
 } from 'lib-shared-modules';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap, EMPTY  } from 'rxjs';
 import { ConfigService } from 'lib-shared-modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,6 +34,7 @@ export class LibProjectService {
   mode: any = 'edit';
   projectConfig: any;
   instanceConfig: any;
+  isFormDirty:boolean = true;
 
   constructor(
     private httpService: HttpProviderService,
@@ -366,10 +367,15 @@ export class LibProjectService {
         : 30000
     ).pipe(
       switchMap(() => {
-        return this.createOrUpdateProject(
-          this.projectData,
-          this.projectData.id
-        );
+        if(this.isFormDirty) {
+          return this.createOrUpdateProject(
+            this.projectData,
+            this.projectData.id
+          );
+        }
+        else {
+          return EMPTY
+        }
       })
     );
   }

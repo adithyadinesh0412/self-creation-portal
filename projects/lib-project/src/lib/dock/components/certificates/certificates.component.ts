@@ -308,6 +308,11 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
         }
       })
     );
+    this.subscription.add(
+      this.certificateForm.valueChanges.subscribe(changes => {
+        this.libProjectService.isFormDirty = true;
+      })
+    )
   }
 
   addTasktoCertificatePage(projectData:any) {
@@ -381,11 +386,9 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
 
   startAutoSaving() {
     this.subscription.add(
-      this.subscription.add(
-        this.libProjectService
-        .startAutoSave(this.projectId)
-        .subscribe((data) => console.log(data))
-      )
+      this.libProjectService
+      .startAutoSave(this.projectId)
+      .subscribe((data) => {this.libProjectService.isFormDirty = false})
     )
   }
 
@@ -457,6 +460,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     this.libProjectService.projectData.certificate.logos.no_of_logos = this.certificateTypeSelected.meta.logos.no_of_logos
     this.libProjectService.projectData.certificate.signature.no_of_signature = this.certificateTypeSelected.meta.signature.no_of_signature
     this.certificateAddIntoHtml()
+    this.libProjectService.isFormDirty = true;
   }
 
   attachLogos(attachmentType:number) {
@@ -483,6 +487,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               stateLogo2: attachmentType === 2 ? urlData:this.libProjectService.projectData.certificate.logos.stateLogo2,
             }
             this.setLogoPreview()
+            this.libProjectService.isFormDirty = true;
           })
         })
       }
@@ -527,6 +532,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             this.updateSignaturePreview()
             result.additionalData.inputfields[0].value = "";
             result.additionalData.inputfields[1].value = "";
+            this.libProjectService.isFormDirty = true;
           })
         })
       }
@@ -691,10 +697,12 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
     }else{
       this.libProjectService.projectData.certificate.criteria.conditions.C3.conditions[item.id].value = taskCriteria > 0 ? criterialValue : 0;
     }
+    this.libProjectService.isFormDirty = true;
   }
 
   setProjectEvidenceCriteriaValue(criterialValue:any) {
     this.libProjectService.projectData.certificate.criteria.conditions.C2.conditions.C1.value = criterialValue;
+    this.libProjectService.isFormDirty = true;
   }
 
   removeAttachments(type:string,index:number|string) {
