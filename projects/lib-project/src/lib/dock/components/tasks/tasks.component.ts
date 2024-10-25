@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService, UtilService, CommentsBoxComponent, projectMode ,resourceStatus} from 'lib-shared-modules';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -176,6 +176,11 @@ export class TasksComponent implements OnInit, OnDestroy {
         }
       )
     );
+    this.subscription.add(
+      this.tasksForm.valueChanges.subscribe(changes => {
+        this.libProjectService.isFormDirty = true;
+      })
+    )
     this.checkValidation()
   }
 
@@ -235,7 +240,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data))
+      .subscribe((data) => {this.libProjectService.isFormDirty = false})
     )
   }
 

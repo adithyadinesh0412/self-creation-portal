@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
@@ -13,7 +13,7 @@ import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, 
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
-export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked{
+export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked, OnChanges{
   dynamicFormData: any;
   projectId: string | number = '';
   intervalId:any;
@@ -23,6 +23,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   commentPayload:any;
   commentsList:any = [];
   projectInReview:boolean = false;
+  isFormDirty:boolean = true;
   resourceId:string|number = '' // This variable represent projectId for comments.
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   private subscription: Subscription = new Subscription();
@@ -69,6 +70,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
         }
       )
     );
+  }
+  ngOnChanges(): void {
+    console.log("changes Detected")
+    this.isFormDirty = true;
   }
   ngAfterViewChecked() {
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
@@ -220,8 +225,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       if(!this.projectId) {
         this.createProject({title:'Untitled project'})
       } else {
-        if(this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
-          this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res)=>console.log(res)))
+        if((this.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.isFormDirty) {
+          this.subscription.add(this.libProjectService.createOrUpdateProject(this.libProjectService.projectData, this.projectId).subscribe((res:any)=>{
+            this.isFormDirty = false;
+          }))
         }
       }
     }, 30000);
@@ -297,9 +304,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   getDynamicFormData(data: any) {
     const obj: { [key: string]: any } = {};
     if (!this.isEvent(data)) {
-      if(this.libProjectService.projectData.title != data.title) {
-        this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
-        }
+    this.isFormDirty = true;
+    if(this.libProjectService.projectData.title != data.title) {
+      this.libProjectService.upDateProjectTitle(data.title? data.title : 'PROJECT_NAME');
+      }
     this.libProjectService.setProjectData(data);
     this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "INVALID" || this.formLib?.subform?.myForm.status === "INVALID") ? "INVALID" : "VALID";
     }

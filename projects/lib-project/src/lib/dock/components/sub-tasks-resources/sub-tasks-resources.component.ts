@@ -125,6 +125,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
       })
     );
+    this.subscription.add(
+      this.myForm.valueChanges.subscribe(changes => {
+        this.libProjectService.isFormDirty = true;
+      })
+    )
   }
 
   get subtasks() {
@@ -134,7 +139,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   getButtonStates = (task: any) => {
     const disableAll = !task?.name?.length || task?.solution_details?.name;
     const disableObservation = !!(task?.learning_resources?.length || task?.resources?.length || task?.children?.length);
-  
+
     return [
       { "label": "ADD_OBSERVATION", "disable": disableAll || disableObservation },
       { "label": "ADD_LEARNING_RESOURCE", "disable": disableAll },
@@ -154,7 +159,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             }),
              resources : task?.learning_resources?.length > 0 ? task.learning_resources : [],
              children: task?.children ? task.children : [],
-             solution_details: task?.solution_details ? task?.solution_details : {} 
+             solution_details: task?.solution_details ? task?.solution_details : {}
         };
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
@@ -261,7 +266,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.subscription.add(
       this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data))
+      .subscribe((data) => {this.libProjectService.isFormDirty = false})
     )
   }
 
@@ -308,6 +313,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   saveSubtask(){
+    this.libProjectService.isFormDirty = true;
     this.addSubtaskData();
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
   }

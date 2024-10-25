@@ -20,20 +20,6 @@ import { TimedPreloadingStrategy } from 'lib-shared-modules';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-const dbConfig: DBConfig = {
-  name: 'MyDb',
-  version: 1,
-  objectStoresMeta: [
-    {
-      store: 'people',
-      storeConfig: { keyPath: 'id', autoIncrement: true },
-      storeSchema: [
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'age', keypath: 'age', options: { unique: false } }
-      ]
-    }
-  ]
-};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -44,7 +30,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(SlAuthLibModule),
     provideHttpClient(withInterceptors([authInterceptor])),
-    importProvidersFrom(NgxIndexedDBModule.forRoot(dbConfig)),
     { provide: LIBRARY_CONFIG, useFactory: configFactory, deps: [HttpClient] }
   ],
 };
