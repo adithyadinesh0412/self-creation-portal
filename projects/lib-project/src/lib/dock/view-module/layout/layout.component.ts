@@ -18,7 +18,6 @@ export class LayoutComponent {
   sidenavData:any;
   tabValidation:any;
   mode:any
-  
   private subscription: Subscription = new Subscription();
   constructor(private libProjectService:LibProjectService,private formService:FormService,private route:ActivatedRoute,private router:Router,private dialog:MatDialog, private utilService:UtilService,private toastService:ToastService,private configuration: ConfigService,private sharedService: LibSharedModulesService) {
     this.subscription.add(
