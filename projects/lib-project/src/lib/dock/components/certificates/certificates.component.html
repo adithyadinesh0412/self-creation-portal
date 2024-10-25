@@ -32,10 +32,10 @@
                                     <div class="mt-0">
                                             <div class="relative">
                                                 <mat-form-field floatLabel="always" class="w-full mt-4" appearance="outline">
-                                                    <mat-label> {{ ele.label |translate}}</mat-label>
-                                                    <mat-select [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder  || '' | translate" (selectionChange)="onCertificateTypeChange($event.value)" >
-                                                        @for(type of ele.options; track type){
-                                                        <mat-option [value]="type.value">{{type.label}}</mat-option>
+                                                    <mat-label> {{ ele.label|translate}}</mat-label>
+                                                    <mat-select [formControlName]="ele.formControlName" [placeholder]="ele.placeHolder || ''" (selectionChange)="onCertificateTypeChange($event.value)" >
+                                                        @for(type of certificateList; track type){
+                                                        <mat-option [value]="type.code">{{type.name}}</mat-option>
                                                         }
                                                     </mat-select>
                                                 </mat-form-field>

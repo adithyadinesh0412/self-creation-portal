@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogPopupComponent, HeaderComponent, SideNavbarComponent, ToastService, UtilService, CommentsBoxComponent, projectMode ,resourceStatus} from 'lib-shared-modules';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -71,14 +71,14 @@ export class TasksComponent implements OnInit, OnDestroy {
                     is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                     allow_evidences: [element.allow_evidences ? element.allow_evidences : false],
                     evidence_details: this.fb.group({
-                      file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                      min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                      file_types: [element.evidence_details?.file_types ? element.evidence_details.file_types : ''],
+                      min_no_of_evidences: [element.evidence_details?.min_no_of_evidences ? element.evidence_details?.min_no_of_evidences : 1, Validators.min(1)]
                     }),
                     learning_resources:element?.learning_resources? [element.learning_resources] : [],
                     children: [element?.children],
                     type:[element?.type],
                     sequence_no:[element?.sequence_no],
-                    solution_details:element.solution_details ?element.solution_details :{}
+                    solution_details:element?.solution_details ?element.solution_details :{}
                   });
                   this.tasks.push(task);
                 })
@@ -89,7 +89,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+              if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
                 this.getCommentConfigs()
               }
 
@@ -107,8 +107,8 @@ export class TasksComponent implements OnInit, OnDestroy {
                       is_mandatory: [element.is_mandatory ? element.is_mandatory : false],
                       allow_evidences: [element.allow_evidences ? element.allow_evidences : false],
                       evidence_details: this.fb.group({
-                        file_types: [element.evidence_details.file_types ? element.evidence_details.file_types : ''],
-                        min_no_of_evidences: [element.evidence_details.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
+                        file_types: [element.evidence_details?.file_types ? element.evidence_details.file_types : ''],
+                        min_no_of_evidences: [element.evidence_details?.min_no_of_evidences ? element.evidence_details.min_no_of_evidences : 1, Validators.min(1)]
                       }),
                       learning_resources:[element.learning_resources ?  element.learning_resources : []],
                       children: [element.children],
@@ -118,7 +118,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+                  if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
                     this.getCommentConfigs()
                   }
                 }
@@ -176,6 +176,11 @@ export class TasksComponent implements OnInit, OnDestroy {
         }
       )
     );
+    this.subscription.add(
+      this.tasksForm.valueChanges.subscribe(changes => {
+        this.libProjectService.isFormDirty = true;
+      })
+    )
     this.checkValidation()
   }
 
@@ -193,7 +198,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       allow_evidences: [false],
       evidence_details: this.fb.group({
         file_types: [[]],
-        min_no_of_evidences: [1, [Validators.min(this.tasksData.minEvidences.validators.min), Validators.max(this.tasksData.minEvidences.validators.max)]]
+        min_no_of_evidences: [1, [Validators.min(this.tasksData?.minEvidences.validators.min), Validators.max(this.tasksData?.minEvidences.validators.max)]]
       })
     });
     this.tasks.push(taskGroup);
@@ -235,7 +240,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data))
+      .subscribe((data) => {this.libProjectService.isFormDirty = false})
     )
   }
 

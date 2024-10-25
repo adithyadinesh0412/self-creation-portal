@@ -77,7 +77,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+            if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
           }
@@ -91,7 +91,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+            if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
             })
@@ -125,6 +125,11 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
       })
     );
+    this.subscription.add(
+      this.myForm.valueChanges.subscribe(changes => {
+        this.libProjectService.isFormDirty = true;
+      })
+    )
   }
 
   get subtasks() {
@@ -134,7 +139,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   getButtonStates = (task: any) => {
     const disableAll = !task?.name?.length || task?.solution_details?.name;
     const disableObservation = !!(task?.learning_resources?.length || task?.resources?.length || task?.children?.length);
-  
+
     return [
       { "label": "ADD_OBSERVATION", "disable": disableAll || disableObservation },
       { "label": "ADD_LEARNING_RESOURCE", "disable": disableAll },
@@ -154,7 +159,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             }),
              resources : task?.learning_resources?.length > 0 ? task.learning_resources : [],
              children: task?.children ? task.children : [],
-             solution_details: task?.solution_details ? task?.solution_details : {} 
+             solution_details: task?.solution_details ? task?.solution_details : {}
         };
     };
     if (this.libProjectService.projectData?.tasks?.length > 0) {
@@ -195,7 +200,8 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (result) {
                 this.taskData[taskIndex].solution_details = {
                   ...result[0],
-                  min_no_of_submissions_required: 1
+                  min_no_of_submissions_required: this.observationFormDetails.minSubmissionRequired.validators.min,
+                  type: "observation",
                 };
                 this.saveSubtask()
                 this.taskData[taskIndex].buttons = this.getButtonStates(this.taskData[taskIndex])
@@ -260,7 +266,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.subscription.add(
       this.libProjectService
       .startAutoSave(this.projectId)
-      .subscribe((data) => console.log(data))
+      .subscribe((data) => {this.libProjectService.isFormDirty = false})
     )
   }
 
@@ -269,13 +275,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       for (let i = 0; i < this.projectData.tasks.length; i++) {
         let subtasks:any = []  // Move subtasks initialization here
         this.projectData.tasks[i]['learning_resources'] = this.taskData[i]?.resources,
-        this.projectData.tasks[i].type = this.taskData[i]?.resources.length ? "content" : "simple";
+        this.projectData.tasks[i].type = this.taskData[i]?.solution_details.name ? "observation" : (this.taskData[i]?.resources.length ? "content" : "simple");
         for (let j = 0; j < this.taskData[i]?.subTasks.value.subtasks.length; j++) {
           subtasks.push(
             {
               "id": this.taskData[i]?.children?.[j]?.id ? this.taskData[i].children[j].id : uuidv4(),
               "name": this.taskData[i]?.subTasks.value.subtasks[j],
-              "type": this.taskData[i]?.resources.length ? "content" : "simple",
+              "type": this.taskData[i]?.solution_details.name ? "observation" : (this.taskData[i]?.resources.length ? "content" : "simple"),
               "parent_id": this.projectData?.tasks[i].id,
               "sequence_no": j + 1,
               "is_mandatory": this.projectData.tasks[i].is_mandatory,
@@ -307,6 +313,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
   }
 
   saveSubtask(){
+    this.libProjectService.isFormDirty = true;
     this.addSubtaskData();
     this.libProjectService.setProjectData({'tasks': this.projectData.tasks});
   }
@@ -340,9 +347,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
 
   addMinSubmissionsRequired(event:any,taskIndex:any){
     let inputValue = parseInt(event.target.value, 10); // Convert the input value to a number
-    if (inputValue < 1) {
+    if (inputValue < this.observationFormDetails.minSubmissionRequired.validators.min) {
       inputValue = this.observationFormDetails.minSubmissionRequired.validators.min;
-    } else if (inputValue > 10) {
+    } else if (inputValue > this.observationFormDetails.minSubmissionRequired.validators.max ) {
       inputValue = this.observationFormDetails.minSubmissionRequired.validators.max;
     }
     event.target.value = inputValue;
@@ -350,4 +357,9 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
     this.saveSubtask()
   }
 
+  openObservation(url:any){
+    if(this.observationFormDetails.allowOpenObservation){
+      window.open(url, '_blank');
+    }
+  }
 }

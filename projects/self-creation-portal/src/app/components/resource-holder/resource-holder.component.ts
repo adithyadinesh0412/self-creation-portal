@@ -231,7 +231,7 @@ export class ResourceHolderComponent implements OnInit{
             cardItem.actionButton.push(this.buttonsCSS[button]);
           }
           if (button.buttons) {
-            if(button.status === cardItem.review_status){
+            if(button.status === cardItem.status){
               if(cardItem.is_under_edit){
                 this.applyButtons({
                   "buttons": [
@@ -242,7 +242,7 @@ export class ResourceHolderComponent implements OnInit{
                 this.applyButtons(button, cardItem);
               }
               return true;
-            }else if(button.status === cardItem.status){
+            }else if(button.status === cardItem.review_status){
               this.applyButtons(button, cardItem);
               return true;
             }
