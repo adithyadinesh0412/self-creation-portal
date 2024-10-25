@@ -62,6 +62,9 @@ $custom-primary-palette: (
   --color-disable-bg : #CAC7C1;
   /* Borders */
   --border-color: #ccc;
+  --primary-color:#0a4f9d ;
+  --disabled-btn-bg: #0000001f;
+  --disabled-btn-text: #00000061;
   }
 
 // Define your custom theme
@@ -251,4 +254,17 @@ color:$tertiary
 
 .quill-wrapper .ql-font-monospace{
   font-family: 'Courier New', monospace; 
+}
+
+
+.danger .mdc-snackbar__surface{
+  background-color: white !important;
+  border-width: 2px 2px 2px 12px;
+  border-style: solid;
+  border-color: $error;
+  border-radius: 25px;
+}
+
+.danger .mdc-snackbar__label{
+  color: $error  !important;
 }

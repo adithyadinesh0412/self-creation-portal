@@ -77,7 +77,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
             if (params.mode === projectMode.EDIT || params.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+            if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
           }
@@ -91,7 +91,7 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
               if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
               this.startAutoSaving();
             }
-            if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !==  projectMode.VIEWONLY)) {
+            if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
               this.getCommentConfigs()
             }
             })
@@ -270,13 +270,13 @@ export class SubTasksResourcesComponent implements OnInit,OnDestroy{
       for (let i = 0; i < this.projectData.tasks.length; i++) {
         let subtasks:any = []  // Move subtasks initialization here
         this.projectData.tasks[i]['learning_resources'] = this.taskData[i]?.resources,
-        this.projectData.tasks[i].type = this.taskData[i]?.resources.length ? "content" : "simple";
+        this.projectData.tasks[i].type = this.taskData[i]?.solution_details.name ? "observation" : (this.taskData[i]?.resources.length ? "content" : "simple");
         for (let j = 0; j < this.taskData[i]?.subTasks.value.subtasks.length; j++) {
           subtasks.push(
             {
               "id": this.taskData[i]?.children?.[j]?.id ? this.taskData[i].children[j].id : uuidv4(),
               "name": this.taskData[i]?.subTasks.value.subtasks[j],
-              "type": this.taskData[i]?.resources.length ? "content" : "simple",
+              "type": this.taskData[i]?.solution_details.name ? "observation" : (this.taskData[i]?.resources.length ? "content" : "simple"),
               "parent_id": this.projectData?.tasks[i].id,
               "sequence_no": j + 1,
               "is_mandatory": this.projectData.tasks[i].is_mandatory,
