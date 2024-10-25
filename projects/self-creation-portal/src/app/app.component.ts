@@ -36,7 +36,9 @@ export class AppComponent {
   }
 
   private initializeTranslation(): void {
-    this.translate.setDefaultLang('en');
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    this.translate.setDefaultLang(storedLanguage);
+    this.translate.use(storedLanguage);
   }
 
   onButtonClick(buttonTitle: string) {

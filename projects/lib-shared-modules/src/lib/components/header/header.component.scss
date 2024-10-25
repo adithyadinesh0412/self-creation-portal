@@ -3,11 +3,12 @@
     background-color: $primary; 
     padding: 0 1rem; 
 
+    .language-container {
+
     mat-select {
-      min-width: 10rem; 
+      min-width: 8rem; 
     }
 
-    .filter-container {
     ::ng-deep  .mat-mdc-select-value .mat-mdc-select-placeholder {
       text-align:center;
       color: white; 
@@ -15,10 +16,10 @@
     }
     ::ng-deep .mat-mdc-select-arrow svg {
       fill: white !important;
-      margin-left: 0.5rem !important;
+      margin-left: -2.5rem !important;
       margin-right: 1rem !important; 
-      height: 12rem !important;
-      width: 1.4rem !important;
+      height: 18rem !important;
+      width: 2.4rem !important;
     }
     
     ::ng-deep .mat-mdc-select-value-text, .mat-mdc-select-arrow svg{

@@ -36,6 +36,13 @@ export class HeaderComponent {
 
   constructor( private libsharedservice: LibSharedModulesService, private router: Router, private route: ActivatedRoute,
     private translateService: TranslateService) {
+
+    const storedLanguage = localStorage.getItem('language');
+    if (storedLanguage) {
+        this.selectedLanguage = storedLanguage;
+        this.translateService.use(this.selectedLanguage);
+    }
+
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : "edit"
@@ -58,11 +65,15 @@ export class HeaderComponent {
 
   logout() {
     this.libsharedservice.logout();
+    this.selectedLanguage = 'en';
+    this.translateService.use(this.selectedLanguage);
+    localStorage.setItem('language', this.selectedLanguage);
   }
 
   languageChange(event:any) {
     this.selectedLanguage = event.value;
     this.translateService.use(this.selectedLanguage);
+    localStorage.setItem('language', this.selectedLanguage);
   }
 
   ngOnDestroy() {
