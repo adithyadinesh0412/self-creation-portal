@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
@@ -13,7 +13,7 @@ import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, 
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
-export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked, OnChanges{
+export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChecked{
   dynamicFormData: any;
   projectId: string | number = '';
   intervalId:any;
@@ -71,10 +71,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
       )
     );
   }
-  ngOnChanges(): void {
-    console.log("changes Detected")
-    this.isFormDirty = true;
-  }
+
   ngAfterViewChecked() {
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
       if (this.viewOnly) {
