@@ -105,7 +105,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         })
                     );
                   }
-                  if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW) && (this.mode !== projectMode.VIEWONLY)) {
+                  if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === projectMode.REQUEST_FOR_EDIT || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW) && (this.mode !== projectMode.VIEWONLY)) {
                     this.getCommentConfigs()
                   }
               }
@@ -158,7 +158,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       })
                   );
                 }
-                if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+                if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === projectMode.REQUEST_FOR_EDIT || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
                   this.getCommentConfigs()
                 }
               }else{
@@ -176,7 +176,7 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                       })
                   );
                 }
-                if ((this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+                if ((this.mode === projectMode.REQUEST_FOR_EDIT|| this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
                   this.getCommentConfigs()
                 }
               }

@@ -89,7 +89,7 @@ export class TasksComponent implements OnInit, OnDestroy {
               if(params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT){
                 this.startAutoSaving();
               }
-              if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === "reqEdit")&& (this.mode !==  projectMode.VIEWONLY)) {
+              if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
                 this.getCommentConfigs()
               }
 
@@ -118,7 +118,7 @@ export class TasksComponent implements OnInit, OnDestroy {
                     });
                     this.tasks.push(task);
                   })
-                  if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === "reqEdit")&& (this.mode !==  projectMode.VIEWONLY)) {
+                  if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === projectMode.REQUEST_FOR_EDIT)&& (this.mode !==  projectMode.VIEWONLY)) {
                     this.getCommentConfigs()
                   }
                 }
