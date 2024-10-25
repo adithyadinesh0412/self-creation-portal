@@ -44,12 +44,10 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
    }
    ngOnInit() {
     if(this.mode === projectMode.EDIT || this.mode === "" || this.mode === projectMode.REQUEST_FOR_EDIT){
-      // this.libProjectService.projectData = {};
       this.getFormWithEntitiesAndMap();
     }
     if (this.mode === projectMode.VIEWONLY || this.mode === projectMode.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.CREATOR_VIEW || this.mode === projectMode.COPY_EDIT) {
       this.viewOnly = true
-      // this.libProjectService.projectData = {};
       this.getProjectDetailsForViewOnly();
     }
     this.subscription.add(
@@ -76,7 +74,6 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     if((this.mode == projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) && this.projectId) {
       if (this.viewOnly) {
         this.viewOnly = false;
-        // this.libProjectService.projectData = {};
         this.getFormWithEntitiesAndMap();
       }
       this.libProjectService.formMeta.formValidation.projectDetails = (this.formLib?.myForm.status === "VALID" && this.formLib?.subform?.myForm.status === "VALID") ? "VALID" : "INVALID";
@@ -103,13 +100,13 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         .subscribe((res: any) => {
                           this.libProjectService.setProjectData(res.result);
                          this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
-                          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView") && (this.mode !== projectMode.VIEWONLY)) {
-                            this.getCommentConfigs()
-                          }
                           this.readProjectDeatilsAndMap(data.controls,res.result);
                           this.libProjectService.upDateProjectTitle();
                         })
                     );
+                  }
+                  if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW) && (this.mode !== projectMode.VIEWONLY)) {
+                    this.getCommentConfigs()
                   }
               }
             })
@@ -158,11 +155,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         this.libProjectService.upDateProjectTitle();
                         // comments list and configuration
-                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
-                          this.getCommentConfigs()
-                        }
                       })
                   );
+                }
+                if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW  || this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+                  this.getCommentConfigs()
                 }
               }else{
                 if (Object.keys(this.libProjectService.projectData).length > 1) { // project ID will be there so length considered as more than 1
@@ -176,11 +173,11 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
                        this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
                         this.readProjectDeatilsAndMap(data.controls,res.result);
                         // comments list and configuration
-                        if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === "reviewerView")&& (this.mode !== projectMode.VIEWONLY)) {
-                          this.getCommentConfigs()
-                        }
                       })
                   );
+                }
+                if ((this.mode === "reqEdit"|| this.mode === "reviewerView" || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+                  this.getCommentConfigs()
                 }
               }
             } else {

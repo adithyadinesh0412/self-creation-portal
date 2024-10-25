@@ -216,7 +216,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
             }
             this.getCertificateForm()
           }
-          if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+          if ((this.libProjectService?.projectData?.stage == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === "reqEdit")&& (this.mode !== projectMode.VIEWONLY)) {
             this.getCommentConfigs();
             this.getCertificateForm()
             if(this.libProjectService.projectData.certificate) {
@@ -259,7 +259,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
                 if (params.mode === projectMode.EDIT || this.mode === projectMode.REQUEST_FOR_EDIT) {
                   this.startAutoSaving();
                 }
-                if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+                if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === "reqEdit")&& (this.mode !== projectMode.VIEWONLY)) {
                   this.getCommentConfigs();
                 }
                 this.certificateAddIntoHtml();
@@ -273,7 +273,7 @@ export class CertificatesComponent implements OnInit, OnDestroy,AfterViewInit{
               this.libProjectService.formMeta = res.result.formMeta ? res.result.formMeta : this.libProjectService.formMeta;
               this.libProjectService.setProjectData(res.result);
               this.libProjectService.projectData = res?.result;
-              if ((this.libProjectService?.projectData?.status == resourceStatus.IN_REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW)&& (this.mode !== projectMode.VIEWONLY)) {
+              if ((this.libProjectService?.projectData?.stage == resourceStatus.REVIEW || this.mode === projectMode.REVIEWER_VIEW || this.mode === projectMode.REVIEW || this.mode === "reqEdit")&& (this.mode !== projectMode.VIEWONLY)) {
                 this.getCommentConfigs();
               }
               if(res.result.tasks) {

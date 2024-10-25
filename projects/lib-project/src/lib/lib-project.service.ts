@@ -95,7 +95,7 @@ export class LibProjectService {
     ) {
       if (
         this.projectConfig?.show_reviewer_list &&
-        this.projectData.status !== resourceStatus.IN_REVIEW
+        this.projectData.stage !== resourceStatus.REVIEW
       ) {
         this.getReviewerData().subscribe((list: any) => {
           if(this.checkCertificateValidations()) {
@@ -402,7 +402,7 @@ export class LibProjectService {
   }
 
   editProject() {
-    if(this.projectData.status === resourceStatus.IN_REVIEW){
+    if(this.projectData.status === resourceStatus.REQUEST_FOR_CHANGES){
       this.router.navigate([PROJECT_DETAILS_PAGE], {
         queryParams: {
           projectId: this.projectData.id,
@@ -522,18 +522,21 @@ export class LibProjectService {
   }
 
   validateTasksData(){
-    if(this.projectData?.tasks){
+    let projectMetaData:any;
+    let pattern:any;
+    if(this.currentProjectMetaData && this.projectData?.tasks && Array.isArray(this.projectData.tasks)){
     this.currentProjectMetaData.subscribe((data: any) => {
-        const pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
-        const isValid = this.projectData?.tasks.every((task: { name: string }) => {
-          const isNameValid = task.name && task.name?.length > 0;
-          const isMaxLengthValid = task?.name?.length <= data?.tasksData.tasks.description.validators?.maxLength;
-          const isPatternValid = pattern.test(task.name);
-          const isTaskLength = this.projectData?.tasks?.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
-          return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
-        });
-        this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
+        projectMetaData = data;
+        pattern = new RegExp(data?.tasksData.tasks.description.validators.pattern);
     });
+    const isValid = this.projectData?.tasks.every((task: { name: string }) => {
+      const isNameValid = task.name && task.name?.length > 0;
+      const isMaxLengthValid = task?.name?.length <= projectMetaData?.tasksData.tasks.description.validators?.maxLength;
+      const isPatternValid = pattern.test(task.name);
+      const isTaskLength = this.projectData?.tasks?.length <= (this.projectConfig.max_task_count ? this.projectConfig.max_task_count :10)
+      return isNameValid && isMaxLengthValid && isPatternValid && isTaskLength;
+    });
+    this.formMeta.formValidation.tasks = isValid ? "VALID" : "INVALID";
    }
   }
 }
