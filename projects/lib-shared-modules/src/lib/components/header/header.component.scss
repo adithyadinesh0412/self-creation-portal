@@ -1,27 +1,26 @@
 @import  "../../../../../self-creation-portal/src/styles.scss";
 .mat-toolbar.primary-toolbar {
-    background-color: $primary; 
-    padding: 0 1rem; 
+    background-color: $primary;
+    padding: 0 1rem;
 
     .language-container {
 
     mat-select {
-      min-width: 8rem; 
+      min-width: 8rem;
     }
 
     ::ng-deep  .mat-mdc-select-value .mat-mdc-select-placeholder {
       text-align:center;
-      color: white; 
+      color: white;
       padding-left : 1.5rem;
     }
     ::ng-deep .mat-mdc-select-arrow svg {
       fill: white !important;
       margin-left: -2.5rem !important;
-      margin-right: 1rem !important; 
-      height: 18rem !important;
+      margin-right: 1rem !important;
       width: 2.4rem !important;
     }
-    
+
     ::ng-deep .mat-mdc-select-value-text, .mat-mdc-select-arrow svg{
         color: white !important;
     }
@@ -35,14 +34,14 @@
 }
 
 }
-  
+
 .mat-toolbar.sub-header {
-    z-index: 49; 
+    z-index: 49;
     background-color: $secondary;
     color: $tertiary;
     font-size: 18px;
-    padding: 0 1rem; 
-  
+    padding: 0 1rem;
+
     .title {
       margin: 0 2.5rem 0 2.5rem;
       overflow: hidden;
@@ -53,11 +52,11 @@
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
     }
-  
+
     .buttons-container {
       display: flex;
       gap: 8px;
-  
+
       button {
         font-size: 15px;
         padding: 0.325rem;
@@ -71,4 +70,4 @@
 
 ::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after{
   color: $primary !important;
-} 
+}
