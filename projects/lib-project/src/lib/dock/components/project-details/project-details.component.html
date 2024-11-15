@@ -1,5 +1,12 @@
 <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
   <span>{{"PROJECT_DETAILS" | translate}}</span>
+  <div class="chat-box">
+    <input type="text" #chatInput id="chat-input" class="chat-input" placeholder="Enter prompt here" />
+    <span class="enter-icon" (click)="callAi()">➡️</span>
+    @if(isLoading){
+    <div class="loader"></div> <!-- Loader element -->
+    }
+  </div>
 </div>
 @if(dynamicFormData){
 <div class="pd-top items-center form-container">

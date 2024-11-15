@@ -1,11 +1,17 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, SimpleChanges, ViewChild , ElementRef} from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { LibProjectService } from '../../../lib-project.service';
 import { DynamicFormModule, MainFormComponent } from 'dynamic-form-ramkumar';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
-import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, UtilService, projectMode,resourceStatus } from 'lib-shared-modules';
+import { HttpClient } from '@angular/common/http';
+
+import { HttpHeaders } from '@angular/common/http';
+import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, UtilService, projectMode,resourceStatus , PROJECT_DETAILS_PAGE} from 'lib-shared-modules';
+interface ApiResponse {
+  result: { id: string }[];
+}
 @Component({
   selector: 'lib-project-details',
   standalone: true,
@@ -25,7 +31,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   projectInReview:boolean = false;
   isFormDirty:boolean = true;
   resourceId:string|number = '' // This variable represent projectId for comments.
+  isLoading = false; // Loading state
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
+  @ViewChild('chatInput') chatInput!: ElementRef;
   private subscription: Subscription = new Subscription();
   constructor(
     private libProjectService: LibProjectService,
@@ -35,8 +43,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private formService: FormService,
     private utilService:UtilService,
     private toastService: ToastService,
+    private http: HttpClient
   ) {
-    this.startAutoSaving()
+    // this.startAutoSaving()
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
         this.mode = params.mode ? params.mode : ""
@@ -338,5 +347,50 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
 
   saveComment(quillInput:any){ //  This method is checking validation when a comment is updated or deleted.
     this.libProjectService.checkValidationForRequestChanges(quillInput)
+  }
+
+  callAi(){
+    this.isLoading = true; // Show loader
+    const inputValue = this.chatInput.nativeElement.value;
+    if(!inputValue){
+      this.isLoading = false;
+      return alert("Please enter prompt.")
+    }
+
+    // API URL and options (adjust these as needed)
+    const apiUrl = 'http://127.0.0.1:8080/api/chat';
+    const requestBody = { message: inputValue }; // Assuming the API expects an object with "prompt"
+    const accessToken = localStorage.getItem('accToken')
+
+    // Set up headers with the access token
+    const headers = new HttpHeaders({
+      'x-auth-token': accessToken ? accessToken : '',  // Add token to headers
+      'Content-Type': 'application/json'               // Ensure content type is JSON
+    });
+
+    this.http.post<ApiResponse>(apiUrl, requestBody, { headers }).subscribe(
+      (response) => {
+        console.log(response); // Handle the response here
+        const projectId = response?.result?.[0]?.id;
+
+      // Clear the input field
+      this.chatInput.nativeElement.value = '';
+      this.isLoading = false;
+
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+          queryParams: {
+            projectId: projectId,
+            mode: projectMode.EDIT,
+            parent:"draft"
+          },
+        });
+      },
+      (error) => {
+        console.error('Error:', error);
+        alert('An error occurred: ' + error.message);
+      }
+    );
+    console.log(accessToken)
+
   }
 }
