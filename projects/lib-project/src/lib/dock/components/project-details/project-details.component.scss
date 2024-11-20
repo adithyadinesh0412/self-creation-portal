@@ -4,13 +4,15 @@
     margin-top: 10rem !important;
     margin: 30px;
     padding: 0px 30px;
-}
-.pd-top{
+  }
+  
+  .pd-top {
     padding-top: 5rem !important;
-}
-
-.chat-box {
-    display: flex;
+  }
+  
+  .chat-box {
+    // display: flex;
+    display: none;
     align-items: center;
     border: 1px solid #ccc;
     border-radius: 20px;
@@ -20,47 +22,185 @@
     background-color: #fff;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     position: relative;
-
+  
     .chat-input {
-        border: none;
-        outline: none;
-        font-size: 16px;
-        width: 100%;
-        background-color: transparent;
-
-        &::placeholder {
-            color: #b0b3b8;
-        }
-    }
-
-    .enter-icon {
-        font-size: 18px;
-        color: #888;
-        margin-left: 10px;
-        cursor: pointer;
-        transition: color 0.3s;
-
-        &:hover {
-            color: #555;
-        }
-    }
-    .loader {
-        position: absolute;
-        right: 10px; // Adjust as needed for spacing
-        top: 50%;
-        transform: translateY(-50%);
-        border: 4px solid transparent; // Outer border
-        border-top: 4px solid #3498db; // Color of the loader
-        border-radius: 50%; // Make it circular
-        width: 24px; // Size of the loader
-        height: 24px; // Size of the loader
-        animation: spin 1s linear infinite; // Spin animation
+      border: none;
+      outline: none;
+      font-size: 16px;
+      width: 100%;
+      background-color: transparent;
+  
+      &::placeholder {
+        color: #b0b3b8;
       }
-}
-::ng-deep .cdk-overlay-container:has(.cdk-overlay-transparent-backdrop){
+    }
+  
+    .enter-icon {
+      font-size: 18px;
+      color: #888;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: color 0.3s;
+  
+      &:hover {
+        color: #555;
+      }
+    }
+  
+    .loader {
+      position: absolute;
+      right: 10px; // Adjust as needed for spacing
+      top: 50%;
+      transform: translateY(-50%);
+      border: 4px solid transparent; // Outer border
+      border-top: 4px solid #3498db; // Color of the loader
+      border-radius: 50%; // Make it circular
+      width: 24px; // Size of the loader
+      height: 24px; // Size of the loader
+      animation: spin 1s linear infinite; // Spin animation
+    }
+  }
+
+  .chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+  
+    .chat-header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 15px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+  
+      .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+  
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Space between messages */
+        padding: 3px; /* Space inside the container */
+        margin: 3px; /* Space outside the container */
+        height: 383px;
+        overflow-y: scroll;
+  
+      .message {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-wrap: break-word;
+  
+        &.received {
+          background-color: #e9ecef;
+          align-self: flex-start;
+          align-items: left;
+        }
+  
+        &.sent {
+          background-color: #007bff;
+          color: #fff;
+          align-self: flex-end;
+          align-items: right;
+        }
+      }
+    }
+  
+    .chat-input-container {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        height: 60px;
+        position: absolute; /* Fix it at the bottom of the parent container */
+        bottom: 0; /* Align to the bottom */
+        left: 0;
+        right: 0;
+        background-color: #fff; /* Ensure it has a background to overlay content */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better UI */
+      }
+      
+      .chat-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        outline: none;
+      }
+      
+      .send-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      
+      .send-btn:hover {
+        background-color: #0056b3;
+      }
+      
+  }
+  
+  
+  .click-button {
+    position: fixed; /* Ensures the button stays in place regardless of scrolling */
+    right: 20px; /* Distance from the right edge of the viewport */
+    bottom: 20px; /* Distance from the bottom edge of the viewport */
+    z-index: 1000; /* Ensures the button appears above most elements */
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text/icon color */
+    border: none; /* Remove any default border */
+    border-radius: 50%; /* Makes the button circular */
+    width: 50px; /* Size of the button */
+    height: 50px; /* Size of the button */
+    display: flex; /* Center the icon/text inside the button */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+    cursor: pointer; /* Indicates the button is clickable */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth hover animations */
+  
+    &:hover {
+      background-color: #0056b3; /* Darker shade on hover */
+      transform: scale(1.1); /* Slight zoom effect */
+    }
+  }
+  
+  
+  ::ng-deep .cdk-overlay-container:has(.cdk-overlay-transparent-backdrop) {
     z-index: 0;
-}
-@keyframes spin {
+  }
+  
+  @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
@@ -68,3 +208,4 @@
       transform: rotate(360deg);
     }
   }
+  

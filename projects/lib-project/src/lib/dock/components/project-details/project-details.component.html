@@ -1,11 +1,7 @@
 <div color="secondary" class="fixed top-32 w-full z-50 border-b px-10 py-2 text-lg text-tertiary bg-white">
   <span>{{"PROJECT_DETAILS" | translate}}</span>
-  <div class="chat-box">
-    <input type="text" #chatInput id="chat-input" class="chat-input" placeholder="Enter prompt here" />
-    <span class="enter-icon" (click)="callAi()">➡️</span>
-    @if(isLoading){
-    <div class="loader"></div> <!-- Loader element -->
-    }
+  <div>
+    <button (click)="toggleChat()" class="click-button" (ngStyle)="{'background-color' : '#363636' }"><mat-icon>memory</mat-icon></button>
   </div>
 </div>
 @if(dynamicFormData){
@@ -15,4 +11,26 @@
 }
 @if(commentPayload || projectInReview) {
   <lib-comments-box [commentPayload]="commentPayload" [resourceId]="projectId" [messages]="commentsList" [mode]="mode" (comment)="saveComment($event)"></lib-comments-box>
+}
+@if(isChatVisible){
+<div class="chat-container">
+  <div class="chat-header">
+    AI Assistant
+    <button class="close-btn" (click)="toggleChat()">&times;</button>
+  </div>
+  <div class="chat-messages" #chatMsg>
+    <div class="message received">
+      Hi {{userName}}! Enter a prompt to get micro-improvement suggestion.
+    </div>
+    @for(convo of conversation; track convo) {
+    <div [class]="convo.class">
+      {{ convo.message }}
+    </div>
+  }
+  </div>
+  <div class="chat-input-container">
+    <input type="text" class="chat-input" #chatInp placeholder="Type a message..." />
+    <button class="send-btn" (click)="sendMessage()"><mat-icon>send</mat-icon></button>
+  </div>
+</div>
 }

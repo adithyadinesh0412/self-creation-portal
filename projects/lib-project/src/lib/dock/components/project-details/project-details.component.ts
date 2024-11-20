@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-
+import { MatIconModule } from '@angular/material/icon';
 import { HttpHeaders } from '@angular/common/http';
 import { CommentsBoxComponent, DialogPopupComponent, FormService, ToastService, UtilService, projectMode,resourceStatus , PROJECT_DETAILS_PAGE} from 'lib-shared-modules';
 interface ApiResponse {
@@ -15,7 +15,7 @@ interface ApiResponse {
 @Component({
   selector: 'lib-project-details',
   standalone: true,
-  imports: [DynamicFormModule, TranslateModule,CommentsBoxComponent],
+  imports: [DynamicFormModule, TranslateModule,CommentsBoxComponent,MatIconModule],
   templateUrl: './project-details.component.html',
   styleUrl: './project-details.component.scss',
 })
@@ -34,7 +34,14 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
   isLoading = false; // Loading state
   @ViewChild('formLib') formLib: MainFormComponent | undefined;
   @ViewChild('chatInput') chatInput!: ElementRef;
+  @ViewChild('chatInp') chatInp!: ElementRef;
+  @ViewChild('chatMsg') chatMsg!: ElementRef;
   private subscription: Subscription = new Subscription();
+  isChatVisible:any = false; 
+  userName:any = localStorage.getItem('name')
+  conversation: { class: string; message: string }[] = []; 
+  questions :  [];
+  history : any ;
   constructor(
     private libProjectService: LibProjectService,
     private router: Router,
@@ -45,6 +52,9 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     private toastService: ToastService,
     private http: HttpClient
   ) {
+    this.conversation = []
+    this.questions =  [];
+    this.history = []
     // this.startAutoSaving()
     this.subscription.add(
       this.route.queryParams.subscribe((params: any) => {
@@ -393,4 +403,114 @@ export class ProjectDetailsComponent implements OnDestroy, OnInit, AfterViewChec
     console.log(accessToken)
 
   }
+  
+  toggleChat(){
+    this.isChatVisible = !this.isChatVisible;
+  }
+  sendMessage() {
+    const newMessage = this.chatInp.nativeElement.value;
+    let mainMessage = "";
+    // for auto scroll 
+    const chatContainer = this.chatMsg.nativeElement;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // API URL and options (adjust these as needed)
+    const apiUrl = 'http://127.0.0.1:8080/api/chat';
+    let requestBody = { message: newMessage , history : [] }; // Assuming the API expects an object with "prompt"
+    const accessToken = localStorage.getItem('accToken')
+    if (newMessage.trim()) {
+      if(this.conversation.length == 0){
+        mainMessage = newMessage
+        // Set up headers with the access token
+        const headers = new HttpHeaders({
+          'x-auth-token': accessToken ? accessToken : '',  
+          'Content-Type': 'application/json'               
+        });
+
+        this.conversation.push({
+          class: 'message sent',
+          message: newMessage
+        });
+
+        // Clear the input field
+        this.chatInp.nativeElement.value = '';
+        
+        this.isLoading = true;
+    
+        this.http.post<ApiResponse>(apiUrl, requestBody, { headers }).subscribe(
+          (response:any) => {
+            this.questions = response?.result?.questions;
+            this.isLoading = false;
+            if(this.questions.length > 0){
+              let questionObj : any =this.questions.shift();
+              this.history.push({
+                "question" : questionObj.question
+              })
+              this.conversation.push({
+                  class: 'message received',
+                  message: questionObj.question
+                });
+            }
+          },
+          (error) => {
+            console.error('Error:', error);
+            alert('An error occurred: ' + error.message);
+          }
+        );
+      }else{
+
+        this.conversation.push({
+          class: 'message sent',
+          message: newMessage
+        });
+        
+        this.history[this.history.length - 1].answer = newMessage
+      }
+      if(this.questions.length > 0){
+        let questionObj : any =this.questions.shift()
+        this.conversation.push({
+            class: 'message received',
+            message: questionObj.question
+          });
+
+        this.history.push({
+          "question" : questionObj.question
+        })
+      }
+    
+      if(this.questions.length == 0){
+        requestBody.message = mainMessage;
+        requestBody.history = this.history;
+         // Set up headers with the access token
+         const headers = new HttpHeaders({
+          'x-auth-token': accessToken ? accessToken : '',  
+          'Content-Type': 'application/json'               
+        });
+        this.http.post<ApiResponse>(apiUrl, requestBody, { headers }).subscribe(
+          (response:any) => {
+            const projectId = response?.result?.project_id;
+  
+            // Clear the input field
+            this.chatInp.nativeElement.value = '';
+            this.isLoading = false;
+  
+        this.router.navigate([PROJECT_DETAILS_PAGE], {
+            queryParams: {
+              projectId: projectId
+            },
+            queryParamsHandling:"merge"
+          });
+            
+          },
+          (error) => {
+            console.error('Error:', error);
+            alert('An error occurred: ' + error.message);
+          }
+        );
+  
+      }
+    }
+  this.chatInp.nativeElement.value = ''; 
+  }
+
 }
